@@ -1,0 +1,8 @@
+date	url	filename	size_bytes	status
+2026-10-21	https://www.overleaf.com/latex/templates/sakarya-university-journal-of-computer-and-information-sciences-latex-template/dvrwhwmzkgmp.pdf	-	0	FAILED: proxy 403 (overleaf.com blocked)
+2026-10-21	https://drive.google.com/uc?export=download&id=1X0vc1f7kZehvKSVPLSw35jcryzY-wfGD	-	0	FAILED: proxy 403 (drive.google.com blocked)
+2026-10-21	http://saucis.sakarya.edu.tr/en/download/article-file/2792201	-	0	FAILED: host blocked (curl); WebFetch summary only
+2026-10-21	https://www.nature.com/articles/s44172-025-00457-8.pdf	-	0	FAILED: proxy 403 (nature.com blocked)
+2026-10-21	https://www.nature.com/articles/s41467-025-58192-9.pdf	-	0	FAILED: proxy 403 (nature.com blocked)
+2026-10-21	https://api.elsevier.com/content/article/PII:S2666546824001149?httpAccept=text/plain	-	0	FAILED: proxy 403 (api.elsevier.com blocked)
+2026-10-21	http://xplorestaging.ieee.org/ielx7/59/10564585/10334044.pdf	-	0	FAILED: proxy 403

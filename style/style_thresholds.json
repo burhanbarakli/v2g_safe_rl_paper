@@ -1,0 +1,7 @@
+{
+ "_note": "Thresholds used by style/lint.py. Section 5 defaults; per-phrase limits set to min(2.0, corpus rate) with a floor of 0.3/1k. PRELIMINARY: corpus = 5 papers (see style_profile.md).",
+ "MAX_SENT": 35, "MEAN_LO": 16.0, "MEAN_HI": 26.0, "MAX_PARA": 180, "LIMITED_PER_1K": 2.0,
+ "LIMITED_OVERRIDES": {"significantly": 1.0, "enhance": 1.0, "effectively": 0.8, "efficient": 0.8, "robust": 0.8,
+   "additionally": 0.6, "comprehensive": 0.5, "utilize": 0.0, "efficiently": 0.3, "furthermore": 0.3,
+   "novel": 0.3, "leverage": 0.3, "moreover": 0.3, "facilitate": 0.3}
+}

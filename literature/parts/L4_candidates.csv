@@ -1,0 +1,40 @@
+title,doi_or_arxiv,year,venue,decision,reason
+Algorithmic Learning in a Random World (2nd ed.),10.1007/978-3-031-06649-8,2022,Springer,include,Included as [vovk2022algorithmic]
+Algorithmic Learning in a Random World (1st ed.),10.1007/b106715,2005,Springer,exclude,Crossref record has no authors; 2nd ed. cited instead
+Inductive Confidence Machines for Regression,10.1007/3-540-36755-1_29,2002,ECML 2002,include,Included as [papadopoulos2002inductive]
+Distribution-Free Predictive Inference for Regression,10.1080/01621459.2017.1307116,2018,JASA,include,Included as [lei2018distributionfree]
+Conformal Prediction: A Gentle Introduction,10.1561/2200000101,2023,FnT ML,include,Included as [angelopoulos2023conformal]
+Conformalized Quantile Regression,arXiv:1905.03222,2019,NeurIPS,include,Included as [romano2019conformalized]
+Safe Planning in Dynamic Environments Using Conformal Prediction,10.1109/LRA.2023.3292071,2023,IEEE RA-L,include,Included as [lindemann2023safe]
+Stochastic Model Predictive Control of Charging Energy Hubs with Conformal Prediction,10.1109/CDC57313.2025.11311970,2025,IEEE CDC,include,Included as [fernandezzapico2025stochastic]
+Risk-Aware Rolling-Horizon Scheduling of a PV-Battery-EV Charging Station via Adaptive Conformal Prediction,10.3390/en19174093,2026,Energies,include,Included as [cheng2026riskaware]
+Computationally and Sample Efficient Safe Reinforcement Learning Using Adaptive Conformal Prediction,10.1109/icra55743.2025.11127570,2025,ICRA,include,Included as [zhou2025computationally]
+Customized Uncertainty Quantification of Parking Duration Predictions for EV Smart Charging,10.1109/JIOT.2023.3299201,2023,IEEE IoT J.,include,Included as [phipps2023customized]; closest prior work to conformal departure bounds
+Customized Uncertainty Quantification of Parking Duration Predictions for EV Smart Charging (TechRxiv),10.36227/techrxiv.22674997,2023,TechRxiv,exclude,Preprint of included JIOT paper
+ACN-Data: Analysis and Applications of an Open EV Charging Dataset,10.1145/3307772.3328313,2019,ACM e-Energy,include,Included as [lee2019acndata]
+Enabling Delayed-Full Charging Through Transformer-Based Real-Time-to-Departure Modeling for EV Battery Longevity,10.1609/aaai.v40i45.41228,2026,AAAI,include,Included as [lee2026enabling]
+Departure Time Prediction Using Smartphone Data for Delayed-Full Charging BMS Algorithm,10.1145/3594739.3610688,2023,UbiComp adjunct,exclude,Workshop precursor of lee2026enabling
+Predicting real life electric vehicle fast charging session duration using neural networks,10.1109/iv51971.2022.9827179,2022,IEEE IV,exclude,Fast-charging sessions (not parking/departure); no abstract available
+Probabilistic Forecasting of Electric Vehicle Charging in a Time-varying Hierarchical Infrastructure,arXiv:2610.13588,2026,arXiv,exclude,"arXiv-only; aggregate demand forecasting, not departure or control"
+Mobility Safe Adaptive Reserve Certification for Electric Vehicle Hydrogen Bus and Building Resilience Hubs,arXiv:2607.00585,2026,arXiv,exclude,"arXiv-only; reserve certification for resilience hubs, not departure bounds"
+SoNIC: Safe Social Navigation with Adaptive Conformal Inference and Constrained Reinforcement Learning,arXiv:2407.17460,2024,arXiv,exclude,Peer-reviewed venue not confirmed; zhou2025computationally and lindemann2023safe cover conformal safety
+Short-Term Uncertainty Quantification of EV Charging Load Based on Locally Weighted Adaptive Conformal Prediction,10.2139/ssrn.6116173,2026,SSRN,exclude,Preprint; aggregate load
+Short-Term Interval Forecasting of EV Charging Load ... Locally Weighted Adaptive Conformal Prediction,10.2139/ssrn.7170761,2026,SSRN,exclude,Preprint; aggregate load
+Deployment-Safe Reinforcement Learning Agent for Microgrid Energy Management Via Conformal Prediction and Opportunity-Cost Awareness,10.1149/ma2026-016669mtgabs,2026,ECS Meeting Abstracts,exclude,Meeting abstract only
+A Two-Layers Predictive Algorithm for Workplace EV Charging,arXiv:2307.08311,2023,arXiv,exclude,arXiv-only; no conformal bounds
+Electric vehicle charging management through LSTM-based prediction of non-critical charging sessions,10.1016/j.trd.2026.105402,2026,Transp. Res. D,exclude,Not screened beyond title; outside the 2-3 target
+On Layer Normalization in the Transformer Architecture,arXiv:2002.04745,2020,ICML,include,Included as [xiong2020layer]
+Layer Normalization,arXiv:1607.06450,2016,arXiv,include,Included as [ba2016layer]
+High-Dimensional Continuous Control Using Generalized Advantage Estimation,arXiv:1506.02438,2016,ICLR,include,Included as [schulman2016highdimensional]
+Adam: A Method for Stochastic Optimization,arXiv:1412.6980,2015,ICLR,include,Included as [kingma2015adam]
+The 37 Implementation Details of Proximal Policy Optimization,none,2022,ICLR Blog Track,exclude,No DOI/arXiv; cannot be verified with script
+CleanRL: High-quality Single-file Implementations of Deep Reinforcement Learning Algorithms,arXiv:2111.08819,2021,arXiv (JMLR claimed),include,Included as [huang2022cleanrl]; JMLR venue unconfirmed
+Parallelizing the dual revised simplex method,10.1007/s12532-017-0130-5,2018,Math. Prog. Comp.,include,Included as [huangfu2018parallelizing] (HiGHS)
+CVXPY: A Python-Embedded Modeling Language for Convex Optimization,arXiv:1603.00943,2016,JMLR,include,Included as [diamond2016cvxpy] (optional)
+Pyomo - Optimization Modeling in Python (3rd ed.),10.1007/978-3-030-68928-5,2021,Springer,include,Included as [bynum2021pyomo] (optional)
+Pyomo: modeling and solving mathematical programs in Python,10.1007/s12532-011-0026-8,2011,Math. Prog. Comp.,exclude,Alternative Pyomo citation; book chosen
+"PyTorch: An Imperative Style, High-Performance Deep Learning Library",arXiv:1912.01703,2019,NeurIPS,include,Included as [paszke2019pytorch]
+Deep Reinforcement Learning at the Edge of the Statistical Precipice,arXiv:2108.13264,2021,NeurIPS,include,Included as [agarwal2021deep]
+Individual Comparisons by Ranking Methods,10.2307/3001968,1945,Biometrics Bulletin,include,Included as [wilcoxon1945individual]
+A simple sequentially rejective multiple test procedure (Holm),none (JSTOR 4615733),1979,Scand. J. Statistics,exclude,No DOI in Crossref; OpenAlex budget exhausted; cannot be script-verified
+Deep Reinforcement Learning That Matters,10.1609/aaai.v32i1.11694,2018,AAAI,include,Included as [henderson2018deep]

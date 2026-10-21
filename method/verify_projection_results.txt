@@ -1,0 +1,33 @@
+T1 projection: 3000 random instances (N in 1..200), cases inactive/upper/lower = 1393/936/671
+   max |sorted - bisection| = 7.60e-13; max |sorted - SLSQP| = 3.38e-10 (300 instances, N<=60); max KKT residual = 1.36e-12
+   batched+masked (64 rows padded to 200): max err = 1.71e-13, max |p| on padding = 0.0e+00
+T1b review-M1 families (N=20): rows / active / max aggregate violation [kW] / max box violation / max rel. |sorted - bisection| (300 rows)
+   tight_upper        20000  20000   2.84e-14   0.00e+00  9.23e-16
+   tight_lower        20000  20000   5.68e-14   0.00e+00  9.37e-16
+   tight_upper_huge   20000  20000   1.00e-09   0.00e+00  1.00e-16
+   huge_general       20000  12010   1.00e-09   0.00e+00  3.92e-16
+   hyperplane         20000  20000   8.53e-14   0.00e+00  1.36e-15
+   NaN/Inf guard: 3 non-finite entries replaced by 0; projected p = [0. 0. 0. 1.]
+T2 Jacobian vs finite differences: 500 points, max abs error = 2.13e-08 (of which 162 with active aggregate and empty free set, J = 0)
+T3 Moreau gradient of 0.5*dist^2: max |(a - Pi(a)) - finite diff| = 3.09e-07
+T4 closed loop with EV2Gym EV objects: 60 episodes x 96 steps, N=8, dt=15 min, random raw actions (std 16.5 kW)
+   transformer limit P_tr ~ U(15, 45) kW; DD2 cap: E_des - E_req > 0.01 kWh for 44.3 % of EVs, > 1 kWh for 29.7 %, median cap 0.0013 kWh
+   steps with any transformer violation (incl. infeasible steps) = 0
+   steps=5760, infeasible steps=2961 (FB-1=2961, FB-2=0, FB-0=0, FB-1*=0); EVs=1444, capped requests=1444
+   transformer: steps with violation among feasible steps = 0; max (sum p - C) = 0.0000 kW, max (-C_rev - sum p) = 0.0000 kW
+   EVs never touched by an infeasible step: 262, of which missed E_req: 0
+   per-EV bound violations (p outside [p_min,u]) = 0; max departure shortfall (all EVs) = 29.115 kWh; Lemma 3 shortfall-bound violations = 0
+T4 closed loop with EV2Gym EV objects: 60 episodes x 96 steps, N=8, dt=15 min, random raw actions (std 16.5 kW)
+   transformer limit P_tr ~ U(40, 90) kW; DD2 cap: E_des - E_req > 0.01 kWh for 44.1 % of EVs, > 1 kWh for 30.1 %, median cap 0.0009 kWh
+   steps with any transformer violation (incl. infeasible steps) = 1
+   steps=5760, infeasible steps=573 (FB-1=572, FB-2=1, FB-0=0, FB-1*=0); EVs=1414, capped requests=1414
+   transformer: steps with violation among feasible steps = 0; max (sum p - C) = 0.0000 kW, max (-C_rev - sum p) = 0.0000 kW
+   EVs never touched by an infeasible step: 1008, of which missed E_req: 0
+   per-EV bound violations (p outside [p_min,u]) = 0; max departure shortfall (all EVs) = 10.522 kWh; Lemma 3 shortfall-bound violations = 0
+T4 closed loop with EV2Gym EV objects: 30 episodes x 288 steps, N=8, dt=5 min, random raw actions (std 16.5 kW)
+   transformer limit P_tr ~ U(40, 90) kW; DD2 cap: E_des - E_req > 0.01 kWh for 95.3 % of EVs, > 1 kWh for 82.1 %, median cap 15.4884 kWh
+   steps with any transformer violation (incl. infeasible steps) = 0
+   steps=8640, infeasible steps=2400 (FB-1=2400, FB-2=0, FB-0=0, FB-1*=0); EVs=2280, capped requests=2280
+   transformer: steps with violation among feasible steps = 0; max (sum p - C) = 0.0000 kW, max (-C_rev - sum p) = 0.0000 kW
+   EVs never touched by an infeasible step: 937, of which missed E_req: 0
+   per-EV bound violations (p outside [p_min,u]) = 0; max departure shortfall (all EVs) = 9.929 kWh; Lemma 3 shortfall-bound violations = 0

@@ -15,7 +15,7 @@ import csv, json, re, sys, os, collections
 
 PARTS = sys.argv[1] if len(sys.argv) > 1 else "parts"
 OUT = sys.argv[2] if len(sys.argv) > 2 else "."
-PART_ORDER = ["L0", "OR", "L1", "L2", "L3", "S"]
+PART_ORDER = ["L0", "OR", "L1", "L2", "L3", "L4", "S", "S2"]
 DROP_KEYS = {"orfanoudakis2024ev2gym"}  # duplicate record of orfanoudakis2025ev2gym (same DOI)
 
 def ident(r):
@@ -63,7 +63,7 @@ for p in PART_ORDER:
             recs[i].setdefault("found_by_parts", []).append(p)
             continue
         r["found_by_parts"] = [p]
-        r["style_corpus_only"] = (p == "S")
+        r["style_corpus_only"] = (p in ("S", "S2"))
         recs[i] = r
         e = pbibs.get(r["key"])
         if e is None:
@@ -78,7 +78,7 @@ for p in PART_ORDER:
 
 # part S records that are also cited elsewhere are not style-only
 for r in recs.values():
-    if r["style_corpus_only"] and any(x != "S" for x in r["found_by_parts"]):
+    if r["style_corpus_only"] and any(x not in ("S", "S2") for x in r["found_by_parts"]):
         r["style_corpus_only"] = False
 
 valid_keys = {r["key"] for r in recs.values()}

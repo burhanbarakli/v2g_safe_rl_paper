@@ -1,0 +1,19 @@
+configurations checked: 768 (8 models x 4 eta x 6 transition_soc x 2 multipliers x 2 dt), grid 600 energies each
+A1 (phi non-decreasing) holds in 768/768; smallest grid increment of phi = 0.000e+00 kWh
+  dt= 5 min: max dt*L_down = 1.0000 (A1 sufficient condition dt*L_down <= 1)
+     m=1: max dt*L_down over taper configs = 0.1474
+     m=5: max dt*L_down over taper configs = 0.5494
+  dt=15 min: max dt*L_down = 1.0000 (A1 sufficient condition dt*L_down <= 1)
+     m=1: max dt*L_down over taper configs = 0.3801
+     m=5: max dt*L_down over taper configs = 0.9085
+A1' (phi 1-Lipschitz, i.e. Pbar non-increasing): max of [phi(E')-phi(E)-(E'-E)] = 1.421e-14 kWh
+m=5: z0=0.99302, kappa*(m)=min(m z0=4.9651, kappa_2=4.9651) = 4.9651
+  m=1 dt= 5: max kappa over configs = 0.1594; A3a max err = 1.402e-02 kWh; ceil gap in [-1.280e-02, 1.000e-02]
+  m=1 dt=15: max kappa over configs = 0.4783; A3a max err = 1.056e-01 kWh; ceil gap in [-1.049e-01, 1.000e-02]
+  m=5 dt= 5: max kappa over configs = 0.7971; A3a max err = 1.421e-14 kWh; ceil gap in [0.000e+00, 1.000e-02]
+  m=5 dt=15: max kappa over configs = 2.3913; A3a max err = 1.421e-14 kWh; ceil gap in [-8.882e-16, 1.000e-02]
+closed-form phi vs EV._charge: max abs error = 1.421e-14 kWh
+A3a exact delivery of p in (0, Pbar(E)]: max abs error = 1.056e-01 kWh
+A3b delivered energy non-decreasing in command: min increment = -1.421e-14 kWh
+A3c EV.step ceil: realised - (E + p dt) in [-1.049e-01, 1.000e-02] kWh
+A3d exact delivery of discharge p in [p_min, 0): max abs error = 3.553e-15 kWh

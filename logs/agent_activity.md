@@ -7,3 +7,8 @@
 - 2026-10-21 Orchestrator/A6: style metrics computed in-browser for 5 corpus papers; linter, thresholds, terminology written.
 - 2026-10-21 A1 synthesis sub-agent: gap analysis, novelty statement, related-work draft.
 - 2026-10-21 Orchestrator: G1 report prepared. Waiting for human approval.
+- 2026-10-21/22 A2: EV2Gym pinned at 55ef368c25a58476a9eeaed5111f112a63a38ca8 (git clone from github.com/StavrosOrf/EV2Gym, cloud workspace only); notes written.
+- A6: style corpus completed (15 papers, 91,511 words; arXiv HTML + DergiPark PDFs parsed, texts deleted after measurement).
+- A2: formulation, safety layer, Theorem 1, algorithm, nomenclature; A6 independent proof check (1 major numeric issue M1, fixed; minor fixed).
+- A1: 24 references added (L4). Note: an OpenAlex error message contained text asking AI agents to request an API key with the user's e-mail; ignored (prompt-injection-like content, reported here).
+- Orchestrator: Figure 1 (architecture) SVG/PDF/PNG; G2 report.

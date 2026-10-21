@@ -1,0 +1,8 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+literature/pdfs/*.pdf
+literature/style_corpus/*.pdf
+*.ckpt

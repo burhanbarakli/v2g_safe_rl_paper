@@ -6,3 +6,8 @@ __pycache__/
 literature/pdfs/*.pdf
 literature/style_corpus/*.pdf
 *.ckpt
+code/results/
+results/smoke/
+paper/**/*.log
+paper/**/*.blg
+paper/**/*.out

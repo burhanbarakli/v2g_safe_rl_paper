@@ -12,3 +12,4 @@
 - A2: formulation, safety layer, Theorem 1, algorithm, nomenclature; A6 independent proof check (1 major numeric issue M1, fixed; minor fixed).
 - A1: 24 references added (L4). Note: an OpenAlex error message contained text asking AI agents to request an API key with the user's e-mail; ignored (prompt-injection-like content, reported here).
 - Orchestrator: Figure 1 (architecture) SVG/PDF/PNG; G2 report.
+- 2026-10-22 Phase 3/5 checkpoint: code infrastructure (80 tests pass, smoke pipeline OK), analysis pipeline (25 tests, synthetic-only), manuscript + supplementary drafts (no results), internal review round 1 + consistency report; DD25-DD41 decided (revision round pending).

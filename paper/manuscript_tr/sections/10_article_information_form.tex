@@ -1,0 +1,48 @@
+% ---------------------------------------------------------------------
+% Makale Bilgi Formu (SAUCIS son kısmı; Kaynaklar'dan önce gelir)
+% Maddeler SAUCIS LaTeX şablonunu izler. Anonim anahtarı adları ve
+% bağlantıları gizler, ancak beyanları korur.
+% ---------------------------------------------------------------------
+\section*{Makale Bilgi Formu}
+
+\textbf{Yazarların Katkıları}\\
+\ifanonymous
+Çift kör değerlendirme için kaldırılmıştır.
+\else
+\TODO{Her yazarın katkısını belirtin; örneğin ``Yazar 1: kavramsallaştırma, yöntem, yazılım, yazım; Yazar 2: danışmanlık, gözden geçirme ve düzenleme''; yenilenen DergiPark sistemi ayrıca bir katkı rolü beyanı da isteyebilir}.
+\fi
+
+\textbf{Teşekkür}\\
+\ifanonymous
+Çift kör değerlendirme için kaldırılmıştır.
+\else
+\TODO{Yazarlık ölçütlerini karşılamayan katkı sahiplerine teşekkür edin ya da ``Uygulanamaz'' yazın}.
+\fi
+\TODO{Teşekkür (ya da Yöntem) bölümü için yapay zekâ kullanımına ilişkin cümle, yazarlar tarafından yazılacaktır; SAUCIS bu beyanın Yapay Zekâ Beyanı'nın yanı sıra Yöntem ya da Teşekkür bölümünde de yapılmasını şart koşmaktadır}.
+
+\textbf{Çıkar Çatışması}\\
+Yazarlar, bu makalenin yayımlanmasıyla ilgili herhangi bir çıkar çatışması bulunmadığını beyan eder.
+\TODO{Bu beyanı onaylayın}.
+
+\textbf{Destek/Destekleyen Kuruluşlar}\\
+\TODO{Her mali destek kaynağını proje numaralarıyla belirtin ya da herhangi bir mali destek alınmadığını ifade edin}.
+
+\textbf{Etik Onay}\\
+\TODO{Aşağıdaki ifadeyi onaylayın}.
+Bu çalışma; insan katılımcı, yazarlarca toplanmış insan verisi ya da hayvan içermeyen bir simülasyon çalışması olduğundan etik kurul onayı gerekmemiştir.
+Yazarlar, araştırma ve yayın etiğine uyduklarını beyan eder.
+
+\textbf{Erişilebilirlik}\\
+Kod, senaryo yapılandırmaları, test tekrarları ve analiz betikleri herkese açık bir depoda yayımlanacaktır.
+\ifanonymous
+Bağlantı, çift kör değerlendirme nedeniyle paylaşılmamıştır.
+\else
+\TODO{Depo bağlantısı, lisans ve arşivlenmiş sürüm}.
+\fi
+Deneylerde \texttt{55ef368c} commit'indeki açık EV2Gym kodu ve karşılaştırma yöntemlerinden biri için \texttt{01aa1b7a} commit'indeki açık EV-GNN kodu kullanılmaktadır.
+
+\textbf{Yapay Zekâ Beyanı}\\
+\TODO{Yazarlar tarafından yazılacaktır. Yapay zekâ katkılarının olgusal bir kaydı \texttt{review/\allowbreak ai\_contribution\_record.md} dosyasında tutulmaktadır}.
+
+\textbf{İntihal Beyanı}\\
+Bu makale iThenticate\texttrademark{} ile taranmıştır.

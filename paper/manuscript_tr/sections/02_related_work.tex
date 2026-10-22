@@ -1,0 +1,92 @@
+% ---------------------------------------------------------------------
+\section{İlgili Çalışmalar}\label{sec:related}
+% ---------------------------------------------------------------------
+
+\subsection{EV şarjı ve V2G için pekiştirmeli öğrenme}\label{sec:rw-rl}
+
+EV şarjına yönelik derin RL çalışmaları tek araçlı ajanlardan \cite{li2020constrained} fotovoltaik, depolama ve V2G içeren istasyonlara \cite{korkas2024distributed,zhang2025dumes}, koordineli istasyonlara \cite{song2025longterm} ve dağıtım şebekesi limitleri altındaki filolara \cite{zhang2024hamlet,caballe2026largescale} doğru ilerlemiştir.
+İki derleme çalışması; güvenliği, simülasyona bağımlılığı ve standart bir kıyaslama ortamının eksikliğini açık problemler arasında saymaktadır \cite{qiu2023reinforcement,michailidis2025reinforcement}.
+EV2Gym, şarj üniteleri esnek olmayan yük ve güneş üretimi bulunan trafoların arkasında yer alan bir CPO'yu modellemektedir \cite{orfanoudakis2025ev2gym}.
+EV2Gym'in V2G ödülü trafo aşırı yüklemesini ve düşük kullanıcı memnuniyetini cezalandırır; V2G kıyaslamasında cezaya dayalı ajanlar kâr elde etmiş, ancak birçok kullanıcıyı talep ettikleri enerjinin altında bırakmıştır.
+Adaptive Charging Network (ACN), katı altyapı limitleri ve en iyi çaba esaslı enerji teslimiyle kayan ufukta bir dışbükey program çözmektedir \cite{lee2021adaptive}.
+EV2Gym içindeki ekonomik bir model öngörülü kontrol (MPC) yöntemi, ayrılış ve trafo kısıtlarını katı olarak uygulamaktadır \cite{diazlondono2026open}.
+
+\subsection{Kısıt yönetimi ve güvenli pekiştirmeli öğrenme}\label{sec:rw-safe}
+
+Ödüldeki ağırlıklı ihlal terimleri test sırasında ihlalleri önlemez \cite{tabas2022computationally,orfanoudakis2025ev2gym}.
+Kısıtlı Markov karar süreci (CMDP) bunun yerine beklenen birikimli bir maliyeti sınırlar \cite{altman2021constrained} ve Lagrange \cite{tessler2018reward} ya da güven bölgesi \cite{achiam2017constrained} güncellemeleriyle çözülür.
+Derleme çalışmaları, bu tür sınırların her adımda değil beklenen birikimli bir maliyet için geçerli olduğunu belirtmekte \cite{gu2024review} ve Lagrange yöntemlerini yumuşak garantiler olarak sınıflandırmaktadır \cite{su2025review}.
+CMDP formülasyonları gerilim limitleri \cite{fan2024safety}, trafo ısıl zorlanması \cite{zhang2025modelfree,zhang2026safe} ve V2G toplayıcıları \cite{eland2026safe} ile EV şarjına uygulanmıştır.
+Lagrange tabanlı çok ajanlı bir yöntem ayrıca her istasyonun yakın geçmişini bir Transformer ile kodlamaktadır \cite{huang2026safe}.
+
+İkinci bir yöntem ailesi her eylemi uygulanmadan önce kalkanlar (shield) \cite{alshiekh2018safe}, öğrenilmiş doğrusal güvenlik katmanları \cite{dalal2018safe} ya da yedek denetleyicili kuadratik programlar \cite{ceusters2023adaptive} aracılığıyla düzeltir.
+EV alanındaki örnekler arasında kural tabanlı kalkanlar \cite{guan2024rule}, eylem değiştirme katmanları \cite{zhang2025dumes}, şebeke yönetmeliğine dayalı kalkanlama \cite{demirel2025multiobjective} ve güç akışı kalkanları \cite{zaman2026graph} bulunmaktadır.
+Böyle bir filtre ancak iç modeli kadar güvenlidir; HetGPS ön baskısının yazarları da doğrusallaştırılmış bir güç akışı izdüşümüyle birlikte kullanılan öğrenilmiş risk modeli için noktasal bir olurluluk iddiasında bulunmamaktadır \cite{wang2026hetgps}.
+EV2Gym ekibinin üyeleri ayrıca çizge ile güçlendirilmiş bir ikiz gecikmeli derin deterministik politika gradyanı (TD3) ajanını \cite{fujimoto2018addressing} bir güvenlik katmanıyla birleştirmiştir \cite{orfanoudakis2026can}.
+Bölüm özetine göre bu katmanın amacı şarj gereksinimlerini korumak ve güç limitlerini uygulamaktır.
+
+Üçüncü bir aile, politikanın çıktısını yapısı gereği olurlu kılar.
+Türevlenebilir dışbükey optimizasyon katmanları gradyanları kesin bir çözümden geçirir \cite{amos2017optnet,agrawal2019differentiable}; Chen ve arkadaşları da böyle bir izdüşümü enerji sistemi politikalarının içinde kullanmıştır \cite{chen2021enforcing}.
+Gauge eşlemeleri doğrudan olurlu noktalar verir \cite{li2023learning}; Tabas ve Zhang, öğrenilmiş bir frekans denetleyicisinin kontrollü değişmez bir güvenli kümede kaldığını ispatlamak için bu eşlemelerden birini kullanmıştır \cite{tabas2022computationally}.
+EV istasyonları için Wan ve arkadaşlarının bir ön baskısı, trafo ve şarj ünitesi akımı limitlerini kapsayan ancak ayrılış enerjisini kapsamayan bir kuadratik program izdüşümünün adım başına olurluluğunu ispatlamaktadır \cite{wan2025logicinformed}.
+Yan ve arkadaşlarının bir ön baskısı araç başına sınırları kalan enerji ve süreden türetmektedir; bu çalışmanın biçimsel sonucu birinci dereceden güç dengesi olurluluğuyla ilgilidir \cite{yan2026hierarchical}.
+İzdüşüm öğrenmeyi de etkiler; çünkü naif izdüşüm politika gradyanlarını yanlı hâle getirir \cite{gros2020safe} ve aktif bir izdüşümün gradyanları sıfırdır \cite{kasaura2023benchmarking}.
+Stokastik politikalar için yakın tarihli bir ön baskı, ortamın içindeki izdüşümün bir politika katmanı olarak izdüşüme denk olduğunu göstermektedir \cite{markgraf2025safe}.
+
+\subsection{Boyuttan bağımsız mimariler}\label{sec:rw-scale}
+
+Deep Sets \cite{zaheer2017deep}, öz-dikkat \cite{vaswani2017attention} ve Set Transformer \cite{lee2019set}, ortak ağırlıklarla her boyuttaki kümeleri işleyebilir; UPDeT bu fikri farklı boyutlardaki çok ajanlı görevlere uygulamıştır \cite{hu2021updet}.
+Boyut aktarımı kendiliğinden gerçekleşmez; küçük çizgeler üzerinde eğitilen sinirsel rotalama çözücüleri daha büyük çizgelerde sıklıkla başarısız olur \cite{joshi2022learning}.
+EV şarjında boyuttan bağımsız ilk durum gösterimleri toplulaştırmadan elde edilmiş; Sadeghianpourhamami ve arkadaşları ayrıca ölçeklenmiş varış hızları altında mükemmel bilgiye sahip bir optimuma olan açığı raporlamıştır \cite{sadeghianpourhamami2020definition}.
+Ancak toplulaştırılmış gösterimler araç başına ayrıntıyı gizler ya da bu ayrıntıyı ayrıştırma kurallarına taşır \cite{zhang2022transfer,salesortiz2024efficient}.
+
+Heterojen çizge politikasının (EV-GNN) ön baskı sürümü, her ölçek için ayrı bir model kullanarak ve yapısı gereği hiçbir kısıtı uygulamadan 1000'e kadar şarj noktasını koordine etmektedir \cite{orfanoudakis2025scalable}.
+Buna karşılık, 25 şarj ünitesinde eğitilen çizge ile güçlendirilmiş karar Transformer'ı (GNN-DT), yeniden eğitim olmadan 5 ile 100 arasında şarj ünitesinde test edilmiş ve boyut büyüdükçe performansı düşmüştür \cite{orfanoudakis2026graph}.
+1236 araçla eğitilen bir HetGPS politikası, yeniden eğitim olmadan 2239 ve 3218 araçlı fiderlere aktarılabilmektedir \cite{wang2026hetgps}.
+Benzer şekilde, gerilim kontrolüne yönelik çizge tabanlı bir aktör, simülasyonda eğitimdekinden daha büyük bir fider üzerinde değerlendirilmiştir \cite{jin2026telemetry}.
+
+Boyuttan bağımsız bu denetleyicilerde kısıtlar ödül terimleri, taklit verisi ya da sezgisel filtreler aracılığıyla devreye girer.
+
+\subsection{Esneklik payına dayalı çizelgeleme ve ayrılış belirsizliği}\label{sec:rw-laxity}
+
+Chen ve arkadaşları, bir çizelgenin ancak ve ancak her esneklik payı, yani kalan süre ile şarjı tamamlamak için hâlâ gereken süre arasındaki fark, negatif olmadığında olurlu olduğunu ispatlamıştır \cite{chen2022smoothed}.
+Onların sLLF kuralı, istasyon güç limiti altında her hızı ortak bir düzey etrafında kırpar; ortaya koydukları sınırlar ise çevrim içi olurluluğun genellikle ek güç gerektirdiğine işaret etmektedir.
+Bir ön baskı, katı son tarihlerin ve bir trafo limitinin tıkanıklık altında birlikte olursuz hâle gelebileceğini göstermektedir \cite{reddy2026deadline}; en az esneklik payı önce (LLF) öncelikleri ise kablo ve trafo limitleri altında iyi performans göstermektedir \cite{vanhuffelen2025grid,christensen2025multiagent}.
+Bu yöntemler, kullanıcıların ayrılış zamanını ve enerjiyi varışta bildirdiğini varsayar.
+Bağlı kalma süreleri zor tahmin edilir \cite{dyo2022behavior}, kullanıcılar son tarihlerini olduğundan erken bildirerek kazanç sağlayabilir \cite{ferragut2022scheduling} ve ayrılış tahminleri önceliklendirmeyi iyileştirir \cite{frendo2021improving}.
+Yakın tarihli bir ön baskı, bir ayrılış tahmincisini şarj politikasıyla uçtan uca eğitmekte, ancak karşılanmayan enerjiyi yumuşak bir ceza olarak tutmakta ve herhangi bir kapsama ifadesi sunmamaktadır \cite{gabriele2026forecasting}.
+Konformal tahmin, değiştirilebilirlik (exchangeability) altında dağılımdan bağımsız kapsama sağlar \cite{lei2018distributionfree,angelopoulos2023conformal} ve güvenli planlamada kısıtları sıkılaştırmak için kullanılmıştır \cite{lindemann2023safe}.
+
+\subsection{Konumlandırma}\label{sec:rw-position}
+
+\Tab{tab:positioning} incelendiğinde görüldüğü gibi, tasarımımızın her bileşeni bir biçimde zaten mevcuttur.
+EV şarjı için sıfır-atış aktarıma sahip boyuttan bağımsız politikalar \cite{orfanoudakis2026graph,wang2026hetgps}, güvenli RL'de ispatlanabilir eylem düzeltme katmanları \cite{tabas2022computationally,wan2025logicinformed} bulunmaktadır; ortak bir düzey etrafında kırpmaya dayanan çok yakın bir kural da sLLF'de yer almaktadır \cite{chen2022smoothed}.
+Araç başına en geç başlangıç sınırları Yan ve arkadaşlarının çizelgeleyicisinde \cite{yan2026hierarchical} görülmekte; küçükte eğitip büyükte test etmeye ve bir optimuma olan açığa dayalı değerlendirme ise en azından \cite{sadeghianpourhamami2020definition} çalışmasına kadar uzanmaktadır.
+Yakın tarihli ve konuyla çok yakından ilişkili üç çalışmaya yalnızca özetleri üzerinden erişilebilmiştir \cite{orfanoudakis2026can,song2025longterm,eland2026safe}; bu çalışmalar yalnızca bu düzeyde aktarılmaktadır.
+Bildiğimiz kadarıyla, boyuttan bağımsız öğrenilmiş bir politikayı, adım başına bir trafo garantisini ve çok adımlı bir ayrılış argümanını tek bir denetleyicide birleştiren önceki bir çalışma bulunmamaktadır.
+% Yazar notu (basılmaz): gönderimden önce orfanoudakis2026can, song2025longterm, eland2026safe ve yayımlanmış EV-GNN makalesini tam metin üzerinden yeniden kontrol edin (boşluk analizi R1-R4).
+
+\begin{table}[t]
+\centering
+\caption{En yakın çalışmalara göre konumlandırma. ``Ceza'' bir ödül terimini; ``katı'' ise yapısı gereği uygulanan bir kısıtı ifade eder.}
+\label{tab:positioning}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{2.6cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.2cm}>{\raggedright}p{1.9cm}>{\raggedright\arraybackslash}p{2.0cm}@{}}
+\toprule
+Çalışma & Boyuttan bağımsız politika & Ayrılış enerjisi & Trafo limiti & Garanti & Sıfır-atış boyut testi & Optimuma olan açık \\
+\midrule
+EV2Gym ajanları \cite{orfanoudakis2025ev2gym} & hayır (düz) & ceza & ceza & yok & hayır & karşılaştırma yöntemi olarak optimum \\
+EV-GNN, ön baskı sürümü \cite{orfanoudakis2025scalable} & evet (çizge) & yapısı gereği değil & yapısı gereği değil & yok & her ölçek için ayrı model & her ölçek için optimizasyon tabanlı karşılaştırma \\
+GNN-DT \cite{orfanoudakis2026graph} & evet (çizge) & ceza & ceza & yok & 25'ten 5--100 şarj ünitesine & kâhin (oracle) düzeyine yakın ödül (dergi özeti) \\
+HetGPS, ön baskı \cite{wang2026hetgps} & evet (çizge dikkati) & ödül ve sezgisel yöntem & kısıtlanmamış & deneysel (gerilim filtresi) & 1236'dan 3218 araca & hayır \\
+Yan vd., ön baskı \cite{yan2026hierarchical} & hayır & katı (araç başına kural) & modellenmemiş & birinci dereceden güç dengesi & hayır & MPC'ye göre açık \\
+Wan vd., ön baskı \cite{wan2025logicinformed} & hayır & modellenmemiş & katı (kuadratik program izdüşümü) & adım başına olurluluk & hayır & hayır \\
+sLLF \cite{chen2022smoothed} & kural, her boyut & esneklik payı kuralı & katı (ortak düzey) & olurluluk teoremleri & öğrenilmemiş & hayır \\
+Sadeghian\-pourhamami vd. \cite{sadeghianpourhamami2020definition} & evet (toplu durum) & ceza & modellenmemiş & yok & ölçeklenmiş varışlar & evet \\
+Orfanoudakis vd. \cite{orfanoudakis2026can} (özet) & çizge politikası & güvenlik katmanı (belirtilen amaç) & güvenlik katmanı (belirtilen amaç) & özette belirtilmemiş & özette belirtilmemiş & özette belirtilmemiş \\
+\midrule
+Bu çalışma & evet (şarj ünitesi belirteçleri) & araç başına sınır, koşullu (Teo.~1b) & katı (ortak kaydırma) & trafo: her adımda (A3, A6); ayrılış: araç başına, koşullu & 10/20'den 200 şarj ünitesine & yumuşak ve katı kısıtlı optimumlar \\
+\bottomrule
+\end{tabular}
+\end{table}

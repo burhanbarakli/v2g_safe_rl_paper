@@ -16,18 +16,40 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from load import EPISODE_COLS, ORACLE_EXTRA, ORACLE_CEIL, TRAIN_COLS, SYNTH_SENTINEL
+from load import EPISODE_COLS, ORACLE_EXTRA, ORACLE_CEIL, ORACLE_PEN, PEN_COL, TRAIN_COLS, SYNTH_SENTINEL
 from common import TEST_SIZES
 
 PROFILES = ["workplace", "public", "private"]
 RHOS = [4, 7]
-LEARNED = ["attn_safe", "attn_penalty", "mlp_safe", "mlp_penalty",
+LEARNED = ["attn_safe", "attn_penalty", "mlp_safe", "mlp_penalty", "attn_lagrangian", "attn_proj_nolb",
+           "deepsets_safe", "attn_penalty_w1", "attn_penalty_w100", "attn_safe_dt5", "attn_safe_trainN50",
            "attn_safe_beta0", "attn_safe_curriculum", "attn_safe_small", "attn_penalty_dense",
            "attn_safe_conf_a0.01", "attn_safe_conf_a0.05", "attn_safe_conf_a0.1", "attn_safe_conf_a0.2",
            "attn_safe_conf_point"]
-HEUR = ["afap", "afap_safe", "alap", "alap_safe", "rr", "rr_safe", "llf", "llf_safe"]
-MPC = ["empc", "empc_safe", "empc_highs", "empc_highs_safe"]   # empc/empc_safe only N <= 25 (Gurobi licence)
-EVAL_ONLY = {"attn_safe_noadm": "attn_safe"}   # evaluation-only ablation
+HEUR = ["afap", "afap_safe", "alap", "alap_safe", "rr", "rr_safe", "llf", "llf_safe", "sllf", "sllf_safe",
+        "price_llf", "price_llf_safe"]
+MPC = ["empc", "empc_safe", "empc_highs", "empc_highs_safe", "empc_highs_24h", "empc_highs_24h_safe"]
+EVAL_ONLY = {"attn_safe_noadm": "attn_safe", "attn_penalty_noadm": "attn_penalty",
+             "attn_penalty_safedeploy": "attn_penalty", "evgnn": None, "evgnn_safe": None}
+SENS_TAGS = {"soc0.8": "public", "dt5": "private", "thr0.05": "workplace", "dpf0.9": "public"}
+
+
+def _runs_on(m, c):
+    """Which (method, configuration) pairs exist (mirrors the real run plan)."""
+    fam = c.get("family", "grid")
+    if m in ("empc", "empc_safe"):
+        return fam == "literature"
+    if m == "attn_safe_trainN50":
+        return fam == "grid" and c["N"] >= 50
+    if m == "attn_safe_dt5":
+        return c.get("tag") == "dt5"
+    if m in ("mlp_safe", "mlp_penalty"):
+        return c["N"] <= 20                      # DD43(3)
+    if m in ("attn_penalty_w1", "attn_penalty_w100"):
+        return fam == "grid" and c["N"] == 20 and c["rho_tr"] == 4.0
+    if fam == "sensitivity" and c.get("tag") == "dt5":
+        return m in ("attn_safe_dt5", "llf_safe", "empc_highs_safe", "afap_safe")
+    return True
 
 
 def _h8(*a) -> str:
@@ -38,13 +60,18 @@ def configs(small=False):
     sizes = [5, 10, 20, 50] if small else TEST_SIZES
     out = [dict(test_cfg_id=f"{p}_N{n}_rho{r}", profile=p, N=n, rho_tr=float(r))
            for p in PROFILES for n in sizes for r in RHOS]
-    out.append(dict(test_cfg_id="literature_V2GProfitMax", profile="workplace", N=25, rho_tr=4.0))
-    out.append(dict(test_cfg_id="public_N20_rho4_soc0.8", profile="public", N=20, rho_tr=4.0))   # sensitivity
+    out.append(dict(test_cfg_id="literature_N25", profile="workplace", N=25, rho_tr=4.0, family="literature"))
+    for tag, prof in SENS_TAGS.items():
+        out.append(dict(test_cfg_id=f"{prof}_N20_rho4_{tag}", profile=prof, N=20, rho_tr=4.0, family="sensitivity", tag=tag))
+    for p in PROFILES:                                                    # DD36 stress level
+        for n in ([20] if small else [20, 200]):
+            out.append(dict(test_cfg_id=f"{p}_N{n}_rho3", profile=p, N=n, rho_tr=3.0, family="stress"))
     return out
 
 
 def _safe(m):
-    return m.endswith("_safe") or m.startswith("attn_safe")
+    import names
+    return names.info(m).safety_layer
 
 
 def generate(out_raw: str | Path, seed: int = 0, replay_scale: float = 1.0, n_seeds: int = 5,
@@ -66,10 +93,12 @@ def generate(out_raw: str | Path, seed: int = 0, replay_scale: float = 1.0, n_se
         df["solve_time_s"] = rng.uniform(0.5, 10, k)
         df["solver_status"] = "Optimal"
         df[ORACLE_CEIL] = o + rng.uniform(0, 0.05, k)
+        df[ORACLE_PEN] = o + rng.uniform(0, 0.08, k)
+        df[PEN_COL] = df["profit_eur"]
         df["shortfall_stage_kwh"] = 0.0
         d = out / f"oracle__{c['test_cfg_id']}"
         d.mkdir(exist_ok=True)
-        df[EPISODE_COLS + [ORACLE_CEIL] + ORACLE_EXTRA].to_csv(d / "episodes.csv", index=False)
+        df[EPISODE_COLS + [PEN_COL, ORACLE_CEIL, ORACLE_PEN] + ORACLE_EXTRA].to_csv(d / "episodes.csv", index=False)
         _meta(d, rng)
 
     methods = LEARNED + HEUR + MPC + list(EVAL_ONLY)
@@ -77,20 +106,27 @@ def generate(out_raw: str | Path, seed: int = 0, replay_scale: float = 1.0, n_se
                       sd_ep=rng.uniform(1, 6)) for m in methods}
     for m in methods:
         learned = m in LEARNED or m in EVAL_ONLY
-        seeds = range(n_seeds) if learned else [0]
+        seeds = range(min(3, n_seeds)) if m == "attn_safe_trainN50" else (range(n_seeds) if learned else [0])
         for s in seeds:
             exp_id = f"{m}__{'trainmix' if learned else 'testgrid'}__s{s}__{_h8(m, s)}"
             parts = []
             seed_off = rng.normal(0, effect[m]["sd_seed"])
             for c in cfgs:
-                if m in ("empc", "empc_safe") and c["N"] > 25:
+                if not _runs_on(m, c):
                     continue
                 o = oracle[c["test_cfg_id"]]
                 g = (effect[m]["g0"] + seed_off + effect[m]["slope"] * np.log2(c["N"] / 10)
                      + rng.normal(0, effect[m]["sd_ep"], o.size))
                 prof = o - g / 100 * np.abs(o)
                 parts.append(_episode_frame(c, m, s, "20" if learned else "", exp_id, prof, rng, safe=_safe(m)))
+            if not parts:
+                continue
             df = pd.concat(parts, ignore_index=True)
+            df[PEN_COL] = df["profit_eur"] - 10 * df["energy_not_served_kwh"] - 10 * df["tr_violation_kwh"]
+            if m.startswith("evgnn"):
+                df["in_distribution"] = (df["N"] == 20) & (df["rho_tr"] == 4.0)
+            elif learned:
+                df["in_distribution"] = df["N"].isin([10, 20]) & df["rho_tr"].isin([4.0, 7.0])
             if m.startswith("attn_safe_conf_"):
                 a = float(m.split("_a")[-1]) if "_a" in m else np.nan
                 cov = np.clip((1 - a if np.isfinite(a) else 0.5) + rng.normal(0, 0.02, len(df)), 0, 1)
@@ -101,11 +137,14 @@ def generate(out_raw: str | Path, seed: int = 0, replay_scale: float = 1.0, n_se
                 df["mean_d_minus_dlo"] = rng.uniform(1, 12, len(df))
             d = out / exp_id
             d.mkdir(exist_ok=True)
-            cols = EPISODE_COLS + [c for c in ("alpha", "conformal_coverage", "n_evs_departed_before_bound",
-                                               "coverage_frac", "mean_d_minus_dlo") if c in df]
+            cols = EPISODE_COLS + [c for c in ("n_steps", "n_evs_stay_infeasible", "share_evs_stay_feasible",
+                                               "agg_upper_active_steps", "agg_lower_active_steps", "lb_active_frac",
+                                               "n_evs_unserved_shared", "energy_not_served_shared_kwh")] + \
+                [c for c in (PEN_COL, "alpha", "conformal_coverage", "n_evs_departed_before_bound",
+                                               "coverage_frac", "mean_d_minus_dlo", "in_distribution") if c in df]
             df[cols].to_csv(d / "episodes.csv", index=False)
             _meta(d, rng, learned=learned)
-            if m in LEARNED:
+            if m in LEARNED and not m.startswith("attn_safe_conf_"):
                 _train_log(d, exp_id, rng)
             if m in ("attn_safe", "attn_penalty") and s == 0:
                 _steps(d, exp_id, rng, safe=_safe(m))
@@ -152,6 +191,17 @@ def _episode_frame(c, method, seed, train_n, exp_id, profit, rng, safe, oracle=F
         inference_ms_per_step_mean=0 if oracle else rng.uniform(0.2, 0.4) * N ** rng.uniform(0.3, 1.0) * rng.lognormal(0, 0.05, k),
         oracle_profit_eur=np.nan, smoke=False))
     df["inference_ms_per_step_p95"] = df["inference_ms_per_step_mean"] * 1.3
+    # DD43 columns
+    T = 112
+    stay_inf = np.minimum(n_evs, rng.binomial(n_evs, np.clip(infeas / T * 4, 0, 1)))
+    df["n_steps"] = T
+    df["n_evs_stay_infeasible"] = stay_inf
+    df["share_evs_stay_feasible"] = 1 - stay_inf / n_evs
+    df["agg_upper_active_steps"] = rng.binomial(T, rng.uniform(0.05, 0.4), k)
+    df["agg_lower_active_steps"] = rng.binomial(T, rng.uniform(0.0, 0.05), k)
+    df["lb_active_frac"] = rng.uniform(0.0, 0.3, k) if safe else rng.uniform(0, 0.05, k)
+    df["n_evs_unserved_shared"] = unserved
+    df["energy_not_served_shared_kwh"] = ens
     return df
 
 

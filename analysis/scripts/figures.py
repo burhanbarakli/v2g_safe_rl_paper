@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 import common as C
-from stats import StatConfig, summarize, diff_summary, t_ci
+from stats import StatConfig, summarize, diff_summary, t_ci, ratio_diff
 
 FULL_W = 6.5
 HALF_W = 3.5
@@ -155,7 +155,7 @@ class Figures:
         methods = [m for m in methods if m in set(tr["method"])]
         panels = [("episode_return_eur_mean", "Episode return (€)"),
                   ("frac_unserved_mean", "Fraction of EVs unserved"),
-                  ("tr_violation_kwh_mean", "Transformer violation (kWh)")]
+                  ("tr_violation_kwh_mean", "Transformer overload (kWh)")]
         fig, axes = plt.subplots(1, 3, figsize=(FULL_W, 2.15), constrained_layout=True)
         recs = []
         for ax, (col, ylab), let in zip(axes, panels, "abc"):
@@ -191,48 +191,68 @@ class Figures:
         self.fw.save(fig, "figS1_training_curves", pd.concat(recs, ignore_index=True))
 
     # ------------------------------------------------------------------ F3
-    def f3_scaling(self):
-        methods = self.present(F3_METHODS)
+    def _vs_n(self, name, methods, metrics, height=4.3):
+        """Rows = metrics, columns = tightness levels of the main grid; x = N (log), one line per method."""
+        methods = self.present(methods)
         rhos = sorted(self.grid["rho_tr"].unique())
-        fig, axes = plt.subplots(2, len(rhos), figsize=(FULL_W, 4.3), sharex=True, constrained_layout=True, squeeze=False)
+        if not methods or not rhos:
+            print(f"[figures] {name} skipped: no data", file=sys.stderr)
+            return
+        nr = len(metrics)
+        letters = "abcdefghij"
+        fig, axes = plt.subplots(nr, len(rhos), figsize=(FULL_W, height), sharex=True, constrained_layout=True, squeeze=False)
         recs = []
         for j, rho in enumerate(rhos):
-            for i, (metric, ylab) in enumerate([("profit_per_charger", "Profit per charger (€/episode)"),
-                                                 ("gap_pct", "Optimality gap (%)")]):
+            for i, (metric, ylab, yscale) in enumerate(metrics):
                 ax = axes[i, j]
                 _train_span(ax, self.sizes)
                 d = self._byN(methods, metric, extra={"rho_tr": rho})
                 recs.append(d)
                 for k, m in enumerate(methods):
-                    dm = d[d["method"] == m].sort_values("N")
+                    dm = d[d["method"] == m].sort_values("N") if len(d) else d
                     if dm.empty:
                         continue
-                    jitter = 1 + 0.025 * (k - len(methods) / 2)
+                    jitter = 1 + 0.02 * (k - len(methods) / 2)
                     st = _style(m)
                     ax.errorbar(dm["N"] * jitter, dm["mean"], yerr=self._err(dm), color=st["color"], ls=st["linestyle"],
                                 marker=st["marker"], mfc=st["markerfacecolor"], mec=st["color"], label=st["label"],
                                 elinewidth=0.7, zorder=3)
+                if yscale == "symlog":
+                    ax.set_yscale("symlog", linthresh=0.01, linscale=0.5)
+                    ax.set_ylim(bottom=0)
                 _logN(ax, self.sizes)
-                if i == 0:
+                if i < nr - 1:
                     ax.set_xlabel("")
                 ax.set_ylabel(ylab)
-                _panel(ax, "abcd"[i * len(rhos) + j])
-                ax.set_title(f"({'abcd'[i * len(rhos) + j]}) {C.tightness(rho)}, " + r"$\rho_{\mathrm{tr}}$" + f" = {rho:g} kW per charger",
-                             fontweight="normal", loc="left", fontsize=8)
+                ax.set_title(f"({letters[i * len(rhos) + j]}) {C.tightness(rho)}, " + r"$\rho_{\mathrm{tr}}$"
+                             + f" = {rho:g} kW per charger", fontweight="normal", loc="left", fontsize=8)
         if self.sizes and min(self.sizes) <= 10 and max(self.sizes) >= 20:
             for ax in axes.ravel():
                 ax.text(14.1, 0.985, "training\nsizes", transform=ax.get_xaxis_transform(), ha="center",
                         va="top", fontsize=6.3, color="#555555", zorder=2)
         _legend_below(fig, axes, ncol=4)
-        self.fw.save(fig, "fig3_zero_shot_scaling", pd.concat(recs, ignore_index=True))
+        self.fw.save(fig, name, pd.concat(recs, ignore_index=True) if recs else None)
+
+    def f3_scaling(self):
+        self._vs_n("fig3_zero_shot_scaling", F3_METHODS,
+                   [("pen_per_charger", "Penalised profit $J^{\\mathrm{pen}}$\n(\u20ac per charger and episode)", "linear"),
+                    ("gap_pct", "Optimality gap of $J^{\\mathrm{pen}}$ (%)", "linear")])
+
+    def f4_constraints_vs_n(self):
+        """Consistency M3: constraint satisfaction versus N (main-text Fig. 4)."""
+        rows = [("energy_not_served_kwh", "Energy not served\n(kWh/episode, symlog)", "symlog"),
+                ("tr_violation_kwh", "Transformer overload\n(kWh/episode, symlog)", "symlog")]
+        if "e4_pct" in self.ep.columns and self.ep["e4_pct"].notna().any():
+            rows.append(("e4_pct", "EVs without infeasible\nstep, E4 (%)", "linear"))     # DD43 primary endpoint
+        self._vs_n("fig4_constraint_satisfaction", C.FIG_CONSTRAINTS, rows, height=1.9 * len(rows) + 0.5)
 
     # ------------------------------------------------------------------ F4
-    def f4_constraints(self):
+    def fS6_constraints_pooled(self):
         methods = [m for m in C.method_order(self.ep["method"].unique())
-                   if C.info(m).group not in ("conformal", "ablation", "oracle", "other")]
+                   if C.info(m).group not in ("conformal", "ablation", "oracle", "other", "sensitivity")]
         rhos = sorted(self.grid["rho_tr"].unique())
         metrics = [("energy_not_served_kwh", "Energy not served (kWh/episode)"),
-                   ("tr_violation_kwh", "Transformer violation (kWh/episode)")]
+                   ("tr_violation_kwh", "Transformer overload energy (kWh/episode)")]
         fig, axes = plt.subplots(1, 2, figsize=(FULL_W, 0.24 * len(methods) * len(rhos) * 0.6 + 1.2),
                                  sharey=True, constrained_layout=True)
         recs = []
@@ -272,7 +292,7 @@ class Figures:
             hs.append(Patch(facecolor=C.lighten("#888888", 0.55), edgecolor="#222222", lw=0.5, hatch="////",
                             label=f"{C.tightness(rhos[1])} (" + r"$\rho_{\mathrm{tr}}$" + f" = {rhos[1]:g} kW)"))
         fig.legend(handles=hs, loc="upper center", bbox_to_anchor=(0.5, -0.0), ncol=2)
-        self.fw.save(fig, "fig4_constraint_satisfaction", pd.DataFrame(recs))
+        self.fw.save(fig, "figS6_constraints_pooled", pd.DataFrame(recs))
 
     # ------------------------------------------------------------------ F5
     def f5_example_day(self, method: str = "attn_safe", test_cfg_id: str | None = None,
@@ -363,7 +383,7 @@ class Figures:
         zs_sizes = [n for n in self.sizes if n >= 50]
         regimes = [(r"$N \in \{10, 20\}$ (training sizes)", tr_sizes), (r"$N \geq 50$ (zero-shot)", zs_sizes)]
         metrics = [("gap_pct", "Optimality gap (%)", "linear"), ("unserved_pct", "Unserved EVs (%)", "symlog"),
-                   ("tr_violation_kwh", "Transformer violation (kWh/episode)", "symlog")]
+                   ("tr_violation_kwh", "Overload energy (kWh/episode)", "symlog")]
         fig, axes = plt.subplots(1, 3, figsize=(FULL_W, 0.3 * len(variants) + 1.3), sharey=True, constrained_layout=True)
         ypos = np.arange(len(variants))[::-1]
         bh = 0.38
@@ -415,28 +435,37 @@ class Figures:
             rows = []
             for n in self.sizes:
                 sub = self.grid[self.grid["N"] == n]
-                r = diff_summary(sub, mp, ms, "profit_per_charger", self.sc, salt=("F7", n))
-                rows.append(dict(arch=arch, N=n, metric="delta_profit_per_charger(penalty - safety layer)",
-                                 mean=r["diff"], ci_lo=r["b_lo"], ci_hi=r["b_hi"], ci="bootstrap",
-                                 exp_ids=";".join(r["exp_ids"])))
+                if not ({ms, mp} <= set(sub["method"])):
+                    continue
+                for num, tag in (("penalised_profit_eur", "J^pen"), ("profit_eur", "profit")):
+                    r = ratio_diff(sub, mp, ms, num, "n_evs", self.sc, salt=("F7", n, num))
+                    rows.append(dict(arch=arch, N=n, metric=f"delta_{tag}_per_EV(penalty - safety layer, ratio of sums)",
+                                     quantity=tag, mean=r["diff"], ci_lo=r["b_lo"], ci_hi=r["b_hi"], ci="bootstrap",
+                                     exp_ids=";".join(r["exp_ids"])))
             d = pd.DataFrame(rows)
+            if d.empty:
+                continue
             recs.append(d)
             j = 1 + 0.03 * (k - 0.5)
-            axes[0].errorbar(d["N"] * j, d["mean"], yerr=self._err(d), color=st["color"], marker=st["marker"],
-                             mfc=st["color"], ls="-", label=f"{arch}: penalty − safety layer", elinewidth=0.7)
+            dj, dp = d[d["quantity"] == "J^pen"], d[d["quantity"] == "profit"]
+            axes[0].errorbar(dj["N"] * j, dj["mean"], yerr=self._err(dj), color=st["color"], marker=st["marker"],
+                             mfc=st["color"], ls="-", label=f"{arch}: \u0394 " + r"$J^{\mathrm{pen}}$" + " (primary)",
+                             elinewidth=0.7)
+            axes[0].errorbar(dp["N"] * j * 1.01, dp["mean"], yerr=self._err(dp), color=st["color"], marker=st["marker"],
+                             mfc="white", ls="--", label=f"{arch}: \u0394 raw profit", elinewidth=0.7)
             v = self._byN([mp], "tr_violation_kwh")
             u = self._byN([mp], "energy_not_served_kwh")
             recs += [v, u]
             sp = _style(mp)
             axes[1].errorbar(v["N"] * j, v["mean"], yerr=self._err(v), color=sp["color"], marker=sp["marker"],
-                             mfc="white", ls="--", label=f"{C.label(mp)}: transformer violation", elinewidth=0.7)
+                             mfc="white", ls="--", label=f"{C.label(mp)}: overload energy", elinewidth=0.7)
             axes[1].errorbar(u["N"] * j, u["mean"], yerr=self._err(u), color=sp["color"], marker="d",
                              mfc="white", ls=":", label=f"{C.label(mp)}: energy not served", elinewidth=0.7)
         for ax in axes:
             _train_span(ax, self.sizes)
             _logN(ax, self.sizes)
         axes[0].axhline(0, color="#000000", lw=0.6)
-        axes[0].set_ylabel("Cost of the guarantee\n(€ per charger and episode)")
+        axes[0].set_ylabel("Cost of the guarantee, penalty \u2212\nsafety layer (\u20ac per EV served)")
         axes[1].set_yscale("symlog", linthresh=0.01, linscale=0.5)
         axes[1].set_ylim(bottom=0)
         axes[1].set_ylabel("Penalty-based policy (kWh/episode)")
@@ -456,14 +485,14 @@ class Figures:
         fig, axes = plt.subplots(1, npan, figsize=(FULL_W, 2.2), constrained_layout=True)
         recs = []
         st = _style("attn_safe")
-        dp = [diff_summary(self.grid, m, "attn_safe", "profit_per_charger", self.sc, salt=("F8",)) for m in conf]
+        dp = [diff_summary(self.grid, m, "attn_safe", "profit_per_ev", self.sc, salt=("F8",)) for m in conf]
         d = pd.DataFrame(dict(alpha=alphas, mean=[r["diff"] for r in dp], ci_lo=[r["b_lo"] for r in dp],
-                              ci_hi=[r["b_hi"] for r in dp], metric="delta_profit_per_charger(CP - known d)",
+                              ci_hi=[r["b_hi"] for r in dp], metric="delta_profit_per_ev(CP - known d)",
                               exp_ids=[";".join(r["exp_ids"]) for r in dp]))
         recs.append(d)
         axes[0].errorbar(d["alpha"], d["mean"], yerr=self._err(d), color=st["color"], marker="o", elinewidth=0.7)
         axes[0].axhline(0, color="#000000", lw=0.6)
-        axes[0].set_ylabel("Δ profit vs known departure\n(€ per charger and episode)")
+        axes[0].set_ylabel("Δ profit vs known departure\n(€ per EV)")
         rows = []
         for m, a in zip(conf, alphas):
             s = summarize(self.grid[self.grid["method"] == m], "unserved_pct", self.sc, salt=("F8u", m))
@@ -524,7 +553,8 @@ class Figures:
         self.fw.save(fig, "figS4_inference_time", pd.concat([d, p95], ignore_index=True))
 
     def all(self):
-        for f in (self.f2_training, self.f3_scaling, self.f4_constraints, self.f5_example_day, self.f6_ablation,
+        for f in (self.f2_training, self.f3_scaling, self.f4_constraints_vs_n, self.fS6_constraints_pooled,
+                  self.f5_example_day, self.f6_ablation,
                   self.f7_cost_of_guarantee, self.f8_conformal, self.f9_inference):
             f()
         return self.fw.written

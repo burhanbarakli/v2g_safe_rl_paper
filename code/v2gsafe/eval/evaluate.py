@@ -5,10 +5,14 @@ the method's controller runs one closed-loop episode through :class:`~v2gsafe.en
 per episode is written to ``episodes.csv`` (columns :data:`~v2gsafe.eval.metrics.METHOD_COLUMNS`). Inference time
 per step = arrival processing + bounds (safety layer) + policy + projection/fallback (wall clock).
 
-Methods: learned checkpoints (attn_safe, attn_penalty, mlp_safe, mlp_penalty, attn_safe_conformal -> evaluated as
-attn_safe_conf_a{alpha}), heuristics afap/alap/rr/llf and their '_safe' variants, empc / empc_safe (EV2Gym eMPC,
-Gurobi), empc_highs / empc_highs_safe (HiGHS port), random (tests). The oracle has its own entry point
-(:mod:`v2gsafe.baselines.oracle`).
+Methods: learned checkpoints (attn_safe, attn_penalty, mlp_safe, mlp_penalty, attn_proj_nolb, attn_lagrangian,
+deepsets_safe, attn_safe_trainN50, ablations; attn_safe_conformal -> evaluated as attn_safe_conf_a{alpha}; penalty
+checkpoints with --deploy-safety -> <method>_safedeploy), heuristics afap/alap/rr/llf/sllf/price_llf and their
+'_safe' variants, empc / empc_safe (EV2Gym eMPC, Gurobi), empc_highs / empc_highs_24h (+ '_safe', HiGHS port),
+evgnn / evgnn_safe (optional), random (tests). The oracle has its own entry point (:mod:`v2gsafe.baselines.oracle`).
+
+Admission control (DD31) is a controller-independent pre-pass per replay: every method (and the oracle) sees the
+same admitted requests; tables are cached in ``MethodSpec.admission_cache`` (results/admission).
 """
 from __future__ import annotations
 
@@ -29,6 +33,8 @@ from ..utils import append_csv
 from .metrics import METHOD_COLUMNS
 
 RAW_HEURISTICS = ("afap", "alap", "rr", "llf", "sllf", "price_llf", "random")
+#: DD43(3): the zero-padded MLP baseline is a fixed-size reference, evaluated only at N <= 20
+MLP_EVAL_MAX_N = 20
 
 
 @dataclass
@@ -44,6 +50,7 @@ class MethodSpec:
     conformal_uncalibrated: bool = False
     conformal_cache: str = "results/conformal"
     admission_existing_targets: str | None = None
+    admission_cache: str | None = None    # directory of cached admission tables (DD31)
     torch_threads: int = 1
     root: str | None = None
     extra: dict = field(default_factory=dict)
@@ -105,12 +112,14 @@ def resolve(spec: MethodSpec):
             base = name[: -len("_conformal")] if name.endswith("_conformal") else name
             name = f"{base}_conf_point" if spec.conformal_uncalibrated else f"{base}_conf_a{alpha:g}"
         Ns = sorted({int(g["N"]) for g in cfg["envs"]["groups"]})
+        from ..algos.ppo import train_mixture
+        info["train_cfg_ids"] = {c.cfg_id for c in train_mixture(cfg).all_configs(Ns)}
         run_id = ck.get("exp_id") or ""
         # evaluation variants of one training run (noadm, conformal alphas) get their own exp_id with the evaluated
         # method in the first field: {method}__{train_cfg}__s{seed}__{hash8} stays unique per (variant, replay)
         eid = run_id if (not run_id or name == cfg["method"]) else name + run_id[run_id.index("__"):]
         info.update(seed=int(ck.get("seed", 0)), train_N=max(Ns), train_N_set="+".join(map(str, Ns)),
-                    exp_id=eid)
+                    exp_id=eid, arch=cfg["model"]["arch"])
         return ctrl, name, opts, info
     safe = m.endswith("_safe")
     base = m[:-5] if safe else m
@@ -129,7 +138,8 @@ def resolve(spec: MethodSpec):
     elif base == "evgnn":
         from ..baselines.evgnn import EVGNNController
         ctrl = EVGNNController(spec.extra.get("evgnn_repo"), spec.extra.get("evgnn_model_dir"), device=spec.device)
-        info["train_N"] = 20                       # DD27: trained at N = 20, rho 4, per profile
+        info["train_N"] = int(os.environ.get("EVGNN_TRAIN_N", 20))   # DD27: trained at N = 20, rho 4, per profile
+        info["evgnn"] = True
     else:
         raise ValueError(f"unknown method {m!r}")
     info["seed"] = int(spec.extra.get("seed", 0) or 0)
@@ -139,6 +149,19 @@ def resolve(spec: MethodSpec):
         opts.admission_existing_targets = spec.admission_existing_targets
     name = m + ("_noadm" if spec.admission is False else "")
     return ctrl, name, opts, info
+
+
+def in_distribution(info: dict, scfg: ScenarioConfig):
+    """DD35: True if the test configuration is one the method was trained on (learned methods: a configuration of
+    the training mixture; EV-GNN: its profile at N = train_N, rho_tr = 4 kW, default economics); None for methods
+    without training (heuristics, MPC)."""
+    if info.get("train_cfg_ids") is not None:
+        return scfg.cfg_id in info["train_cfg_ids"]
+    if info.get("evgnn"):
+        return (scfg.N == int(info["train_N"]) and float(scfg.rho_tr) == 4.0 and scfg.dt_min == 15
+                and float(scfg.desired_soc) == 1.0 and not float(scfg.throughput_cost or 0.0)
+                and float(scfg.discharge_price_factor) == 1.0 and getattr(scfg, "name", None) is None)
+    return None
 
 
 def run_episode(env: SafeV2GEnv, ctrl, seed: int, scfg: ScenarioConfig) -> dict:
@@ -164,6 +187,8 @@ def evaluate_config(spec: MethodSpec, scfg: ScenarioConfig, n_replays: int, test
                     smoke: bool, log_steps: bool = False, env_cache: dict | None = None):
     ctrl, name, opts, info = resolve(spec)
     opts.log_steps = log_steps
+    if spec.admission_cache:
+        opts.admission_cache = spec.admission_cache
     man = build_test_set(scfg, n_replays, test_sets)
     key = (scfg.N, scfg.dt_min, scfg.horizon)
     env = None
@@ -180,6 +205,7 @@ def evaluate_config(spec: MethodSpec, scfg: ScenarioConfig, n_replays: int, test
         fp = fingerprint(env.env)
         row = {"exp_id": info.get("exp_id") or exp_id, "method": name, "seed": info["seed"],
                "train_N": info["train_N"], "train_N_set": info["train_N_set"], "test_cfg_id": scfg.cfg_id,
+               "in_distribution": in_distribution(info, scfg),
                "profile": scfg.profile, "N": scfg.N,
                "rho_tr": scfg.rho, "dt_min": scfg.dt_min, "replay_id": rep["replay_id"], "smoke": smoke,
                "replay_fingerprint": fp if fp == rep["fingerprint"] else f"MISMATCH:{fp}", **m}
@@ -266,10 +292,15 @@ def evaluate(spec: MethodSpec, grid: list[tuple[ScenarioConfig, int]], test_sets
              max_replays: int | None = None, verbose: bool = True) -> Path:
     out_dir = Path(out_dir)
     part_dir = out_dir / "parts"
-    _, name, _, _ = resolve_name_only(spec)
+    _, name, _, info = resolve_name_only(spec)
+    max_N = MLP_EVAL_MAX_N if (info or {}).get("arch") == "mlp" else None
     todo = []
     for scfg, n in grid:
         if only and scfg.cfg_id not in only:
+            continue
+        if max_N is not None and scfg.N > max_N:
+            print(f"[eval] {name} {scfg.cfg_id}: skipped (MLP baseline evaluated only at N <= {max_N}, DD43(3))",
+                  flush=True)
             continue
         n = min(n, max_replays) if max_replays else n
         if part_complete(part_dir, name, scfg.cfg_id, n):

@@ -5,7 +5,7 @@
 This section documents how the model of the main text maps onto EV2Gym at commit \texttt{55ef368c}, and the simulator is used without changes to its source.
 All deviations from the defaults of the simulator are made through our own wrapper, configuration files and EV specification file.
 
-\subsection{Charging taper and Assumptions A1 and A3}\label{app:taper}
+\subsection{Charging taper and Assumption A1}\label{app:taper}
 
 In state-of-charge units $\varsigma=E/E^{\sm{cap}}$, let $\delta=\Pnom\Delta t/E^{\sm{cap}}$ be the gain of one full-power step, $\varsigma^{\sm{tr}}\in(0,1]$ the transition state of charge, $m$ the taper multiplier and $\kappa=m\delta/(1-\varsigma^{\sm{tr}})$.
 When the EV's maximum alternating-current charging power does not exceed the charger rating, reading the charging routine of EV2Gym at full current gives
@@ -17,71 +17,130 @@ When the EV's maximum alternating-current charging power does not exceed the cha
 1-(1-\varsigma)\,e^{-\kappa}, & \varsigma\ge\varsigma^{\sm{tr}}.
 \end{cases}
 \end{equation}
+According to a check script released with the code, the closed form agrees with EV2Gym's charging routine to $1.4\times10^{-14}$ kWh.
+The check covers 768 combinations of EV model, efficiency, transition state of charge, multiplier $m\in\{1,5\}$ and step length $\Delta t\in\{5,15\}$ min.
+\TODO{The authors re-run and confirm this check}.
 
 \begin{lemma}[A1 in EV2Gym]\label{lem:taper}
 Suppose that the maximum alternating-current charging power of the EV does not exceed the charger rating.
 Then, for every step length, the full-power one-step map of EV2Gym in \Eq{eq:taper} is continuous, non-decreasing and 1-Lipschitz.
 \end{lemma}
 
-\begin{proof}[Proof of Lemma~\ref{lem:taper}]
+\begin{proof}
 At $\varsigma=\varsigma^{\sm{tr}}-\delta$ the first two branches of $\hat\varphi$ both equal $\varsigma^{\sm{tr}}$, and at $\varsigma=\varsigma^{\sm{tr}}$ the last two branches both equal $1-(1-\varsigma^{\sm{tr}})e^{-\kappa}$.
 The map is therefore continuous, as a minimum of continuous functions.
 Its branch slopes are $1$, $m\exp(\cdot)>0$ and $e^{-\kappa}\in(0,1)$, and $\varsigma+\delta$ has slope 1, so the map is non-decreasing as a minimum of non-decreasing functions, and A1 holds.
 Only the middle branch can have a slope above 1, namely when $m>1$.
-On the interval $(\varsigma^{\sm{tr}}-\delta,\varsigma^{\sm{tr}})$, the function $h(\varsigma)=\hat\varphi(\varsigma)-\varsigma-\delta$ is strictly concave with $h(\varsigma^{\sm{tr}}-\delta)=0$.
-If $h(\varsigma_1)<0$ at some interior point, concavity gives $h'(\varsigma_1)\le h(\varsigma_1)/(\varsigma_1-\varsigma^{\sm{tr}}+\delta)<0$, so $\hat\varphi'(\varsigma_1)<1$.
+On the interval $(\varsigma^{\sm{tr}}-\delta,\varsigma^{\sm{tr}})$, the function $\hat h(\varsigma)=\hat\varphi(\varsigma)-\varsigma-\delta$ is strictly concave with $\hat h(\varsigma^{\sm{tr}}-\delta)=0$.
+If $\hat h(\varsigma_1)<0$ at some interior point, concavity gives $\hat h'(\varsigma_1)\le \hat h(\varsigma_1)/(\varsigma_1-\varsigma^{\sm{tr}}+\delta)<0$, so $\hat\varphi'(\varsigma_1)<1$.
 Wherever the minimum in \Eq{eq:taper} selects $\hat\varphi$ strictly, its slope is thus below 1, and elsewhere the minimum selects $\varsigma+\delta$ with slope 1.
 The map is therefore piecewise continuously differentiable with slopes in $[0,1]$ and hence 1-Lipschitz.
 \end{proof}
 
 In EV2Gym, $\eta^{\sm c}=1$ and $\varphi(E)=E+\Delta t\,\bar P(E)$, so a 1-Lipschitz $\varphi$ is equivalent to a non-increasing $\bar P$, the extra condition of Lemma~\ref{lem:deficit}.
+A taper whose power drops faster than $1/(\eta^{\sm c}\Delta t)$ kW per kWh would violate A1, and certified thresholds would not repair the departure result.
 
-\begin{lemma}[A3 in EV2Gym]\label{lem:a3}
-Suppose that, in addition to the condition of Lemma~\ref{lem:taper}, efficiencies are constant over current levels and chargers and EVs are three-phase with one port and zero dead-bands.
-Assume further that V2G is enabled and that all EVs leave before the episode ends, and let $z_0(m)\in(0,1)$ be the positive root of $1-e^{-mz}=z$ for $m>1$.
-If $\kappa\le m\,z_0(m)$ for every EV, the actuation map of \Alg{M-alg:safety} realises A3 with $\varepsilon_q=0.008$ kW.
-\end{lemma}
-
-\begin{proof}[Proof sketch]
-Let $\hat\delta\le\delta$ be the commanded gain of a sub-maximal charging command, for which EV2Gym shifts the transition point to $\varsigma_x=1-(\hat\delta/\delta)(1-\varsigma^{\sm{tr}})$.
-If the step stays below $\varsigma_x$ or starts above it, a direct comparison with \Eq{eq:taper} shows that the delivered gain equals $\hat\delta$.
-When the step crosses $\varsigma_x$, let $\Omega=1-\varsigma_x$ and $z=(\varsigma+\hat\delta-\varsigma_x)/\Omega$, so that the delivered gain minus $\hat\delta$ equals $\Omega(1-e^{-mz}-z)$.
-This expression is concave in $z$ and vanishes at $0$ and $z_0(m)$, so it is non-negative for $z\le z_0(m)$.
-Bounding $z$ through $\hat\delta\le\varphi(E)/E^{\sm{cap}}-\varsigma$ shows that $\kappa\le m z_0(m)$ suffices in both sub-cases $\varsigma<\varsigma^{\sm{tr}}$ and $\varsigma\ge\varsigma^{\sm{tr}}$.
-Discharge commands have no taper and are delivered exactly within the limits of \Eq{M-eq:limits}.
-Upward rounding to the five-decimal action grid adds at most $2.22\times10^{-4}$ kW, and the discharge dead-band of 0.01 A adds at most 0.0069 kW.
-Sending a command within $10^{-3}$ kW of $u_i$ as full current adds at most $10^{-3}$ kW, so the realised power lies in $[p_i,p_i+\varepsilon_q]$.
-Rounding the stored energy up to 0.01 kWh only adds energy, and all capacities are multiples of 0.01 kWh.
-\end{proof}
-
-With $m=5$, the root is $z_0(5)=0.99302$ and the threshold is $m z_0(m)=4.965$.
-In our configuration $\kappa\le2.391$ at $\Delta t=15$ min and $\kappa\le0.797$ at $\Delta t=5$ min for all eight EV models, so Lemma~\ref{lem:a3} applies.
-For $m\le1$ the delivery is not exact near the transition point, and the taper multiplier therefore keeps its default value of 5.
-\TODO{State the agreement between the closed form of \Eq{eq:taper} and EV2Gym's charging routine, taken from the unit tests of the code repository}.
-
-
-\subsection{Actuation, rounding and accounting}\label{app:actuation}
+\subsection{Actuation and Assumption A3}\label{app:actuation}
 
 The decision variable $p_i$ is the power that EV2Gym reports, bills and sends to the transformer, and it equals the battery-side energy change per step.
-With this convention $\eta_i^{\sm c}=\eta_i^{\sm d}=1$ in \Eq{M-eq:dynamics}, and EV2Gym's charge and discharge efficiencies, one constant value per EV model in our specification file, act only as derating factors on the power limits.
-The actuation map sends a command as full current when it lies within $10^{-3}$ kW of $u_i$.
-Otherwise, it rounds the command upwards to the five-decimal action grid of the simulator.
-EV2Gym ignores discharge currents below 0.01 A and rounds the stored energy up to 0.01 kWh after every active step, so the forward limit is tightened by $n(t)\varepsilon_q$ with $\varepsilon_q=0.008$ kW.
-Without this margin, realised powers would exceed the forward limit by up to about $n(t)\cdot0.007$ kW on tight steps.
+With this convention $\eta_i^{\sm c}=\eta_i^{\sm d}=1$ in \Eq{M-eq:dynamics}, and EV2Gym's charge and discharge efficiencies $\zeta_i^{\sm c}$ and $\zeta_i^{\sm d}$ act only as derating factors on the power limits.
 
-\subsection{Scenarios and arrival profiles}\label{app:scenarios}
+Our specification file fixes one efficiency per EV model, 0.90 for seven models and 0.93 for one, taken from the simulator's table at the model's nominal current.
+EV2Gym rounds the normalised action, the command divided by $\zeta_i^{\sm c}P^{\sm{cs}}$ with the charger rating $P^{\sm{cs}}=22.17$ kW, to five decimals and ignores discharge currents below 0.01 A.
+It also rounds the stored energy up to 0.01 kWh after every active step without billing the added energy.
+The actuation map therefore sends a command as full current when it lies within $\varepsilon_{\sm{sat}}=10^{-3}$ kW of $u_i$, and otherwise rounds it upwards on the five-decimal action grid.
+\Alg{alg:safety} lists one complete step of the safety layer with this actuation.
+Rounding can break the aggregate limit when $\sum_il_i$ equals $\Ctil$ to machine precision.
+The implementation therefore checks the limit after each projection and recomputes a failing row by a bisection that keeps the feasible end of its bracket.
 
-As seen in \Tab{tab:scenarios}, every exogenous quantity scales linearly with the number of chargers $N$.
+\begin{algorithm}[t]
+\caption{One step of the safety layer}\label{alg:safety}
+\begin{algorithmic}[1]
+\Require raw action $x\in\R^N$ (non-finite entries set to 0); for each connected EV: $E_i(t)$, $\tau_i(t)$, certified table $\Bh_i$; limits $C(t)$, $\Crev(t)$
+\For{each occupied charger $i$}
+  \State $u_i\gets\bar P_i(E_i)$;\quad $\pmn_i\gets$ \Eq{M-eq:limits}
+  \If{$E_i\ge\Bh_i(\tau_i)-10^{-9}$} $l_i\gets\min\{u_i,\max\{\pmn_i,\,g_i^{-1}((\Bh_i(\tau_i-1)-E_i)/\Delta t)\}\}$ \Else\ $l_i\gets u_i$ \EndIf
+  \State $\chi_i\gets(E_i-\Bh_i(\tau_i))/(\eta_i^{\sm c}\Pnom_i\Delta t)$
+\EndFor
+\State $\Ctil\gets C-n(t)\varepsilon_q$
+\If{$\sum_il_i\le\Ctil$ \textbf{and} $\sum_iu_i\ge-\Crev$ \textbf{and} $\Ctil\ge-\Crev$} \Comment{feasible step (A5)}
+  \State $p^{0}\gets\clip(x,l,u)$
+  \If{$\mathbf 1^\top p^{0}\in[-\Crev,\Ctil]$} $p\gets p^{0}$
+  \Else
+    \State sort breakpoints $\{x_i-u_i\}\cup\{x_i-l_i\}$; find $\lambda^{*}$ by one pass
+    \State $p\gets\clip(x-\lambda^{*},l,u)$; if $\mathbf 1^\top p\notin[-\Crev,\Ctil]$, recompute by safe bisection
+  \EndIf
+\Else
+  \State $p\gets$ fallback rule of \Sec{app:fallback}; log the case
+\EndIf
+\State send $p$ to the simulator: full current if $p_i\ge u_i-10^{-3}$, else rounded upwards on the action grid
+\State \Return $p$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{lemma}[A3 in EV2Gym]\label{lem:a3}
+Suppose that the maximum alternating-current charging power of every EV does not exceed the charger rating and that efficiencies are constant over current levels.
+Let chargers and EVs be three-phase, with one EV per charger and zero dead-bands for charging.
+Assume further that V2G is enabled and that all EVs leave before the episode ends, and let $z_0(m)\in(0,1)$ be the positive root of $1-e^{-mz}=z$ for $m>1$.
+If $\kappa\le\kappa^{*}(m)=m\,z_0(m)$ for every EV, the actuation map realises A3 with $\varepsilon_q=0.008$ kW.
+\end{lemma}
+
+\begin{proof}
+We first show that every sub-maximal charging command $p\in(0,\bar P(E)]$, sent as the pilot $p/(\zeta^{\sm c}P^{\sm{cs}})$ of the normalised action, is delivered exactly.
+Let $\hat\delta=p\Delta t/E^{\sm{cap}}$ be its gain, with $\hat\delta\le\hat\delta^{*}=\varphi(E)/E^{\sm{cap}}-\varsigma\le\delta$.
+For a reduced pilot, EV2Gym shifts the transition point to $\varsigma_x=1-(\hat\delta/\delta)(1-\varsigma^{\sm{tr}})\ge\varsigma^{\sm{tr}}$, and we write $\Omega=1-\varsigma_x$.
+The delivered gain is $\min\{\hat\delta,\hat\varphi_x(\varsigma)-\varsigma\}$, where $\hat\varphi_x$ is the map of \Eq{eq:taper} with $(\varsigma^{\sm{tr}},\delta)$ replaced by $(\varsigma_x,\hat\delta)$, and the exponent $m\hat\delta/\Omega$ of the shifted taper equals $\kappa$.
+
+If $\varsigma+\hat\delta\le\varsigma_x$, the step stays in the constant-current branch and the gain is $\hat\delta$.
+For $\varsigma\ge\varsigma_x$, the taper branch gives $\hat\varphi_x(\varsigma)-\varsigma=(1-\varsigma)(1-e^{-\kappa})$.
+Since $\varsigma\ge\varsigma^{\sm{tr}}$, \Eq{eq:taper} gives $\hat\delta\le\hat\delta^{*}\le(1-\varsigma)(1-e^{-\kappa})$, and the gain is again $\hat\delta$.
+
+In the remaining case $\varsigma<\varsigma_x<\varsigma+\hat\delta$, let $y=\varsigma+\hat\delta-\varsigma_x>0$ and $\psi=y/\Omega$.
+Then $\hat\varphi_x(\varsigma)-\varsigma-\hat\delta=\Omega(1-e^{-m\psi}-\psi)$, a concave function of $\psi$ that vanishes at 0 and at $z_0(m)$, so the gain is $\hat\delta$ whenever $\psi\le z_0(m)$.
+Since $\psi=1-(1-\varsigma-\hat\delta)/\Omega$, this condition reads $1-\varsigma-\hat\delta\ge(1-z_0)\,\hat\delta(1-\varsigma^{\sm{tr}})/\delta$.
+If $\varsigma<\varsigma^{\sm{tr}}$, then $1-\varsigma-\hat\delta\ge1-\varphi(E)/E^{\sm{cap}}\ge(1-\varsigma^{\sm{tr}})e^{-\kappa}$ by \Eq{eq:taper}, and with $\hat\delta\le\delta$ the condition holds if $e^{-\kappa}\ge1-z_0=e^{-mz_0}$, that is, if $\kappa\le mz_0$.
+For $\varsigma\ge\varsigma^{\sm{tr}}$, the bound $\hat\delta\le(1-\varsigma)(1-e^{-\kappa})$ gives $1-\varsigma-\hat\delta\ge(1-\varsigma)e^{-\kappa}$.
+The right-hand side of the condition is then at most $(1-z_0)(1-\varsigma)(1-e^{-\kappa})m/\kappa$, so it suffices that $\kappa/(e^{\kappa}-1)\ge m(1-z_0)$.
+At $\kappa=mz_0$ the two sides are equal, because $e^{mz_0}=1/(1-z_0)$, and the left side decreases in $\kappa$, so $\kappa\le mz_0$ suffices again.
+Discharging has no taper, and EV2Gym delivers a discharge command within $[\pmn(E),0)$ exactly, floored at $E^{\min}$ and capped by the discharge limit.
+
+Next we bound the realised power.
+A saturated command delivers $\varphi(E)-E=\Delta t\,u_i$, and $u_i-p_i\le\varepsilon_{\sm{sat}}=10^{-3}$ kW.
+Any positive command below $u_i-\varepsilon_{\sm{sat}}$ is rounded upwards by at most $\zeta^{\sm c}P^{\sm{cs}}10^{-5}\le2.22\times10^{-4}$ kW, stays below $u_i$ and is delivered exactly by the first part, and EV2Gym's own rounding leaves a value on the grid unchanged.
+Negative commands are rounded towards zero by at most $2.22\times10^{-4}$ kW, and if the dead-band applies, the realised power is 0 with $0-p_i<0.0069+2.22\times10^{-4}$ kW.
+Otherwise $\tilde p_i\ge p_i\ge\pmn(E)$, so neither the discharge limit nor the energy floor clips the command.
+In all cases $0\le\tilde p_i-p_i\le0.0072<\varepsilon_q$ kW, and empty chargers draw zero power.
+
+Finally, the stored energy is $E(t+1)=\lceil E+\Delta t\,\tilde p_i\rceil_{0.01}\ge E+\Delta t\,\tilde p_i\ge E+\Delta t\,p_i$.
+Also $E+\Delta t\,\tilde p_i\le\varphi(E)\le E^{\sm{cap}}$, and since every capacity is a multiple of 0.01 kWh that is exactly representable after rounding, the upward rounding cannot exceed $E^{\sm{cap}}$.
+\end{proof}
+
+With $m=5$, the root is $z_0(5)=0.99302$ and the threshold is $\kappa^{*}(5)=4.965$.
+In our configuration, $\kappa\le2.391$ at $\Delta t=15$ min and $\kappa\le0.797$ at $\Delta t=5$ min for all eight EV models, so Lemma~\ref{lem:a3} applies.
+For $m\le1$ the delivery is not exact near the transition point, and the taper multiplier therefore keeps its default value of 5.
+Without the tightening of the forward limit by $n(t)\varepsilon_q$, realised powers would exceed the forward limit by up to about $n(t)\cdot0.007$ kW on tight steps, according to a closed-loop check released with the code.
+
+\subsection{Exogenous headroom (Assumption A6)}\label{app:a6}
+
+EV2Gym scales the peak of the inflexible load to $m_LP_{\sm{tr}}$ with $m_L\sim\mathrm{Normal}(0.4,0.1^2)$ and clips the load at $P_{\sm{tr}}$.
+PV generation is $\mathrm{pv}(t)\,m_PP_{\sm{tr}}$ with a normalised profile $\mathrm{pv}(t)\le0.853\cdot1.1<0.94$ and $m_P\sim\mathrm{Normal}(0.4,0.1^2)$, both drawn once per episode.
+Hence $C(t)\ge P_{\sm{tr}}(1-m_L)$, and with $P_{\sm{tr}}=\rho_{\sm{tr}}N$ and $\rho_{\sm{tr}}\ge3$ kW, the condition $C(t)\ge N\varepsilon_q$ can fail only if $m_L>1-\varepsilon_q/\rho_{\sm{tr}}\ge0.997$, an event of about six standard deviations.
+Likewise $\Crev(t)\ge P_{\sm{tr}}(1-0.94\,m_P)$ is negative only if $m_P>1.06$, an event of more than six standard deviations.
+A6 therefore fails with a probability below $2\times10^{-9}$ per episode.
+Since A6 is exogenous, any violation would show up as a step of case (i), (ii) or (iv) of the fallback rule, so the fallback counts of the result tables check it on every replay.
+
+\subsection{Scenarios, arrival profiles and observation}\label{app:scenarios}
+
+As seen in \Tab{tab:scenarios}, the grid quantities and the arrival rate scale linearly with the number of chargers $N$, whereas prices do not.
 The three arrival profiles of EV2Gym differ in their arrival times, stays and requested energies.
+
 Workplace arrivals concentrate on weekday mornings, public arrivals spread over the day with an afternoon and evening peak, and private arrivals occur in the late afternoon and evening with overnight stays.
 EV2Gym does not generate an EV whose departure would fall within four steps of the episode end, so overnight sessions are silently missing when the episode starts too late.
-
-
-The public and private profiles therefore start at 12:00 instead of 05:00, and the share of dropped spawn attempts, measured on the arrival model alone, falls to 6.8\% and 3.7\%.
-Spawn multipliers per profile equalise the mean charger occupancy at about 0.21, and they also equalise the energy demand per charger to within about 5\%.
+The public and private profiles therefore start at 12:00 instead of 05:00.
+On the scenario generator alone, the share of dropped spawn attempts then falls to 6.8\% and 3.7\%, and spawn multipliers per profile equalise the mean charger occupancy at about 0.21.
+They also equalise the energy demand per charger to within about 5\%, and these scenario-generator statistics are design checks rather than results \TODO{the authors re-measure and confirm them}.
 The episode starts empty, and loads and PV are redrawn for every episode.
 Our literature configuration reproduces EV2Gym's 25-charger V2G profit-maximisation case with 100 kW, the workplace profile and no load or PV, using our EV specification file.
-\Fig{fig:pipeline} shows how training, test replays and the oracle share one scenario generator.
 
 \begin{table}[t]
 \centering
@@ -89,52 +148,55 @@ Our literature configuration reproduces EV2Gym's 25-charger V2G profit-maximisat
 \label{tab:scenarios}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lll@{}}
+\begin{tabular}{@{}>{\raggedright}p{3.4cm}>{\raggedright}p{10.0cm}l@{}}
 \toprule
-Item & Setting & Scaling with $N$ \\
+Item & Setting & Scaling \\
 \midrule
-Simulator & EV2Gym, commit \texttt{55ef368c}, unmodified & -- \\
+Simulator & EV2Gym, commit \texttt{55ef368c}, unmodified; one EV per charger & -- \\
 Station sizes & train $N\in\{10,20\}$; test $N\in\{5,10,20,50,100,200\}$ & -- \\
-Ports & one per charger & -- \\
-Transformer rating & $P_{\sm{tr}}=\rho_{\sm{tr}}N$, $\rho_{\sm{tr}}\in\{4,7\}$ kW (tight, moderate) & linear \\
-Inflexible load & mean peak $0.4P_{\sm{tr}}$, redrawn per episode & linear \\
-PV generation & mean peak $0.4P_{\sm{tr}}$, peak below $P_{\sm{tr}}$ & linear \\
+Transformer rating & $P_{\sm{tr}}=\rho_{\sm{tr}}N$; $\rho_{\sm{tr}}\in\{4,7\}$ kW (tight, moderate); stress level 3 kW at $N\in\{20,200\}$ & linear \\
+Inflexible load & mean peak $0.4P_{\sm{tr}}$, clipped at $P_{\sm{tr}}$, redrawn per episode & linear \\
+PV generation & mean peak about $0.38P_{\sm{tr}}$, redrawn per episode & linear \\
 Demand response & off & -- \\
 Step, horizon & $\Delta t=15$ min, $T=112$ (28 h); sensitivity 5 min, $T=336$ & -- \\
-Profiles (start, spawn multiplier) & workplace (05:00, 5, weekdays); public (12:00, 4); private (12:00, 2.5) & per charger \\
+Profiles (start, spawn multiplier, days) & workplace (05:00, 5, weekdays); public (12:00, 4, all days); private (12:00, 2.5, all days) & per charger \\
 Mean occupancy & about 0.21 for all profiles & -- \\
-EV models & 8 V2G-capable models, constant efficiency per model & -- \\
+EV models & 8 V2G-capable models; efficiency 0.90 (0.93 for one model); $E^{\min}=5$ kWh; minimum stay 180 min & -- \\
 Taper multiplier & 5 (EV2Gym default) & -- \\
 Desired energy & full battery; sensitivity 80\% state of charge & -- \\
-Prices & Dutch day-ahead prices, discharge price $=$ charge price & -- \\
+Prices & Dutch day-ahead prices; discharge price $=$ charging price; sensitivities with factor 0.9 and a throughput cost of 0.05 \texteuro/kWh & -- \\
 Forecast noise & Gaussian, standard deviation 10\% of the value & -- \\
-Test episodes & 100 per configuration ($N\le50$), 50 ($N\ge100$); 3,100 per policy & -- \\
+Test grid & 36 configurations ($N$, $\rho_{\sm{tr}}$, profile), 6 stress configurations and the literature configuration & -- \\
+Test episodes & 100 per configuration for $N\le50$ and the literature configuration, 50 for $N\ge100$; 3,550 per policy & -- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Admission control}\label{app:admission}
+\Tab{tab:features} lists the features of the two token types.
+All features are 0 for an empty charger, and empty chargers are also masked as attention keys.
+Forecasts are $\hat P(t+k)=\max\{0,P(t+k)(1+0.1\epsilon_{t,k})\}$ with independent standard normal $\epsilon_{t,k}$, and beyond the episode end the last true value is held.
+Every global feature is a ratio that does not grow with $N$, with $P_{\sm{tr}}^{\sm{nom}}=\max_tP_{\sm{tr}}(t)$ and $N_{\sm{day}}=24/\Delta t$.
+The arrival profile is not a feature.
 
-When EV $j$ arrives at step $t_0$, admission control solves a feasibility LP over all connected EVs $i$ and steps $t=t_0,\dots,d_i$, starting from the current energies:
-\begin{equation}\label{eq:admission}
-\begin{aligned}
-&E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\qquad E_i^{\min}\le E_i(t+1)\le E_i^{\sm{cap}},\qquad E_i(d_i+1)\ge E_i^{\sm{tgt}},\\
-&-\Pdis_i\le p_i(t)\le\Pnom_i,\qquad p_i(t)\le\rho_i\,(E_i^{\sm{cap}}-E_i(t))\ (t>t_0),\qquad p_i(t_0)\in[\pmn_i,\bar P_i],\\
-&-\hat C_{\sm{rev}}(t)\le\textstyle\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q .
-\end{aligned}
-\end{equation}
-The limits $\hat C$ and $\hat C_{\sm{rev}}$ use the measured values at $t_0$, the noisy forecasts for the next $H_f$ steps and the last forecast afterwards.
-Its slope $\rho_i$ is the largest value with $\bar P_i(E)\ge\min\{\Pnom_i,\rho_i(E_i^{\sm{cap}}-E)\}$ for all $E$, so the linear taper model is an inner approximation and every LP-feasible schedule is physically realisable.
-Inside the LP, the new EV has the target $E_j^{\sm{tgt}}=\Ereq_j$, and a connected EV has the target $\min\{\Ereq_i,\Psi_i^{\sm{LP}}(E_i(t_0))-10^{-6}\}$.
-Here $\Psi_i^{\sm{LP}}$ is the largest departure energy reachable in the LP's taper model, and this target is used only inside the admission LP.
-With full-battery targets and the literal targets $\Ereq_i$, the LP would be infeasible whenever such an EV is connected, because the linear taper model never reaches full charge in finitely many steps.
-Feasibility is monotone in the new request, so one LP that maximises $E_j(d_j+1)$ gives the largest admissible request, and the reduced request is re-certified by the cap routine of \Eq{M-eq:cap}.
-
-\subsection{Baseline implementation}\label{app:baselines}
-
-The penalty-based learned methods use the reward $r(t)$ minus $w_E=10$\,\texteuro{} per kWh of departure shortfall and $w_P=10$\,\texteuro{} per kWh of transformer overload energy, computed with the untightened limits and the realised powers.
-They run without admission control, and their actor loss masks only tokens whose action cannot influence the executed power.
-A dense variant adds $w_E\Delta t\sum_i(l_i-p_i)^{+}$ to every step and serves as an ablation, because it gives the penalty method the information of our lower bound.
-The economic MPC of EV2Gym runs through an adapter subclass with the published formulation, and the adapter fixes two issues with newer numerical libraries without modifying EV2Gym.
-Beyond 25 chargers, a related HiGHS port solves a net-power LP with per-EV limits, exact first-step bounds including the taper and an elastic departure constraint, and it is reported under its own name.
-EV-GNN runs unmodified at commit \texttt{01aa1b7a} through a launcher that restores numerical-library aliases, with one model per arrival profile.
+\begin{table}[t]
+\centering
+\caption{Features of the charger token ($F_c=12$) and the global token ($F_g=38$) with their normalisation.}
+\label{tab:features}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{7.6cm}>{\raggedright\arraybackslash}p{7.6cm}@{}}
+\toprule
+Charger token $\xi_i$ & Global token $\xi_0$ \\
+\midrule
+1: occupancy flag & 1--2: $c^{\sm{ch}}(t)$, $c^{\sm{dis}}(t)$ $/c^{\sm{ref}}$ \\
+2--3: $E_i(t)$, $E_i^{\sm{cap}}$ $/E^{\sm{ref}}$ & 3--10: $c^{\sm{ch}}(t+k)$, $k=1,\dots,8$, $/c^{\sm{ref}}$ \\
+4: state of charge $E_i/E_i^{\sm{cap}}$ & 11--12: sine and cosine of the hour of day \\
+5: remaining required energy $(\Ereq_i-E_i)^{+}/E^{\sm{ref}}$ & 13: weekend flag; 14: remaining episode fraction $(T-t)/T$ \\
+6: remaining steps $\tau_i$ (conformal variant: $\tau_i^{\sm{lo}}$) $/N_{\sm{day}}$ & 15--16: $C(t)$, $\Crev(t)$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+7: laxity $\chi_i$, clipped to $[-N_{\sm{day}},2N_{\sm{day}}]$, $/N_{\sm{day}}$ & 17--18: measured $P^{\sm{inf}}(t)$, $P^{\sm{pv}}(t)$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+8--9: $\Pnom_i$, $\Pdis_i$ $/P^{\sm{ref}}$ & 19--34: forecasts of $P^{\sm{inf}}$ and $P^{\sm{pv}}$ for $k=1,\dots,8$, $/P_{\sm{tr}}^{\sm{nom}}$ \\
+10: physical lower limit $\pmn_i(E_i)$ $/P^{\sm{ref}}$ & 35: occupancy ratio $n(t)/N$; 36: rating per charger $P_{\sm{tr}}^{\sm{nom}}/(NP^{\sm{ref}})$ \\
+11--12: bounds $l_i$, $u_i$ $/P^{\sm{ref}}$ & 37--38: $\sum_il_i$, $\sum_iu_i$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+\bottomrule
+\end{tabular}
+\end{table}

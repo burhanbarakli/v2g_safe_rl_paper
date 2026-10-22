@@ -37,17 +37,19 @@ def synth_run(tmp_path_factory):
 
 def test_end_to_end_outputs(synth_run):
     root, raw, ds, tabs = synth_run
-    for t in ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "TS1"]:
+    for t in ["T1", "T2", "T3", "T3b", "T4", "T5", "T6", "T7", "TS1", "TS2", "TS3"]:
         for ext in (".tex", ".md", ".csv", "_values.csv"):
             assert (root / "tables" / f"{t}{ext}").exists(), f"{t}{ext} missing"
     for f in ["figS1_training_curves", "fig3_zero_shot_scaling", "fig4_constraint_satisfaction", "fig5_example_day",
-              "figS2_ablation", "fig6_cost_of_guarantee", "figS3_conformal_alpha", "figS4_inference_time"]:
+              "figS2_ablation", "fig6_cost_of_guarantee", "figS3_conformal_alpha", "figS4_inference_time",
+              "figS6_constraints_pooled"]:
         for ext in ("pdf", "png", "svg", "eps"):
             p = root / "figures" / f"{f}.{ext}"
             assert p.exists() and p.stat().st_size > 1000, f"{p} missing/empty"
         assert (root / "figures" / "data" / f"{f}.csv").exists()
     for p in ["tables/STAT_METHODS.md", "tables/provenance.json", "findings_numbers.md",
-              "stats/paired_tests.csv", "stats/summary_by_config.csv", "README_SYNTHETIC.txt"]:
+              "stats/tests_T1.csv", "stats/tests_T2.csv", "stats/tests_T3.csv", "stats/tests_T5.csv",
+              "stats/summary_by_config.csv", "README_SYNTHETIC.txt"]:
         assert (root / p).exists(), p
 
 
@@ -162,13 +164,18 @@ def test_gap_join(synth_run):
     ep, orc = ds.episodes, ds.oracle
     row = ep.sample(1, random_state=3).iloc[0]
     o = orc[(orc["test_cfg_id"] == row["test_cfg_id"]) & (orc["replay_id"] == row["replay_id"])]["profit_eur"].iat[0]
-    oc = orc[(orc["test_cfg_id"] == row["test_cfg_id"]) & (orc["replay_id"] == row["replay_id"])][load.ORACLE_CEIL].iat[0]
+    orow = orc[(orc["test_cfg_id"] == row["test_cfg_id"]) & (orc["replay_id"] == row["replay_id"])]
+    oc, op = orow[load.ORACLE_CEIL].iat[0], orow[load.ORACLE_PEN].iat[0]
     assert row["oracle_profit_eur"] == pytest.approx(o)
-    assert row["oracle_ceil_eur"] == pytest.approx(oc)
-    # DD26: main gap w.r.t. J_LP,ceil; supplementary gap w.r.t. J_LP
-    assert row["gap_pct"] == pytest.approx(100 * (oc - row["profit_eur"]) / abs(oc))
-    assert row["gap_lp_pct"] == pytest.approx(100 * (o - row["profit_eur"]) / abs(o))
-    assert ep["oracle_profit_eur"].notna().all() and ep["oracle_ceil_eur"].notna().all()
+    assert row["oracle_ceil_eur"] == pytest.approx(oc) and row["oracle_pen_eur"] == pytest.approx(op)
+
+    def g(ref, val):
+        return np.nan if abs(ref) < load.GAP_EPS else 100 * (ref - val) / abs(ref)
+    # DD32: main gap of J^pen w.r.t. the soft oracle; hard gap w.r.t. J_LP,ceil; supplementary w.r.t. J_LP
+    np.testing.assert_allclose(row["gap_pct"], g(op, row[load.PEN_COL]))
+    np.testing.assert_allclose(row["gap_hard_pct"], g(oc, row["profit_eur"]))
+    np.testing.assert_allclose(row["gap_lp_pct"], g(o, row["profit_eur"]))
+    assert ep["oracle_profit_eur"].notna().all() and ep["oracle_pen_eur"].notna().all()
 
 
 def test_summarize_seed_level():
@@ -264,7 +271,11 @@ def test_names_registry_covers_a3_strings():
           "attn_safe_conf_a0.05", "attn_safe_conf_a0.1", "attn_safe_conf_a0.2", "attn_safe_conf_point",
           "attn_safe_dt5", "afap", "alap", "rr", "llf", "afap_safe", "alap_safe", "rr_safe", "llf_safe", "empc",
           "empc_safe", "empc_highs", "empc_highs_safe", "evgnn", "evgnn_safe", "oracle", "attn_safe_beta0",
-          "attn_safe_curriculum", "attn_safe_small", "attn_penalty_dense", "attn_penalty_w1", "attn_penalty_w100"]
+          "attn_safe_curriculum", "attn_safe_small", "attn_penalty_dense", "attn_penalty_w1", "attn_penalty_w100",
+          # round 3 (DD33, DD35, DD36)
+          "attn_proj_nolb", "attn_lagrangian", "deepsets_safe", "attn_penalty_safedeploy", "attn_penalty_noadm",
+          "sllf", "sllf_safe", "price_llf", "price_llf_safe", "empc_highs_24h", "empc_highs_24h_safe",
+          "attn_safe_trainN50", "evgnn_id", "evgnn_safe_id"]
     for m in a3:
         assert names.info(m).group != "other", m
     labels = [names.label(m) for m in a3]
@@ -337,11 +348,165 @@ def test_oracle_without_ceil_falls_back(tmp_path):
     for f in raw.glob("oracle__*/episodes.csv"):
         pd.read_csv(f).drop(columns=[load.ORACLE_CEIL]).to_csv(f, index=False)
     ds = load.load_raw(raw)
-    assert "fallback" in ds.gap_reference
-    np.testing.assert_allclose(ds.episodes["gap_pct"], ds.episodes["gap_lp_pct"])
+    np.testing.assert_allclose(ds.episodes["gap_hard_pct"], ds.episodes["gap_lp_pct"])
+    assert any("falls back" in r for r in ds.report)
 
 
 def test_conceptual_figures_copied(synth_run):
     root, *_ = synth_run
     for n in ("fig2_concepts", "figS5_pipeline"):
         assert (root / "figures" / f"{n}.pdf").exists(), n
+
+
+# ----------------------------------------------------------------------------- round 3 (DD32, DD38, M2-M8)
+
+def test_gap_eps_one_euro_and_count(tmp_path):
+    raw = synth.generate(tmp_path / "synthetic_test" / "raw", replay_scale=0.05, small=True)
+    f = next(p for p in raw.glob("oracle__workplace_N5_rho4/episodes.csv"))
+    df = pd.read_csv(f)
+    df.loc[0, load.ORACLE_PEN] = 0.5           # |J*| < 1 EUR -> excluded (M2)
+    df.to_csv(f, index=False)
+    ds = load.load_raw(raw)
+    ep = ds.episodes
+    sel = (ep["test_cfg_id"] == "workplace_N5_rho4") & (ep["replay_id"] == df.loc[0, "replay_id"]) & \
+        ~ep["method"].str.startswith("attn_safe_conf_")
+    assert load.GAP_EPS == 1.0
+    assert ep.loc[sel, "gap_pct"].isna().all()
+    assert ds.gap_excluded["gap_pct"] >= int(sel.sum())
+
+
+def test_conformal_has_main_gap_dd43(synth_run):
+    _, _, ds, tabs = synth_run
+    conf = ds.episodes["method"].str.startswith("attn_safe_conf_")
+    assert conf.any() and ds.episodes.loc[conf, "gap_pct"].notna().any()      # DD43(1) supersedes DD42(2)
+    assert "gap_pct" in [k for k, _ in tabs["T7"].columns]
+
+
+def test_evgnn_in_distribution_split(synth_run):
+    _, _, ds, _ = synth_run
+    ep = ds.episodes
+    assert {"evgnn_id", "evgnn_safe_id"} <= set(ep["method"])
+    assert (ep.loc[ep["method"] == "evgnn_id", "N"] == 20).all()
+    assert not ep.loc[ep["method"] == "evgnn", "in_distribution"].any()
+
+
+def test_seed_comparison_paired_t_and_poi():
+    rows = []
+    a_means, b_means = [3.0, 4.0, 5.0, 6.5], [1.0, 3.5, 2.0, 2.0]
+    for s_, (ma, mb) in enumerate(zip(a_means, b_means)):
+        for r in range(6):
+            off = (r - 2.5) * 0.01
+            rows.append(dict(method="a", seed=s_, test_cfg_id="c", replay_id=r, exp_id=f"a{s_}", N=10, y=ma + off))
+            rows.append(dict(method="b", seed=s_, test_cfg_id="c", replay_id=r, exp_id=f"b{s_}", N=10, y=mb + off))
+    ep = pd.DataFrame(rows)
+    out = stats.seed_comparisons(ep, "a", ["b"], ["y"], ["N"], stats.StatConfig(B=500, B_iqm=200), family="X")
+    r = out.iloc[0]
+    ref = sps.ttest_rel(a_means, b_means)
+    assert r["test"].startswith("paired t") and r["p_t"] == pytest.approx(ref.pvalue)
+    assert r["diff"] == pytest.approx(np.mean(a_means) - np.mean(b_means))
+    # PoI over all 16 seed pairs: a > b in 15 (4.0 vs ... all bigger except 3.0 vs 3.5)
+    assert r["poi"] == pytest.approx(15 / 16)
+    assert r["b_lo"] <= r["diff"] <= r["b_hi"]
+    assert r["p_t_holm"] == pytest.approx(r["p_t"])            # single comparison in the family
+
+
+def test_seed_comparison_vs_deterministic():
+    rows = []
+    for s_, ma in enumerate([2.0, 2.5, 3.0, 2.2, 2.8]):
+        for r in range(4):
+            rows.append(dict(method="a", seed=s_, test_cfg_id="c", replay_id=r, exp_id=f"a{s_}", N=5, y=ma))
+    for r in range(4):
+        rows.append(dict(method="h", seed=0, test_cfg_id="c", replay_id=r, exp_id="h0", N=5, y=1.0))
+    out = stats.seed_comparisons(pd.DataFrame(rows), "a", ["h"], ["y"], ["N"], stats.StatConfig(B=200, B_iqm=50))
+    r = out.iloc[0]
+    assert r["test"].startswith("one-sample")
+    assert r["p_t"] == pytest.approx(sps.ttest_1samp(np.array([2.0, 2.5, 3.0, 2.2, 2.8]) - 1.0, 0).pvalue)
+
+
+def test_t3b_fallback_mapping_and_requests(synth_run):
+    _, _, _, tabs = synth_run
+    heads = [h.replace("\n", " ") for _, h in tabs["T3b"].columns]
+    for case, lab in [("(i)", "FB-1*"), ("(ii)", "FB-2"), ("(iii)", "FB-1"), ("(iv)", "FB-0")]:
+        assert any(h.startswith(f"{case} {lab}") for h in heads), heads
+    h3 = [h.replace("\n", " ") for _, h in tabs["T3"].columns]         # moved to T3 (pooled) in DD43 revision
+    assert any("deficit bound" in h for h in h3)
+    assert any("Capped" in h for h in h3) and any("Admission" in h for h in h3)
+
+
+def test_t5_units_per_ev_and_percent(synth_run):
+    root, _, _, tabs = synth_run
+    heads = " ".join(h for _, h in tabs["T5"].columns)
+    assert "per EV" in heads and "|J^LP,ceil|" in heads and "per charger" not in heads
+    assert heads.count("J^pen") == 2 and heads.count("profit") >= 2              # DD43(7): primary + secondary
+    t5 = pd.read_csv(root / "stats" / "tests_T5.csv")
+    assert {"penalised_profit_eur", "profit_eur"} <= set(t5["metric"])
+    tex = (root / "tables" / "T5.tex").read_text()
+    assert r"$J^{\mathrm{LP,ceil}}$" in tex and r"$J^{\mathrm{pen}}$" in tex
+
+
+def test_sensitivity_and_literature_tables(synth_run):
+    _, _, _, tabs = synth_run
+    groups = {r["group"] for r in tabs["TS2"].rows}
+    for key in ("desired SoC 0.8", "\u0394t = 5", "throughput cost", "discharge price factor",
+                "penalty weight", "stress"):
+        assert any(key in g for g in groups), (key, groups)
+    assert any(r["label"] == names_label("attn_safe") for r in tabs["TS3"].rows)
+    t2 = tabs["T2"]
+    assert any(not r["cells"].get("transfer", tables_Cell()).empty for r in t2.rows if r["label"] == names_label("attn_safe"))
+
+
+def names_label(m):
+    import names
+    return names.label(m)
+
+
+def tables_Cell():
+    import tables
+    return tables.Cell()
+
+
+# ----------------------------------------------------------------------------- DD43
+
+def test_mlp_only_up_to_n20(synth_run):
+    _, _, ds, _ = synth_run
+    ep = ds.episodes
+    assert (ep.loc[ep["method"].isin(["mlp_safe", "mlp_penalty"]), "N"] <= 20).all()
+
+
+def test_e4_and_binding_in_t3_t3b_fig4(synth_run):
+    root, _, ds, tabs = synth_run
+    assert "e4_pct" in [k for k, _ in tabs["T3"].columns]
+    keys = [k for k, _ in tabs["T3b"].columns]
+    for k in ("e4_pct", "upper_bind_pct", "lower_bind_pct", "lb_active_pct", "fb1star_steps", "fb0_steps"):
+        assert k in keys, k
+    assert {r["group"] for r in tabs["T3b"].rows} >= {"N = 5", "N = 50"}      # per N
+    d = pd.read_csv(root / "figures" / "data" / "fig4_constraint_satisfaction.csv")
+    assert "e4_pct" in set(d["metric"])
+    t3 = pd.read_csv(root / "stats" / "tests_T3.csv")
+    assert {"share_evs_stay_feasible", "tr_violation_kwh"} <= set(t3["metric"])
+    ep = ds.episodes
+    np.testing.assert_allclose(ep["upper_bind_pct"], 100 * ep["agg_upper_active_steps"] / ep["n_steps"])
+
+
+def test_ratio_of_sums_difference():
+    rows = []
+    # one configuration, 2 replays, 2 seeds each; n_evs per replay 4 and 6
+    vals_a = {0: [10.0, 20.0], 1: [12.0, 22.0]}      # seed -> replay values
+    vals_b = {0: [8.0, 14.0], 1: [6.0, 16.0]}
+    for s_ in (0, 1):
+        for r, nev in enumerate((4, 6)):
+            rows.append(dict(method="a", seed=s_, test_cfg_id="c", replay_id=r, exp_id=f"a{s_}", y=vals_a[s_][r], n_evs=nev))
+            rows.append(dict(method="b", seed=s_, test_cfg_id="c", replay_id=r, exp_id=f"b{s_}", y=vals_b[s_][r], n_evs=nev))
+    r = stats.ratio_diff(pd.DataFrame(rows), "a", "b", "y", "n_evs", stats.StatConfig(B=300))
+    # seed-averaged: a = (11, 21), b = (7, 15) -> sum diff = 10, sum n_evs = 10
+    assert r["diff"] == pytest.approx(1.0)
+    assert r["b_lo"] <= 1.0 + 1e-12 and r["b_hi"] >= 1.0 - 1e-12
+
+
+def test_stat_methods_matches_dd43(synth_run):
+    root, *_ = synth_run
+    txt = (root / "tables" / "STAT_METHODS.md").read_text()
+    for phrase in ("Primary test: paired t-test on seed means", "Secondary test: Wilcoxon signed-rank test",
+                   "Holm correction per table family", "ratio of", "no adaptive seed rule", "E4 (primary endpoint)",
+                   "N ≤ 20"):
+        assert phrase in txt, phrase

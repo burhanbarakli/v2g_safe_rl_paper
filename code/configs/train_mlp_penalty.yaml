@@ -2,6 +2,6 @@
 inherit: base.yaml
 method: mlp_penalty
 model: {arch: mlp}
-safety: {enabled: false, admission: false}
+safety: {enabled: false, admission: true}   # DD31: same admitted requests as every method
 reward: {type: penalty}
 ppo: {beta: 0.0}

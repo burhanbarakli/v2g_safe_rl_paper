@@ -1,6 +1,6 @@
 # Nomenclature
 
-Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback.
+Agent A2 (Method and Theory). Version 5, 2026-10-22, revised after the internal proof check, the implementation feedback and internal review round 1 (renamed in v5: conformal scores $S_j\to e_j$, minibatch $B_{\mathrm{mb}}\to n_{\mathrm{mb}}$, admission taper slope $\rho_i\to\varrho_i^{\mathrm{in}}$).
 
 This file defines one symbol per concept for `formulation.md`, `safety_layer.md` and `algorithm.md`.
 - Section references: F = `formulation.md`, S = `safety_layer.md`, Alg. = `algorithm.md` sections Alg. 1-7.
@@ -81,7 +81,9 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 | $\chi_i(t)$ | Laxity, $(E_i(t)-\hat B_i(\tau_i(t)))/(\eta_i^{\mathrm c}\bar P_i^{\mathrm{nom}}\Delta t)$ | steps | S 3.3 |
 | $\Delta E_i^{\mathrm{sh}}$ | Departure shortfall, $(E_i^{\mathrm{req}}-E_i(d_i+1))^{+}$ | kWh | S 7.3 |
 | $\Delta E_i^{\mathrm{def}}(t)$ | Feasibility deficit, $(\hat B_i(\tau_i(t))-E_i(t))^{+}$ (Lemma 3) | kWh | S 7.3 |
-| $\rho_i$ | Slope of the linear taper minorant used by admission control | 1/h | S 7.4 |
+| $\varrho_i^{\mathrm{in}}$ | Slope of the inner (minorant) linear taper used by admission control | 1/h | S 7.4 |
+| $\varrho_{\kappa,i}$ | Exact taper slope $(1-e^{-\kappa_i})/\Delta t$; $\bar P_i(E)\le\min\{\bar P_i^{\mathrm{nom}},\varrho_{\kappa,i}(E^{\mathrm{cap}}-E)\}$ (Lemma O0) | 1/h | F 3.2 |
+| $\varrho_i^{\mathrm{out}}$ | Outer taper slope in the oracle row (O4c), $1.01\,\varrho_{\kappa,i}$ in code | 1/h | F 3.2 |
 | $\Psi_i^{\mathrm{LP}}(E)$ | Maximum departure energy reachable in the admission-LP model (exact first step, minorant afterwards) | kWh | S 7.4 |
 | $E_i^{\mathrm{tgt}}$ | Departure target inside the admission LP (DD25): $E_j^{\mathrm{req}}$ for the new EV, $\min\{E_i^{\mathrm{req}},\Psi_i^{\mathrm{LP}}(E_i(t_0))-10^{-6}\}$ for connected EVs | kWh | S 7.4 |
 
@@ -141,7 +143,11 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 | $r^{\mathrm{pen}}(t)$ | Reward of the penalty-based baselines | € | Alg. 5 |
 | $w_E,w_P$ | Penalty weights: departure shortfall and transformer overload energy (10 €/kWh each, DD22) | €/kWh | Alg. 5 |
 | $\beta$ | Weight of the projection-distance regulariser | – | S 9 |
-| $B_{\mathrm{mb}}$ | Minibatch size (fixed normaliser of the masked actor loss) | transitions | Alg. 2 |
+| $n_{\mathrm{mb}}$ | Minibatch size (fixed normaliser of the masked actor loss) | transitions | Alg. 2, S 9 |
+| $\phi_i,\bar\phi$ | Deep Sets per-token embedding and its masked mean (context) | – | F 5 (Lemma N2) |
+| $\Lambda_E,\Lambda_P$ | Lagrange multipliers of PPO-Lagrangian (shortfall, overload); $\Lambda_{\max}=1000$ | – | Alg. 5 |
+| $\eta_\Lambda$ | Dual step size of PPO-Lagrangian ($\{0.5,2,8\}$, tuned) | – | Alg. 5 |
+| $c_E(t),c_P(t)$ | Per-step constraint costs (departure shortfall, overload energy) | kWh | Alg. 5 |
 | $\gamma$ | Discount factor | – | F 4.5 |
 | $\lambda_{\mathrm{GAE}}$ | GAE parameter (distinct from $\lambda$) | – | Alg. 2 |
 | $\epsilon_{\mathrm{clip}}$ | PPO clip range | – | Alg. 2 |
@@ -151,14 +157,19 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 
 | Symbol | Meaning | Unit | Defined in |
 |---|---|---|---|
-| $J^{\mathrm{LP}}$, $J^{\mathrm{LP,ceil}}$ | Optimal profit of the perfect-information LP (DD10, DD19), and its rounding-aware variant, which is the reference of the main optimality gap (DD26) | € | F 3 |
-| $J^{\pi}$ | Profit of controller $\pi$ in an episode | € | F 3 |
+| $J^{\mathrm{LP}}$, $J^{\mathrm{LP,ceil}}$ | Hard lexicographic oracle profit (exact model; rounding-aware), with taper rows (DD32); used for the cost-of-the-guarantee analysis | € | F 3.3 |
+| $J^{\mathrm{pen}}(\pi)$ | Penalised profit of a controller: profit $-w_E\cdot$shortfall $-w_P\cdot$overload energy, $w_E=w_P=10$ €/kWh (DD32) | € | F 3.4 |
+| $J^{\mathrm{pen,LP}}$ | Soft-penalty oracle; upper bound on $J^{\mathrm{pen}}$ of every controller (Prop. O2); reference of the main gap $\mathrm{gap}^{\mathrm{pen}}$ | € | F 3.4 |
+| $\mathrm{Pr}(p)$ | Profit of a schedule incl. throughput cost | € | F 3.1 |
+| $o^{\pm}(t)$ | Overload slacks of the soft oracle | kW | F 3.1 |
+| $c^{\mathrm{thr}}$ | Throughput (degradation) cost, 0 main, 0.05 sensitivity (DD39) | €/kWh | F 3.1, F 4.4 |
+| $J^{\pi}$ | Undivided episode profit of controller $\pi$ in € | € | F 3 |
 | $z_i$, $z^{*}$ | Shortfall slack of session $i$; minimal total shortfall (stage 1) | kWh | F 3 |
 | $G_i^{\max}$ | Bound on EV2Gym's unreported ceil gain, $0.01(d_i-t_i^{\mathrm{arr}}+1)$ | kWh | F 3 |
 | $\alpha$ | Miscoverage level of the conformal bound | – | S 8 |
 | $n_{\mathrm{cal}}$ | Calibration set size (per configuration, DD23) | – | S 8 |
 | $\hat q(\cdot)$ | Lower-quantile predictor of the departure step | steps | S 8 |
-| $S_j$ | Conformity score $\hat q(\mathbf w_j)-d_j$ | steps | S 8 |
+| $e_j$ | Conformity score $\hat q(\mathbf w_j)-d_j$ | steps | S 8 |
 | $\mathbf w_i$ | Predictor features of session $i$ (arrival step, weekday, arrival energy, requested energy, EV model) | – | S 8 |
 | $\hat Q_{1-\alpha}$ | Conformal quantile, the $\lceil(n_{\mathrm{cal}}+1)(1-\alpha)\rceil$-th smallest score | steps | S 8 |
 | $\hat d_i^{\mathrm{lo}}$ | Conformal lower bound on $d_i$ | – | S 8 |
@@ -174,4 +185,5 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 | A2 | $d_i$ and $E_i^{\mathrm{req}}$ known at arrival |
 | A3 | One-step model: realised energy $\ge E+\Delta t\,g_i(p)$, realised power in $[p,p+\varepsilon_q]$ |
 | A4 | Individual feasibility at arrival, $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}}))$ |
-| A5 | Aggregate per-step feasibility, $\sum_i l_i\le\tilde C$, $\sum_i u_i\ge -C_{\mathrm{rev}}$ and $\tilde C\ge-C_{\mathrm{rev}}$ |
+| A5 | Aggregate per-step feasibility, $\sum_i l_i\le\tilde C$, $\sum_i u_i\ge -C_{\mathrm{rev}}$ and $\tilde C\ge-C_{\mathrm{rev}}$ (closed loop) |
+| A6 | Exogenous headroom, $C(t)\ge N\varepsilon_q$ and $C_{\mathrm{rev}}(t)\ge0$ (policy-independent; Theorem 1′(a),(b)) |

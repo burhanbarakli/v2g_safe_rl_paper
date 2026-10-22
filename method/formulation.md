@@ -1,6 +1,6 @@
 # Problem formulation, MDP and attention policy
 
-Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback (change log in `DONE_method.md`). Symbols: `nomenclature.md`. The safety layer, its bounds and all proofs about constraints are in `safety_layer.md` (cited as S x.y). EV2Gym facts are from `ev2gym_notes.md` (pinned commit `55ef368`). Binding design decisions are DD1-DD29 in `design_decisions.md`.
+Agent A2 (Method and Theory). Version 5, 2026-10-22, revised after the internal proof check, the implementation feedback and internal review round 1 (change log in `DONE_method.md`). Symbols: `nomenclature.md`. The safety layer, its bounds and all proofs about constraints are in `safety_layer.md` (cited as S x.y). EV2Gym facts are from `ev2gym_notes.md` (pinned commit `55ef368`). Binding design decisions are DD1-DD41 in `design_decisions.md`.
 
 ---
 
@@ -61,7 +61,7 @@ Each EV $i$ has a desired departure energy $E_i^{\mathrm{des}}$ (EV2Gym `desired
 
 At arrival, the requirement is capped to what is individually reachable during the stay (DD2):
 $$E_i^{\mathrm{req}}=\min\big\{E_i^{\mathrm{des}},\ y_i^{*}\big\},\qquad E_i^{\mathrm{arr}}\ge\hat B_i\big(\tau_i(t_i^{\mathrm{arr}});y_i^{*}\big).\tag{F6}$$
-Here $\hat B_i(k;y)$ is the certified backward-reachable threshold for target $y$ (S 3.1). $y_i^{*}$ is the certified target returned by `cap_request` (S 3.4): it starts at $E_i^{\mathrm{arr}}+R_i(\tau_i(t_i^{\mathrm{arr}}),E_i^{\mathrm{arr}})-10^{-6}$ kWh and is lowered only by the amount needed to absorb bisection error. In exact arithmetic (F6) is DD2's $\min\{E_i^{\mathrm{des}},\,E_i^{\mathrm{arr}}+R_i(\tau_i(t_i^{\mathrm{arr}}),E_i^{\mathrm{arr}})\}$ up to $10^{-6}$ kWh. Admission control (DD9, S 7.4) may lower $E_i^{\mathrm{req}}$ further.
+Here $\hat B_i(k;y)$ is the certified backward-reachable threshold for target $y$ (S 3.1). $y_i^{*}$ is the certified target returned by `cap_request` (S 3.4): it starts at $E_i^{\mathrm{arr}}+R_i(\tau_i(t_i^{\mathrm{arr}}),E_i^{\mathrm{arr}})-10^{-6}$ kWh and is lowered only by the amount needed to absorb bisection error. In exact arithmetic (F6) is DD2's $\min\{E_i^{\mathrm{des}},\,E_i^{\mathrm{arr}}+R_i(\tau_i(t_i^{\mathrm{arr}}),E_i^{\mathrm{arr}})\}$ up to $10^{-6}$ kWh. Admission control (DD9, DD31, S 7.4) may lower $E_i^{\mathrm{req}}$ further. It is part of the station operator's request setting: it is computed once per replay, before and independently of any controller, and shared by all methods and the oracles.
 
 The **departure energy requirement** is
 $$E_i(d_i+1)\ \ge\ E_i^{\mathrm{req}}.\tag{F7}$$
@@ -102,71 +102,128 @@ Our controller is a learned attention policy (Sec. 5) whose raw output passes th
 
 ---
 
-## 3 Perfect-information optimum (oracle LP, DD10)
+## 3 Perfect-information oracles (DD10, DD19, DD26, DD32)
 
-The oracle knows the whole episode: all sessions $\mathcal V$ with $(t_i^{\mathrm{arr}},d_i,E_i^{\mathrm{arr}},E_i^{\mathrm{req}})$, all prices and the realised $C(t)$ and $C_{\mathrm{rev}}(t)$. The $E_i^{\mathrm{req}}$ is the DD2-capped value (F6) and does not include admission-control reductions. For $i\in\mathcal V$ and $t\in\mathcal T_i=\{t_i^{\mathrm{arr}},\dots,d_i\}$ it uses the variables:
+### 3.1 Data, variables and constraints
+
+The oracles know the whole episode:
+- all sessions $\mathcal V$ with $(t_i^{\mathrm{arr}},d_i,E_i^{\mathrm{arr}},E_i^{\mathrm{req}})$;
+- all prices;
+- the realised $C(t)$ and $C_{\mathrm{rev}}(t)$.
+
+$E_i^{\mathrm{req}}$ is the **admitted request of the station-level pipeline** (DD31, S 7.4), which is identical for all methods on a replay.
+
+For $i\in\mathcal V$ and $t\in\mathcal T_i=\{t_i^{\mathrm{arr}},\dots,d_i\}$ the variables are:
 - $p_i^{+}(t),p_i^{-}(t)\ge0$;
 - $E_i(t)$ for $t\in\{t_i^{\mathrm{arr}},\dots,d_i+1\}$;
-- $z_i\ge0$.
+- shortfall slacks $z_i\ge0$;
+- in the soft oracle, overload slacks $o^{\pm}(t)\ge0$.
 
-The constraints are:
+With the ceil allowance $G_i^{\max}=0.01\,(d_i-t_i^{\mathrm{arr}}+1)$ kWh ($G_i^{\max}:=0$ in the exact-model variant), the constraints are:
 $$
 \begin{aligned}
 &\text{(O1)}\ \ E_i(t_i^{\mathrm{arr}})=E_i^{\mathrm{arr}},\\
 &\text{(O2)}\ \ E_i(t+1)=E_i(t)+\Delta t\,(\eta_i^{\mathrm c}p_i^{+}(t)-p_i^{-}(t)/\eta_i^{\mathrm d}),\quad t\in\mathcal T_i,\\
-&\text{(O3)}\ \ E_i^{\min}\le E_i(t)\le E_i^{\mathrm{cap}},\quad t=t_i^{\mathrm{arr}}+1,\dots,d_i+1,\\
-&\text{(O4)}\ \ p_i^{+}(t)\le\bar P_i^{\mathrm{nom}},\quad p_i^{-}(t)\le P_i^{\mathrm{dis}},\\
-&\text{(O5)}\ \ E_i(d_i+1)+z_i\ge E_i^{\mathrm{req}},\\
-&\text{(O6)}\ \ -C_{\mathrm{rev}}(t)\le\sum_{i:\,t\in\mathcal T_i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t),\quad t=0,\dots,T-1.
+&\text{(O3)}\ \ E_i^{\min}-G_i^{\max}\le E_i(t)\le E_i^{\mathrm{cap}},\quad t=t_i^{\mathrm{arr}}+1,\dots,d_i+1,\\
+&\text{(O4a)}\ \ p_i^{+}(t)\le\bar P_i^{\mathrm{nom}},\quad p_i^{-}(t)\le P_i^{\mathrm{dis}},\\
+&\text{(O4b)}\ \ p_i^{+}(t_i^{\mathrm{arr}})\le\bar P_i(E_i^{\mathrm{arr}})\quad\text{(exact first step; a constant)},\\
+&\text{(O4c)}\ \ p_i^{+}(t)\le\varrho_i^{\mathrm{out}}\big(E_i^{\mathrm{cap}}-E_i(t)\big),\quad t\in\mathcal T_i,\ t>t_i^{\mathrm{arr}}\quad\text{(taper row)},\\
+&\text{(O5)}\ \ E_i(d_i+1)+z_i\ge E_i^{\mathrm{req}}-G_i^{\max},\\
+&\text{(O6)}\ \ -C_{\mathrm{rev}}(t)\le\sum_{i:\,t\in\mathcal T_i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t)\qquad\text{(hard oracle)},\\
+&\text{(O6s)}\ \ -C_{\mathrm{rev}}(t)-o^{-}(t)\le\sum_{i:\,t\in\mathcal T_i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t)+o^{+}(t)\qquad\text{(soft oracle)}.
 \end{aligned}
 $$
 
-It is solved lexicographically (DD19) with HiGHS [huangfu2018parallelizing]:
-- **Stage 1:** $z^{*}=\min\sum_i z_i$ subject to (O1)-(O6). This gives $z^{*}=0$ whenever all requirements are jointly feasible.
-- **Stage 2:**
-$$J^{\mathrm{LP}}=\max\ \sum_t\Delta t\sum_{i:\,t\in\mathcal T_i}\big(c^{\mathrm{dis}}(t)p_i^{-}(t)-c^{\mathrm{ch}}(t)p_i^{+}(t)\big)\quad\text{s.t. (O1)-(O6)},\ \sum_i z_i\le z^{*}+10^{-6}.$$
+The profit of a schedule includes the optional throughput cost $c^{\mathrm{thr}}\ge0$ (0 in the main grid, 0.05 €/kWh in the DD39 sensitivity):
+$$\mathrm{Pr}(p)=\sum_t\Delta t\sum_{i:\,t\in\mathcal T_i}\Big(c^{\mathrm{dis}}(t)p_i^{-}(t)-c^{\mathrm{ch}}(t)p_i^{+}(t)-c^{\mathrm{thr}}\big(p_i^{+}(t)+p_i^{-}(t)\big)\Big).$$
 
-**EV2Gym instantiation.** With $\eta^{\mathrm c}=\eta^{\mathrm d}=1$ and $f^{\mathrm{dis}}=1$, the objective depends only on the net power $p_i=p_i^{+}-p_i^{-}$. One variable $p_i(t)\in[-P_i^{\mathrm{dis}},\bar P_i^{\mathrm{nom}}]$ per session and step is then enough, with objective $-\sum_t\Delta t\,c^{\mathrm{ch}}(t)\sum_i p_i(t)$. Size at $N=200$: about $3\times10^4$ variables, well within HiGHS.
+### 3.2 The EV2Gym taper as linear constraints
 
-**Relaxations, both of which can only increase the optimum.**
-1. **Taper relaxation.** The state-dependent constraint $p_i^{+}\le\bar P_i(E_i)$ is replaced by $p_i^{+}\le\bar P_i^{\mathrm{nom}}$. Since $\bar P_i(E)\le\bar P_i^{\mathrm{nom}}$ for all $E$, every physically admissible schedule satisfies (O4). The capacity part of $\bar P_i(E)$ is kept exactly through (O3).
-2. **Complementarity relaxation.** Simultaneous $p^{+}>0$ and $p^{-}>0$ is allowed. Increasing both by $\epsilon$ changes the objective by $\epsilon\Delta t(c^{\mathrm{dis}}-c^{\mathrm{ch}})$ and the energy by $\epsilon\Delta t(\eta^{\mathrm c}-1/\eta^{\mathrm d})\le0$. So it is never strictly profitable when $c^{\mathrm{dis}}\le c^{\mathrm{ch}}$, and in our scenarios it is exact. In general it is a relaxation of the MILP with complementarity binaries.
+**Lemma O0 (taper rows).** Assume C0 and $m>1$ with $\kappa_i\le\kappa^{*}(m)$ (as in Lemma E2), and let $\varrho_{\kappa,i}:=(1-e^{-\kappa_i})/\Delta t$ [1/h]. Then:
+- (i) for every $E\in[E^{\min},E^{\mathrm{cap}}]$:
+$$\bar P_i(E)\ \le\ \min\big\{\bar P_i^{\mathrm{nom}},\ \varrho_{\kappa,i}(E_i^{\mathrm{cap}}-E)\big\};$$
+- (ii) equality holds except on the one-step transition band $\varsigma\in(\varsigma_i^{\mathrm{tr}}-\delta_i,\ \varsigma_i^{\mathrm{tr}})$;
+- (iii) consequently $\sup_E\bar P_i(E)/(E_i^{\mathrm{cap}}-E)=\varrho_{\kappa,i}$.
 
-A tighter optional variant keeps the LP structure with a linear taper majorant $p_i^{+}\le\bar\rho_i(E_i^{\mathrm{cap}}-E_i)$, where $\bar\rho_i=\sup_E\bar P_i(E)/(E_i^{\mathrm{cap}}-E)$. It is still an upper bound. It is not needed for DD10.
+*Proof.* Work in SoC units with $\bar P\Delta t/E^{\mathrm{cap}}=\varphi(\varsigma)-\varsigma$ from (S7).
+- **Upper region** ($\varsigma\ge\varsigma^{\mathrm{tr}}$): $\varphi-\varsigma=\min\{\delta,(1-\varsigma)(1-e^{-\kappa})\}$, which is exactly the right-hand side.
+- **Constant-current region** ($\varsigma+\delta\le\varsigma^{\mathrm{tr}}$): $\varphi-\varsigma=\delta$. The right-hand side equals $\delta$ iff $\delta\le(1-\varsigma)(1-e^{-\kappa})$. Since $1-\varsigma\ge1-\varsigma^{\mathrm{tr}}=m\delta/\kappa$, it suffices that $\kappa\le m(1-e^{-\kappa})$. With $\kappa=mz$, this is $z\le1-e^{-mz}$, i.e. $z\le z_0(m)$, i.e. $\kappa\le\kappa^{*}(m)$.
+- **Transition band** ($\varsigma^{\mathrm{tr}}-\delta<\varsigma<\varsigma^{\mathrm{tr}}$): with $y=\varsigma^{\mathrm{tr}}-\varsigma\in(0,\delta)$, $1-\varphi\ge(1-\varsigma^{\mathrm{tr}})e^{-m(\delta-y)/(1-\varsigma^{\mathrm{tr}})}$. Using $e^{v}\ge1+v$ and $m\ge1$, this is $\ge e^{-\kappa}(1-\varsigma^{\mathrm{tr}}+my)\ge e^{-\kappa}(1-\varsigma)$. Hence $\varphi-\varsigma\le(1-\varsigma)(1-e^{-\kappa})$, and also $\le\delta$.
+- (iii) follows from (i) and equality in the upper region. $\square$
 
-**Proposition O1 (upper bound).**
-(a) Let $\pi$ be any controller, including non-anticipative ones, whose closed-loop trajectory in the model (F2)-(F3) satisfies (F8) at every step and has total shortfall $\sum_i(E_i^{\mathrm{req}}-E_i(d_i+1))^{+}\le z^{*}$. Then $J^{\pi}\le J^{\mathrm{LP}}$.
-(b) In EV2Gym, let $J^{\mathrm{LP,ceil}}$ be the optimum of the same LP with $E_i^{\mathrm{req}}$ and $E_i^{\min}$ replaced by $E_i^{\mathrm{req}}-G_i^{\max}$ and $E_i^{\min}-G_i^{\max}$, where $G_i^{\max}=0.01\,(d_i-t_i^{\mathrm{arr}}+1)$ kWh. Then $J^{\pi}\le J^{\mathrm{LP,ceil}}$ for every controller whose realised (reported) powers satisfy (F8) and whose realised total shortfall is $\le z^{*}$.
+**Numerical check.** `check_O0.py` → `check_O0_results.txt` covers 320 configurations (8 models × 4 $\zeta$ × 5 $\varsigma^{\mathrm{tr}}$ × $\Delta t\in\{5,15\}$ min, $m=5$). The outer bound holds to $1.7\times10^{-13}$ kW, equality holds off the band to $1.8\times10^{-13}$ kW, and $\sup\bar P/(E^{\mathrm{cap}}-E)=\varrho_\kappa$ to a relative $5\times10^{-7}$.
 
-*Proof.*
+**Taper slope used in the code.** The code sets $\varrho_i^{\mathrm{out}}=1.01\cdot\sup_E\bar P_i(E)/(E_i^{\mathrm{cap}}-E)$, computed on a 20 000-point grid together with the analytic upper-region value and capped at $1/\Delta t$ (`bounds.taper_outer_rho`). By (iii), $\varrho_i^{\mathrm{out}}=1.01\,\varrho_{\kappa,i}$: a valid outer row that is 1 % looser than exact. (O4c) is linear in $(p,E)$.
+
+**Remaining relaxations.** With the taper rows, the oracle models EV2Gym's charging limit exactly, **up to the step discretisation** (the one-step transition band and the 1 % margin). The only other relaxations are:
+1. the ceil allowance $G^{\max}$;
+2. the complementarity relaxation (simultaneous $p^{+},p^{-}>0$).
+
+The complementarity relaxation is cost- and energy-neutral, and therefore exact, when $\eta=1$, $c^{\mathrm{dis}}=c^{\mathrm{ch}}$ and $c^{\mathrm{thr}}=0$ (main grid). In the DD39 sensitivities ($c^{\mathrm{thr}}>0$ or $f^{\mathrm{dis}}=0.9$ at negative prices) the oracle could "burn" energy for money. It then remains a valid upper bound but is no longer exact, and the number of oracle steps with simultaneous $p^{+},p^{-}>0$ is reported.
+
+### 3.3 Hard oracle (for the cost-of-the-guarantee analysis)
+
+The hard oracle is solved lexicographically (DD19) with HiGHS [huangfu2018parallelizing], with (O6) and without $o^{\pm}$:
+- **Stage 1:** $z^{*}=\min\sum_iz_i$ in the exact-model variant ($G^{\max}=0$).
+- **Stage 2:** $J^{\mathrm{LP,ceil}}=\max\mathrm{Pr}(p)$ subject to (O1)-(O6) with the ceil allowance and $\sum_iz_i\le z^{*}+10^{-6}$.
+
+$J^{\mathrm{LP}}$ is the same stage 2 with $G^{\max}=0$. HiGHS dual simplex is used, with an interior-point retry if its status is unknown.
+
+**Proposition O1 (hard oracle is an upper bound).**
+- **(a) Exact model.** Let $\pi$ be any controller whose trajectory in the model (F2)-(F3), with the taper map $\bar P_i(E)$, satisfies (F8) at every step and has total shortfall $\le z^{*}$. Then $J^{\pi}\le J^{\mathrm{LP}}$.
+- **(b) EV2Gym, under the configuration of S Corollary 2.** Let $\pi$ be any controller whose realised powers satisfy (F8) and whose realised total shortfall (against the admitted requests) is $\le z^{*}$. Then $J^{\pi}\le J^{\mathrm{LP,ceil}}$.
+
+*Proof.* We show that the controller's trajectory is a feasible point of stage 2. Its objective value is then $J^{\pi}$, which is $\le$ the optimum.
+
 (a) Set $p^{\pm}=p_i(t)^{\pm}$, take $E_i(t)$ from the trajectory and $z_i=(E_i^{\mathrm{req}}-E_i(d_i+1))^{+}$. Then:
 - (O1) and (O2) hold by (F2);
 - (O3) holds by (F3)-(F4);
-- (O4) holds because $p_i\le\bar P_i(E_i)\le\bar P_i^{\mathrm{nom}}$ and $p_i\ge p_i^{\min}\ge-P_i^{\mathrm{dis}}$;
-- (O5) holds by the definition of $z_i$, and (O6) is (F8);
-- $\sum_i z_i\le z^{*}$.
+- (O4a) holds because $p_i\le\bar P_i(E_i)\le\bar P_i^{\mathrm{nom}}$ and $p_i\ge-P_i^{\mathrm{dis}}$;
+- (O4b) holds by (F3) at $E^{\mathrm{arr}}$;
+- (O4c) holds because $p_i(t)\le\bar P_i(E_i(t))\le\varrho_{\kappa,i}(E^{\mathrm{cap}}-E_i(t))\le\varrho_i^{\mathrm{out}}(E^{\mathrm{cap}}-E_i(t))$ (Lemma O0);
+- (O5) holds by the definition of $z_i$, (O6) is (F8), and $\sum z_i\le z^{*}$.
 
-So the trajectory is feasible for stage 2, and its objective equals $J^{\pi}$.
+(b) Let $\tilde p_i(t)$ be the reported powers and $E_i^{\mathrm{nom}}(t)=E_i^{\mathrm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$. EV2Gym bills exactly $\tilde p$, and the unbilled ceil gain gives $E^{\mathrm{real}}-G^{\max}\le E^{\mathrm{nom}}\le E^{\mathrm{real}}\le E^{\mathrm{cap}}$.
+- (O3) and (O5) hold with the allowance, with $z_i$ the realised shortfall.
+- (O4b) holds because $E^{\mathrm{nom}}(t_i^{\mathrm{arr}})=E^{\mathrm{arr}}$ and $\tilde p\le\bar P(E^{\mathrm{arr}})$.
+- (O4c) holds because $\tilde p_i(t)\le\bar P_i(E^{\mathrm{real}}_i(t))\le\varrho_{\kappa,i}(E^{\mathrm{cap}}-E_i^{\mathrm{real}}(t))\le\varrho_i^{\mathrm{out}}(E^{\mathrm{cap}}-E_i^{\mathrm{nom}}(t))$. Here EV2Gym never delivers more than $\varphi(E)-E$ (A3b), and $E^{\mathrm{nom}}\le E^{\mathrm{real}}$.
+- (O6) is the assumption on realised powers. $\square$
 
-(b) Let $\tilde p_i(t)$ be the reported powers and $E_i^{\mathrm{nom}}(t)=E_i^{\mathrm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$. EV2Gym bills exactly $\tilde p$, so $J^{\pi}$ is the LP objective at $\tilde p$. The ceil adds less than 0.01 kWh per active step, so $E_i^{\mathrm{real}}(t)-G_i^{\max}\le E_i^{\mathrm{nom}}(t)\le E_i^{\mathrm{real}}(t)\le E_i^{\mathrm{cap}}$. Hence:
-- (O3) holds with $E^{\min}-G^{\max}$;
-- (O5) holds with $E^{\mathrm{req}}-G^{\max}$ and $z_i=(E_i^{\mathrm{req}}-E_i^{\mathrm{real}}(d_i+1))^{+}$;
-- (O4) holds because $\tilde p\le\bar P_i(E^{\mathrm{real}})\le\bar P^{\mathrm{nom}}$.
+**Why $J^{\mathrm{LP}}$ is not used inside EV2Gym.** The 0.01 kWh ceil is never billed, so a feasible controller can buy slightly less energy than the exact model requires. In the smoke run, LLF+$\Pi$ scored $-2.376$ € against $J^{\mathrm{LP}}=-2.386$ € (IMPLEMENTATION_NOTES I-4). With the taper rows, the exact-model $J^{\mathrm{LP}}$ also becomes numerically sensitive to full-battery requests, because the linear taper reaches $E^{\mathrm{cap}}$ only geometrically (I-25). $J^{\mathrm{LP}}$ therefore goes to the supplementary material only, with this caveat.
 
-The rest is as in (a). $\square$
+### 3.4 Soft-penalty oracle and the main metric (DD32)
 
-**Optimality gap (DD26).** The main metric is computed against the rounding-aware oracle:
-$$\mathrm{gap}(\pi)=\frac{J^{\mathrm{LP,ceil}}-J^{\pi}}{|J^{\mathrm{LP,ceil}}|}\quad\text{per episode.}$$
-- Profits are usually negative, because charging to the target costs money, so the absolute value is needed.
-- Episodes with $|J^{\mathrm{LP,ceil}}|<1$ € are excluded from the relative metric, and the absolute gap in € per EV is also reported.
-- The gap with respect to $J^{\mathrm{LP}}$, and the difference $J^{\mathrm{LP,ceil}}-J^{\mathrm{LP}}$, go to the supplementary material.
-- Because of the relaxations (taper, complementarity, ceil allowance), the reported gap overestimates the true gap.
+**Penalised profit of a controller.** The weights are $w_E=w_P=10$ €/kWh, fixed for every method (DD22):
+$$J^{\mathrm{pen}}(\pi)=\mathrm{Pr}(\tilde p)-w_E\sum_i\Delta E_i^{\mathrm{sh}}-w_P\,\Delta t\sum_t\Big[\Big(\sum_i\tilde p_i(t)-C(t)\Big)^{+}+\Big(-C_{\mathrm{rev}}(t)-\sum_i\tilde p_i(t)\Big)^{+}\Big],$$
+- $\Delta E_i^{\mathrm{sh}}$ is measured against the admitted request;
+- the untightened $C$ and $C_{\mathrm{rev}}$ are used.
 
-**Why $J^{\mathrm{LP}}$ is not the main reference.** $J^{\mathrm{LP}}$ is an upper bound only in the exact model (Proposition O1(a)). Inside EV2Gym, `current_capacity` is rounded up to 0.01 kWh after every active step, and this energy is never billed. A controller can therefore reach its departure targets while buying slightly less energy than the exact model requires, and its realised profit can exceed $J^{\mathrm{LP}}$. This was observed in the smoke run: a feasible LLF+$\Pi$ controller, with no violation and no shortfall, scored $-2.376$ € against $J^{\mathrm{LP}}=-2.386$ € (IMPLEMENTATION_NOTES I-4). A gap measured against $J^{\mathrm{LP}}$ could thus be negative, which is meaningless for a bound. $J^{\mathrm{LP,ceil}}$ relaxes the departure and $E^{\min}$ constraints by the largest possible ceil gain $G_i^{\max}$, so it is a rigorous upper bound for every EV2Gym controller that respects (F8) and has realised shortfall $\le z^{*}$ (Proposition O1(b)). The unit test `test_oracle_upper_bounds_heuristics_on_tiny_replay` checks this. The bound applies only to controllers that respect (F8).
+**Soft oracle.** The soft oracle replaces (O6) by (O6s) and solves a single LP with the ceil allowance:
+$$J^{\mathrm{pen,LP}}=\max\ \mathrm{Pr}(p)-w_E\sum_iz_i-w_P\Delta t\sum_t\big(o^{+}(t)+o^{-}(t)\big)\quad\text{s.t. (O1)-(O5), (O6s)}.$$
 
-Raw heuristics and penalty-based RL can exceed $J^{\mathrm{LP,ceil}}$ by violating the transformer limit; this is flagged in the tables.
+**Proposition O2 (soft oracle upper-bounds every controller).** In EV2Gym, under the configuration of S Corollary 2, let $\pi$ be **any** controller. This includes controllers with shortfall or transformer violations, with or without the safety layer, penalty-trained, heuristics and MPC, provided it uses the same admitted requests (DD31). Then
+$$J^{\mathrm{pen}}(\pi)\le J^{\mathrm{pen,LP}}.$$
 
----
+*Proof.* Take $p^{\pm}=\tilde p^{\pm}$, $E=E^{\mathrm{nom}}$, $z_i=\Delta E_i^{\mathrm{sh}}$ (realised), and $o^{\pm}(t)$ equal to the realised overloads in either direction.
+- (O1)-(O4c) hold as in Proposition O1(b). These use only EV2Gym's physics: delivery at most $\varphi(E)-E$, discharge floored at $E^{\min}$ and capped at $P^{\mathrm{dis}}$, and the ceil gain in $[0,0.01)$ per active step. None of them depends on the controller respecting any constraint.
+- (O5) holds because $E^{\mathrm{nom}}(d+1)+z\ge E^{\mathrm{real}}(d+1)-G^{\max}+z\ge E^{\mathrm{req}}-G^{\max}$.
+- (O6s) holds by the definition of $o^{\pm}$.
+
+The objective at this point equals $J^{\mathrm{pen}}(\pi)$: the same billed powers, the same shortfall and the same overload energy. $\square$
+
+Remarks:
+- The bound does not cover conformal variants, which use their own admission table.
+- The code test `test_oracles_bound_every_controller_on_tiny_replays` checks $J^{\mathrm{pen,LP}}\ge J^{\mathrm{pen}}$ for all heuristics (raw and with $\Pi$, including random actions, throughput cost and $f^{\mathrm{dis}}=0.9$).
+
+**Metrics.**
+- **Main metric (DD32b):** the penalised-profit gap
+$$\mathrm{gap}^{\mathrm{pen}}(\pi)=\frac{J^{\mathrm{pen,LP}}-J^{\mathrm{pen}}(\pi)}{|J^{\mathrm{pen,LP}}|}\ \ge0,$$
+  valid for every method by Proposition O2. It is reported as the mean of per-episode ratios and as the ratio of sums. The number of episodes with $|J^{\mathrm{pen,LP}}|<1$ €, excluded from the per-episode ratio, is stated.
+- **Secondary metrics:**
+  - raw profit $\mathrm{Pr}$, shortfall and overload energy, reported separately;
+  - the hard-oracle gap $(J^{\mathrm{LP,ceil}}-J^{\pi})/|J^{\mathrm{LP,ceil}}|$, only for methods covered by Proposition O1(b);
+  - the cost of the guarantee: the difference in profit and in $J^{\mathrm{pen}}$ between Attention+penalty and SA-Attn, and its decomposition with the hard oracle;
+  - $J^{\mathrm{LP,ceil}}-J^{\mathrm{LP}}$ (supplementary).
 
 ## 4 Markov decision process
 
@@ -178,7 +235,7 @@ There is one decision per step $t$. The full system state contains:
 - the time $t$ and calendar day;
 - the exogenous process state (price series, load/PV series, generator state of the arrival process).
 
-Future arrivals, prices beyond $H_f$ steps and realised future loads are not observed. Strictly, the problem is therefore a POMDP; we follow standard practice and condition the policy on the observation below. The observation is a deterministic function of the information listed in Sec. 2, plus the safety-layer quantities $l_i,u_i$, which are themselves functions of that information.
+Future arrivals, prices beyond $H_f$ steps and realised future loads are not observed. The control problem is therefore a **POMDP**. We use PPO with a feed-forward actor and a feed-forward critic, both conditioned on the current observation only (no recurrence, no history beyond the features listed below). The observation is a deterministic function of the information listed in Sec. 2, plus the safety-layer quantities $l_i,u_i$, which are themselves functions of that information.
 
 ### 4.2 Observation: charger tokens and a global token
 
@@ -245,7 +302,7 @@ where $\tilde p_i$ is the reported power (S 6.3). This equals EV2Gym's per-step 
 
 The reward has **no penalty for the departure energy requirement or the transformer limit**. Both are enforced by the safety layer, so a penalty would be identically zero on every step where A5 holds. On infeasible steps (S 7) the controller has no influence, because the fallback rule is deterministic, so a penalty would add variance without a learnable signal.
 
-Optional shaping (off in the main experiments): a battery-throughput proxy $-c^{\mathrm{thr}}\Delta t\sum_i|\tilde p_i|$ with $c^{\mathrm{thr}}=0.01$ €/kWh, for a sensitivity run only.
+**Throughput cost (DD39 sensitivity only).** In the economics sensitivity, the reward and every evaluation metric include $-c^{\mathrm{thr}}\Delta t\sum_i|\tilde p_i|$ with $c^{\mathrm{thr}}=0.05$ €/kWh (a battery-wear or network-fee proxy), and the discharge price factor is $f^{\mathrm{dis}}=0.9$ in a second variant. The main learned policies are evaluated there without retraining. The same terms enter the oracle objectives (Sec. 3.1). In the main grid $c^{\mathrm{thr}}=0$ and $f^{\mathrm{dis}}=1$ (EV2Gym-native, DD1).
 
 **Learning reward.** To make returns intensive, so that one critic can serve episodes of different $N$, PPO is trained on
 $$\tilde r(t)=r(t)/(N\,r^{\mathrm{ref}}),\qquad r^{\mathrm{ref}}=c^{\mathrm{ref}}P^{\mathrm{ref}}\Delta t.$$
@@ -326,6 +383,14 @@ $$A(PH)=P\,\mathrm{softmax}(QK^\top/\sqrt{d_k}+M)P^\top PV=P\,A(H).$$
 | Critic | 676,481 |
 | Total | 1,286,851, independent of $N$ |
 | Small variant ($d_m=64$, $n_L=2$, FFN 256, heads $d_m\to d_m/2$), total | 228,067 (actor 105,698, critic 122,369; with heads of width 64 instead: 232,323) |
-| MLP baseline actor ($N_{\max}=200$, two hidden layers of 256) | 792,976; grows linearly with $N_{\max}$ |
+| MLP baseline actor ($N_{\max}=20$, two hidden layers of 640; DD44) | 614,440 (critic 589,441); grows linearly with $N_{\max}$ |
+
+**Deep Sets baseline policy (DD33(4)).** The non-attention size-agnostic policy uses
+$$\phi_i=\mathrm{MLP}_\phi([\xi_i;\xi_0]),\qquad \bar\phi=\frac1{n(t)}\sum_{i\in\mathcal N(t)}\phi_i\ (\bar\phi=0\text{ if }n(t)=0),\qquad(\mu_{\theta,i},\ell_i)=\mathrm{MLP}_a([\phi_i;\bar\phi]),$$
+with $\mathrm{MLP}_\phi$ of 3 layers of width 128 [zaheer2017deep]. The critic is $V=\mathrm{MLP}_v([\bar\phi;\mathrm{MLP}_g(\xi_0)])$. There is no interaction between chargers except through the mean context $\bar\phi$. Parameters: actor 56,130, critic 61,057; capacity is not matched to the attention policy, and this is stated.
+
+**Lemma N2 (Deep Sets equivariance).** The Deep Sets actor is permutation-equivariant, its critic is permutation-invariant, outputs of occupied tokens do not depend on empty chargers, and the parameter count is independent of $N$.
+
+*Proof.* $\phi_i$ is computed token-wise, so it is equivariant. The masked mean $\bar\phi$ is a symmetric function of the occupied tokens, so it is invariant, and empty chargers do not enter it. The head is applied token-wise to $[\phi_i;\bar\phi]$, so it is equivariant. The critic is a function of $\bar\phi$ and $\xi_0$ only, so it is invariant. All weight shapes depend on $(F_c,F_g)$ and the widths only. $\square$
 
 **Consequence for zero-shot transfer.** By (iv), a station with $N$ chargers, $n$ of them occupied, gives the same per-EV outputs as a station with only those $n$ chargers, except through the global features 35-38. These features are ratios. Together with (i) and (iii), this is the structural basis for applying weights trained at $N\in\{10,20\}$ to $N\in[5,200]$. It is not by itself a performance guarantee: attention over 200 tokens averages over more keys than seen in training. This is exactly what C3 measures.

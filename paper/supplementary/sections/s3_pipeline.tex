@@ -1,0 +1,115 @@
+% ---------------------------------------------------------------------
+\section{Request pipeline and perfect-information optima}\label{sec:pipeline}
+% ---------------------------------------------------------------------
+
+\subsection{Station-level request pipeline}\label{app:admission}
+
+The arrival cap and admission control belong to the request setting of the station operator and not to the controller.
+For every test replay they are computed once, before any controller runs, and the resulting admitted requests $\Ereq_i$ are shared by every compared method and by both optima.
+The wrapper writes the admitted requirement into EV2Gym's EV object at arrival, so external baselines such as EV-GNN and the Gurobi eMPC pursue the same target.
+For arrivals inside its horizon, the HiGHS eMPC uses the shared entries.
+Conformal passes re-certify the shared requirement with their bound $\hat d_i^{\sm{lo}}$, so their requirement is never larger, and passes without admission control keep the arrival-capped request.
+In every pass, shortfall is measured against the shared admitted requirement.
+
+Arrivals are processed in time order, with ties broken by the charger index.
+An arriving EV $j$ enters with its exogenous arrival energy, desired energy, departure step and EV parameters, and the cap of \Eq{M-eq:cap} gives its first requirement with a certified threshold table.
+Admission control then solves the feasibility LP of \Eq{eq:admission} at the arrival step $t_0$ over the EVs admitted earlier and still connected, together with EV $j$:
+\begin{equation}\label{eq:admission}
+\begin{aligned}
+&E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\qquad E_i^{\min}\le E_i(t+1)\le E_i^{\sm{cap}},\qquad E_i(d_i+1)\ge E_i^{\sm{tgt}},\\
+&-\Pdis_i\le p_i(t)\le\Pnom_i,\qquad p_i(t)\le\varrho_i^{\sm{in}}\,(E_i^{\sm{cap}}-E_i(t))\ (t>t_0),\qquad p_i(t_0)\in[\pmn_i,\bar P_i],\\
+&-\hat C_{\sm{rev}}(t)\le\textstyle\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q .
+\end{aligned}
+\end{equation}
+The energies of the earlier EVs at $t_0$ are read from a nominal plan and not from the trajectory of any controller.
+After each admission decision, an elastic version of the same LP updates this plan so that the targets are reached as early as possible.
+The limits $\hat C$ and $\hat C_{\sm{rev}}$ use the measured values at $t_0$, the noisy forecasts for the next $H_f$ steps and the last forecast afterwards.
+Its slope $\varrho_i^{\sm{in}}$ is the largest value with $\bar P_i(E)\ge\min\{\Pnom_i,\varrho_i^{\sm{in}}(E_i^{\sm{cap}}-E)\}$ for all $E$, so the linear taper model is an inner approximation and every LP-feasible schedule is physically realisable.
+
+Inside the LP, the new EV has the target $E_j^{\sm{tgt}}=\Ereq_j$, and an earlier EV has the smaller of $\Ereq_i$ and $\Psi_i^{\sm{LP}}(E_i(t_0))-10^{-6}$ as its target.
+Here $\Psi_i^{\sm{LP}}$ is the largest departure energy reachable in the LP's taper model, and this target is used only inside the admission LP.
+With full-battery requests as literal targets, the LP would be infeasible whenever such an EV is connected, because the linear taper model never reaches full charge in finitely many steps.
+Feasibility is monotone in the new request, so one LP that maximises $E_j(d_j+1)$ gives the largest admissible request.
+Requests admitted earlier are never reduced, and the reduced request of EV $j$ passes through the cap routine again, so A4 holds for every EV and every method.
+If the LP is infeasible even for the lowest request, the request is set to the arrival energy.
+
+Each decision uses only information available at $t_0$, so a station operator can run the pipeline online.
+If its LP is feasible, an open-loop schedule exists that meets all targets from the nominal-plan energies under the forecast limits, provided that no further EV arrives.
+The pipeline does not guarantee A5 for any controller, because realised energies may lie below the nominal plan, forecasts are noisy and later arrivals add load.
+It therefore does not enter Theorem~\ref{M-thm:invariance}, and the evaluation passes without admission control measure its effect.
+
+\subsection{Linear programs of the optima}\label{app:oracle}
+
+Both perfect-information LPs know all sessions of the episode with their arrival and departure steps, arrival energies and admitted requirements, together with all prices and the realised limits $C(t)$ and $\Crev(t)$.
+For every session $i$ and step $t\in\mathcal T_i=\{t_i^{\sm{arr}},\dots,d_i\}$ the variables are $p_i^{+}(t),p_i^{-}(t)\ge0$ and $E_i(t)$, together with a shortfall slack $z_i\ge0$ and, in the soft LP, overload slacks $o^{\pm}(t)\ge0$.
+With the rounding allowance $G_i^{\max}=0.01\,(d_i-t_i^{\sm{arr}}+1)$ kWh, the constraints are
+\begin{equation}\label{eq:lp}
+\begin{aligned}
+&E_i(t_i^{\sm{arr}})=E_i^{\sm{arr}},\qquad E_i(t+1)=E_i(t)+\Delta t\,\big(p_i^{+}(t)-p_i^{-}(t)\big),\qquad E_i^{\min}-G_i^{\max}\le E_i(t+1)\le E_i^{\sm{cap}},\\
+&p_i^{+}(t)\le\Pnom_i,\qquad p_i^{-}(t)\le\Pdis_i,\qquad p_i^{+}(t_i^{\sm{arr}})\le\bar P_i(E_i^{\sm{arr}}),\qquad p_i^{+}(t)\le\varrho_i^{\sm{out}}\big(E_i^{\sm{cap}}-E_i(t)\big)\ (t>t_i^{\sm{arr}}),\\
+&E_i(d_i+1)+z_i\ge\Ereq_i-G_i^{\max},\qquad -\Crev(t)-o^{-}(t)\le\textstyle\sum_{i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t)+o^{+}(t),
+\end{aligned}
+\end{equation}
+where the hard LP fixes $o^{\pm}=0$.
+The profit of a schedule is $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$, with the throughput cost $c^{\sm{thr}}$ equal to zero except in one sensitivity study.
+
+\begin{lemma}[Taper rows]\label{lem:taperrows}
+Let every EV satisfy the conditions of Lemma~\ref{lem:a3}, and let $\varrho_{\kappa,i}=(1-e^{-\kappa_i})/\Delta t$.
+Then $\bar P_i(E)\le\min\{\Pnom_i,\varrho_{\kappa,i}(E_i^{\sm{cap}}-E)\}$ for every $E\in[E^{\min},E^{\sm{cap}}]$.
+Equality holds except on the one-step transition band $\varsigma\in(\varsigma_i^{\sm{tr}}-\delta_i,\varsigma_i^{\sm{tr}})$, and $\sup_E\bar P_i(E)/(E_i^{\sm{cap}}-E)=\varrho_{\kappa,i}$.
+\end{lemma}
+
+\begin{proof}
+In state-of-charge units, $\bar P\Delta t/E^{\sm{cap}}=\varphi/E^{\sm{cap}}-\varsigma$ by \Eq{eq:taper}, and for $\varsigma\ge\varsigma^{\sm{tr}}$ this gain is $\min\{\delta,(1-\varsigma)(1-e^{-\kappa})\}$ and equals the right-hand side.
+The constant-current region $\varsigma+\delta\le\varsigma^{\sm{tr}}$ has the gain $\delta$, and the right-hand side equals $\delta$ if and only if $\delta\le(1-\varsigma)(1-e^{-\kappa})$.
+Since $1-\varsigma\ge1-\varsigma^{\sm{tr}}=m\delta/\kappa$, it suffices that $\kappa\le m(1-e^{-\kappa})$, and with $\kappa=mz$ this is $z\le1-e^{-mz}$, that is, $\kappa\le\kappa^{*}(m)$.
+On the transition band, let $y=\varsigma^{\sm{tr}}-\varsigma\in(0,\delta)$, so that $1-\varphi/E^{\sm{cap}}\ge(1-\varsigma^{\sm{tr}})e^{-m(\delta-y)/(1-\varsigma^{\sm{tr}})}$.
+With $e^{v}\ge1+v$ and $m\ge1$, the right-hand side of this bound is at least $e^{-\kappa}(1-\varsigma^{\sm{tr}}+my)\ge e^{-\kappa}(1-\varsigma)$.
+The gain is therefore at most $(1-\varsigma)(1-e^{-\kappa})$, and it is at most $\delta$ anyway, so the inequality holds everywhere, and the supremum follows from equality in the upper region.
+\end{proof}
+
+The code uses $\varrho_i^{\sm{out}}=1.01\,\varrho_{\kappa,i}$, a valid outer row that is 1\% looser than exact.
+A check script released with the code confirms the inequality to $1.7\times10^{-13}$ kW and the equality off the band on 320 configurations.
+With these rows the LPs model EV2Gym's charging limit up to the step discretisation of the transition band and the 1\% margin.
+The remaining relaxations are the rounding allowance and simultaneous charging and discharging, and the latter is cost- and energy-neutral, and hence exact, when $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ and $c^{\sm{thr}}=0$, as in the main grid.
+In the sensitivities with a throughput cost or a discharge price factor of 0.9 at negative prices, the LPs remain valid upper bounds.
+They may then use simultaneous charging and discharging, and the number of such steps is reported.
+
+\subsection{Upper bounds}\label{app:bounds}
+
+The hard LP is solved lexicographically with HiGHS \cite{huangfu2018parallelizing}.
+Stage 1 computes the least total shortfall $z^{*}=\min\sum_iz_i$ with $G^{\max}=0$, and stage 2 maximises $\mathrm{Pr}(p)$ with the allowance and $\sum_iz_i\le z^{*}+10^{-6}$, giving $J^{\sm{LP,ceil}}$.
+The same stage 2 with $G^{\max}=0$ gives $J^{\sm{LP}}$, reported only in \Sec{sec:results-supp}.
+In contrast, the soft LP maximises $\mathrm{Pr}(p)-w_E\sum_iz_i-w_P\Delta t\sum_t(o^{+}(t)+o^{-}(t))$ subject to \Eq{eq:lp} in a single stage, giving $J^{\sm{pen,LP}}$.
+
+\begin{proposition}[Hard optimum]\label{prop:oracle}
+Let the configuration of Lemma~\ref{lem:a3} hold, and let $\pi$ be any controller whose reported powers satisfy \Eq{M-eq:transformer} at every step and whose realised total shortfall against the admitted requirements is at most $z^{*}$.
+Then $J^{\pi}\le J^{\sm{LP,ceil}}$.
+\end{proposition}
+
+\begin{proof}
+Let $\tilde p_i(t)$ be the reported powers and $E_i^{\sm{nom}}(t)=E_i^{\sm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$ the energy that the billed powers alone would produce.
+EV2Gym bills exactly $\tilde p$, so $J^{\pi}$ equals $\mathrm{Pr}$ at $p^{\pm}=\tilde p^{\pm}$.
+The rounding adds less than 0.01 kWh per active step, so $E_i^{\sm{real}}(t)-G_i^{\max}\le E_i^{\sm{nom}}(t)\le E_i^{\sm{real}}(t)\le E_i^{\sm{cap}}$ along the trajectory.
+Both the lowered energy floor and the lowered departure row therefore hold for $E^{\sm{nom}}$ with $z_i=(\Ereq_i-E_i^{\sm{real}}(d_i+1))^{+}$, and the power rows hold because $\tilde p_i\le\bar P_i(E_i^{\sm{real}})\le\Pnom_i$ and $\tilde p_i\ge-\Pdis_i$.
+Moreover, the first-step row holds because $E^{\sm{nom}}(t_i^{\sm{arr}})=E_i^{\sm{arr}}$.
+For the taper rows, EV2Gym never delivers more than $\varphi(E)-E$, so Lemma~\ref{lem:taperrows} gives $\tilde p_i(t)\le\varrho_{\kappa,i}(E^{\sm{cap}}-E_i^{\sm{real}}(t))\le\varrho_i^{\sm{out}}(E^{\sm{cap}}-E_i^{\sm{nom}}(t))$.
+The transformer rows are the assumption, and $\sum_iz_i\le z^{*}$, so the trajectory is feasible for stage 2 and its objective equals $J^{\pi}$.
+\end{proof}
+
+\begin{proposition}[Soft-penalty optimum]\label{prop:softoracle}
+Let the configuration of Lemma~\ref{lem:a3} hold, and let commands be clipped to the physical limits of \Eq{M-eq:limits}.
+For every simulated trajectory on a replay, with shortfall measured against the shared admitted requirement, $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$.
+\end{proposition}
+
+\begin{proof}
+Take $p^{\pm}=\tilde p^{\pm}$, $E=E^{\sm{nom}}$, $z_i=\Delta E_i^{\sm{sh}}$ and $o^{\pm}(t)$ equal to the realised overloads in either direction.
+The energy, power, first-step and taper rows hold as in the proof of Proposition~\ref{prop:oracle}, because they use only the physics of EV2Gym and not any constraint that the controller respects.
+For the departure row, $E^{\sm{nom}}(d_i+1)+z_i\ge E^{\sm{real}}(d_i+1)-G_i^{\max}+z_i\ge\Ereq_i-G_i^{\max}$, and the transformer rows hold by the definition of $o^{\pm}$.
+At this point the objective equals $J^{\sm{pen}}(\pi)$, with the same billed powers, shortfall and overload energy.
+\end{proof}
+
+The bound is a property of the measurement, not of the controller, so it covers controllers with shortfall or overload, the conformal and no-admission passes and the external baselines.
+Every pass in the wrapper applies the physical clip, and the Gurobi eMPC adapter clips its commands in the same way.
+A unit test released with the code checks $J^{\sm{pen}}\le J^{\sm{pen,LP}}$ for all rule-based methods on small replays, including random actions.
+Inside EV2Gym, a controller can exceed $J^{\sm{LP}}$ through the unbilled rounding gain, so the main text uses $J^{\sm{LP,ceil}}$ for the cost of the guarantee and reports $J^{\sm{LP}}$ only here.

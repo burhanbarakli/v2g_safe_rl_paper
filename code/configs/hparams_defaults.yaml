@@ -1,0 +1,6 @@
+# Explicit hyperparameters for the final training runs WITHOUT the tuning stage (DD37):
+#   ./reproduce.sh --hparams configs/hparams_defaults.yaml
+# Keys: method name (or its tuned base method, see v2gsafe/pipeline.py TUNED_METHODS) or 'default'; values are
+# configuration overlays. Empty overlays = the Alg. 6 defaults of configs/base.yaml (lr 3e-4, minibatch 512,
+# ent_coef 0, w = 10 EUR/kWh, lr_lambda 2). Results trained this way must be reported as "untuned".
+default: {}

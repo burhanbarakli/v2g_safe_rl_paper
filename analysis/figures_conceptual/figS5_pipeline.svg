@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 25 1000 390" width="1000" height="390" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 25 1000 395" width="1000" height="395" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">
   <title>Experimental pipeline: training, zero-shot test grid, comparison and metrics</title>
   <!-- Hand-written. Style follows fig_architecture.svg: dashed = training only, grey fill = safety layer / reference. -->
   <defs>
@@ -38,7 +38,7 @@
   <rect class="box" x="27" y="222" width="191" height="58" rx="3"/>
   <text x="122" y="240" text-anchor="middle">PPO, 3 × 10<tspan class="sub" baseline-shift="super">6</tspan> environment steps</text>
   <text class="s" x="122" y="255" text-anchor="middle">5 independent seeds per method;</text>
-  <text class="s" x="122" y="268" text-anchor="middle">same tuning budget for every method</text>
+  <text class="s" x="122" y="268" text-anchor="middle">equal tuning budget, selection on J<tspan class="sub" baseline-shift="super">pen</tspan></text>
   <text class="lab" x="122" y="294" text-anchor="middle">output: frozen policy weights</text>
 
   <!-- arrow 1 -> 2 -->
@@ -82,8 +82,8 @@
   <text x="380" y="243" text-anchor="middle">6 × 2 × 3 = 36 configurations</text>
   <text class="s" x="380" y="258" text-anchor="middle">fixed test replays shared by all methods:</text>
   <text class="s" x="380" y="271" text-anchor="middle">100 per configuration (N ≤ 50), 50 (N ≥ 100)</text>
-  <text class="s" x="380" y="286" text-anchor="middle">+ literature configuration (EV2Gym</text>
-  <text class="s" x="380" y="298" text-anchor="middle">V2GProfitMax, N = 25, 100 replays)</text>
+  <text class="s" x="380" y="284" text-anchor="middle">+ stress level ρ<tspan class="sub" baseline-shift="sub">tr</tspan> = 3 kW (N = 20, 200),</text>
+  <text class="s" x="380" y="296" text-anchor="middle">literature configuration (N = 25), sensitivities</text>
 
   <!-- arrow 2 -> 3 -->
   <line class="ln" x1="500" y1="175" x2="528" y2="175" marker-end="url(#arr)"/>
@@ -92,19 +92,23 @@
   <rect class="grp" x="530" y="40" width="215" height="270" rx="6"/>
   <text class="h" x="637" y="62" text-anchor="middle">3  Methods compared</text>
   <text class="s" x="637" y="77" text-anchor="middle">on identical replays (paired)</text>
-  <rect class="box" x="542" y="88" width="191" height="66" rx="3"/>
-  <text x="637" y="105" text-anchor="middle">Learned (5 seeds each)</text>
-  <text class="s b" x="637" y="120" text-anchor="middle">SA-Attn (attention + safety layer)</text>
-  <text class="s" x="637" y="133" text-anchor="middle">Attention+penalty, MLP+safety layer,</text>
-  <text class="s" x="637" y="146" text-anchor="middle">MLP+penalty</text>
-  <rect class="box" x="542" y="162" width="191" height="52" rx="3"/>
-  <text x="637" y="179" text-anchor="middle">Rule-based baselines</text>
-  <text class="s" x="637" y="194" text-anchor="middle">AFAP, ALAP, Round Robin, LLF</text>
-  <text class="s" x="637" y="207" text-anchor="middle">each raw and + safety layer</text>
-  <rect class="box" x="542" y="222" width="191" height="44" rx="3"/>
-  <text x="637" y="239" text-anchor="middle">EV2Gym economic MPC</text>
-  <text class="s" x="637" y="254" text-anchor="middle">raw and + safety layer</text>
-  <text class="lab" x="637" y="294" text-anchor="middle">same actuation and admission control</text>
+  <rect class="box" x="542" y="86" width="191" height="98" rx="3"/>
+  <text x="637" y="102" text-anchor="middle">Learned (5 seeds each)</text>
+  <text class="s b" x="637" y="116" text-anchor="middle">SA-Attn (attention + safety layer)</text>
+  <text class="s" x="637" y="129" text-anchor="middle">Attention+penalty, +PPO-Lagrangian,</text>
+  <text class="s" x="637" y="141" text-anchor="middle">+safety layer w/o departure bound;</text>
+  <text class="s" x="637" y="153" text-anchor="middle">Deep Sets+safety layer; MLP (two, N ≤ 20)</text>
+  <text class="s" x="637" y="165" text-anchor="middle">EV-GNN (per profile), raw and + layer</text>
+  <text class="s" x="637" y="177" text-anchor="middle">SA-Attn trained at N = 50 (reference)</text>
+  <rect class="box" x="542" y="190" width="191" height="56" rx="3"/>
+  <text x="637" y="204" text-anchor="middle">Rule-based baselines</text>
+  <text class="s" x="637" y="217" text-anchor="middle">AFAP, ALAP, Round Robin, LLF,</text>
+  <text class="s" x="637" y="229" text-anchor="middle">sLLF, price-threshold</text>
+  <text class="s" x="637" y="241" text-anchor="middle">each raw and + safety layer</text>
+  <rect class="box" x="542" y="252" width="191" height="38" rx="3"/>
+  <text x="637" y="267" text-anchor="middle">Economic MPC (HiGHS)</text>
+  <text class="s" x="637" y="281" text-anchor="middle">10 steps and 24 h, raw and + layer</text>
+  <text class="lab" x="637" y="303" text-anchor="middle">same requests, actuation, admission</text>
 
   <!-- arrow 3 -> 4 -->
   <line class="ln" x1="745" y1="175" x2="773" y2="175" marker-end="url(#arr)"/>
@@ -115,32 +119,33 @@
   <text class="s" x="880" y="77" text-anchor="middle">aggregated per configuration and N</text>
   <rect class="box" x="787" y="88" width="186" height="210" rx="3"/>
   <g>
-    <text x="799" y="108">profit (€)</text>
-    <text x="799" y="132">optimality gap (%)</text>
-    <text class="s" x="809" y="145">relative to the LP optimum</text>
-    <text x="799" y="169">unserved energy</text>
-    <text class="s" x="809" y="182">kWh and % of EVs below E<tspan class="sub" baseline-shift="super">req</tspan></text>
-    <text x="799" y="206">transformer violations</text>
-    <text class="s" x="809" y="219">steps and kWh above the limit</text>
-    <text x="799" y="243">infeasible steps</text>
-    <text class="s" x="809" y="256">and fallback activations</text>
-    <text x="799" y="280">inference time</text>
-    <text class="s" x="809" y="292">ms per control step versus N</text>
+    <text x="799" y="106">penalised profit J<tspan class="sub" baseline-shift="super">pen</tspan> (€)</text>
+    <text class="s" x="809" y="119">profit − 10 €/kWh × (shortfall</text>
+    <text class="s" x="809" y="130">+ transformer overload)</text>
+    <text x="799" y="150">optimality gap of J<tspan class="sub" baseline-shift="super">pen</tspan> (%)</text>
+    <text class="s" x="809" y="163">w.r.t. the soft-penalty optimum</text>
+    <text x="799" y="184">profit, unserved energy,</text>
+    <text x="799" y="198">transformer overload</text>
+    <text class="s" x="809" y="211">reported separately</text>
+    <text x="799" y="235">EVs without infeasible step</text>
+    <text class="s" x="809" y="248">(E4); fallback cases, binding rates</text>
+    <text x="799" y="268">inference time</text>
+    <text class="s" x="809" y="281">ms per control step versus N</text>
   </g>
 
   <!-- Perfect-information optimum (reference, not a controller) -->
-  <rect class="ref" x="530" y="336" width="215" height="54" rx="6"/>
-  <text class="h" x="637" y="356" text-anchor="middle">Perfect-information optimum</text>
-  <text class="s" x="637" y="371" text-anchor="middle">LP per replay solved with HiGHS</text>
-  <text class="s" x="637" y="383" text-anchor="middle">(upper bound on profit, not a controller)</text>
+  <rect class="ref" x="530" y="330" width="215" height="66" rx="6"/>
+  <text class="h" x="637" y="349" text-anchor="middle">Perfect-information optimum</text>
+  <text class="s" x="637" y="364" text-anchor="middle">LPs per replay (HiGHS), not controllers:</text>
+  <text class="s" x="637" y="377" text-anchor="middle">soft-penalty LP → bound on J<tspan class="sub" baseline-shift="super">pen</tspan> (main gap)</text>
+  <text class="s" x="637" y="389" text-anchor="middle">hard LP → cost of the guarantee</text>
   <path class="ln" d="M500,280 L515,280 L515,363 L528,363" marker-end="url(#arr)"/>
-  <path class="ln" d="M745,363 L760,363 L760,132 L785,132" marker-end="url(#arr)"/>
-  <text class="lab" x="770" y="378" text-anchor="start">optimum J<tspan class="sub" baseline-shift="super">LP</tspan> per replay</text>
+  <path class="ln" d="M745,363 L760,363 L760,145 L785,145" marker-end="url(#arr)"/>
 
   <!-- statistics note -->
-  <text class="lab" x="880" y="330" text-anchor="middle">statistics: seed-level means,</text>
-  <text class="lab" x="880" y="343" text-anchor="middle">95 % confidence intervals,</text>
-  <text class="lab" x="880" y="356" text-anchor="middle">Wilcoxon signed-rank + Holm</text>
+  <text class="lab" x="880" y="330" text-anchor="middle">statistics: 5 seeds, seed = unit;</text>
+  <text class="lab" x="880" y="343" text-anchor="middle">paired t-test on seed means, bootstrap</text>
+  <text class="lab" x="880" y="356" text-anchor="middle">CIs, Wilcoxon (replays), Holm per table</text>
 
   <!-- legend -->
   <line class="lnd" x1="20" y1="372" x2="60" y2="372"/>

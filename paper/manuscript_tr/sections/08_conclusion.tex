@@ -1,0 +1,20 @@
+% ---------------------------------------------------------------------
+\section{Sonuç}\label{sec:conclusion}
+% ---------------------------------------------------------------------
+
+Bu makale, bir CPO istasyonunda V2G şarj kontrolü için boyuttan bağımsız bir dikkat tabanlı politikayı olurluluğu koruyan bir güvenlik katmanıyla birleştirmiştir.
+Katman, eğitim ve kullanım sırasında ham eylemleri şarj gücü azalmasını dikkate alan araç başına sınırlara ve iki yönlü trafo limitine $O(N\log N)$ sürede izdüşürmektedir.
+Teorem~\ref{thm:invariance} iki katmanlı bir sonuç vermektedir.
+Tek adım modeli ve şebeke kapasite payı koşulu altında trafo limiti, her ham eylem dizisi için her adımda sağlanır.
+Kalış süresi boyunca olursuz adımla karşılaşmayan her EV kabul edilen ayrılış gereksinimini karşılar; diğerlerinin eksik enerjisini ise bir açık sınırı sınırlar.
+
+Sıfır-atış değerlendirmede \RES{$N=200$'e kadar cezalı kâr açığına ilişkin bir veya iki cümle, \Tab{S-tab:t2}}.
+Kısıtların sağlanması açısından \RES{aşırı yük enerjisi, eksik enerji ve E4 hakkında bir cümle, Tablo~\ref{S-tab:t3} ve~\ref{S-tab:t3b}}.
+Garantinin maliyeti \RES{hizmet verilen EV başına $\Delta J^{\sm{pen}}$ ve $\Delta$ kâr hakkında bir cümle, \Tab{S-tab:t5}} olarak bulunmuştur.
+
+Bir CPO açısından üç sınırlılık en çok önem taşımaktadır.
+Birincisi, ayrılış sonucu bildirilmiş gereksinimler ve ayrılış zamanları ya da yalnızca marjinal kapsamaya sahip kalibre edilmiş bir ayrılış sınırı gerektirir.
+İkincisi, trafoya ilişkin sonuç her EV'nin komut edilen gücü çektiğini varsayar; gerçek batarya yönetim sistemleri ise daha az güç çekebilir.
+Üçüncüsü, ekonomik değerlendirme gidiş-dönüş kayıplarını ve batarya yıpranmasını dışarıda bırakmaktadır.
+Gelecekteki çalışmalar sınırlara ölçülen enerjiden geri besleme ekleyebilir, olurlu kümeyi birden fazla trafoyu ve doğrusallaştırılmış gerilim limitlerini kapsayacak şekilde genişletebilir ve gelecek boyunca ortak olurluluğu sertifikalayabilir.
+Kaydedilmiş şarj oturumlarıyla yapılacak testler, model ile uygulama arasında kalan farkı daraltabilecektir.

@@ -2,13 +2,13 @@
 # Keys not listed in v2gsafe/config.py:DEFAULTS are rejected.
 method: attn_safe
 model:
-  arch: attention          # attention | mlp
+  arch: attention          # attention | mlp | deepsets
   d_model: 128             # d_m
   n_layers: 3              # n_L (pre-LN)
   n_heads: 4               # n_H
   head_hidden: 64          # actor head 128->64->2, critic head 128->64->1
-  mlp_hidden: 256          # MLP baseline: 2 x 256, tanh
-  n_max: 200               # MLP baseline zero-padding slots
+  mlp_hidden: 640          # MLP baseline: 2 x 640, tanh (capacity matched to attention actor, DD44)
+  n_max: 20                # MLP baseline zero-padding slots (N_max = 20, DD43-3; evaluated only at N <= 20)
 ppo:
   total_env_steps: 3000000 # transitions per run
   rollout_len: 128         # steps per env per update (16 x 128 = 2048 transitions)
@@ -52,17 +52,24 @@ scenario:                  # training mixture (Alg. 7.3): profile and rho_tr dra
   simulation_days: null    # null = per-profile days (weekdays / both / both)
 safety:
   enabled: true            # projection + fallback; false = physical clip only (penalty baselines)
-  admission: true          # DD9/DD20
+  lower_bound: true        # false: layer uses l_i = p_min (attn_proj_nolb, DD33(1))
+  admission: true          # DD9/DD20 as a controller-independent replay pre-pass for all methods (DD31)
   # DD25: 'lp_reachable' (default) = inside the admission LP only, each connected EV's target is
   # min(E_req, Psi^LP(E_i) - 1e-6); admitted requests are never reduced. 'admitted' = literal S 7.4 LP, which is
   # infeasible whenever an EV with a full-battery target is connected (IMPLEMENTATION_NOTES I-3).
   admission_existing_targets: lp_reachable
   eps_q: 0.008             # DD16
 reward:
-  type: profit             # profit (r) | penalty (r_pen, Alg. 5)
+  type: profit             # profit (r) | penalty (r_pen, Alg. 5) | lagrangian (PPO-Lagrangian, DD33(3))
   w_E: 10.0                # DD22
   w_P: 10.0
   dense: false             # penalty-dense ablation
+lagrangian:                # PPO-Lagrangian only (reward.type = lagrangian)
+  lr_lambda: 2.0           # dual step size (tuned, DD37)
+  lambda_init: 0.0
+  lambda_max: 1000.0
+  cost_limit_short: 0.0    # per-episode normalised cost limits d
+  cost_limit_over: 0.0
 conformal:
   enabled: false
   alpha: 0.1

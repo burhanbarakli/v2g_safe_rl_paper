@@ -17,7 +17,8 @@ from names import OI, MethodInfo, METHODS, info, label, method_order, conf_alpha
 SMOKE_MARK = "SMOKE TEST OUTPUT \u2013 NOT RESULTS"
 TRAIN_SIZES = [10, 20]
 TEST_SIZES = [5, 10, 20, 50, 100, 200]
-TIGHTNESS = {4.0: "tight", 7.0: "moderate"}
+TIGHTNESS = {3.0: "stress", 4.0: "tight", 7.0: "moderate"}
+GRID_RHOS = (4.0, 7.0)                 # main grid; rho_tr = 3 kW is the DD36 stress level
 
 
 def tightness(rho: float) -> str:

@@ -1,0 +1,116 @@
+% Türkçe inceleme kopyasının önsözü (manuscript_tr/main_tr.tex); İngilizce
+% ana metin ve ek materyalle ortak önsözün uyarlanmış kopyasıdır.
+% ---------------- compatibility preamble ----------------------------
+\makeatletter
+\ifsaucis\else
+  \usepackage[a4paper,margin=2.5cm]{geometry}
+  \usepackage[T1]{fontenc}
+  \IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
+  \setlength{\parindent}{0pt}          % SAUCIS: no paragraph indentation
+  \setlength{\parskip}{0.5\baselineskip}
+\fi
+% Türkçe dil desteği (kısaltmalar kapalı: matematik ve tablolarda = ve : bozulmasın)
+\usepackage[utf8]{inputenc}
+\@ifpackageloaded{fontenc}{}{\usepackage[T1]{fontenc}}
+\usepackage[turkish,shorthands=off]{babel}
+\@ifpackageloaded{amsmath}{}{\usepackage{amsmath}}
+\@ifpackageloaded{amssymb}{}{\usepackage{amssymb}}
+\@ifpackageloaded{amsthm}{}{%
+  \@ifundefined{proof}{}{\let\proof\relax\let\endproof\relax}%
+  \usepackage{amsthm}}
+\@ifpackageloaded{graphicx}{}{\usepackage{graphicx}}
+\@ifpackageloaded{booktabs}{}{\usepackage{booktabs}}
+\@ifpackageloaded{longtable}{}{\usepackage{longtable}}
+\@ifpackageloaded{xcolor}{}{\usepackage{xcolor}}
+\@ifpackageloaded{array}{}{\usepackage{array}}
+\@ifpackageloaded{cite}{}{\usepackage{cite}}
+\@ifpackageloaded{algorithm}{}{\usepackage{algorithm}}
+\@ifpackageloaded{algpseudocode}{}{\@ifpackageloaded{algorithmic}{}{\usepackage{algpseudocode}}}
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\IfFileExists{adjustbox.sty}{\@ifpackageloaded{adjustbox}{}{\usepackage{adjustbox}}}{}% generated result tables use adjustbox
+\captionsetup{font=small,labelfont=bf}
+\@ifundefined{floatname}{}{\floatname{algorithm}{Algoritma}}
+\@ifpackageloaded{eurosym}{}{\IfFileExists{eurosym.sty}{\usepackage[gen]{eurosym}}{\providecommand{\euro}{\texteuro}}}
+% cross-references between main text and supplementary material
+\@ifpackageloaded{hyperref}{\usepackage{xr}}{\usepackage{xr-hyper}\usepackage[hidelinks]{hyperref}}
+\makeatother
+
+% Unicode symbols that generated tables may contain (pdflatex)
+\makeatletter
+\@ifundefined{DeclareUnicodeCharacter}{}{%
+\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}}\DeclareUnicodeCharacter{03A3}{\ensuremath{\Sigma}}%
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}\DeclareUnicodeCharacter{03BC}{\ensuremath{\mu}}%
+\DeclareUnicodeCharacter{03C1}{\ensuremath{\rho}}\DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}%
+\DeclareUnicodeCharacter{03B2}{\ensuremath{\beta}}\DeclareUnicodeCharacter{0394}{\ensuremath{\Delta}}%
+\DeclareUnicodeCharacter{03B7}{\ensuremath{\eta}}\DeclareUnicodeCharacter{03C4}{\ensuremath{\tau}}%
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}%
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}\DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}}%
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}%
+\DeclareUnicodeCharacter{2020}{\ensuremath{\dagger}}}
+\makeatother
+\setlength{\emergencystretch}{2em}
+% anonymous builds: no creation date or trailer id in the PDF metadata
+\ifanonymous\ifdefined\pdfinfoomitdate\pdfinfoomitdate=1\fi\ifdefined\pdftrailerid\pdftrailerid{}\fi\fi
+
+% ---------------- theorem environments ------------------------------
+\theoremstyle{plain}
+\makeatletter
+\@ifundefined{theorem}{\newtheorem{theorem}{Teorem}}{}
+\@ifundefined{lemma}{\newtheorem{lemma}{Lemma}}{}
+\@ifundefined{proposition}{\newtheorem{proposition}{Önerme}}{}
+\@ifundefined{corollary}{\newtheorem{corollary}{Sonuç}}{}
+\theoremstyle{definition}
+\@ifundefined{assumption}{\newtheorem*{assumption}{Varsayım}}{}
+\@ifundefined{remark}{\newtheorem{remark}{Not}
+\@ifundefined{definition}{\newtheorem{definition}{Tanım}}{}}{}
+\makeatother
+
+% Türkçe başlık adları (babel'in varsayılanları: Özet, Kanıt)
+\addto\captionsturkish{\renewcommand{\abstractname}{Öz}\renewcommand{\proofname}{İspat}%
+  \renewcommand{\figurename}{Şekil}\renewcommand{\tablename}{Tablo}\renewcommand{\refname}{Kaynaklar}}
+
+% ---------------- project macros ------------------------------------
+\newcommand{\RES}[1]{\textcolor{red}{[SONUÇ: #1]}}
+\newcommand{\TODO}[1]{\textcolor{blue}{[YAPILACAK: #1]}}
+\newcommand{\method}{SA-Attn}          % method name; must match analysis/scripts/names.py
+\newcommand{\Eq}[1]{Denklem~\ref{#1}}
+\newcommand{\Eqs}[2]{Denklem~\ref{#1}--\ref{#2}}
+\newcommand{\Fig}[1]{Şekil~\ref{#1}}
+\newcommand{\Tab}[1]{Tablo~\ref{#1}}
+\newcommand{\Sec}[1]{Bölüm~\ref{#1}}
+\newcommand{\Alg}[1]{Algoritma~\ref{#1}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\clip}{\operatorname{clip}}
+\newcommand{\Ctil}{\tilde C}
+\newcommand{\Crev}{C_{\mathrm{rev}}}
+\newcommand{\Bh}{\hat B}
+\newcommand{\Pnom}{\bar P^{\mathrm{nom}}}
+\newcommand{\Pdis}{P^{\mathrm{dis}}}
+\newcommand{\Ereq}{E^{\mathrm{req}}}
+\newcommand{\pmn}{p^{\min}}
+\newcommand{\sm}{\mathrm}
+
+% figure from file, or a framed placeholder if the file is missing
+\newcommand{\figorbox}[3]{%
+  \IfFileExists{#1}{\includegraphics[width=#2]{#1}}{%
+    \fbox{\parbox[c][#3][c]{0.9\linewidth}{\centering\small
+      Şekil dosyası bulunamadı: \texttt{\detokenize{#1}}}}}}
+% first existing file of three candidates (analysis output, analysis source, local copy)
+\newcommand{\figchain}[4]{%
+  \IfFileExists{#2}{\includegraphics[width=#1]{#2}}{%
+  \IfFileExists{#3}{\includegraphics[width=#1]{#3}}{\figorbox{#4}{#1}{5cm}}}}
+% Generated results. \analysisdir points to the analysis output tree of the
+% planned paper/ + analysis/ layout; a build may override it before \input.
+\providecommand{\analysisdir}{../../analysis}
+% generated result table: analysis output, local copy in tables/, or placeholder
+\newcommand{\resulttable}[2]{\IfFileExists{#1}{\input{#1}}{#2}}
+\newcommand{\restable}[2]{%
+  \IfFileExists{\analysisdir/tables/#1.tex}{\input{\analysisdir/tables/#1.tex}}{%
+  \IfFileExists{tables/#1.tex}{\input{tables/#1.tex}}{#2}}}
+% generated result figure: analysis output, local copy in figures/, or a red placeholder box
+\newcommand{\resultfig}[2]{%
+  \IfFileExists{\analysisdir/figures/#1}{\includegraphics[width=0.85\linewidth]{\analysisdir/figures/#1}}{%
+  \IfFileExists{figures/#1}{\includegraphics[width=0.85\linewidth]{figures/#1}}{%
+    \fbox{\parbox[c][5cm][c]{0.85\linewidth}{\centering\small
+      \textcolor{red}{SONUÇ ŞEKLİ YER TUTUCUSU}\\[2mm]
+      beklenen dosya: \texttt{\detokenize{#1}} (analysis/figures/)\\[1mm] #2}}}}}

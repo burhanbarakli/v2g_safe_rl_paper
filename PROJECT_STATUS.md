@@ -3,10 +3,10 @@
 **Project:** Attention-Based Safe RL for Scale-Agnostic and Constraint-Guaranteed V2G Charging Control
 **Target journal:** SAUCIS (Sakarya University Journal of Computer and Information Sciences)
 **Human author / decision maker:** Gakko (kucuker@sakarya.edu.tr)
-**Last update:** 2026-10-22
+**Last update:** 2026-10-22 (evening)
 
 ## Current phase
-Phase 2 complete -> **waiting at gate G2** (see `review/G2_report.md`). G1 approved 2026-10-21 (D1-D5 recorded in G1_report.md).
+Code infrastructure and manuscript (non-result parts) complete; two internal review rounds done. **Waiting for the author's experiment runs** (see `HANDOVER_TR.md`). G1 approved 2026-10-21, G2 approved 2026-10-22.
 
 ## Deviations from orchestrator prompt (with justification)
 - Project root is `~/Documents/v2g Rl/v2g_safe_rl_paper/` (the folder the author connected) instead of `~/v2g_safe_rl_paper/`.
@@ -19,10 +19,10 @@ Phase 2 complete -> **waiting at gate G2** (see `review/G2_report.md`). G1 appro
 |---|---|---|---|---|
 | 0 Setup | Orchestrator | structure, git, plan, journal requirements | - | done |
 | 1 Literature & novelty | A1, A6 | paper matrix, gap analysis, novelty, refs, style profile | G1 | done, approved |
-| 2 Method | A2, A6 | formulation, safety layer, theorem+proof, algorithm | G2 | done, awaiting G2 |
-| 3 Implementation & pilot | A3 | code infrastructure + unit tests here; pilot and full runs on the author's computer (D5) | G3 | not started |
-| 4 Full experiments & analysis | A3, A4 | raw results, stats, figures, numbers-only summary | G4 | not started |
-| 5 Writing | A5, A6 (+ human for Results interpretation/Discussion, per AI policy) | draft, lint, 2 review rounds | G5 | not started |
+| 2 Method | A2, A6 | formulation, safety layer, theorem+proof, algorithm | G2 | done, approved |
+| 3 Implementation & pilot | A3 | code infrastructure (97 tests pass, smoke pipeline OK); pilot and full runs on the author's computer (D5) | G3 | code done; pilot pending (author) |
+| 4 Full experiments & analysis | author + A4 | analysis pipeline ready (37 tests, synthetic-only); runs by author | G4 | pipeline done; runs pending |
+| 5 Writing | A5, A6 (+ human for Results interpretation/Discussion, per AI policy) | draft, lint, 2 review rounds | G5 | non-result parts done (7,057 words, 21 p.); results pending |
 | 6 Final package | all | manuscript, cover letter, declarations, repro package | G6 | not started |
 
 ## Completed tasks
@@ -45,4 +45,8 @@ Phase 2 complete -> **waiting at gate G2** (see `review/G2_report.md`). G1 appro
 - No GPU (cloud 2 CPU/7 GB; local VM 4 CPU/3 GB).
 
 ## Next gate
-G2: approve method and choices Q1-Q6 (review/G2_report.md).
+G3/G4 after the author's pilot and full runs; then fill \RES placeholders, author revision, G5.
+
+## Key open items
+- Novelty risk R1-R3 (orfanoudakis2026can, song2025longterm, eland2026safe full texts).
+- Author: final title, AI statement wording, revision of AI-drafted text, interpretation, template files (saucis.cls, IEEEtran.bst).

@@ -34,6 +34,7 @@ def test_evaluate_cli_writes_all_columns_and_step_logs(tiny):
     d, g = tiny
     out = d / "afap_safe_run"
     ev_cli.main(["--method", "afap_safe", "--test-set", str(g), "--test-sets-dir", str(d / "ts"), "--out", str(out),
+                 "--admission-cache", str(d / "adm"),
                  "--smoke", "--log-steps"])
     rows = list(csv.DictReader((out / "episodes.csv").open()))
     assert len(rows) == 2
@@ -59,6 +60,7 @@ def test_evaluate_cli_writes_all_columns_and_step_logs(tiny):
         assert c in ch.columns, c
     # resume: a second call finds the complete part file and does not re-run
     ev_cli.main(["--method", "afap_safe", "--test-set", str(g), "--test-sets-dir", str(d / "ts"), "--out", str(out),
+                 "--admission-cache", str(d / "adm"),
                  "--smoke"])
     assert len(list(csv.DictReader((out / "episodes.csv").open()))) == 2
 
@@ -76,7 +78,7 @@ def test_oracle_upper_bounds_heuristics_on_tiny_replay(tiny):
         for seed in (3, 4):
             envs[True].reset(seed, scfg)
             orc = solve_oracle(envs[True].env, scfg.dt_h)
-            assert orc["solver_status"] == "Optimal"
+            assert orc["solver_status"].startswith("Optimal")
             J, Jc, z = orc["profit_eur"], orc["oracle_profit_ceil_eur"], orc["shortfall_stage_kwh"]
             assert Jc >= J - 1e-9
             checked = 0

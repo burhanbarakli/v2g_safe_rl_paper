@@ -114,7 +114,21 @@ class EMPCGurobi(Controller):
             cls = _empc_np2_class()
         except ImportError as e:  # pragma: no cover
             raise RuntimeError("EV2Gym eMPC needs gurobipy; use method empc_highs instead") from e
-        self.mpc = cls(env.env, control_horizon=self.horizon, verbose=False)
+        # DD43(1): EV2Gym's eMPC reads every session's desired_capacity from env.EVs_profiles at construction;
+        # give it the shared admitted requirement (table of the replay), then restore the profiles (fingerprints)
+        saved = []
+        tab = getattr(env, "adm_table", None)
+        if tab is not None and env.opt.admission:
+            for ev in env.env.EVs_profiles:
+                ent = tab.get((int(ev.location), int(ev.time_of_arrival)))
+                if ent is not None:
+                    saved.append((ev, ev.desired_capacity))
+                    ev.desired_capacity = float(ent["E_req"])
+        try:
+            self.mpc = cls(env.env, control_horizon=self.horizon, verbose=False)
+        finally:
+            for ev, v in saved:
+                ev.desired_capacity = v
         if self.mpc.ch_eff > 1.0:            # dict efficiency tables are in percent (adapter fix, see module doc)
             self.mpc.ch_eff /= 100.0
             self.mpc.disch_eff /= 100.0
@@ -127,7 +141,9 @@ class EMPCGurobi(Controller):
                                f"N <= 25 at horizon 10; use method empc_highs.") from e
         zeta = np.array([s.params.zeta_c if (s and a_i > 0) else (s.params.zeta_d if s else 1.0)
                          for s, a_i in zip(env.slots, a)])
-        return np.where(obs.occ, a * P_CS * zeta, 0.0)
+        a = np.clip(a, -1.0, 1.0)                 # DD43(1): Gurobi commands clipped to physical limits
+        x = np.clip(a * P_CS * zeta, obs.pmin, obs.u)
+        return np.where(obs.occ, x, 0.0)
 
 
 class EMPCHighs(Controller):
@@ -184,8 +200,8 @@ class EMPCHighs(Controller):
             for k in range(K):
                 tau = t0 - t + k
                 agg[tau].append((pp[k], pm[k]))
-                cost_idx += [pp[k], pm[k]]
-                cost_val += [-dt * (cch[tau] + thr), dt * (cdis[tau] - thr)]
+                cost_idx.extend([pp[k], pm[k]])
+                cost_val.extend([-dt * (cch[tau] + thr), dt * (cdis[tau] - thr)])
             if key is not None:
                 first[key] = (pp[0], pm[0])
 
@@ -199,7 +215,12 @@ class EMPCHighs(Controller):
                 p = ev_params_from_ev2gym(ev, dt)
                 E0 = float(ev.battery_capacity_at_arrival)
                 d = int(ev.time_of_departure)
-                Ereq = min(float(ev.desired_capacity), E0 + (d - ta + 1) * p.pnom * dt)
+                # DD43(1): the shared admitted requirement of the replay (same as every method gets at arrival)
+                ent = env.adm_table.get((int(ev.location), ta)) if getattr(env, "adm_table", None) else None
+                if ent is not None and env.opt.admission:
+                    Ereq = float(ent["E_req"])
+                else:
+                    Ereq = min(float(ev.desired_capacity), E0 + (d - ta + 1) * p.pnom * dt)
                 pmin0 = -min(p.pdis, max(0.0, E0 - p.e_min) / dt)
                 u0 = (phi_scalar(E0, p.cap, p.pnom, p.s_tr, p.m, dt) - E0) / dt
                 add_session(E0, d, ta, Ereq, p, pmin0, u0)

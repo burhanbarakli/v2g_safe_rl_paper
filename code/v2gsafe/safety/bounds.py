@@ -207,3 +207,22 @@ def taper_minorant_rho(params: EVParams, n_grid: int = 2000, safety: float = 0.9
     if not np.any(sel):
         return safety / params.dt_h
     return float(safety * np.min(pbar[sel] / head[sel]))
+
+
+def taper_outer_rho(params: EVParams, n_grid: int = 20000, margin: float = 0.01) -> float:
+    """Outer slope rho_out = sup_E Pbar_i(E) / (E_cap - E) [1/h] (DD32): the constraint p <= rho_out (E_cap - E) is
+    satisfied by every power EV2Gym can deliver, so the oracle LP with it stays a relaxation (upper bound).
+
+    EV2Gym's taper (ev.py ``_charge``, max pilot): above the transition SoC s >= s_tr the next SoC is
+    1 - (1 - s) exp(-kappa) with kappa = m d / (1 - s_tr), i.e. Pbar(E) = (E_cap - E)(1 - e^{-kappa}) / dt exactly;
+    without taper (s_tr >= 1) Pbar(E) = min(Pnom, (E_cap - E)/dt), sup ratio 1/dt. The supremum over the whole range
+    (including the constant-power and transition regions) is evaluated on a grid, combined with the analytic
+    upper-region value and inflated by ``margin``."""
+    dt = params.dt_h
+    if params.s_tr >= 1.0:
+        return 1.0 / dt
+    E = np.linspace(params.e_min, params.cap, n_grid + 1)[:-1]
+    head = params.cap - E
+    ratio = (params.phi_vec(E) - E) / dt / np.maximum(head, 1e-12)
+    upper = (1.0 - math.exp(-params.kappa)) / dt
+    return float(min(1.0 / dt, (1.0 + margin) * max(float(np.max(ratio)), upper)))

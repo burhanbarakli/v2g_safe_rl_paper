@@ -134,7 +134,7 @@
 
   <!-- reward path -->
   <path class="lnd" d="M45,300 L45,470 L815,470 L815,434" marker-end="url(#arr)"/>
-  <text class="lab" x="430" y="464" text-anchor="middle">reward r(t): step profit in € (no penalty for the guaranteed constraints)</text>
+  <text class="lab" x="430" y="464" text-anchor="middle">reward r(t): step profit in € (no penalty for constraints enforced by the safety layer)</text>
 
   <!-- legend -->
   <line class="ln" x1="30" y1="500" x2="70" y2="500"/>
@@ -142,5 +142,5 @@
   <line class="lnd" x1="300" y1="500" x2="340" y2="500"/>
   <text class="s" x="348" y="504">training only</text>
   <rect class="safe" x="460" y="492" width="22" height="16" rx="2"/>
-  <text class="s" x="490" y="504">safety layer (closed form, provable feasibility under A1–A5)</text>
+  <text class="s" x="490" y="504">safety layer (closed-form projection; feasibility preserved under stated conditions)</text>
 </svg>

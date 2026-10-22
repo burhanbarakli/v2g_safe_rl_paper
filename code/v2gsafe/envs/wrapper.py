@@ -3,7 +3,8 @@
 Per decision step t (= ``env.current_step``):
 
 1. :meth:`SafeV2GEnv.observe` - processes arrivals (DD2 cap with certified threshold tables, optional conformal
-   departure bound (Alg. 4) and admission control (DD9/DD20)), computes the per-step bounds (Alg. 1.1),
+   departure bound (Alg. 4) and the admitted request of the controller-independent admission pre-pass
+   (DD9/DD20/DD31, :mod:`v2gsafe.safety.admission_prepass`)), computes the per-step bounds (Alg. 1.1),
    the A5 flag and the token observation (formulation.md Sec. 4.2: 12 charger features + 38 global features).
 2. :meth:`SafeV2GEnv.step` - maps a raw action x (kW, one entry per charger) to the commanded power p:
    safety layer on: projection (Alg. 1.2) on A5 steps, fallback rule (Alg. 1.3) otherwise;
@@ -11,7 +12,8 @@ Per decision step t (= ``env.current_step``):
    rounding (Alg. 1.4), ``env.step``, reported powers, transformer violation (DD7 metric), departures and
    shortfall, the profit reward r (F9) and the penalty reward r_pen (Alg. 5 / DD22).
 
-The wrapper never reads ``env.EVs_profiles`` (future arrivals). EV2Gym is not patched; the wrapper only sets
+The closed loop never reads ``env.EVs_profiles`` (future arrivals); the admission pre-pass does, but its rule is
+causal (each decision uses only information up to that arrival, I-22) and controller-independent. EV2Gym is not patched; the wrapper only sets
 instance attributes (``tr_seed`` per replay, scenario keys of ``env.config`` between episodes).
 """
 from __future__ import annotations
@@ -65,7 +67,8 @@ def make_ev2gym_env(scfg: ScenarioConfig, seed: int = 0):
 class WrapperOptions:
     safety: bool = True                 # projection + fallback (True) or physical clip only (False)
     lower_bound: bool = True            # False: the layer uses l_i = p_i^min (attn_proj_nolb, DD33(1))
-    admission: bool = True              # admission control on arrival (DD9/DD20), all methods (DD31)
+    admission: bool = True              # admission control (DD9/DD20) as a replay pre-pass, all methods (DD31)
+    admission_cache: str | None = None  # directory of cached admission tables (None: in-memory only)
     admission_existing_targets: str = "lp_reachable"   # DD25 (IMPLEMENTATION_NOTES I-3)
     eps_q: float = EPS_Q                # DD16
     p_ref: float = P_REF
@@ -90,9 +93,11 @@ class Slot:
     E_des: float
     E_req_dd2: float
     E_req: float            # admitted requirement (DD2 cap and admission control)
+    E_req_shared: float     # shared admitted requirement of the replay (DD43(1); = E_req unless noadm/conformal)
     B: np.ndarray           # certified threshold table for E_req, length d_ctrl - t_arr + 2
     rho: float
     touched: bool = False
+    stay_infeasible: bool = False   # the stay contains >= 1 infeasible (non-A5) step (DD43(2))
 
 
 @dataclass
@@ -127,8 +132,7 @@ class StepOut:
 class SafeV2GEnv:
     """EV2Gym wrapper with the safety layer. One station with N chargers, one port each."""
 
-    def __init__(self, scfg: ScenarioConfig, options: WrapperOptions | None = None, admission=None,
-                 env_seed: int = 0):
+    def __init__(self, scfg: ScenarioConfig, options: WrapperOptions | None = None, env_seed: int = 0):
         self.scfg = scfg
         self.opt = options or WrapperOptions()
         self.env = make_ev2gym_env(scfg, seed=env_seed)
@@ -136,11 +140,7 @@ class SafeV2GEnv:
         self.dt_h = scfg.dt_h
         self.T = scfg.horizon
         self.N_day = int(round(24 / self.dt_h))
-        if admission is None and self.opt.admission:
-            from ..safety.admission import AdmissionController
-            admission = AdmissionController(eps_q=self.opt.eps_q,
-                                            existing_targets=self.opt.admission_existing_targets)
-        self.admission = admission if self.opt.admission else None
+        self.adm_table: dict | None = None
         self.forecaster = NoisyForecaster(self.opt.forecast_rel_std, H_F)
         self.counters = GuardCounters()
         self.slots: list[Slot | None] = [None] * self.N
@@ -185,6 +185,12 @@ class SafeV2GEnv:
         self.counters = GuardCounters()
         self.step_log, self.charger_log = [], []
         self.cp = self.opt.conformal_provider(self.scfg) if self.opt.conformal_provider else None
+        # DD31/DD43(1): the shared admission table of the replay (true departures, controller-independent) is computed
+        # for every pass; with admission on it gives the requirement, otherwise (noadm) it is the reference of the
+        # *_shared shortfall columns. Conformal passes take the shared requirement, re-certified with their d_lo.
+        from ..safety.admission_prepass import get_table
+        self.adm_table = get_table(self.env, self.scfg, seed, self.opt.eps_q, self.opt.admission_existing_targets,
+                                   self.opt.forecast_rel_std, None, self.opt.admission_cache)
         self._obs = None
         return self.observe()
 
@@ -208,21 +214,7 @@ class SafeV2GEnv:
         P_pv = -float(tr.solar_power[t])
         return tr, P_tr, P_inf, P_pv
 
-    def _capacity_forecast(self, t: int, horizon: int, fc_inf: np.ndarray, fc_pv: np.ndarray):
-        """C_hat(t'), C_rev_hat(t') for t' = t .. t+horizon-1: realised at t, forecasts for t+1..t+H_f, then the
-        last forecast held (safety_layer.md Sec. 7.4)."""
-        tr, _, P_inf, P_pv = self._exogenous(t)
-        k = np.arange(horizon)
-        Ptr = np.asarray(tr.max_power, float)[np.minimum(t + k, self.T - 1)]
-        inf = np.empty(horizon)
-        pv = np.empty(horizon)
-        inf[0], pv[0] = P_inf, P_pv
-        if horizon > 1:
-            j = np.minimum(k[1:] - 1, len(fc_inf) - 1)
-            inf[1:], pv[1:] = fc_inf[j], fc_pv[j]
-        return Ptr - inf + pv, Ptr + inf - pv
-
-    def _arrive(self, i: int, ev, t: int, fc_inf: np.ndarray, fc_pv: np.ndarray) -> None:
+    def _arrive(self, i: int, ev, t: int) -> None:
         params = ev_params_from_ev2gym(ev, self.dt_h, self.env.charging_stations[i].get_max_power())
         E_arr = float(ev.current_capacity)
         E_des = float(ev.desired_capacity)
@@ -237,20 +229,22 @@ class SafeV2GEnv:
         E_req_dd2 = E_req
         rho = taper_minorant_rho(params)
         adm_kwh, adm_failed = 0.0, False
-        if self.admission is not None:
-            existing = [s for s in self.slots if s is not None]
-            horizon = max([d_ctrl] + [s.d_ctrl for s in existing]) - t + 1
-            Chat, Crhat = self._capacity_forecast(t, horizon, fc_inf, fc_pv)
-            n_now = len(existing) + 1
-            y, info = self.admission.admit(t, E_arr, d_ctrl, E_req, params, rho, existing, Chat, Crhat, n_now,
-                                           self.dt_h)
+        e = self.adm_table.get((i, t)) if self.adm_table is not None else None
+        if self.adm_table is not None and (e is None or abs(e["E_arr"] - E_arr) > 1e-9 or int(e["d"]) != d):
+            raise RuntimeError(f"admission table mismatch at charger {i}, step {t} (replay {self.seed})")
+        E_shared = float(e["E_req"]) if e is not None else E_req_dd2
+        if self.opt.admission and e is not None:
+            y = E_shared
             if y < E_req - 1e-12:
                 E_req, B = cap_request(y, E_arr, K, params.phi, params.e_min, params.cap)  # re-certify A4 (DD20)
                 adm_kwh = E_req_dd2 - E_req
-            adm_failed = bool(info.get("not_restored", False))
+            adm_failed = bool(e.get("not_restored", False))
+        # DD43(1): the requirement the method is given is also written into EV2Gym's EV object (spawned copy, not the
+        # profile), so baselines that read EV2Gym state (EV-GNN, Gurobi eMPC) target the same requirement
+        ev.desired_capacity = float(E_req)
         assert E_arr >= B[K] - 1e-12, "A4 violated after cap_request"
         self.slots[i] = Slot(ev=ev, params=params, t_arr=t, d=d, d_ctrl=d_ctrl, E_arr=E_arr, E_des=E_des,
-                             E_req_dd2=E_req_dd2, E_req=E_req, B=B, rho=rho)
+                             E_req_dd2=E_req_dd2, E_req=E_req, E_req_shared=E_shared, B=B, rho=rho)
         self.acc.on_arrival(E_des - E_req_dd2, adm_kwh, adm_failed, params.kappa)
 
     # ------------------------------------------------------------------------------------ observe
@@ -261,8 +255,8 @@ class SafeV2GEnv:
         if t >= self.T:
             raise RuntimeError("episode finished; call reset()")
         tr, P_tr, P_inf, P_pv = self._exogenous(t)
-        fc_inf = self.forecaster.forecast(np.asarray(tr.inflexible_load, float), t)
-        fc_pv = self.forecaster.forecast(-np.asarray(tr.solar_power, float), t)
+        fc_inf = self.forecaster.forecast(np.asarray(tr.inflexible_load, float), t, 0)
+        fc_pv = self.forecaster.forecast(-np.asarray(tr.solar_power, float), t, 1)
         for i, cs in enumerate(env.charging_stations):
             ev = cs.evs_connected[0]
             s = self.slots[i]
@@ -271,7 +265,7 @@ class SafeV2GEnv:
                     self.slots[i] = None
                 continue
             if s is None or s.ev is not ev:
-                self._arrive(i, ev, t, fc_inf, fc_pv)
+                self._arrive(i, ev, t)
 
         N = self.N
         occ = np.array([s is not None for s in self.slots])
@@ -307,6 +301,11 @@ class SafeV2GEnv:
         l_dep = l
         l_lay = l if self.opt.lower_bound else pmin.copy()
         feasible = bool(is_feasible(l_lay[None], u[None], Ctil, Crev, mask=occ[None])[0])
+        if not feasible:                                   # DD43(2): EVs whose stay contains an infeasible step
+            for i in idx:
+                if not self.slots[i].stay_infeasible:
+                    self.slots[i].stay_infeasible = True
+                    self.acc.n_stay_infeasible += 1
         lo = l_lay if self.opt.safety else pmin
         infl = occ & (u - lo > EPS_NUM)
 
@@ -413,6 +412,13 @@ class SafeV2GEnv:
         # departures
         dep_short_dd2 = 0.0
         dep_short_adm = 0.0
+        # DD43(2) per-step diagnostics on the commanded powers: aggregate limit binding (sum p at C_tilde or -C_rev,
+        # i.e. the projection's lambda > 0 / < 0 on A5 steps) and lower bound active (p_i = l_i > p_i^min)
+        sp_cmd = float(p[occ].sum()) if occ.any() else 0.0
+        tol = 1e-6 * max(1.0, abs(obs.Ctil), abs(obs.Crev))
+        agg_up = bool(occ.any() and sp_cmd >= obs.Ctil - tol)
+        agg_lo = bool(occ.any() and sp_cmd <= -obs.Crev + tol)
+        lb_act = int(np.sum(occ & (np.abs(p - ldep) <= 1e-9) & (ldep > obs.pmin + 1e-9)))
         for ev in self.env.departing_evs:
             i = int(ev.location)
             s = self.slots[i]
@@ -421,27 +427,32 @@ class SafeV2GEnv:
             Ef = float(ev.current_capacity)
             short = max(0.0, s.E_req - Ef)
             short2 = max(0.0, s.E_req_dd2 - Ef)
+            short3 = max(0.0, s.E_req_shared - Ef)
             dep_short_dd2 += short2
             dep_short_adm += short
             cov = slack = None
             if self.cp is not None:
                 cov = bool(s.d >= s.d_ctrl)
                 slack = float(s.d - s.d_ctrl)
-            self.acc.on_departure(short, short2, float(ev.get_user_satisfaction()), s.touched, cov, slack)
+            sat = 1.0 if Ef >= s.E_des - 0.001 else Ef / s.E_des      # vs the original E_des (EV2Gym's formula)
+            self.acc.on_departure(short, short2, sat, s.touched, cov, slack, short_shared=short3)
             self.slots[i] = None
         r = float(reward)
         thr = float(getattr(self.scfg, "throughput_cost", 0.0) or 0.0)
         if thr:                                     # battery-throughput cost (DD39), reward and evaluation
             r -= thr * self.dt_h * float(np.abs(p_rep).sum())
         over = max(0.0, sp - obs.C) + max(0.0, -obs.Crev - sp)
-        r_pen = r - self.opt.w_E * dep_short_dd2 - self.opt.w_P * self.dt_h * over
+        # penalty reward (Alg. 5, DD22) vs the admitted request (DD31: the same request pipeline for all methods;
+        # without admission control the admitted request is the DD2-capped one)
+        r_pen = r - self.opt.w_E * dep_short_adm - self.opt.w_P * self.dt_h * over
         if self.opt.penalty_dense:
             r_pen -= self.opt.w_E * self.dt_h * deficit
         self.acc.on_step(profit=r, pen_reward=r_pen, p_rep=p_rep, viol_kw=viol, feasible=obs.feasible,
                          fb_case=fb_case, deficit_kw=deficit, proj_dist=dist,
                          slack_kw=obs.Ctil - float(ldep[occ].sum()),
                          margin_kw=float(np.max(p_rep[occ] - p[occ])) if occ.any() else -math.inf,
-                         deliv_min_kwh=deliv if np.isfinite(deliv) else math.inf)
+                         deliv_min_kwh=deliv if np.isfinite(deliv) else math.inf,
+                         agg_upper=agg_up, agg_lower=agg_lo, lb_active=lb_act, n_occ=int(occ.sum()))
         if inference_ms is not None:
             self.acc.on_inference(inference_ms)
         self._obs = None

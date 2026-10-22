@@ -1,6 +1,7 @@
-# Attention + penalty (Alg. 5 row 3): no safety layer (physical clip only), reward r_pen (DD22).
+# Attention + penalty (Alg. 5 row 3): no safety layer (physical clip only), reward r_pen (DD22) vs the admitted
+# request (admission pre-pass for all methods, DD31).
 inherit: base.yaml
 method: attn_penalty
-safety: {enabled: false, admission: false}
+safety: {enabled: false, admission: true}   # DD31: same admitted requests as every method
 reward: {type: penalty}
 ppo: {beta: 0.0}

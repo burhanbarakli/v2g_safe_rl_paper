@@ -10,6 +10,12 @@
 * GAE(gamma, lambda) with true terminals at t = T; clipped surrogate, value loss, entropy bonus, Adam with
   linear LR decay, global grad-norm clipping, target-KL early stop of the epoch loop.
 * Mixed-N batches: buffers of width N_env padded to N_max at update time (Lemma N1(iv)).
+* PPO-Lagrangian (reward.type = 'lagrangian', DD33(3)): profit reward, two constraint costs per step (departure
+  shortfall vs the admitted request and transformer-overload energy, kWh), normalised like DD15 as
+  c / (N P_ref dt); a 3-output critic (value + 2 cost values), cost GAE, combined advantage
+  (A_r - lam_E A_E - lam_P A_P) / (1 + lam_E + lam_P) and projected dual ascent
+  lam <- clip(lam + lr_lambda (J_c - d), 0, lam_max) once per rollout, J_c = mean normalised cost per step x T
+  (per-episode cost of the rollout), d = cost limit (default 0).
 """
 from __future__ import annotations
 
@@ -43,17 +49,30 @@ TRAIN_LOG_COLUMNS = [
     # extras
     "update", "n_episodes", "penalty_return_eur_mean", "infeasible_frac", "fallback_frac", "epochs_run",
     "n_evs_admission_reduced_mean", "n_admission_not_restored_mean", "sps", "update_time_s", "rollout_time_s",
+    # PPO-Lagrangian (empty for other methods)
+    "lambda_short", "lambda_over", "cost_short_ep", "cost_over_ep",
 ]
+
+
+def dual_update(lam: np.ndarray, Jc: np.ndarray, limit: np.ndarray, lr: float, lam_max: float) -> np.ndarray:
+    """Projected dual ascent of PPO-Lagrangian: lam <- clip(lam + lr (J_c - d), 0, lam_max)."""
+    return np.clip(np.asarray(lam, float) + float(lr) * (np.asarray(Jc, float) - np.asarray(limit, float)),
+                   0.0, float(lam_max))
 
 
 # --------------------------------------------------------------------------------------- builders
 def build_networks(cfg) -> tuple[nn.Module, nn.Module]:
     m = cfg["model"]
+    n_out = 3 if cfg["reward"]["type"] == "lagrangian" else 1      # value + 2 cost values (DD33(3))
     if m["arch"] == "attention":
         return (AttentionActor(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"]),
-                AttentionCritic(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"]))
+                AttentionCritic(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], n_out=n_out))
     if m["arch"] == "mlp":
-        return MLPActor(m["n_max"], m["mlp_hidden"]), MLPCritic(m["n_max"], m["mlp_hidden"])
+        return MLPActor(m["n_max"], m["mlp_hidden"]), MLPCritic(m["n_max"], m["mlp_hidden"], n_out=n_out)
+    if m["arch"] == "deepsets":
+        from ..models.deepsets_policy import DeepSetsActor, DeepSetsCritic
+        return (DeepSetsActor(m["d_model"], m["head_hidden"]),
+                DeepSetsCritic(m["d_model"], m["head_hidden"], n_out=n_out))
     raise ValueError(f"unknown architecture {m['arch']}")
 
 
@@ -168,7 +187,10 @@ def ppo_update(actor, critic, opt, batch: dict, pc: dict, generator: torch.Gener
                 reg_row = ((((xbar - pbar) / p_ref) ** 2) * occf).sum(-1) / occf.sum(-1).clamp_min(1.0)
                 wreg = w * feas.to(torch.float32)
                 L_reg = (wreg * reg_row).sum() / Bm
-            L_vf = ((v - batch["ret"][idx]) ** 2).mean()
+            if v.ndim == 2:                       # value + cost values (PPO-Lagrangian)
+                L_vf = ((v - batch["ret_all"][idx]) ** 2).mean()
+            else:
+                L_vf = ((v - batch["ret"][idx]) ** 2).mean()
             loss = -L_clip + float(pc["vf_coef"]) * L_vf - float(pc["ent_coef"]) * H + beta * L_reg
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -223,6 +245,8 @@ class PPOTrainer:
         self.sample_gen.manual_seed(self.seed + 1)
         self.safety = bool(cfg["safety"]["enabled"])
         self.reward_key = "pen" if cfg["reward"]["type"] == "penalty" else "profit"
+        self.lag = cfg["reward"]["type"] == "lagrangian"
+        self.lam = np.full(2, float(cfg["lagrangian"]["lambda_init"]))
         groups = cfg["envs"]["groups"]
         self.E = sum(int(g["count"]) for g in groups)
         self.S = int(pc["rollout_len"])
@@ -244,7 +268,7 @@ class PPOTrainer:
     # ---------------------------------------------------------------------------- checkpoints
     def state(self) -> dict:
         return {"actor": self.actor.state_dict(), "critic": self.critic.state_dict(), "optim": self.opt.state_dict(),
-                "update": self.update, "env_steps": self.env_steps, "wall_clock_s": self.wall,
+                "update": self.update, "lam": self.lam.tolist(), "env_steps": self.env_steps, "wall_clock_s": self.wall,
                 "cfg": dict(self.cfg), "exp_id": self.exp_id, "seed": self.seed, "config_hash8": self.h8,
                 "rng": {"torch": torch.get_rng_state(), "numpy": np.random.get_state(), "python": random.getstate(),
                         "gen": self.gen.get_state(), "sample_gen": self.sample_gen.get_state()},
@@ -263,6 +287,8 @@ class PPOTrainer:
         self.critic.load_state_dict(ck["critic"])
         self.opt.load_state_dict(ck["optim"])
         self.update, self.env_steps, self.wall = ck["update"], ck["env_steps"], ck.get("wall_clock_s", 0.0)
+        if "lam" in ck:
+            self.lam = np.asarray(ck["lam"], float)
         torch.set_rng_state(ck["rng"]["torch"])
         np.random.set_state(ck["rng"]["numpy"])
         random.setstate(ck["rng"]["python"])
@@ -287,7 +313,7 @@ class PPOTrainer:
     def _act(self, obs_list):
         b = batch_obs(obs_list, self.device)
         mu, log_std = self.actor(b["tokens"], b["glob"], b["occ"])
-        v = self.critic(b["tokens"], b["glob"], b["occ"])
+        v = self.critic(b["tokens"], b["glob"], b["occ"])          # (E,) or (E, 3) for PPO-Lagrangian
         eps = torch.randn(mu.shape, generator=self.sample_gen, device=self.device)
         a = mu + torch.exp(log_std) * eps
         logp = (gaussian_logp(a, mu, log_std) * b["infl"].to(torch.float32)).sum(-1)
@@ -297,6 +323,8 @@ class PPOTrainer:
         pc = self.cfg["ppo"]
         dt_h = float(self.cfg["scenario"]["dt_min"]) / 60.0
         r_ref = C_REF * P_REF * dt_h
+        c_ref = P_REF * dt_h                       # cost normaliser (kWh), PPO-Lagrangian
+        T_ep = float(self.cfg["scenario"]["T"] or round(28 * 60 / float(self.cfg["scenario"]["dt_min"])))  # horizon (28 h)
         groups, phase = self._groups_for(self.env_steps)
         vec = self._make_vec(groups)
         if self.env_states is not None and len(self.env_states) == len(vec.specs):
@@ -318,7 +346,8 @@ class PPOTrainer:
                         gparam["lr"] = frac * float(pc["lr"])
                 lr_now = self.opt.param_groups[0]["lr"]
                 Ns = vec.Ns
-                buf = RolloutBuffer(self.S, Ns)
+                nc = 2 if self.lag else 0
+                buf = RolloutBuffer(self.S, Ns, nc)
                 episodes = []
                 tr0 = time.time()
                 for k in range(self.S):
@@ -327,17 +356,35 @@ class PPOTrainer:
                     res = vec.step(xs)
                     for e, (out, nobs, ep) in enumerate(res):
                         r = out.reward_pen if self.reward_key == "pen" else out.reward
-                        buf.envs[e].store(k, obs[e], a[e, :Ns[e]], logp[e], v[e], r / (Ns[e] * r_ref), out.done)
+                        if self.lag:
+                            c = np.array([out.info["cost_short_kwh"], out.info["cost_over_kwh"]]) / (Ns[e] * c_ref)
+                            buf.envs[e].store(k, obs[e], a[e, :Ns[e]], logp[e], v[e, 0], r / (Ns[e] * r_ref),
+                                              out.done, c, v[e, 1:])
+                        else:
+                            buf.envs[e].store(k, obs[e], a[e, :Ns[e]], logp[e], v[e], r / (Ns[e] * r_ref), out.done)
                         if ep is not None:
                             episodes.append(ep)
                     obs = [nobs for (_, nobs, _) in res]
                 _, _, last_v = self._act(obs)
                 for e, b in enumerate(buf.envs):
-                    b.compute_gae(float(last_v[e]), float(pc["gamma"]), float(pc["gae_lambda"]))
+                    if self.lag:
+                        b.compute_gae(float(last_v[e, 0]), float(pc["gamma"]), float(pc["gae_lambda"]), last_v[e, 1:])
+                    else:
+                        b.compute_gae(float(last_v[e]), float(pc["gamma"]), float(pc["gae_lambda"]))
                 t_roll = time.time() - tr0
                 self.env_steps += self.E * self.S
                 tu0 = time.time()
                 batch = buf.flatten(self.device, self.safety)
+                if self.lag:
+                    lg = self.cfg["lagrangian"]
+                    Jc = batch["cost"].double().mean(0).cpu().numpy() * T_ep       # per-episode normalised cost
+                    self.lam = dual_update(self.lam, Jc, [lg["cost_limit_short"], lg["cost_limit_over"]],
+                                           lg["lr_lambda"], lg["lambda_max"])
+                    lam = torch.as_tensor(self.lam, dtype=batch["adv"].dtype, device=batch["adv"].device)
+                    batch["adv"] = (batch["adv"] - (batch["cadv"] * lam).sum(-1)) / (1.0 + lam.sum())
+                    batch["ret_all"] = torch.cat([batch["ret"][:, None], batch["cret"]], 1)
+                    self._lag_stats = {"lambda_short": float(self.lam[0]), "lambda_over": float(self.lam[1]),
+                                       "cost_short_ep": float(Jc[0]), "cost_over_ep": float(Jc[1])}
                 st = ppo_update(self.actor, self.critic, self.opt, batch, pc, self.gen)
                 t_upd = time.time() - tu0
                 self.wall = time.time() - t_start
@@ -381,7 +428,7 @@ class PPOTrainer:
                "n_evs_admission_reduced_mean": m("n_evs_admission_reduced"),
                "n_admission_not_restored_mean": m("n_admission_not_restored"),
                "sps": self.E * self.S / max(t_roll + t_upd, 1e-9), "update_time_s": t_upd, "rollout_time_s": t_roll,
-               **st}
+               **getattr(self, "_lag_stats", {}), **st}
         name = "train_log.csv" if episodes else "train_log_warmup.csv"
         append_csv(self.out / name, [row], TRAIN_LOG_COLUMNS)
 

@@ -27,8 +27,9 @@ The safety layer is permutation-equivariant as well, because its problem is inva
 \end{proof}
 
 The parameter counts are 610,370 for the actor and 676,481 for the critic, 1,286,851 in total for every $N$.
-For comparison, the small ablation network ($d_m=64$, $n_L=2$, feed-forward width 256) has 228,067 parameters.
-The actor of the MLP baseline with 200 slots has 792,976 parameters, a number that grows linearly with the number of slots.
+For the small ablation network ($d_m=64$, $n_L=2$, feed-forward width 256, head width 32), actor and critic have 228,067 parameters in total.
+Deep Sets applies a per-token network to each charger token together with the masked mean of all token embeddings and the global token, so the same argument covers it.
+Its width matches the parameter count of \method{} within 10\%. The actor of the MLP baseline with 20 slots and two hidden layers of 640 units has 614,440 parameters, a number that grows linearly with the number of slots.
 
 \subsection{Reachable energy and thresholds}\label{app:reach}
 
@@ -37,8 +38,6 @@ Under A1, $\Psi_k$ is continuous and non-decreasing for every $k\ge0$.
 Any admissible power sequence from $E(t)$ gives $E(t+k)\le\Psi_k(E(t))$, with equality for full-power charging.
 An EV is individually feasible at step $t$, meaning that some admissible control meets \Eq{M-eq:requirement}, if and only if $E(t)\ge B(\tau(t))$.
 \end{lemma}
-
-
 
 \begin{proof}
 A composition of continuous non-decreasing maps is continuous and non-decreasing, so $\Psi_k=\varphi^{k}$ inherits both properties from A1.
@@ -57,9 +56,9 @@ By the reach bound, some admissible control meets \Eq{M-eq:requirement} from $E(
 
 For a certified table, the first two properties of \Eq{M-eq:certified} imply $\Bh\ge B$ componentwise, because $\varphi(\Bh(k))\ge\Bh(k-1)\ge B(k-1)$ gives $\Bh(k)\ge B(k)$ by the minimality in \Eq{M-eq:thresholds}.
 
-\subsection{Projection (Proposition~\ref{M-prop:projection} of the main text)}\label{app:projection}
+\subsection{Projection}\label{app:projection}
 
-\begin{proof}
+\begin{proof}[Proof of Proposition~\ref{M-prop:projection}]
 (i) If $p\in\mathcal K(t)$, then $l\le p\le u$ gives $l\le u$ and $\sum_il_i\le\mathbf 1^\top p\le\sum_iu_i$, and combined with $-\Crev\le\mathbf 1^\top p\le\Ctil$ these inequalities give the four conditions.
 Conversely, $p(\upsilon)=l+\upsilon(u-l)$ stays in the box for $\upsilon\in[0,1]$, and $\mathbf 1^\top p(\upsilon)$ takes every value in $[\sum_il_i,\sum_iu_i]$, an interval that meets $[-\Crev,\Ctil]$ under the four conditions.
 
@@ -71,65 +70,110 @@ p-x+(\mu^{+}-\mu^{-})\mathbf 1-\nu^{l}+\nu^{u}=0,\qquad \mu^{+}(\mathbf 1^\top p
 \nu^{l}_i(p_i-l_i)=0,\qquad \nu^{u}_i(u_i-p_i)=0.
 \end{gathered}
 \]
-The function $\mathcal S$ is continuous, non-increasing and piecewise linear, with $\mathcal S(\lambda)=\sum_iu_i$ for $\lambda\le\min_i(x_i-u_i)$ and $\mathcal S(\lambda)=\sum_il_i$ for $\lambda\ge\max_i(x_i-l_i)$.
+The aggregate response $\mathcal S(\lambda)=\sum_i\clip(x_i-\lambda,l_i,u_i)$ is continuous, non-increasing and piecewise linear, with $\mathcal S(\lambda)=\sum_iu_i$ for $\lambda\le\min_i(x_i-u_i)$ and $\mathcal S(\lambda)=\sum_il_i$ for $\lambda\ge\max_i(x_i-l_i)$.
 If $\mathcal S(0)>\Ctil\ge\sum_il_i$, the intermediate value theorem gives a root of $\mathcal S(\lambda)=\Ctil$, and every such root is positive; the case $\mathcal S(0)<-\Crev\le\sum_iu_i$ is symmetric with a negative root.
 Now set $p=\clip(x-\lambda^{*},l,u)$, $\mu^{+}=\max(\lambda^{*},0)$ and $\mu^{-}=\max(-\lambda^{*},0)$, and choose the box multipliers coordinate by coordinate.
 Free coordinates with $l_i<x_i-\lambda^{*}<u_i$ receive $\nu_i^{l}=\nu_i^{u}=0$, coordinates with $x_i-\lambda^{*}\le l_i$ receive $\nu_i^{l}=l_i-x_i+\lambda^{*}\ge0$ and $\nu_i^{u}=0$, and the remaining ones receive $\nu_i^{u}=x_i-\lambda^{*}-u_i\ge0$ and $\nu_i^{l}=0$.
 Stationarity then holds coordinate-wise, and complementarity holds because $\lambda^{*}>0$ only when $\mathbf 1^\top p=\Ctil$ and $\lambda^{*}<0$ only when $\mathbf 1^\top p=-\Crev$.
 For $\lambda^{*}=0$ the point with $\mathbf 1^\top p=\mathcal S(0)$ is feasible, so in all cases $p=p^{*}$.
-If $\lambda_1<\lambda_2$ are both roots, every coordinate $\clip(x_i-\lambda,l_i,u_i)$ is non-increasing in $\lambda$ while the sums agree, so all coordinates agree.
+If $\lambda_1<\lambda_2$ are both roots, every coordinate $\clip(x_i-\lambda,l_i,u_i)$ is non-increasing in $\lambda$ and the sums agree, so all coordinates agree.
+\end{proof}
 
-(iii) If the aggregate constraint is inactive, locally $p_i=x_i$ for $i\in\mathcal F$ and $p_i\in\{l_i,u_i\}$ is constant otherwise, so the Jacobian is $D$.
-If it is active with target $\vartheta\in\{\Ctil,-\Crev\}$, then $\sum_{i\in\mathcal F}(x_i-\lambda)+\sum_{i\notin\mathcal F}p_i=\vartheta$.
+PPO treats the safety layer as part of the environment and never uses its Jacobian.
+The Jacobian nevertheless describes how the layer passes changes of the raw action to the commanded powers.
+
+\begin{proposition}[Jacobian of the projection]\label{prop:jacobian}
+Let $\mathcal F=\{i:l_i<x_i-\lambda^{*}<u_i\}$ be the free set and $D$ the diagonal matrix of its indicators.
+Wherever $p^{*}=\Pi_t(x)$ is differentiable, its Jacobian is $D$ if the aggregate constraint is inactive and $D-\mathbf 1_{\mathcal F}\mathbf 1_{\mathcal F}^\top/|\mathcal F|$ if it is active with $\mathcal F\neq\emptyset$, where $\mathbf 1_{\mathcal F}$ is the indicator vector of $\mathcal F$.
+\end{proposition}
+
+\begin{proof}
+If the aggregate constraint is inactive, locally $p_i=x_i$ for $i\in\mathcal F$ and $p_i\in\{l_i,u_i\}$ is constant otherwise, so the Jacobian is $D$.
+With the aggregate constraint active at the target $\vartheta\in\{\Ctil,-\Crev\}$, instead, $\sum_{i\in\mathcal F}(x_i-\lambda)+\sum_{i\notin\mathcal F}p_i=\vartheta$.
 Hence $\partial\lambda/\partial x_j=\mathbb 1[j\in\mathcal F]/|\mathcal F|$ and $\partial p_i/\partial x_j=\mathbb 1[i\in\mathcal F]\big(\mathbb 1[i=j]-\mathbb 1[j\in\mathcal F]/|\mathcal F|\big)$.
 If $\mathcal F=\emptyset$, the point $p$ is locally constant, and on the null set where $p^{*}$ is not differentiable, the matrices of the adjacent regions are elements of Clarke's generalised Jacobian.
 \end{proof}
 
 The Jacobian is symmetric and idempotent, and as a Euclidean projection onto a convex set, $\Pi_t$ is non-expansive.
+On an active row the Jacobian is zero for all clipped coordinates, the zero-gradient effect that motivates treating the layer as part of the environment \cite{kasaura2023benchmarking}.
 
-\subsection{One-step invariance (Lemma~\ref{M-lem:onestep} of the main text)}\label{app:onestep}
+\subsection{One-step invariance}\label{app:onestep}
+
+The proof sketch of Theorem~\ref{M-thm:invariance} in the main text and its full proof below both rest on the following lemma.
+
+\begin{lemma}[One-step invariance]\label{lem:onestep}
+Assume A1 and A3, and let $\Bh$ satisfy \Eq{M-eq:certified}.
+Let EV $i$ be connected at step $t$ with $\tau=\tau_i(t)$ remaining actions and energy $E=E_i(t)\ge\Bh(\tau)$.
+Then $\pmn(E)\le l_i(t)\le u_i(t)$, and every commanded power $p\in[l_i(t),u_i(t)]$ leads to $E_i(t+1)\ge\Bh(\tau-1)$.
+\end{lemma}
 
 \begin{proof}
-The bound $\pmn\le l_i$ holds by \Eq{M-eq:bounds}, and for $l_i\le u_i$ note first that $\pmn\le0\le\bar P(E)$.
-Moreover, $g^{-1}\big((\Bh(\tau-1)-E)/\Delta t\big)\le\bar P(E)$ is equivalent to $\Bh(\tau-1)\le\varphi(E)$, and A1 with \Eq{M-eq:certified} gives $\varphi(E)\ge\varphi(\Bh(\tau))\ge\Bh(\tau-1)$.
-For the second claim, let $y=(\Bh(\tau-1)-E)/\Delta t$; since $l_i\ge g^{-1}(y)$ and $g$ is increasing, every $p\ge l_i$ satisfies $g(p)\ge y$, and A3 gives $E_i(t+1)\ge E+\Delta t\,g(p)\ge\Bh(\tau-1)$.
+The bound $\pmn\le l_i$ holds because $\pmn\le0\le u_i$ and both arguments of the outer minimum in \Eq{M-eq:bounds} are at least $\pmn$.
+For $l_i\le u_i$ the outer minimum suffices, and the guard is inactive in exact arithmetic, because $g^{-1}\big((\Bh(\tau-1)-E)/\Delta t\big)\le\bar P(E)$ is equivalent to $\Bh(\tau-1)\le\varphi(E)$, and A1 with \Eq{M-eq:certified} gives $\varphi(E)\ge\varphi(\Bh(\tau))\ge\Bh(\tau-1)$.
+Turning to the second claim, let $y=(\Bh(\tau-1)-E)/\Delta t$, and since $l_i\ge\min\{u_i,g^{-1}(y)\}=g^{-1}(y)$ in exact arithmetic and $g$ is increasing, every $p\ge l_i$ satisfies $g(p)\ge y$, and A3 gives $E_i(t+1)\ge E+\Delta t\,g(p)\ge\Bh(\tau-1)$.
 \end{proof}
 
 When $\tau\ge2$, the EV is individually feasible at $t+1$ because $\tau_i(t+1)=\tau-1$, and when $\tau=1$, the lemma gives $E_i(d_i+1)\ge\Bh(0)\ge\Ereq_i$.
 
-\subsection{Feasibility invariance (Theorem~\ref{M-thm:invariance} and Corollary~\ref{M-cor:local} of the main text)}\label{app:theorem}
+\subsection{Feasibility preservation}\label{app:theorem}
+
+The proof of Theorem~\ref{M-thm:invariance} treats feasible steps, infeasible steps and the departure part in turn.
+Claim (a) uses only A3 and A6, and the departure part uses A1, A2 and A4 in addition.
+The conditions A1--A6 are those listed in \Sec{M-sec:invariance}, with A5 the definition of a feasible step.
 
 \begin{proof}[Proof of Theorem~\ref{M-thm:invariance}]
-We prove by induction over $t$ the invariant $\mathrm I(t)$: $E_i(t)\ge\Bh_i(\tau_i(t))$ for all $i\in\mathcal N(t)$.
-An EV belongs to $\mathcal N(t)$ either because it arrives at $t$ or because it was in $\mathcal N(t-1)$ with $d_i\ge t$.
-In the first case its part of the invariant is A4, in the second case the induction step applies, and since $\mathcal N(0)$ contains arrivals only, $\mathrm I(0)$ holds.
-
-Assume $\mathrm I(t)$, so that every $i\in\mathcal N(t)$ is individually feasible and $l_i(t)$ is given by the first case of \Eq{M-eq:bounds}.
-Lemma~\ref{M-lem:onestep} gives $\pmn_i\le l_i\le u_i$, and empty chargers have $l_i=u_i=0$.
-By A5 and Proposition~\ref{M-prop:projection}(i), $\mathcal K(t)\neq\emptyset$, so $p(t)=\Pi_t(x(t))\in\mathcal K(t)$ for every finite $x(t)$, and claim (b) follows from $p_i(t)\in[l_i,u_i]\subseteq[\pmn_i(E_i(t)),\bar P_i(E_i(t))]$.
-For claim (a), $\mathbf 1^\top p(t)\in[-\Crev(t),\Ctil(t)]$, and A3 gives
+\emph{Claim (a) on feasible steps.}
+The guard in \Eq{M-eq:bounds} gives $\pmn_i\le l_i\le u_i$ for every connected EV at every step, whether or not the EV is individually feasible, and empty chargers have $l_i=u_i=0$.
+If the feasibility test of \Alg{alg:safety} passes, Proposition~\ref{M-prop:projection}(i) gives $\mathcal K(t)\neq\emptyset$, so $p(t)=\Pi_t(x(t))\in\mathcal K(t)$ for every finite $x(t)$.
+The physical limits follow from $p_i(t)\in[l_i,u_i]\subseteq[\pmn_i(E_i(t)),\bar P_i(E_i(t))]$.
+For the transformer limit, $\mathbf 1^\top p(t)\in[-\Crev(t),\Ctil(t)]$, and A3 gives
 \[
 \sum_i\tilde p_i(t)\in\Big[\sum_ip_i(t),\ \sum_ip_i(t)+n(t)\varepsilon_q\Big]\subseteq\big[-\Crev(t),\ \Ctil(t)+n(t)\varepsilon_q\big]=\big[-\Crev(t),C(t)\big].
 \]
-For each $i\in\mathcal N(t)$, Lemma~\ref{M-lem:onestep} gives $E_i(t+1)\ge\Bh_i(\tau_i(t)-1)$.
-An EV with $d_i=t$ therefore departs with $E_i(d_i+1)\ge\Bh_i(0)\ge\Ereq_i$, so claim (c) holds for it.
-Each EV with $d_i>t$ stays in $\mathcal N(t+1)$ with $\tau_i(t+1)=\tau_i(t)-1$, so its part of $\mathrm I(t+1)$ holds, and EVs that arrive at $t+1$ satisfy their part by A4.
-All EVs depart before the episode ends, so claim (c) holds for every EV of the episode.
+
+\emph{Claim (a) on infeasible steps.}
+Under A6, $\Ctil(t)=C(t)-n(t)\varepsilon_q\ge(N-n(t))\varepsilon_q\ge0$ and $\Crev(t)\ge0$, so case (i) of the fallback rule needs $\Ctil<-\Crev\le0$ and is therefore impossible.
+Since $u_i\ge0$, case (ii) with $\sum_iu_i<-\Crev\le0$ is impossible as well.
+Sub-case (iv) needs $b=\Ctil-\sum_i\pmn_i<0$ and cannot occur because $\pmn_i\le0$.
+Every infeasible step is therefore a step of case (iii), and Lemma~\ref{lem:fallback} gives $\pmn\le p\le l\le u$ and $\mathbf 1^\top p=\Ctil\in[-\Crev,\Ctil]$.
+The physical limits follow, and A3 transfers the sum bound to the realised powers exactly as on feasible steps.
+
+\emph{Claim (b).}
+Fix an EV $i$ with $p_i(t)\ge l_i(t)$ at every step of its stay, and consider the invariant $E_i(t)\ge\Bh_i(\tau_i(t))$.
+At arrival the invariant is A4.
+If it holds at step $t$, then $l_i(t)$ follows the first case of \Eq{M-eq:bounds}, and every output of the projection or the fallback rule satisfies $p_i(t)\le u_i(t)$, so $p_i(t)\in[l_i(t),u_i(t)]$.
+Lemma~\ref{lem:onestep} then gives $E_i(t+1)\ge\Bh_i(\tau_i(t)-1)$.
+For $d_i>t$ this inequality is the invariant at $t+1$, and for $d_i=t$ it is the departure requirement $E_i(d_i+1)\ge\Bh_i(0)\ge\Ereq_i$.
+The argument uses only the commands sent to EV $i$, so it holds whatever happens at the other chargers.
+Any EV whose stay contains no infeasible step receives $p_i\in[l_i,u_i]$ at every step of its stay and is covered.
+Since EV2Gym removes every EV by step $T-2$, every EV of the episode reaches its departure inside the horizon, and the departure part of the argument applies to all of them.
+
+\emph{Claim (c).}
+If A5 holds at every step, no step of the episode is infeasible, and claim (b) therefore applies to every EV of the episode.
 \end{proof}
 
-\begin{proof}[Proof of Corollary~\ref{M-cor:local}]
-The per-EV part of the induction uses only $p_i(t)\in[l_i(t),u_i(t)]$ during the stay of EV $i$, together with A4 and Lemma~\ref{M-lem:onestep}.
-Fallback outputs satisfy $\pmn\le p\le u$, so $p_i\ge l_i$ implies $p_i\in[l_i,u_i]$, and on feasible steps the transformer part of the induction step applies unchanged.
-In case (iii) of the fallback rule, Lemma~\ref{lem:fallback} gives $\mathbf 1^\top p=\Ctil\ge-\Crev$, and A3 transfers this sum bound to the realised powers.
-\end{proof}
+A2 enters through the remaining actions $\tau_i(t)$ that the bounds need at every step.
+Admission control never changes a requirement after arrival, so the requirement used in the invariant is fixed during the stay.
 
 \textbf{A policy-independent sufficient condition for A5.}
 The lower bound $l_i$ is non-increasing in $E$, because both terms of its first case are, and we let $l_i^{\max}(t)$ denote $l_i$ evaluated at $E=\Bh_i(\tau_i(t))$.
 Suppose that, at every step, $\Crev(t)\ge0$, $\Ctil(t)\ge-\Crev(t)$ and $\sum_{i\in\mathcal N(t)}l_i^{\max}(t)\le\Ctil(t)$.
-Under $\mathrm I(t)$, $l_i(t)\le l_i^{\max}(t)$ and $\sum_iu_i\ge0\ge-\Crev$, so A5 holds at $t$, and the induction step of Theorem~\ref{M-thm:invariance} yields $\mathrm I(t+1)$; A5 then holds for every policy.
+Under the invariant, $l_i(t)\le l_i^{\max}(t)$ and $\sum_iu_i\ge0\ge-\Crev$, so A5 holds at $t$, and by induction A5 then holds for every policy.
 However, $l_i^{\max}(t)=\bar P_i(\Bh_i(\tau_i))$ whenever $\Bh_i(\tau_i)>E_i^{\min}$, so the condition asks the transformer to serve all non-trivially constrained EVs at full power at the same time.
 
 \subsection{Fallback rule and deficit bound}\label{app:fallback}
+
+When the feasibility test fails, the fallback rule replaces the projection.
+Since $l\le u$ holds by construction, three cases remain, the third with a sub-case.
+\begin{enumerate}
+\item[(i)] Contradictory limits, $\Ctil<-\Crev$: the procedure of case (iii) is applied, so the forward limit has priority.
+\item[(ii)] Excess PV export, $\sum_iu_i<-\Crev$: every occupied charger receives $p_i=u_i$.
+\item[(iii)] Excess required power, $\sum_il_i>\Ctil$: every EV starts at $\pmn_i$, and the budget $b=\Ctil-\sum_i\pmn_i$ is distributed in increasing order of laxity, each EV receiving up to $l_i-\pmn_i$.
+\item[(iv)] Sub-case of (i) and (iii) with $b<0$: the output stays at $p=\pmn$, the closest admissible command to the forward limit.
+\end{enumerate}
+In case (iii), ties are broken by the larger gap $l_i-\pmn_i$ and then by the lower charger index.
+The logs label the cases (i), (ii), (iii) and (iv) as FB-1*, FB-2, FB-1 and FB-0 with the numeric codes 3, 2, 1 and 0, and every analysis table uses this mapping.
+Under A6, cases (i), (ii) and (iv) cannot occur (proof of Theorem~\ref{M-thm:invariance}), so their counts in the result tables verify A6 on every replay.
 
 \begin{lemma}[Fallback]\label{lem:fallback}
 In case (iii) of the fallback rule with $b\ge0$, the output satisfies $\pmn\le p\le l$ and $\mathbf 1^\top p=\Ctil$, so the transformer limit and the physical limits hold.
@@ -137,22 +181,24 @@ Every EV that is individually feasible at step $t$ and receives $p_i=l_i$ stays 
 In cases (ii) and (iv), the output minimises the transformer violation over the box $[\pmn,u]$, so no admissible command avoids that violation.
 \end{lemma}
 
+\begin{proof}
+In case (iii), $\sum_i(l_i-\pmn_i)>\Ctil-\sum_i\pmn_i=b$, so the budget is exhausted before every EV reaches $l_i$; hence $\mathbf 1^\top p=\Ctil$ and $p\le l$.
+Outside case (i) we also have $\Ctil\ge-\Crev$, and an individually feasible EV with $p_i=l_i$ stays feasible by Lemma~\ref{lem:onestep}.
+Over the box $[\pmn,u]$, the sum $\mathbf 1^\top p$ is smallest at $\pmn$ and largest at $u$, so the outputs of cases (iv) and (ii) minimise the commanded violation.
+\end{proof}
+
 \begin{lemma}[Deficit bound]\label{lem:deficit}
 Assume A1, A3 and A4, and assume that $\bar P_i$ is non-increasing in $E$.
-In the EV2Gym instantiation, the total departure shortfall of the fleet in an episode is at most the deficit of \Eq{M-eq:deficit}.
+With $\eta^{\sm c}=\eta^{\sm d}=1$ as in our EV2Gym instantiation, the total departure shortfall of the fleet in an episode is at most
+\begin{equation}\label{eq:deficit}
+\Delta t\sum_{t\in\mathcal T_{\mathrm{iii}}}\Big(\sum_il_i(t)-\Ctil(t)\Big)+\Delta t\sum_{t\in\mathcal T_{\mathrm{iv}}}\sum_i\big(l_i(t)-\pmn_i(t)\big),
+\end{equation}
+where $\mathcal T_{\mathrm{iii}}$ and $\mathcal T_{\mathrm{iv}}$ are the steps of cases (iii) and (iv).
 \end{lemma}
 
 Lemma~\ref{lem:taper} in \Sec{sec:ev2gym} shows that EV2Gym's taper satisfies the extra condition of Lemma~\ref{lem:deficit}.
 
-
-
-\begin{proof}[Proof of Lemma~\ref{lem:fallback}]
-In case (iii), $\sum_i(l_i-\pmn_i)>\Ctil-\sum_i\pmn_i=b$, so the budget is exhausted before every EV reaches $l_i$; hence $\mathbf 1^\top p=\Ctil$ and $p\le l$.
-Outside case (i) we also have $\Ctil\ge-\Crev$, and an individually feasible EV with $p_i=l_i$ stays feasible by Lemma~\ref{M-lem:onestep}.
-Over the box $[\pmn,u]$, the sum $\mathbf 1^\top p$ is smallest at $\pmn$ and largest at $u$, so the outputs of cases (iv) and (ii) minimise the commanded violation.
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lem:deficit}]
+\begin{proof}
 Let $\tilde l_i(t)=l_i(t)$ if $E_i(t)\ge\Bh_i(\tau_i(t))$ and $\tilde l_i(t)=u_i(t)$ otherwise, and define the feasibility deficit $\Delta E^{\sm{def}}(t)=(\Bh(\tau(t))-E(t))^{+}$ with $\tau(d_i+1)=0$.
 The shortfall $(\Ereq-E(d_i+1))^{+}$ is at most $\Delta E^{\sm{def}}(d_i+1)$ because $\Bh(0)\ge\Ereq$, and $\Delta E^{\sm{def}}(t_i^{\sm{arr}})=0$ holds by A4.
 It therefore suffices to show $\Delta E^{\sm{def}}(t+1)\le\Delta E^{\sm{def}}(t)+\Delta t\,\big(g(\tilde l)-g(p)\big)^{+}$ at every step and to sum these increments over the stay.
@@ -160,46 +206,20 @@ If $E\ge\Bh(\tau)$, then $E+\Delta t\,g(l)\ge\Bh(\tau-1)$ by \Eq{M-eq:bounds}, a
 When $E<\Bh(\tau)$ instead, $\tilde l=u$ and $E+\Delta t\,g(u)=\varphi(E)$, and \Eq{M-eq:certified} with the 1-Lipschitz property of $\varphi$ gives $\Bh(\tau-1)-\varphi(E)\le\varphi(\Bh(\tau))-\varphi(E)\le\Bh(\tau)-E=\Delta E^{\sm{def}}(t)$.
 Hence $\Bh(\tau-1)-E(t+1)\le\Delta E^{\sm{def}}(t)+\Delta t\,(g(u)-g(p))$ in this case as well.
 For the fleet bound with $g$ the identity, $p_i\ge\tilde l_i$ holds on feasible steps and $p=u$ holds in case (ii) of the fallback rule.
-In case (iii), $p\le l$ and $\sum_i(l_i-p_i)=\sum_il_i-\Ctil$, and in case (iv), $p=\pmn$, so summing the per-step increments over all EVs gives \Eq{M-eq:deficit}.
+In case (iii), $p\le l$ and $\sum_i(l_i-p_i)=\sum_il_i-\Ctil$, and in case (iv), $p=\pmn$, so summing the per-step increments over all EVs gives \Eq{eq:deficit}.
 \end{proof}
 
-\subsection{Conformal departure guarantee (Proposition~\ref{M-prop:conformal} of the main text)}\label{app:conformal}
+\subsection{Conformal departure guarantee}\label{app:conformal}
 
-\begin{proof}
-(i) By exchangeability, the rank of the test score $S_{n+1}=\hat q(\mathbf w_i)-d_i$ among the scores $S_1,\dots,S_{n+1}$ is uniform up to ties, so $\mathbb P(S_{n+1}\le\hat Q_{1-\alpha})\ge k/(n_{\sm{cal}}+1)\ge1-\alpha$ \cite{vovk2022algorithmic,lei2018distributionfree}.
-The event $S_{n+1}\le\hat Q_{1-\alpha}$ is equivalent to $d_i\ge\hat q(\mathbf w_i)-\hat Q_{1-\alpha}$, and because $d_i$ is an integer, also to $d_i\ge\lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil$.
+\begin{proof}[Proof of Proposition~\ref{M-prop:conformal}]
+(i) By exchangeability, the rank of the test score $e_{n_{\sm{cal}}+1}=\hat q(\mathbf w_i)-d_i$ among the scores $e_1,\dots,e_{n_{\sm{cal}}+1}$ is uniform up to ties, so $\mathbb P(e_{n_{\sm{cal}}+1}\le\hat Q_{1-\alpha})\ge\lceil(n_{\sm{cal}}+1)(1-\alpha)\rceil/(n_{\sm{cal}}+1)\ge1-\alpha$ \cite{vovk2022algorithmic,lei2018distributionfree}.
+The event $e_{n_{\sm{cal}}+1}\le\hat Q_{1-\alpha}$ is equivalent to $d_i\ge\hat q(\mathbf w_i)-\hat Q_{1-\alpha}$, and because $d_i$ is an integer, also to $d_i\ge\lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil$.
 Taking the maximum with $t_i^{\sm{arr}}$ changes nothing, because $d_i\ge t_i^{\sm{arr}}$ holds surely.
 
 (ii) Consider the event that $d_i\ge\hat d_i^{\sm{lo}}$ and that $p_i(t)\ge l_i(t)$ at every step of the stay.
-On this event, Lemma~\ref{M-lem:onestep} with $\tau^{\sm{lo}}$, applied up to $t=\hat d_i^{\sm{lo}}$, gives $E_i(\hat d_i^{\sm{lo}}+1)\ge\Bh(0)$.
+On this event, Lemma~\ref{lem:onestep} with $\tau^{\sm{lo}}$, applied up to $t=\hat d_i^{\sm{lo}}$, gives $E_i(\hat d_i^{\sm{lo}}+1)\ge\Bh(0)$.
 For the remaining steps $\hat d_i^{\sm{lo}}<t\le d_i$ we have $\tau^{\sm{lo}}=1$, and the third property of \Eq{M-eq:certified} gives $\Bh(1)\le\max\{\Bh(0),E^{\min}\}\le E_i(t)$.
-Lemma~\ref{M-lem:onestep} with $\tau=1$ then gives $E_i(t+1)\ge\Bh(0)\ge\Ereq$ again, so $E_i(d_i+1)\ge\Ereq$ holds on the event, and the union bound gives the stated probability.
-If A5 holds almost surely, the second probability vanishes and the bound becomes $1-\alpha$.
-Note that the bound does not hold conditionally on the event that A5 held, because that event may be correlated with $d_i$.
+Lemma~\ref{lem:onestep} with $\tau=1$ then gives $E_i(t+1)\ge\Bh(0)\ge\Ereq$ again, so $E_i(d_i+1)\ge\Ereq$ holds on the event, and the union bound gives the stated probability.
+If no step of the stay is infeasible almost surely, the second probability vanishes and the bound becomes $1-\alpha$.
+The bound does not hold conditionally on the event that A5 held, because that event may be correlated with $d_i$.
 \end{proof}
-
-\subsection{Upper bound of the perfect-information LP}\label{app:oracle}
-
-\begin{proposition}[Upper bound]\label{prop:oracle}
-\begin{enumerate}
-\item[(a)] Let $\pi$ be any controller whose closed-loop trajectory satisfies \Eqs{M-eq:dynamics}{M-eq:limits}, satisfies \Eq{M-eq:transformer} at every step and has a total shortfall $\sum_i(\Ereq_i-E_i(d_i+1))^{+}\le z^{*}$. Then $J^{\pi}\le J^{\sm{LP}}$.
-\item[(b)] In EV2Gym, let $J^{\sm{LP,ceil}}$ be the optimum of the same LP with $\Ereq_i$ and $E_i^{\min}$ lowered by $G_i^{\max}=0.01\,(d_i-t_i^{\sm{arr}}+1)$ kWh. Then $J^{\pi}\le J^{\sm{LP,ceil}}$ for every controller whose reported powers satisfy \Eq{M-eq:transformer} and whose realised total shortfall is at most $z^{*}$.
-\end{enumerate}
-\end{proposition}
-
-\begin{proof}
-(a) Set $p_i^{\pm}(t)=p_i(t)^{\pm}$, take $E_i(t)$ from the trajectory and set $z_i=(\Ereq_i-E_i(d_i+1))^{+}$.
-With these values, the energy constraints of \Eq{M-eq:lp} hold by \Eq{M-eq:dynamics} and \Eq{M-eq:limits}, and the power bounds hold because $p_i\le\bar P_i(E_i)\le\Pnom_i$ and $p_i\ge\pmn_i\ge-\Pdis_i$.
-In addition, the departure constraint holds by the definition of $z_i$, and the transformer constraint is \Eq{M-eq:transformer} itself.
-Since $\sum_iz_i\le z^{*}$, the trajectory is feasible for stage 2, and its objective equals $J^{\pi}$.
-
-(b) Let $\tilde p_i(t)$ be the reported powers and $E_i^{\sm{nom}}(t)=E_i^{\sm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$ the energy that the billed powers alone would produce.
-EV2Gym bills exactly $\tilde p$, so $J^{\pi}$ is the LP objective at $\tilde p$.
-The rounding adds less than 0.01 kWh per active step, so $E_i^{\sm{real}}(t)-G_i^{\max}\le E_i^{\sm{nom}}(t)\le E_i^{\sm{real}}(t)\le E_i^{\sm{cap}}$ holds along the trajectory.
-Both the lowered energy floor and the lowered departure constraint therefore hold for $E^{\sm{nom}}$ with $z_i=(\Ereq_i-E_i^{\sm{real}}(d_i+1))^{+}$, and the power bounds hold because $\tilde p_i\le\bar P_i(E^{\sm{real}}_i)\le\Pnom_i$.
-From here on, the argument is as in (a).
-\end{proof}
-
-The main text uses $J^{\sm{LP,ceil}}$ as the reference of the optimality gap, because a feasible controller inside EV2Gym can exceed $J^{\sm{LP}}$ through the unbilled rounding gain.
-A gap with respect to $J^{\sm{LP}}$ could then be negative, which would be meaningless for a bound.
-\Tab{tab:ts1} in \Sec{sec:results-supp} reports the gap with respect to both optima.

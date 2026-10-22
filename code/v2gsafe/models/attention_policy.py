@@ -115,19 +115,22 @@ class AttentionActor(nn.Module):
 class AttentionCritic(nn.Module):
     """Value function with attention pooling (pooling by multi-head attention, one learned query)."""
 
-    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64):
+    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64,
+                 n_out: int = 1):
         super().__init__()
+        self.n_out = n_out                  # 1: value; 3: value + two cost values (PPO-Lagrangian, DD33(3))
         self.encoder = TokenEncoder(d_model, n_layers, n_heads)
         self.query = nn.Parameter(torch.zeros(1, 1, d_model))
         nn.init.normal_(self.query, std=0.02)
         self.pool = MultiHeadAttention(d_model, n_heads)
-        self.head = nn.Sequential(nn.Linear(d_model, head_hidden), nn.GELU(), nn.Linear(head_hidden, 1))
+        self.head = nn.Sequential(nn.Linear(d_model, head_hidden), nn.GELU(), nn.Linear(head_hidden, n_out))
 
     def forward(self, tokens, glob, occ):
         h, valid = self.encoder(tokens, glob, occ)
         q = self.query.expand(h.shape[0], 1, -1)
         pooled = self.pool(q, h, valid)[:, 0, :]
-        return self.head(pooled)[:, 0]
+        out = self.head(pooled)
+        return out[:, 0] if self.n_out == 1 else out
 
 
 def count_params(module: nn.Module) -> int:

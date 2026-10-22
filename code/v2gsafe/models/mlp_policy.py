@@ -1,7 +1,7 @@
 """MLP baseline (algorithm.md Alg. 5 rows 1-2): actor and critic with two hidden layers of 256 units (tanh) on
 the concatenation of the charger tokens in charger order, zero-padded to N_max = 200 slots, plus the global
 token. The actor outputs 200 means and 200 log-stds; slots >= N are ignored. Runs at any N <= N_max with the
-same weights; not permutation-equivariant. Parameters (actor): 792,976 at N_max = 200 (formulation.md Sec. 5).
+same weights; not permutation-equivariant. Parameters (actor): 614,440 at N_max = 20, hidden 640 (DD44; capacity matched to the attention actor).
 """
 from __future__ import annotations
 
@@ -43,11 +43,13 @@ class MLPActor(nn.Module):
 
 
 class MLPCritic(nn.Module):
-    def __init__(self, n_max: int = 200, hidden: int = 256):
+    def __init__(self, n_max: int = 200, hidden: int = 256, n_out: int = 1):
         super().__init__()
         self.n_max = n_max
+        self.n_out = n_out
         self.net = nn.Sequential(nn.Linear(n_max * F_C + F_G, hidden), nn.Tanh(), nn.Linear(hidden, hidden), nn.Tanh(),
-                                 nn.Linear(hidden, 1))
+                                 nn.Linear(hidden, n_out))
 
     def forward(self, tokens, glob, occ):
-        return self.net(_flatten_padded(tokens, glob, occ, self.n_max))[:, 0]
+        out = self.net(_flatten_padded(tokens, glob, occ, self.n_max))
+        return out[:, 0] if self.n_out == 1 else out

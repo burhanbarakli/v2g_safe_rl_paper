@@ -15,10 +15,13 @@ Processing
 2. coerce types; non-parsable values in required numeric columns -> SchemaError;
 3. drop smoke rows (column `smoke` true) and whole runs whose meta.json says smoke;
 4. check uniqueness of (exp_id, test_cfg_id, replay_id);
-5. join both oracle profits per (test_cfg_id, replay_id) (DD26): `oracle_ceil_eur` = J_LP,ceil
-   (oracle column `oracle_profit_ceil_eur`) and `oracle_profit_eur` = J_LP (oracle `profit_eur`);
-6. optimality gap % per episode = 100 * (oracle - method) / |oracle|:
-   `gap_pct` w.r.t. J_LP,ceil (main, DD26) and `gap_lp_pct` w.r.t. J_LP (supplementary).
+5. join the three oracle values per (test_cfg_id, replay_id): `oracle_pen_eur` = soft-penalty oracle
+   J^pen_LP,ceil (`oracle_pen_profit_eur`, DD32), `oracle_ceil_eur` = hard oracle J_LP,ceil
+   (`oracle_profit_ceil_eur`), `oracle_profit_eur` = J_LP (oracle `profit_eur`, supplementary, DD42-4);
+6. optimality gaps % per episode = 100 * (oracle - method) / |oracle|, NaN if |oracle| < GAP_EPS = 1 EUR:
+   `gap_pct`      main (DD32): penalised profit J^pen vs soft oracle (all methods incl. conformal, DD43(1));
+   `gap_hard_pct` raw profit vs J_LP,ceil (cost-of-the-guarantee analysis);
+   `gap_lp_pct`   raw profit vs J_LP (supplementary table only).
 Extra columns of SCHEMA_ADDITIONS.md are read when present (none of them is required).
 """
 from __future__ import annotations
@@ -50,10 +53,19 @@ EPISODE_INT = {"seed", "N", "dt_min", "replay_id", "n_evs", "n_evs_capped", "n_e
                "n_evs_unserved", "tr_violation_steps", "infeasible_steps", "fb0_steps", "fb1_steps",
                "fb2_steps", "fb1star_steps"}
 ORACLE_EXTRA = ["solve_time_s", "solver_status", "shortfall_stage_kwh"]
-ORACLE_CEIL = "oracle_profit_ceil_eur"        # J_LP,ceil (DD26); warned about if absent
+ORACLE_CEIL = "oracle_profit_ceil_eur"        # hard oracle J_LP,ceil (DD26); warned about if absent
+ORACLE_PEN = "oracle_pen_profit_eur"          # soft-penalty oracle J^pen_LP,ceil (DD32); main gap reference
+PEN_COL = "penalised_profit_eur"              # J^pen = profit - 10 ENS - 10 overload (DD32)
+W_PEN = 10.0                                  # EUR/kWh, w_E = w_P (DD22, DD32)
 # optional numeric columns from SCHEMA_ADDITIONS.md used by T7/F-S3 (conformal)
 OPTIONAL_COLS = ["alpha", "conformal_coverage", "n_evs_departed_before_bound", "coverage_frac",
-                 "mean_d_minus_dlo", "shortfall_departed_before_bound_kwh", ORACLE_CEIL]
+                 "mean_d_minus_dlo", "shortfall_departed_before_bound_kwh", ORACLE_CEIL, ORACLE_PEN, PEN_COL,
+                 "penalised_profit_dd2_eur", "energy_admission_reduced_kwh", "energy_capped_kwh",
+                 "energy_not_served_dd2_kwh", "n_evs_touched_infeasible", "n_steps",
+                 # DD43
+                 "n_evs_stay_infeasible", "share_evs_stay_feasible", "agg_upper_active_steps",
+                 "agg_lower_active_steps", "lb_active_frac", "n_evs_unserved_shared", "energy_not_served_shared_kwh"]
+MAX_N = {"mlp_safe": 20, "mlp_penalty": 20}   # DD43(3): zero-padded MLP (N_max = 20) evaluated only at N <= 20
 
 TRAIN_COLS = [
     "exp_id", "env_steps", "wall_clock_s", "episode_return_eur_mean", "episode_return_eur_std",
@@ -66,7 +78,7 @@ STEP_COLS = ["exp_id", "replay_id", "t", "price_ch", "price_dis", "P_tr", "P_inf
              "sum_p", "sum_l", "sum_u", "n_connected", "fallback_code"]
 # fallback_code: -1 none, 0 FB-0, 1 FB-1, 2 FB-2, 3 FB-1* (SCHEMA_ADDITIONS.md §2)
 
-GAP_EPS = 1e-9          # |oracle| below this -> gap undefined (NaN)
+GAP_EPS = 1.0           # EUR: |oracle| below this -> gap undefined (NaN), counted in the load report (M2)
 SYNTH_SENTINEL = "SYNTHETIC_DATA"   # file in <raw> root written by synth.py
 
 
@@ -84,7 +96,8 @@ class Dataset:
     synthetic: bool
     smoke: bool = False               # smoke rows were kept (include_smoke=True)
     report: list = field(default_factory=list)
-    gap_reference: str = "J_LP,ceil (DD26)"
+    gap_reference: str = "soft-penalty oracle J^pen_LP,ceil (DD32)"
+    gap_excluded: dict = field(default_factory=dict)
 
     def log(self, msg: str):
         self.report.append(msg)
@@ -232,6 +245,21 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
         raise SchemaError(f"no non-smoke episodes under {raw} (all rows are smoke = true; "
                           f"use --include-smoke for a pipeline check)")
 
+    # DD35: EV-GNN in-distribution rows (its training configuration) get their own method label
+    if "in_distribution" in ep.columns:
+        ind = _to_bool(ep["in_distribution"].astype(str).replace({"nan": "false", "": "false"}))
+        ep["in_distribution"] = ind
+        m_id = ep["method"].isin(["evgnn", "evgnn_safe"]) & ind
+        ep.loc[m_id, "method"] = ep.loc[m_id, "method"] + "_id"
+        if m_id.any():
+            ds.log(f"EV-GNN: {int(m_id.sum())} in-distribution rows labelled evgnn_id / evgnn_safe_id")
+    # DD43(3): MLP baseline only at N <= 20
+    over = pd.Series(False, index=ep.index)
+    for m, nmax in MAX_N.items():
+        over |= (ep["method"] == m) & (ep["N"] > nmax)
+    if over.any():
+        ds.log(f"DD43(3): dropped {int(over.sum())} MLP episodes with N > 20")
+        ep = ep[~over].copy()
     key = ["exp_id", "test_cfg_id", "replay_id"]
     dup = ep.duplicated(key, keep=False)
     if dup.any():
@@ -253,13 +281,16 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
         if bad.any():
             ds.log(f"WARNING: {int(bad.sum())} oracle rows with non-optimal solver_status; their gap is NaN")
         if ORACLE_CEIL not in orc.columns or orc[ORACLE_CEIL].isna().all():
-            ds.log(f"WARNING: oracle files have no {ORACLE_CEIL} (J_LP,ceil); the main gap falls back to J_LP")
+            ds.log(f"WARNING: oracle files have no {ORACLE_CEIL} (J_LP,ceil); the hard gap falls back to J_LP")
             orc[ORACLE_CEIL] = orc["profit_eur"]
-            ds.gap_reference = "J_LP (fallback: J_LP,ceil missing)"
+        if ORACLE_PEN not in orc.columns or orc[ORACLE_PEN].isna().all():
+            ds.log(f"WARNING: oracle files have no {ORACLE_PEN} (soft oracle, DD32); the main gap is empty")
+            orc[ORACLE_PEN] = np.nan
+            ds.gap_reference = "none (soft oracle missing)"
         else:
-            ds.gap_reference = "J_LP,ceil (DD26)"
-        omap = orc.loc[~bad, ["test_cfg_id", "replay_id", "profit_eur", ORACLE_CEIL]].rename(
-            columns={"profit_eur": "_oracle_lp", ORACLE_CEIL: "_oracle_ceil"})
+            ds.gap_reference = "soft-penalty oracle J^pen_LP,ceil (DD32)"
+        omap = orc.loc[~bad, ["test_cfg_id", "replay_id", "profit_eur", ORACLE_CEIL, ORACLE_PEN]].rename(
+            columns={"profit_eur": "_oracle_lp", ORACLE_CEIL: "_oracle_ceil", ORACLE_PEN: "_oracle_pen"})
         ep = ep.merge(omap, on=["test_cfg_id", "replay_id"], how="left")
         pre = ep["oracle_profit_eur"]
         mism = pre.notna() & ep["_oracle_lp"].notna() & ~np.isclose(pre, ep["_oracle_lp"], rtol=1e-6, atol=1e-6)
@@ -268,7 +299,8 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
                    f"oracle file; the oracle file value is used")
         ep["oracle_profit_eur"] = ep["_oracle_lp"]
         ep["oracle_ceil_eur"] = ep["_oracle_ceil"]
-        ep = ep.drop(columns=["_oracle_lp", "_oracle_ceil"])
+        ep["oracle_pen_eur"] = ep["_oracle_pen"]
+        ep = ep.drop(columns=["_oracle_lp", "_oracle_ceil", "_oracle_pen"])
     else:
         msg = "no oracle__* directories found: optimality gap cannot be computed"
         if require_oracle:
@@ -276,6 +308,7 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
         ds.log("WARNING: " + msg)
         ep["oracle_profit_eur"] = np.nan
         ep["oracle_ceil_eur"] = np.nan
+        ep["oracle_pen_eur"] = np.nan
         ds.gap_reference = "none"
 
     miss = ep["oracle_profit_eur"].isna()
@@ -283,12 +316,21 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
         cfgs = sorted(ep.loc[miss, "test_cfg_id"].unique())[:5]
         ds.log(f"WARNING: {int(miss.sum())} episodes without oracle profit (configs e.g. {cfgs}); gap = NaN")
 
-    ep["gap_pct"] = gap_pct(ep["profit_eur"], ep["oracle_ceil_eur"])          # main (DD26)
+    _ensure_pen(ep, ds)
+    ep["gap_pct"] = gap_pct(ep[PEN_COL], ep["oracle_pen_eur"])                # main (DD32); DD43(1): all methods
+    ep["gap_hard_pct"] = gap_pct(ep["profit_eur"], ep["oracle_ceil_eur"])     # cost of the guarantee
     ep["gap_lp_pct"] = gap_pct(ep["profit_eur"], ep["oracle_profit_eur"])     # supplementary
+    for col, ref in [("gap_pct", "oracle_pen_eur"), ("gap_hard_pct", "oracle_ceil_eur"), ("gap_lp_pct", "oracle_profit_eur")]:
+        small = ep[ref].notna() & (ep[ref].abs() < GAP_EPS)
+        ds.gap_excluded[col] = int(small.sum())
+        if small.any():
+            ds.log(f"{col}: {int(small.sum())} episodes excluded because |{ref}| < {GAP_EPS:g} EUR (M2)")
     add_derived(ep)
     if len(orc):
+        _ensure_pen(orc, ds)
         add_derived(orc)
-        orc["gap_pct"] = gap_pct(orc["profit_eur"], orc[ORACLE_CEIL])
+        orc["gap_pct"] = gap_pct(orc[PEN_COL], orc[ORACLE_PEN])
+        orc["gap_hard_pct"] = gap_pct(orc["profit_eur"], orc[ORACLE_CEIL])
         orc["gap_lp_pct"] = 0.0
     ds.episodes, ds.oracle = ep.reset_index(drop=True), orc.reset_index(drop=True)
     ds.train = pd.concat(trs, ignore_index=True) if trs else pd.DataFrame(columns=TRAIN_COLS)
@@ -308,20 +350,55 @@ def gap_pct(profit, oracle):
     return g
 
 
+def _ensure_pen(df: pd.DataFrame, ds=None):
+    """J^pen column; computed from its definition (DD32) if the file predates it."""
+    if PEN_COL not in df.columns or df[PEN_COL].isna().all():
+        df[PEN_COL] = df["profit_eur"] - W_PEN * df["energy_not_served_kwh"] - W_PEN * df["tr_violation_kwh"]
+        if ds is not None:
+            ds.log(f"NOTE: {PEN_COL} missing; computed as profit - {W_PEN:g}*ENS - {W_PEN:g}*overload")
+
+
 def add_derived(df: pd.DataFrame):
     df["unserved_pct"] = 100.0 * df["frac_evs_unserved"]
     df["fallback_steps"] = df[["fb0_steps", "fb1_steps", "fb2_steps", "fb1star_steps"]].sum(axis=1)
     df["profit_per_charger"] = df["profit_eur"] / df["N"]
+    if PEN_COL in df.columns:
+        df["pen_per_charger"] = df[PEN_COL] / df["N"]
+    df["profit_per_ev"] = np.where(df["n_evs"] > 0, df["profit_eur"] / df["n_evs"].where(df["n_evs"] > 0), np.nan)
+    # DD43: primary endpoint E4 (share of EVs whose stay has no infeasible step) and binding rates
+    if "share_evs_stay_feasible" in df.columns or "n_evs_stay_infeasible" in df.columns:
+        if "share_evs_stay_feasible" not in df.columns:
+            df["share_evs_stay_feasible"] = np.nan
+        if "n_evs_stay_infeasible" in df.columns:
+            alt = 1 - df["n_evs_stay_infeasible"] / df["n_evs"].where(df["n_evs"] > 0)
+            df["share_evs_stay_feasible"] = df["share_evs_stay_feasible"].fillna(alt)
+        df["e4_pct"] = 100.0 * df["share_evs_stay_feasible"]
+    steps = df["n_steps"] if "n_steps" in df.columns else pd.Series(np.nan, index=df.index)
+    for col, out in (("agg_upper_active_steps", "upper_bind_pct"), ("agg_lower_active_steps", "lower_bind_pct")):
+        if col in df.columns:
+            df[out] = 100.0 * df[col] / steps.where(steps > 0)
+    if "lb_active_frac" in df.columns:
+        df["lb_active_pct"] = 100.0 * df["lb_active_frac"]
+    # Lemma 3 (paper: Lemma S4): episode shortfall relative to the feasibility-deficit bound (episodes with a deficit only)
+    df["shortfall_deficit_ratio"] = np.where(df["a5_deficit_kwh"] > 1e-9,
+                                             df["energy_not_served_kwh"] / df["a5_deficit_kwh"].where(df["a5_deficit_kwh"] > 1e-9),
+                                             np.nan)
     df["any_unserved_pct"] = 100.0 * (df["n_evs_unserved"] > 0).astype(float)
     df["any_violation_pct"] = 100.0 * (df["tr_violation_steps"] > 0).astype(float)
     # test-grid configuration (profile_N<N>_rho<rho>) vs. extra configurations (e.g. literature)
     exp = df["profile"].astype(str) + "_N" + df["N"].astype(int).astype(str) + "_rho" + \
         df["rho_tr"].map(lambda r: f"{float(r):g}")
     cid = df["test_cfg_id"].astype(str)
-    base = cid.str.replace(r"_T\d+$", "", regex=True)          # smoke ids carry _T16/_T48
-    df["is_grid"] = base == exp
-    df["cfg_family"] = np.where(df["is_grid"], "grid",
-                                np.where(base.str.contains(r"_(?:soc|dt)[0-9.]+$", regex=True), "sensitivity", "other"))
+    base = cid.str.replace(r"_T\d+(?=_|$)", "", regex=True)    # smoke ids carry _T16/_T48 (also before a tag)
+    df["cfg_base"] = base
+    plain = base == exp
+    rho = df["rho_tr"].astype(float)
+    df["is_grid"] = plain & rho.isin([4.0, 7.0])               # main grid (DD24)
+    sens = base.str.contains(r"_(?:soc|dt|thr|dpf)[0-9.]+$", regex=True)
+    df["sens_tag"] = base.str.extract(r"_((?:soc|dt|thr|dpf)[0-9.]+)$", expand=False)
+    df["cfg_family"] = np.select([df["is_grid"], plain & (rho == 3.0), sens, base.str.startswith("literature")],
+                                 ["grid", "stress", "sensitivity", "literature"], "other")
+    df["sens_base"] = base.str.replace(r"_(?:soc|dt|thr|dpf)[0-9.]+$", "", regex=True)
     if "conformal_coverage" in df.columns:
         cov = df["coverage_frac"] if "coverage_frac" in df.columns else pd.Series(np.nan, index=df.index)
         df["coverage_frac"] = cov.fillna(df["conformal_coverage"])

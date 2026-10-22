@@ -4,3 +4,5 @@ replays: {default: 2}
 extra:
   - {profile: public, desired_soc: 0.8, T: 16}
   - {profile: public, dt_min: 5, T: 48}
+  - {profile: public, throughput_cost: 0.05, T: 16}
+  - {profile: public, discharge_price_factor: 0.9, T: 16}

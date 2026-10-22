@@ -1,0 +1,9 @@
+# PPO-Lagrangian baseline (DD33(3)): attention policy, no safety layer (physical clip), profit reward and two
+# constraint costs (departure shortfall vs the admitted request, transformer overload energy; kWh per step,
+# normalised c / (N P_ref dt)), projected dual ascent on lambda >= 0 (lr_lambda tuned, DD37).
+inherit: base.yaml
+method: attn_lagrangian
+safety: {enabled: false, admission: true}
+reward: {type: lagrangian}
+ppo: {beta: 0.0}
+lagrangian: {lr_lambda: 2.0, lambda_init: 0.0, lambda_max: 1000.0, cost_limit_short: 0.0, cost_limit_over: 0.0}

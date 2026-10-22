@@ -1,6 +1,6 @@
 # Safety layer: bounds, projection and feasibility invariance
 
-Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback (DD25-DD29) (`review/proof_check.md`; change log in `DONE_method.md`). Symbols: `nomenclature.md`. Model equations (F1)-(F9): `formulation.md`.
+Agent A2 (Method and Theory). Version 5, 2026-10-22, revised after the internal proof check, the implementation feedback (DD25-DD29) and internal review round 1 (DD30-DD41) (`review/proof_check.md`; change log in `DONE_method.md`). Symbols: `nomenclature.md`. Model equations (F1)-(F9): `formulation.md`.
 Executable specification: `projection_ref.py`. Numerical checks: `check_A1.py` (results in `check_A1_results.txt`) and `verify_projection.py` (results in `verify_projection_results.txt`).
 
 The **safety layer, a closed-form projection onto the feasible set**, maps the raw per-charger action $x(t)=P^{\mathrm{ref}}a(t)$ [kW] to the commanded power
@@ -11,9 +11,10 @@ The per-EV bounds $l_i,u_i$ encode the physical limits and the departure energy 
 
 | Result | Statement |
 |---|---|
+| **Theorem 1′** | **Main result (DD30): transformer limit for every raw-action sequence; departure requirement per EV; Theorem 1 as special case** |
 | Lemma 0 | Reach operator: $\varphi_i^k$ is the maximum energy after $k$ steps |
 | Lemmas E1-E3 | EV2Gym satisfies A1, A1′ and A3 under the stated configuration |
-| Proposition 1 | Projection: feasibility condition, closed form, uniqueness, Jacobian |
+| Proposition 1 | Projection: feasibility condition, closed form, uniqueness; (iii) Jacobian (supplementary, DD40) |
 | Lemma 1 | One-step individual invariance |
 | Theorem 1 | Feasibility invariance; Corollaries 1 (localisation) and 2 (EV2Gym) |
 | Lemma 2 | Fallback rule |
@@ -194,7 +195,7 @@ $$l_i=\max\Big\{-\min\big(P^{\mathrm{dis}},\tfrac{E-E^{\min}}{\Delta t}\big),\ \
 1. **Threshold table (default, DD18).** At arrival compute $\hat B(k)$, $k=0..\tau^{\mathrm{arr}}$, by bisection on $\varphi$. Then (S11) costs $O(1)$ per EV per step. Correctness of the bisection: $\{E:\varphi(E)\ge B(k-1)\}$ is an up-set (A1).
 2. **Direct bisection on $p$** (cross-check only). The predicate $p\mapsto[\Psi_{\tau-1}(E+\Delta tg(p))\ge E^{\mathrm{req}}]$ is monotone (A1 and $g$ increasing). Bisection on $[p^{\min},p^{\max}]$ converges to $l$, and returning the upper end is conservative. The cost is $O(\tau\log(1/\epsilon))$.
 
-In code, the feasibility test in (S11) is $E\ge\hat B(\tau)-\epsilon_{\mathrm{num}}$ (Sec. 6.4).
+In code, the feasibility test in (S11) is $E\ge\hat B(\tau)-\epsilon_{\mathrm{num}}$ (Sec. 6.4), and $l_i:=\min\{l_i,u_i\}$ is enforced. Under A1 this guard is inactive beyond rounding (Lemma 1(a)). Without A1 it keeps $l\le u$, so the projection stays well defined. This is why parts (a) and (b) of Theorem 1′ do not need A1.
 
 ### 3.3 Laxity
 
@@ -235,7 +236,7 @@ $$\mathcal S(\lambda)=\sum_i\operatorname{clip}(x_i-\lambda,l_i,u_i).\tag{S14}$$
 If $\mathcal K(t)\ne\emptyset$, the unique minimiser of (S13) is
 $$p_i^{*}=\operatorname{clip}(x_i-\lambda^{*},l_i,u_i),\qquad \lambda^{*}=\begin{cases}0,& \mathcal S(0)\in[-C_{\mathrm{rev}},\tilde C],\\ \text{any root of }\mathcal S(\lambda)=\tilde C\ \ (\text{then }\lambda^{*}>0),& \mathcal S(0)>\tilde C,\\ \text{any root of }\mathcal S(\lambda)=-C_{\mathrm{rev}}\ \ (\text{then }\lambda^{*}<0),& \mathcal S(0)<-C_{\mathrm{rev}}.\end{cases}\tag{S15}$$
 All roots give the same $p^{*}$. $\lambda^{*}$ is unique whenever the free set $\mathcal F=\{i:l_i<x_i-\lambda^{*}<u_i\}$ is non-empty.
-(iii) On the open set where $\mathcal F$ and the active aggregate constraint are locally constant, with $D=\mathrm{diag}(\mathbb 1[i\in\mathcal F])$:
+(iii) *(Supplementary material, DD40; not used by the main algorithm, which treats $\Pi_t$ as part of the environment.)* On the open set where $\mathcal F$ and the active aggregate constraint are locally constant, with $D=\mathrm{diag}(\mathbb 1[i\in\mathcal F])$:
 $$\frac{\partial p^{*}}{\partial x}=J=\begin{cases}D-\dfrac{(D\mathbf 1)(\mathbf 1^\top D)}{\mathbf 1^\top D\mathbf 1}, & \text{aggregate constraint active and }\mathcal F\ne\emptyset,\\ 0, & \text{aggregate constraint active and }\mathcal F=\emptyset,\\ D, & \text{aggregate constraint inactive}.\end{cases}\tag{S16}$$
 
 *Proof.*
@@ -316,7 +317,46 @@ None of this algebra is new. What differs in our use is:
 
 ---
 
-## 5 Feasibility invariance
+## 5 Feasibility preservation and invariance
+
+### 5.1 Main result (DD30)
+
+*Intuition.* The safety layer never lets an EV fall below the least energy from which its departure requirement is still reachable at full power. The common shift $\lambda$ keeps the station inside the transformer band. The first property can fail only when the transformer cannot serve all EVs' minimum needs at once, an infeasible step. The second never fails, because then the fallback rule serves the transformer first.
+
+Theorem 1′ states the result in two layers:
+- the transformer limit holds for every raw-action sequence, under conditions on the simulator and the exogenous grid only;
+- the departure requirement is a per-EV statement that is conditional on the EV's own stay.
+
+The global Theorem 1 (Sec. 5.3) is the special case in which no step is infeasible. The induction is the classical laxity argument of [chen2022smoothed] (feasibility iff all laxities stay non-negative), extended to:
+- the taper, via certified thresholds that require A1;
+- V2G, via a signed lower bound;
+- a two-sided aggregate coupling;
+- arbitrary raw actions of a learned policy.
+
+**Assumption A6 (exogenous headroom).** For every step $t$: $C(t)\ge N\varepsilon_q$ and $C_{\mathrm{rev}}(t)\ge0$. A6 depends only on $P_{\mathrm{tr}},P^{\mathrm{inf}},P^{\mathrm{pv}}$, not on the policy, and is checked online at every step.
+
+**Theorem 1′ (feasibility preservation).** Consider the closed loop in which, at every step $t$:
+- the commanded power is $p(t)=\Pi_t(x(t))$ if the feasibility test of Sec. 4.2 passes, and the fallback rule of Sec. 7.2 otherwise;
+- $(x(t))_t$ is an arbitrary sequence of raw actions (non-finite entries replaced by 0) — in particular the actions of any policy, during training and deployment.
+
+Assume A3 and A6. Then:
+- **(a) Transformer limit, for every raw-action sequence:** $-C_{\mathrm{rev}}(t)\le\sum_i\tilde p_i(t)\le C(t)$ at every step $t$, on feasible and fallback steps alike.
+- **(b) Physical limits:** $p_i^{\min}(E_i(t))\le p_i(t)\le\bar P_i(E_i(t))$ at every step, for every connected EV.
+
+If, in addition, A1, A2 and A4 hold:
+- **(c) Departure requirement, per EV:** every EV $i$ with $p_i(t)\ge l_i(t)$ for all $t\in[t_i^{\mathrm{arr}},d_i]$ meets $E_i(d_i+1)\ge E_i^{\mathrm{req}}$. In particular, this holds for every EV whose stay contains no infeasible step, whatever happens at other steps and whatever the raw actions are.
+- **(d) Global special case (Theorem 1):** if A5 holds at every step, every EV meets its departure requirement.
+
+**Instantiation in EV2Gym.**
+- A3 holds under the configuration of Corollary 2 (Lemmas E2, E3).
+- A1 holds by Lemma E1.
+- A2 holds by construction (known departure; Proposition 2 relaxes it).
+- A4 holds by the request pipeline (Sec. 3.4 and 7.4).
+- A6 holds under the DD24 scaling (Corollary 2, item 8) except on events of probability below $2\times10^{-9}$ per episode.
+
+The proof is given after Corollary 2 (Sec. 5.4).
+
+### 5.2 One-step invariance
 
 **Lemma 1 (one-step individual invariance).** Assume A1 and A3, and let $\hat B$ satisfy (S10). Let EV $i$ be connected at $t$ with $\tau=\tau_i(t)$ and individually feasible, $E=E_i(t)\ge\hat B(\tau)$. Then:
 (a) $p^{\min}(E)\le l_i(t)\le u_i(t)$;
@@ -345,6 +385,8 @@ A1 enters exactly once: $E\ge\hat B(\tau)\Rightarrow\varphi(E)\ge\varphi(\hat B(
 - **A5 (aggregate per-step feasibility, closed loop).** At every step $t$ of the closed loop:
 $$\sum_{i\in\mathcal N(t)}l_i(t)\le\tilde C(t),\qquad\sum_{i\in\mathcal N(t)}u_i(t)\ge-C_{\mathrm{rev}}(t),\qquad\tilde C(t)\ge-C_{\mathrm{rev}}(t).$$
   The last condition means $2P_{\mathrm{tr}}(t)\ge n(t)\varepsilon_q$ and is checked like the others.
+
+### 5.3 Global invariance (special case)
 
 **Theorem 1 (feasibility invariance).** Consider the closed loop in which, at every step $t$, the commanded powers are $p(t)=\Pi_t(x(t))$ for an arbitrary finite raw action $x(t)\in\mathbb R^N$, in particular for actions sampled from any policy, during training and deployment. Suppose:
 - A1: $\varphi_i$ is continuous and non-decreasing for every EV;
@@ -379,7 +421,7 @@ $$\sum_i\tilde p_i\in\Big[\sum_ip_i,\ \sum_ip_i+n(t)\varepsilon_q\Big]\subseteq[
 - every EV $i$ with $p_i(t)\ge l_i(t)$ at every step of its stay meets its departure energy requirement;
 - in particular, this holds for every EV whose stay contains no infeasible step, whatever happens at other steps;
 - claim (b) holds at every step, fallback steps included;
-- the transformer limit for realised powers holds at every step except FB-0, FB-2 and FB-1* steps (Sec. 7.2), where no admissible command satisfies it.
+- the transformer limit for realised powers holds at every step except FB-0, FB-2 and FB-1* steps (Sec. 7.2), where no admissible command satisfies it. These steps cannot occur under A6 (Theorem 1′(a)).
 
 *Proof.* The per-EV part of the induction (Lemma 1 and A4) uses only $p_i(t)\in[l_i(t),u_i(t)]$ during the stay of EV $i$. Fallback outputs satisfy $p^{\min}\le p\le u$, so $p_i\ge l_i$ implies $p_i\in[l_i,u_i]$. On feasible steps the transformer part of the induction step applies unchanged. On FB-1 steps, Lemma 2(a) gives $\mathbf 1^\top p=\tilde C\ge-C_{\mathrm{rev}}$, and A3 transfers this to the realised powers. $\square$
 
@@ -390,9 +432,26 @@ $$\sum_i\tilde p_i\in\Big[\sum_ip_i,\ \sum_ip_i+n(t)\varepsilon_q\Big]\subseteq[
 4. zero dead-bands: EV `min_ac_charge_power = min_discharge_power = 0` (the heterogeneous-spec default), and charger `min_charge_current = min_discharge_current = 0` (`V2GProfitMax.yaml`);
 5. `v2g_enabled: True`, so that negative actions and $P^{\mathrm{dis}}>0$ are available;
 6. `transition_soc_multiplier` $m=5$, with $\kappa_i\le\kappa^{*}(5)$ for all EVs (Lemmas E1 and E2; verified for all 8 models at 5 and 15 min);
-7. the actuation map of Sec. 6.3 with $\varepsilon_q=0.008$ kW, and `empty_ports_at_end_of_simulation=True` (coverage in Theorem 1).
+7. the actuation map of Sec. 6.3 with $\varepsilon_q=0.008$ kW, and `empty_ports_at_end_of_simulation=True` (coverage in Theorem 1);
+8. **A6 under the DD24 scaling.** EV2Gym scales the inflexible-load peak to $m_LP_{\mathrm{tr}}$ with $m_L\sim\mathcal N(0.4,0.1)$ and clips the load at $P_{\mathrm{tr}}$. PV is $\mathrm{pv}(t)\,m_PP_{\mathrm{tr}}$ with $\mathrm{pv}\le0.853\cdot1.1=0.94$ and $m_P\sim\mathcal N(0.4,0.1)$.
+   - $C(t)\ge P_{\mathrm{tr}}(1-m_L)\ge N\varepsilon_q$ unless $m_L>1-\varepsilon_q/\rho_{\mathrm{tr}}\ge0.997$ ($\rho_{\mathrm{tr}}\ge3$ kW), which is a 5.97σ event.
+   - $C_{\mathrm{rev}}(t)\ge P_{\mathrm{tr}}(1-0.94m_P)\ge0$ unless $m_P>1.06$, which is a 6.6σ event.
+   - Both together have probability below $2\times10^{-9}$ per episode. Any violation is logged as an FB-0 or FB-2 step.
 
 With $E_i^{\mathrm{req}}$ from (F6), A4 also holds, so Theorem 1 and Corollary 1 hold with A5 as the only remaining condition.
+
+### 5.4 Proof of Theorem 1′
+
+*(a), (b) on feasible steps.* By the guard $l\le u$ (Sec. 3.2) and the feasibility test, $\mathcal K(t)\ne\emptyset$ (Proposition 1(i)), so $p(t)\in\mathcal K(t)$. Then $p_i\in[l_i,u_i]\subseteq[p_i^{\min},\bar P_i]$, and step 4 of the proof of Theorem 1 (A3) gives the realised band.
+
+*(a), (b) on fallback steps.* Under A6, $\tilde C(t)=C(t)-n(t)\varepsilon_q\ge0$ and $C_{\mathrm{rev}}(t)\ge0$, so:
+- FB-1* ($\tilde C<-C_{\mathrm{rev}}$) is impossible;
+- FB-2 ($\sum u<-C_{\mathrm{rev}}$) is impossible, because $u\ge0$;
+- FB-0 (budget $\tilde C-\sum p^{\min}<0$) is impossible, because $p^{\min}\le0$.
+
+Hence every infeasible step is an FB-1 step. Lemma 2(a) gives $p^{\min}\le p\le u$ and $\mathbf 1^\top p=\tilde C\in[-C_{\mathrm{rev}},\tilde C]$, and A3 transfers this to the realised powers. Neither part uses A1, A2, A4 or A5.
+
+*(c)* is Corollary 1. *(d)* is Theorem 1. $\square$
 
 **Closed-loop evidence.**
 - `verify_projection.py` T4 drives EV2Gym `EV` objects with random raw actions (standard deviation 16.5 kW) in three settings (5138 EVs). No EV whose stay contained no infeasible step missed $E^{\mathrm{req}}$, and the transformer limit was never violated on feasible steps.
@@ -471,7 +530,7 @@ Then A5 holds at every step for **every** policy. The proof is by induction on I
 
 But $l_i^{\max}(t)=\bar P_i(\hat B_i(\tau_i))$ whenever $\hat B_i(\tau_i)>E^{\min}$. The condition therefore asks the transformer to serve all non-trivially constrained EVs at full power simultaneously, which is very conservative.
 
-The guarantee is therefore stated conditionally on A5 (Theorem 1) and localised per EV (Corollary 1), and its failure frequency is measured (risk R8). A layer that certifies future joint feasibility would need time-coupled constraints, e.g. nested deadline constraints. The projection would then no longer have the single-sum form (S15). This is left as future work. Admission control (Sec. 7.4) attacks the problem at arrival only.
+The guarantee is therefore stated conditionally on A5 (Theorem 1) and localised per EV (Corollary 1), and its failure frequency is measured (risk R8). A layer that certifies future joint feasibility would need time-coupled constraints, e.g. nested deadline constraints. The projection would then no longer have the single-sum form (S15). This is left as future work. Admission control (Sec. 7.4) attacks the problem at arrival only. The transformer part of the result (Theorem 1′(a)) does not depend on A5 at all.
 
 ### 7.2 Fallback rule (DD8)
 
@@ -489,7 +548,7 @@ FB-1 and FB-2 cannot occur together, because $\sum u<-C_{\mathrm{rev}}\le\tilde 
 **Lemma 2 (fallback).**
 (a) In case FB-1 with $b\ge0$, the output satisfies $p^{\min}\le p\le l\le u$ and $\mathbf 1^\top p=\tilde C(t)\in[-C_{\mathrm{rev}}(t),\tilde C(t)]$. So the transformer limit for realised powers holds (A3 margin), and the per-step physical limits hold.
 (b) Every EV that is individually feasible at $t$ and receives $p_i=l_i$ remains individually feasible (Lemma 1). These are a prefix of the ordering, plus every feasible EV with $l_i=p_i^{\min}$. EVs that are infeasible at $t$ have $l_i=u_i$ and remain infeasible unless they reach $u_i$.
-(c) FB-0 requires $\tilde C(t)<\sum_ip_i^{\min}\le0$, i.e. an inflexible load above $P_{\mathrm{tr}}+P^{\mathrm{pv}}$ up to the margin. FB-2 requires $C_{\mathrm{rev}}(t)<0$, i.e. PV export above $P_{\mathrm{tr}}+P^{\mathrm{inf}}$. In both cases the commanded output minimises the commanded violation, $(\mathbf 1^\top p-\tilde C)^{+}$ or $(-C_{\mathrm{rev}}-\mathbf 1^\top p)^{+}$, over the box $[p^{\min},u]$. No admissible command avoids it. The realised violation can differ from the commanded one by up to $n\varepsilon_q$.
+(c) FB-0 requires $\tilde C(t)<\sum_ip_i^{\min}\le0$, i.e. an inflexible load above $P_{\mathrm{tr}}+P^{\mathrm{pv}}$ up to the margin. FB-2 requires $C_{\mathrm{rev}}(t)<0$, i.e. PV export above $P_{\mathrm{tr}}+P^{\mathrm{inf}}$. In both cases the commanded output minimises the commanded violation, $(\mathbf 1^\top p-\tilde C)^{+}$ or $(-C_{\mathrm{rev}}-\mathbf 1^\top p)^{+}$, over the box $[p^{\min},u]$. No admissible command avoids it. The realised violation can differ from the commanded one by up to $n\varepsilon_q$. Under A6 neither case (nor FB-1*) can occur (Theorem 1′).
 
 *Proof.*
 (a) Since $\sum_i(l_i-p_i^{\min})>\tilde C-\sum p^{\min}=b$, the budget is exhausted before every EV reaches $l_i$. So $\mathbf 1^\top p=\tilde C$ and $p\le l$. Moreover $\tilde C\ge-C_{\mathrm{rev}}$.
@@ -520,61 +579,66 @@ For the fleet bound: on feasible steps $p_i\ge\tilde l_i$. On FB-2 steps $p=u$. 
 
 T4 confirms the bound on 5138 EVs, and the reviewer's check on about 30000 EVs, both with zero violations wherever A1′ holds. The logged per-step quantity $\Delta t\sum_i(g(\tilde l_i)-g(p_i))^{+}$ therefore bounds the departure shortfall a priori, and is reported alongside it.
 
-### 7.4 Admission control (DD9, DD20, DD25)
+### 7.4 Station-level request pipeline: arrival cap and admission control (DD2, DD9, DD20, DD25, DD31)
 
-When EV $j$ arrives at step $t_0$, after the DD2 cap, solve the following feasibility LP with HiGHS [huangfu2018parallelizing]. It covers all $i\in\mathcal N(t_0)$ (including $j$) and $t=t_0,\dots,d_i$, with $E_i(t_0)$ equal to the current energies. In the EV2Gym instantiation $g=\mathrm{id}$; otherwise split $p=p^{+}-p^{-}$ as in (O2).
+The arrival cap (DD2) and admission control are part of the **station operator's request setting, not of the controller** (DD31). For every test replay they are computed **once, before any controller runs**, and the resulting admitted requests $E_i^{\mathrm{req}}$ are shared by every method (SA-Attn, penalty and Lagrangian baselines, heuristics, MPC, EV-GNN) and by the oracles. Conformal variants use their own table, because their departure input is $\hat d^{\mathrm{lo}}$ instead of $d$.
+
+**Pre-pass (per replay; `admission_prepass.py`).** Arrivals are processed in time order (ties by charger index). For the arriving EV $j$ at step $t_0$:
+1. **Arrival state.** The EV enters with its nominal arrival state: $E_j^{\mathrm{arr}}$, $E_j^{\mathrm{des}}$, $d_j$ (or $\hat d_j^{\mathrm{lo}}$) and its EV parameters. All of these are exogenous, i.e. identical in every method.
+2. **DD2 cap.** `cap_request` yields $E_j^{\mathrm{req}}$ and its certified table (Sec. 3.4).
+3. **Admission LP.** The LP below is set up over the EVs admitted earlier and still connected at $t_0$, plus $j$.
+   - The energies $E_i(t_0)$ of the earlier EVs are **read from a nominal plan**, not from any controller's trajectory.
+   - After each admission decision, an elastic version of the same LP is solved and its trajectories $E_i(t)$ are stored as the nominal plan. Its slacks on targets and on the aggregate band are weighted $10^{5}$, and its objective $\max\sum_i\sum_k\min\{E_i(k),E_i^{\mathrm{tgt}}\}$ means "reach targets as early as possible".
+   - The capacity profile uses the realised values at $t_0$, the forecasts made at $t_0$ (a function of (replay, $t$) only) and the last forecast held afterwards.
+4. **Decision.** Targets follow DD25. The largest feasible request $y_{\max}$ is found by one LP (plus the exact 12-step bisection predicate). Earlier admitted requests are never reduced. If the LP is infeasible even at the lower end, $E_j^{\mathrm{req}}:=\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}})$ ("not restored").
+5. **Re-certification.** The reduced request passes through `cap_request` again.
+
+The admission LP at $t_0$ is:
 $$
 \begin{aligned}
 &E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\quad E_i^{\min}\le E_i(t+1)\le E_i^{\mathrm{cap}},\quad E_i(d_i+1)\ge E_i^{\mathrm{tgt}},\\
-&-P_i^{\mathrm{dis}}\le p_i(t)\le\bar P_i^{\mathrm{nom}},\quad p_i(t)\le\rho_i\,(E_i^{\mathrm{cap}}-E_i(t))\ (t>t_0),\quad p_i(t_0)\in[p_i^{\min}(E_i(t_0)),\bar P_i(E_i(t_0))],\\
+&-P_i^{\mathrm{dis}}\le p_i(t)\le\bar P_i^{\mathrm{nom}},\quad p_i(t)\le\varrho_i^{\mathrm{in}}\,(E_i^{\mathrm{cap}}-E_i(t))\ (t>t_0),\quad p_i(t_0)\in[p_i^{\min}(E_i(t_0)),\bar P_i(E_i(t_0))],\\
 &-\hat C_{\mathrm{rev}}(t)\le\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q.
 \end{aligned}
 $$
+- $\varrho_i^{\mathrm{in}}$ is the largest slope with $\bar P_i(E)\ge\min\{\bar P_i^{\mathrm{nom}},\varrho_i^{\mathrm{in}}(E_i^{\mathrm{cap}}-E)\}$ for all $E$. It is an **inner** taper approximation (grid of 2000 points, 1 % safety factor), so LP-feasible schedules are physically realisable.
+- **DD25 targets:** $E_j^{\mathrm{tgt}}=E_j^{\mathrm{req}}$ for the new EV. For earlier EVs, $E_i^{\mathrm{tgt}}=\min\{E_i^{\mathrm{req}},\Psi_i^{\mathrm{LP}}(E_i(t_0))-10^{-6}\}$, where $\Psi_i^{\mathrm{LP}}$ is the maximum departure energy reachable in the LP model (exact first step, inner minorant afterwards).
+- **Why DD25 is needed:** with $E^{\mathrm{req}}=E^{\mathrm{cap}}$, the linear minorant shrinks the gap $E^{\mathrm{cap}}-E$ by at most the factor $(1-\varrho^{\mathrm{in}}\Delta t)$ per step and never closes it. Literal targets would therefore make the LP infeasible whenever a full-target EV is connected, and every new request would collapse to $E^{\mathrm{arr}}$ (IMPLEMENTATION_NOTES I-3).
 
-**Inputs.**
-- $\hat C(t)$ and $\hat C_{\mathrm{rev}}(t)$ use the realised values and $P_{\mathrm{tr}}(t)$ at $t_0$, the noisy forecasts for $t_0+1,\dots,t_0+H_f$, and the last forecast held afterwards. The horizon is $\max_id_i$.
-- $\rho_i$ is the largest slope with $\bar P_i(E)\ge\min\{\bar P_i^{\mathrm{nom}},\rho_i(E_i^{\mathrm{cap}}-E)\}$ for all $E$. It is computed per EV on a 2000-point grid with a 1 % safety factor. This linear minorant is an **inner** approximation of the taper, so every LP-feasible schedule is physically realisable (A1, Lemma E2). The first step uses the exact bounds.
+**Causality.** Decision $j$ uses only information available at $t_0$: arrivals so far with their nominal states, measured and forecast capacity. The pipeline is therefore implementable online by a station operator. It does not depend on any controller.
 
-**Targets (DD25).**
-- New EV: $E_j^{\mathrm{tgt}}=E_j^{\mathrm{req}}$ (after the DD2 cap).
-- Connected EVs ($i\ne j$): $E_i^{\mathrm{tgt}}=\min\{E_i^{\mathrm{req}},\ \Psi_i^{\mathrm{LP}}(E_i(t_0))-10^{-6}\}$. Here $\Psi_i^{\mathrm{LP}}(E_i(t_0))$ is the maximum departure energy reachable **in the LP model** (exact first step, minorant afterwards, no transformer limit), computed by forward simulation.
-- Admitted requests are never reduced. The modified target is used **only inside the admission LP**; the safety layer keeps the admitted $E_i^{\mathrm{req}}$.
+**A4 is preserved for every method.** The certificate $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}});E_i^{\mathrm{req}})$ involves only the EV's own exogenous arrival state, its admitted request and its own threshold table. `cap_request` re-certifies it after any reduction, exactly as before. The nominal plan influences only *which* value is offered to `cap_request`, not the certificate. So A4, and with it Theorem 1′(c), holds for every controller that uses the safety layer, with the same requirement for all methods.
 
-**Why the faithful version fails.** The literal version uses $E_i^{\mathrm{tgt}}=E_i^{\mathrm{req}}$ for connected EVs. With EV2Gym's default full-battery target ($E^{\mathrm{des}}=E^{\mathrm{cap}}$), the DD2 cap is mostly inactive in floating point, so $E_i^{\mathrm{req}}=E_i^{\mathrm{cap}}$. Under the linear minorant, the gap $E^{\mathrm{cap}}-E$ shrinks at most by the factor $(1-\rho_i\Delta t)$ per step. It therefore never reaches 0 in finitely many steps, and $E_i(d_i+1)\ge E_i^{\mathrm{cap}}$ is unattainable in the LP. The LP is thus infeasible whenever such an EV is connected, independently of the new EV and of the transformer. The same happens when a connected EV is individually infeasible after a fallback step. The faithful rule then sets every new request to $E_j^{\mathrm{arr}}$, a zero requirement (IMPLEMENTATION_NOTES I-3). With DD25, the targets of connected EVs are only as high as the LP model can deliver. The new EV's request is reduced only by genuine capacity conflicts, or by the LP model's gap to the exact taper (about $10^{-5}$-$10^{-2}$ kWh for full targets, below the 0.01 kWh reporting threshold). The faithful variant remains selectable (`safety.admission_existing_targets: admitted`).
+**What admission control guarantees:**
+1. A4 for every EV, for every method.
+2. Identical admitted requests for all methods and the oracles on a replay, so shortfall and profit are compared against the same requirement. Admission reductions are reported separately and are identical across methods.
+3. Requests are never reduced after admission.
+4. If the LP is feasible: there exists an open-loop schedule that meets the new EV's admitted request and the LP-reachable targets of the earlier EVs, **starting from the nominal-plan energies**. The schedule is physically realisable (inner taper) and respects the transformer limit under the **forecast** capacity, provided no further EV arrives.
 
-**Reduction of the new request.**
-- Feasibility is monotone in $E_j^{\mathrm{tgt}}$, so the largest feasible request $y_{\max}$ is obtained from one LP that maximises $E_j(d_j+1)$ under the same constraints. The 12-step bisection on $[\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}}),E_j^{\mathrm{req}}]$ is then evaluated with the exact predicate $y\le y_{\max}+10^{-6}$. This gives the same result as 12 LP solves.
-- If even the lower end is infeasible, set $E_j^{\mathrm{req}}=\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}})$ and log "admission did not restore feasibility".
-- The reduced request is then passed through `cap_request` (Sec. 3.4), which re-certifies A4 for the stored table.
+**What admission control does not guarantee:**
+1. A5 for any particular controller. A controller's realised energies may lie below the nominal plan, so it may need more capacity later than planned.
+2. Feasibility under the realised capacity: forecasts are noisy.
+3. Feasibility after future arrivals.
+4. That earlier EVs reach their full admitted request when it exceeds $\Psi^{\mathrm{LP}}$ (only up to the LP-model gap).
 
-**What admission control guarantees, and what it does not.**
-- *Guarantees* (in the model):
-  1. A4 for the new EV (by `cap_request`).
-  2. Requests of admitted EVs are never changed.
-  3. If the LP is feasible, there exists an open-loop schedule that meets the new EV's (possibly reduced) request and the LP-reachable targets of all connected EVs. This schedule is physically realisable under the taper (inner approximation) and respects the transformer limit under the **forecast** capacity, if no further EV arrives.
-- *Does not guarantee:*
-  1. A5 in closed loop: the policy need not follow the LP plan (Sec. 7.1).
-  2. Feasibility under the realised capacity: forecasts are noisy.
-  3. Feasibility after future arrivals.
-  4. That connected EVs reach their full admitted $E_i^{\mathrm{req}}$ when it exceeds $\Psi_i^{\mathrm{LP}}$ (only up to the LP-model gap).
-
-Admission control therefore **does not enter Theorem 1**. Its effect (infeasible steps, reductions) is measured, and "no admission control" is an evaluation-only ablation.
+Admission control therefore does not enter Theorem 1′. An evaluation pass without admission control (`_noadm`) is run for SA-Attn and Attention+penalty.
 
 ### 7.5 What is counted in the experiments
 
 Per episode and per method:
-1. **Infeasible steps:** number, fraction, and split into FB-0, FB-1, FB-2 and FB-1*.
-2. **A5 slack:** the minimum over steps of $\tilde C-\sum l$.
+1. **Headline guarantee metrics (DD30):**
+   - fraction of EVs whose stay contains no infeasible step ("A5-complete EVs");
+   - fraction of steps in fallback, by case FB-0/1/2/1*;
+   - both versus $N$, profile and $\rho_{\mathrm{tr}}$.
+2. **A5 slack:** the minimum over steps of $\tilde C-\sum l$; binding rate of the forward limit.
 3. **EVs touched by an infeasible step:** those with $p_i<l_i$ at least once.
-4. **Departure shortfall:** $\Delta E^{\mathrm{sh}}$ in kWh, and the number of EVs with $\Delta E^{\mathrm{sh}}>0.001$ kWh. Reported both against the DD2-capped and against the admitted requirement.
+4. **Departure shortfall** $\Delta E^{\mathrm{sh}}$, against the **post-admission request** for all methods (main), and against the DD2-capped request and $E^{\mathrm{des}}$ (secondary). Also the number of EVs with $\Delta E^{\mathrm{sh}}>0.001$ kWh.
 5. **The Lemma 3 deficit bound.**
-6. **Admission control:** number and kWh of reduced requests.
+6. **Admission:** number and kWh of reduced requests, identical across methods; "not restored" count.
 7. **DD2 caps:** number capped by more than 0.01 kWh, and kWh.
-8. **Transformer violation** in kWh (DD7 metric) and violating steps. These must be 0 except on FB-0, FB-2 and FB-1* steps.
-9. **Guard counters:** non-finite raw actions replaced, and projection post-condition hand-overs to bisection.
-10. **Profit, optimality gap and cost of the guarantee.**
-
----
+8. **Transformer violation** in kWh (DD7 metric) and violating steps. These are 0 for every safety-layer method unless A6 fails.
+9. **Guard counters:** non-finite raw actions, post-condition hand-overs to bisection.
+10. **Economics:** profit, penalised profit $J^{\mathrm{pen}}$ (DD32), optimality gaps, cost of the guarantee.
 
 ## 8 Conformal lower bound on the departure step (DD12, DD23)
 
@@ -582,12 +646,14 @@ We use split (inductive) conformal prediction [papadopoulos2002inductive; vovk20
 
 The procedure is:
 1. **Predictor.** Train $\hat q$, a lower-quantile regressor of $d_i$ (gradient boosting with quantile loss at level $\alpha$), on features $\mathbf w_i$: arrival step, weekday, $E_i^{\mathrm{arr}}$, $E_i^{\mathrm{des}}-E_i^{\mathrm{arr}}$, EV model. Use a separate training split of simulated sessions.
-2. **Calibration (DD23).** Draw $n_{\mathrm{cal}}$ calibration sessions from independently seeded episodes of the **same scenario configuration as the test episodes**: same $N$, $\Delta t$, spawn multiplier, scenario type, transformer-tightness level and date range. Take one session per episode, chosen uniformly at random among that episode's EVs. Compute the scores $S_j=\hat q(\mathbf w_j)-d_j$.
+2. **Calibration (DD23).** Draw $n_{\mathrm{cal}}$ calibration sessions from independently seeded episodes of the **same scenario configuration as the test episodes**: same $N$, $\Delta t$, spawn multiplier, scenario type, transformer-tightness level and date range. Take one session per episode, chosen uniformly at random among that episode's EVs. Compute the scores $e_j=\hat q(\mathbf w_j)-d_j$.
 3. **Quantile.** $\hat Q_{1-\alpha}$ is the $k$-th smallest score with $k=\lceil(n_{\mathrm{cal}}+1)(1-\alpha)\rceil$, or $+\infty$ if $k>n_{\mathrm{cal}}$.
 4. **Bound.** For a test EV,
 $$\hat d_i^{\mathrm{lo}}=\max\big\{t_i^{\mathrm{arr}},\ \lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil\big\},\qquad \tau_i^{\mathrm{lo}}(t)=\max\{1,\ \hat d_i^{\mathrm{lo}}-t+1\}.$$
    The ceiling is valid because $d_i$ is an integer: $d\ge y\iff d\ge\lceil y\rceil$. The maximum with $t_i^{\mathrm{arr}}$ is valid because $d_i\ge t_i^{\mathrm{arr}}$ surely.
 5. **Use.** The layer uses $\tau_i^{\mathrm{lo}}$ in place of $\tau_i$ in (S11), in the DD2 cap and in the features. Departures are observed when they happen: the EV is removed from $\mathcal N$.
+
+**SA-Attn-CP is not zero-shot.** It needs calibration data from the target configuration (5000 simulated sessions). The policy itself is not retrained, but the bound is calibrated per configuration. Conformal variants also have their own admission table (Sec. 7.4).
 
 **Why calibration must match the scenario.** The law of "a uniformly chosen EV of an episode" depends on the scenario, including $N$: choosing uniformly among all sessions is size-biased towards chargers with many sessions. Calibration is therefore done separately for every test configuration, in particular for every $N$ of the zero-shot study. One calibration set of 5000 sessions per configuration is cheap, because sessions come from the simulator's arrival model only.
 
@@ -598,7 +664,7 @@ $$\mathbb P\big(E_i(d_i+1)\ge E_i^{\mathrm{req}}\big)\ \ge\ 1-\alpha-\mathbb P\b
 and $\ge1-\alpha$ if A5 holds **almost surely** at every step of the stay.
 
 *Proof.*
-(i) By exchangeability, the rank of $S_{n+1}=\hat q(\mathbf w_i)-d_i$ among $S_1,\dots,S_{n+1}$ is uniform up to ties, so $\mathbb P(S_{n+1}\le\hat Q_{1-\alpha})\ge k/(n_{\mathrm{cal}}+1)\ge1-\alpha$ [vovk2022algorithmic; lei2018distributionfree]. Then $S_{n+1}\le\hat Q_{1-\alpha}\iff d_i\ge\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\iff d_i\ge\lceil\hat q-\hat Q_{1-\alpha}\rceil$, and the maximum with $t_i^{\mathrm{arr}}$ changes nothing.
+(i) By exchangeability, the rank of $e_{n+1}=\hat q(\mathbf w_i)-d_i$ among $e_1,\dots,e_{n+1}$ is uniform up to ties, so $\mathbb P(e_{n+1}\le\hat Q_{1-\alpha})\ge k/(n_{\mathrm{cal}}+1)\ge1-\alpha$ [vovk2022algorithmic; lei2018distributionfree]. Then $e_{n+1}\le\hat Q_{1-\alpha}\iff d_i\ge\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\iff d_i\ge\lceil\hat q-\hat Q_{1-\alpha}\rceil$, and the maximum with $t_i^{\mathrm{arr}}$ changes nothing.
 (ii) On the event, the layer's horizon $\hat d^{\mathrm{lo}}$ does not exceed the true one.
 - Lemma 1 applied with $\tau^{\mathrm{lo}}$ up to $t=\hat d^{\mathrm{lo}}$ gives $E_i(\hat d^{\mathrm{lo}}+1)\ge\hat B(0)$.
 - For $\hat d^{\mathrm{lo}}<t\le d_i$, we have $\tau^{\mathrm{lo}}=1$. By the third condition in (S10), $\hat B(1)\le\max\{\hat B(0),E^{\min}\}$; since $E_i(t)\ge\hat B(0)$ and $E_i(t)\ge E^{\min}$, it follows that $E_i(t)\ge\hat B(1)$. Lemma 1 with $\tau=1$ then gives $E_i(t+1)\ge\hat B(0)\ge E^{\mathrm{req}}$ again.
@@ -634,7 +700,7 @@ For stochastic policies, applying the projection in the environment or in the po
 **Variance reduction (unbiased for the score-function gradient).**
 - **Tokens with no influence.** If $u_i(t)-l_i(t)\le\epsilon_{\mathrm{num}}$, then $p_i$ does not depend on $a$ beyond $\epsilon_{\mathrm{num}}$, and neither does any other $p_j$: the term $\operatorname{clip}(x_i-\lambda,l_i,u_i)$ is constant in $\lambda$. The set of such tokens depends only on the state. Because the Gaussian factorises, dropping them from the log-probability and the entropy removes a zero-mean term that is uncorrelated with the kept terms. Using the threshold $\epsilon_{\mathrm{num}}$ instead of exact equality introduces a bias proportional to an influence of at most $10^{-9}$ kW, which is negligible.
 - **Fallback steps.** On fallback steps $p$ is a function of the state only, so these transitions are masked out of the actor loss and kept for the critic.
-- **Normalisation.** To keep the masked estimator literally unbiased, the actor loss is normalised by the **fixed** minibatch size $B_{\mathrm{mb}}$, i.e. $\sum_{\text{kept}}(\cdot)/B_{\mathrm{mb}}$, not by the random number of kept transitions.
+- **Normalisation.** To keep the masked estimator literally unbiased, the actor loss is normalised by the **fixed** minibatch size $n_{\mathrm{mb}}$, i.e. $\sum_{\text{kept}}(\cdot)/n_{\mathrm{mb}}$, not by the random number of kept transitions.
 - **Effect on clipping.** Masking also changes which samples PPO clips, which is beneficial.
 - **Evidence.** The reviewer measured variance ratios of 0.19 (token mask) and 0.83 (fallback mask) at unchanged expectation.
 
@@ -660,8 +726,9 @@ $$\mathcal L_{\mathrm{reg}}(\theta)=\beta\ \mathbb E_{s}\Big[\frac1{n(t)}\sum_{i
 | A1′ | $\varphi_i$ 1-Lipschitz ($\bar P_i$ non-increasing) | Lemma 3; numerical room in the DD2 cap | Proven (Lemma E1); excess $1.4\times10^{-14}$ kWh |
 | A2 | $d_i$ and $E_i^{\mathrm{req}}$ known at arrival | Theorem 1 | Exact in EV2Gym; relaxed for $d_i$ by Proposition 2 |
 | A3 | Realised energy $\ge E+\Delta tg(p)$ and $\le E^{\mathrm{cap}}$; realised power in $[p,p+\varepsilon_q]$ | Lemma 1, Theorem 1(a) | Lemmas E2 and E3 under Corollary 2's configuration; logged as $\max_t(\sum\tilde p-\sum p)$ and $\min_t(E(t+1)-E(t)-\Delta tp)$ |
-| A4 | $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}}))$ | Theorem 1 base | By construction (`cap_request`, also after admission control, DD25); caps reported with threshold 0.01 kWh |
-| A5 | $\sum l_i\le\tilde C$, $\sum u_i\ge-C_{\mathrm{rev}}$, $\tilde C\ge-C_{\mathrm{rev}}$ at every closed-loop step | Theorem 1 | Checked online at every step; infeasible steps, FB-0/1/2/1*, A5 slack and the Lemma 3 deficit reported per $N$ and scenario |
+| A4 | $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}}))$ | Theorem 1 base, Theorem 1′(c) | By construction (`cap_request` in the station-level pipeline, also after admission, DD31); caps reported with threshold 0.01 kWh |
+| A6 | $C(t)\ge N\varepsilon_q$ and $C_{\mathrm{rev}}(t)\ge0$ (exogenous headroom, policy-independent) | Theorem 1′(a),(b) | Holds under DD24 scaling except with probability $<2\times10^{-9}$ per episode (Corollary 2, item 8); checked online, failures logged as FB-0/FB-2 |
+| A5 | $\sum l_i\le\tilde C$, $\sum u_i\ge-C_{\mathrm{rev}}$, $\tilde C\ge-C_{\mathrm{rev}}$ at every closed-loop step | Theorem 1, Theorem 1′(d) | Checked online at every step; infeasible steps, FB-0/1/2/1*, A5 slack and the Lemma 3 deficit reported per $N$ and scenario |
 | $\epsilon_{\mathrm{num}}$ | Single numerical tolerance $10^{-9}$ | Sec. 6.4 | Absorbed by the unused part of $\varepsilon_q$ and far below 0.001 kWh |
 | DD1 | EV2Gym lossless accounting ($g=\mathrm{id}$), efficiencies as derating | All | Stated as a limitation |
 | DD4 | Efficiency constant over current levels per EV model (own spec JSON) | Lemma E2, actuation | Spec file archived with the code |

@@ -1,0 +1,159 @@
+% ---------------------------------------------------------------------
+\section{Compared methods, training and statistics}\label{sec:training-supp}
+% ---------------------------------------------------------------------
+
+\subsection{Implementation of the compared methods}\label{app:baselines}
+
+Every method and every evaluation pass receives the shared admitted requirement of \Sec{sec:pipeline}, and shortfall is always measured against it.
+Methods without the safety layer execute only the physical clip $\clip(x_i,\pmn_i,u_i)$, and variants with the layer pass their output as the raw action $x$ through \Alg{alg:safety}, so they inherit Theorem~\ref{M-thm:invariance}.
+
+\textbf{Penalty-based methods.}
+Attention+penalty, MLP+penalty and the variant without departure bound learn from the reward $r(t)$ minus two penalties.
+They are $w$ times the departure shortfall of the EVs that leave at step $t$ and $w$ times the transformer overload energy of the step.
+Shortfall is measured against the admitted requirement, overload uses the untightened limits and the reported powers, and the weight $w\in\{1,10,100\}$\,\texteuro/kWh is tuned.
+A dense ablation adds $w\Delta t\sum_i(l_i-p_i)^{+}$ at every step and thus gives the penalty method the information of our lower bound.
+At the evaluation weight of 10\,\texteuro/kWh, more than eleven times the highest hourly price, no violation pays at the optimum of the penalised objective, although learned policies can still violate.
+
+Attention+penalty and MLP+penalty use $\beta=0$, and their actor loss masks only tokens whose action cannot influence the commanded power.
+The variant without departure bound runs the safety layer with $l_i=\pmn_i$, so it keeps $\beta=0.01$ and masks fallback steps like \method{}.
+For its dense ablation, Attention+penalty keeps the tuned weight $w$ and the curriculum ablation of \method{} trains only with $N=10$ during the first 20\% of the steps.
+
+\textbf{Attention+PPO-Lagrangian.}
+This baseline solves the constrained problem $\max J_r$ subject to expected episode shortfall and overload energy of at most zero \cite{altman2021constrained,tessler2018reward}.
+The attention policy runs with the physical clip and the profit reward, and the critic has three heads, one for the value and one for each cost, each with its own advantage estimate.
+PPO uses the combined advantage $(A_r-\Lambda_EA_E-\Lambda_PA_P)/(1+\Lambda_E+\Lambda_P)$, normalised per minibatch.
+Once per rollout, $\Lambda_k\gets\clip(\Lambda_k+\eta_\Lambda(\hat J_k-0),0,1000)$ for $k\in\{E,P\}$, with $\Lambda_k=0$ at the start and the step size $\eta_\Lambda\in\{0.5,2,8\}$ tuned.
+The cost limit of zero matches the hard requirements of the problem, and the cap of 1000 keeps the multipliers finite while violations persist, and the training logs record their trajectories.
+
+\textbf{Size-agnostic and fixed-size networks.}
+Deep Sets+safety layer embeds each charger token with a shared network and adds the masked mean of all embeddings and the global token as context.
+It decodes one Gaussian per token, so no token attends to another.
+The MLP baselines map the zero-padded concatenation of 20 charger tokens and the global token through two hidden layers of 640 units.
+The width matches the parameter count of the attention actor (614,440 versus 610,370), and the MLP baselines are evaluated and reported only at $N\le20$.
+
+
+\textbf{Rules.}
+The rules as fast as possible (AFAP), as late as possible (ALAP), round robin and LLF are price-unaware and charge only.
+For each EV, sLLF \cite{chen2022smoothed} computes the next-step laxity $\chi_i^0=(E_i-\Bh_i(\tau_i-1))/(\Pnom_i\Delta t)$ and the rate $p_i=\clip(\Pnom_i(L-\chi_i^0),0,u_i)$, with a common level $L$ found by bisection so that $\sum_ip_i=\max(0,\Ctil)$.
+It is the published rule with the peak rate $\Pnom_i$ and a cap that includes the taper.
+The price-threshold rule compares the current price with the median of all prices seen so far together with the known price window.
+Below the median it allocates $\Ctil(t)$ by LLF, above the median it requests the maximum V2G discharge, and otherwise it idles.
+
+\textbf{Model-predictive baselines.}
+eMPC-HiGHS is our re-implementation of the eMPC of EV2Gym \cite{diazlondono2026open} as a receding-horizon net-power LP with HiGHS.
+Its LP uses per-EV limits, exact first-step bounds including the taper and the admitted requirements with an elastic departure constraint of 1000\,\texteuro/kWh.
+Prices and arrivals are known exactly within the horizon of 10 steps (eMPC-HiGHS) or 96 steps (eMPC-HiGHS-24h), whereas load and PV come from EV2Gym's noisy forecasts.
+The original eMPC (Gurobi) runs only on the literature configuration, through an adapter subclass that fixes two incompatibilities with newer numerical libraries and clips its commands to the physical limits.
+
+\textbf{External learned baselines.}
+EV-GNN \cite{orfanoudakis2025scalable} runs unmodified at commit \texttt{01aa1b7a} with its own twin delayed deep deterministic policy gradient (TD3) script, reward and published hyperparameters, through a launcher that restores numerical-library aliases.
+It trains on its own EV2Gym configuration for each profile at $N=20$ and $\rho_{\sm{tr}}=4$ kW, and this configuration keeps one load and PV draw for the whole training run.
+Its budget is $3\times10^{6}$ steps instead of its default of $10^{7}$, and the checkpoint with the best training reward is evaluated.
+Both differences to our own methods are stated with the results.
+For EV-GNN+safety layer, its bounded per-charger action $a_i^{\sm{GNN}}$ is mapped to the raw action $x_i=a_i^{\sm{GNN}}\zeta_iP^{\sm{cs}}$.
+The graph-enhanced decision transformer (GNN-DT) \cite{orfanoudakis2026graph} has public code under an open-source licence (DT4EVs, commit \texttt{8b327d12}).
+GNN-DT trains offline on trajectories that an optimiser generates for each scenario inside a modified simulator copy.
+Porting this pipeline to our scenarios, estimated at two to four person-days, was not done for this study.
+
+\subsection{Training loop}\label{app:ppo}
+
+\Alg{alg:ppo} lists the training loop of \method{}, in which the safety layer of \Alg{alg:safety} acts as part of the environment.
+Each environment writes into its own buffer, and at update time all token tensors are right-padded to the largest $N$ in the batch with masked entries.
+Padding changes neither the actor outputs of real tokens nor the value (Lemma~\ref{lem:equivariance}), and the log-probability, entropy and regulariser sums run over masks only.
+The learning reward is the profit divided by $N r^{\sm{ref}}$, so that returns of stations with different $N$ have the same scale, and every reported result uses the undivided profit.
+
+\begin{algorithm}[t]
+\caption{PPO training of \method{} with a variable number of chargers}\label{alg:ppo}
+\begin{algorithmic}[1]
+\Require 16 environments (8 with $N=10$, 8 with $N=20$); actor $\pi_\theta$ and critic $V_\omega$
+\While{fewer than $3\times10^{6}$ environment steps}
+  \For{128 steps in every environment}
+    \State observe tokens, $l$, $u$, $\Ctil$, $\Crev$ and the feasibility flag
+    \State sample $a\sim\pi_\theta(\cdot\mid s)$; $x\gets P^{\sm{ref}}a$
+    \State $p\gets\Pi_t(x)$ if feasible, else fallback rule \Comment{\Alg{alg:safety}}
+    \State step the simulator; $r\gets$ realised profit of the step (\Eq{M-eq:objective}); store $r/(N r^{\sm{ref}})$, $a$, $\log\pi_\theta(a\mid s)$ over tokens with $u_i-l_i>10^{-9}$
+  \EndFor
+  \State compute advantages with GAE ($\gamma=0.99$, $\lambda_{\sm{GAE}}=0.95$); pad tokens to the largest $N$ in the batch
+  \For{10 epochs, minibatches of $n_{\sm{mb}}$ transitions}
+    \State clipped surrogate ($\epsilon_{\sm{clip}}=0.2$) on feasible transitions with normalised advantages, divided by $n_{\sm{mb}}$
+    \State loss $\gets-$surrogate $+\,c_{\sm{vf}}\cdot$value loss $-\,c_{\sm{ent}}\cdot$entropy $+\,\mathcal L_{\sm{reg}}$ (\Eq{M-eq:reg}, feasible steps only)
+    \State Adam step with gradient-norm clipping 0.5; stop the epochs early if the approximate KL divergence exceeds 0.03
+  \EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Hyperparameters and tuning}\label{app:hyper}
+
+\Tab{tab:hyper} lists the hyperparameters.
+Each of the seven tuned learned methods (\method{}, Attention+penalty, Attention+PPO-Lagrangian, Attention+safety layer without departure bound, Deep Sets+safety layer, MLP+safety layer and MLP+penalty) receives 12 configurations.
+They consist of the default point and 11 points sampled without replacement from the grid of \Tab{tab:hyper} with a fixed sampling seed per method.
+Each configuration is trained on the training mixture for $0.5\times10^{6}$ steps with seed 0 and evaluated on 24 validation episodes that cycle through the training configurations, with seeds disjoint from the test replays.
+Selection uses the mean validation $J^{\sm{pen}}$ at $w=10$\,\texteuro/kWh for every method.
+The conformal variant, the ablations of \method{}, the 5-min policy and the reference trained at $N=50$ inherit the selection of \method{}, and the penalty ablations inherit that of Attention+penalty.
+EV-GNN keeps its published hyperparameters, and $\beta$ and the architecture are fixed for all methods with the safety layer.
+
+\begin{table}[t]
+\centering
+\caption{Hyperparameters and tuning grid.}
+\label{tab:hyper}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l>{\raggedright}p{6.2cm}>{\raggedright\arraybackslash}p{6.4cm}@{}}
+\toprule
+Group & Parameter & Value \\
+\midrule
+Network & width $d_m$, layers $n_L$, heads $n_H$ & 128, 3 (pre-LayerNorm), 4 \\
+ & feed-forward width, dropout & 512 (GELU), 0 \\
+ & actor head (shared), critic readout & $128\to64\to2$; attention pooling with one query, $128\to64\to1$ \\
+ & $\log\sigma$ clamp and initial value & $[-5,0.5]$, $-0.5$ \\
+ & parameters (actor / critic) & 610,370 / 676,481; small network 228,067 in total (head width 32) \\
+ & precision & float32 networks, float64 safety layer \\
+PPO & optimiser & Adam, $\epsilon=10^{-5}$, linear learning-rate decay \\
+ & learning rate (tuned) & $\{1,3,10\}\times10^{-4}$ \\
+ & minibatch $n_{\sm{mb}}$ (tuned) & $\{256,512,1024\}$ \\
+ & entropy coefficient $c_{\sm{ent}}$ (tuned) & $\{0,10^{-3},10^{-2}\}$ \\
+ & discount $\gamma$, GAE $\lambda_{\sm{GAE}}$ & 0.99 ($0.99^{1/3}$ at 5 min), 0.95 \\
+ & clip range $\epsilon_{\sm{clip}}$, value coefficient $c_{\sm{vf}}$ & 0.2, 0.5 \\
+ & environments, rollout length & 16 (8 with $N=10$, 8 with $N=20$), 128 \\
+ & epochs, target KL, gradient-norm clip & 10, 0.03, 0.5 \\
+ & advantage normalisation & per minibatch \\
+ & steps per run, seeds & $3\times10^{6}$; 5 (3 for the $N=50$ reference and $w\in\{1,100\}$) \\
+Penalty reward & training weight $w$ (tuned), $\beta$ & $\{1,10,100\}$\,\texteuro/kWh; $\beta=0$, except 0.01 without departure bound \\
+Lagrangian & dual step $\eta_\Lambda$ (tuned), cost limit, $\Lambda_{\max}$ & $\{0.5,2,8\}$, 0, 1000 \\
+Safety layer & $P^{\sm{ref}}$, $\beta$ & 11 kW, 0.01 \\
+ & $\varepsilon_q$, $\varepsilon_{\sm{sat}}$, tolerance & 0.008 kW, 0.001 kW, $10^{-9}$ kW or kWh \\
+Features & $E^{\sm{ref}}$, $c^{\sm{ref}}$, $H_f$ & 100 kWh, 0.25 \texteuro/kWh, 8 steps \\
+Evaluation & weights $w_E$, $w_P$ in $J^{\sm{pen}}$ & 10 \texteuro/kWh each, all methods \\
+ & test action & deterministic, $a=\mu_\theta$ \\
+Conformal & $n_{\sm{cal}}$, $\alpha$ & 5,000 per configuration, $\{0.01,0.05,0.1,0.2\}$ \\
+ & quantile predictor & gradient boosting, 200 trees of depth 3, 2,000 training sessions \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Statistical analysis}\label{app:stats}
+
+The training seed is the unit of analysis, and replay-level values are averaged within each seed first.
+Seed counts are fixed in advance at five, three for the reference trained at $N=50$ and for $w\in\{1,100\}$, and there is no adaptive seed rule.
+Configurations are strata, so pooled statistics average over configurations and bootstrap resampling stays within each configuration.
+The four pre-declared primary endpoints are E1, the gap at $N=200$; E2, the cost of the guarantee per $N$; E3, the overload energy; and E4, the share of EVs without infeasible steps.
+Point estimates come with t-based and stratified percentile-bootstrap 95\% confidence intervals over the seed-level aggregates.
+
+Comparisons with \method{} run per station size on the per-table metrics, and each safety-layer method is also compared with its penalty-based twin.
+The primary test is a paired $t$-test on seed means, pairing training seed $k$ of the two methods on the same fixed replays.
+Against a deterministic baseline, a one-sample $t$-test is applied to the seed-level differences, and Welch's test is used when seed indices do not match.
+The unpaired Welch test on the same seed means is reported as a robustness check.
+As a secondary test, Wilcoxon signed-rank tests \cite{wilcoxon1945individual} compare the replay-level differences of the seed-averaged policies.
+The Holm correction runs over all comparisons of one test file, and each file covers one results table.
+Both the interquartile mean of the gap and the probability of improvement are reported with stratified-bootstrap intervals \cite{agarwal2021deep}.
+Henderson et al. showed that results over few seeds can mislead \cite{henderson2018deep}, and with five seeds the tests have low power, so the confidence intervals are the primary evidence.
+
+\subsection{Compute budget}\label{app:compute}
+
+The core set needs the tuning runs of seven methods, five seeds of eight trained methods and three seeds of the reference trained at $N=50$.
+It also contains the admission tables, the conformal calibrations, about 89 evaluation passes of 3,550 episodes each and the optima of all replays.
+Together, the core items need about 32 GPU-hours of training and 82--132 CPU-hours for evaluation, admission tables, calibration and optima.
+The extended set adds the ablations, the penalty-weight study, the sensitivity studies, eMPC-HiGHS-24h, the Gurobi eMPC on the literature configuration and EV-GNN, for about 31--41 further GPU-hours and 68--108 CPU-hours.
+Without retraining, the conformal variant is evaluated at all four values of $\alpha$, because Proposition~\ref{M-prop:conformal} holds for any policy.
+\RES{measured training time per run on the hardware of the main text, \Tab{tab:t6}}.

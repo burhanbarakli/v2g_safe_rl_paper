@@ -1,6 +1,7 @@
-# Test grid (algorithm.md Alg. 7.3, DD24): 6 sizes x 2 tightness levels x 3 profiles = 36 configurations,
-# 100 replays for N <= 50 and 50 replays for N >= 100, plus EV2Gym's literature configuration (100 replays).
-# Total 3100 test episodes per evaluated policy. Replays are defined by (configuration id, replay id) -> seed
+# Test grid (algorithm.md Alg. 7.3, DD24, DD36): 6 sizes x 2 tightness levels x 3 profiles = 36 configurations,
+# 100 replays for N <= 50 and 50 replays for N >= 100, plus the tight level rho_tr = 3 kW at N in {20, 200} for all
+# profiles (DD36: 3 x 100 + 3 x 50 replays) and EV2Gym's literature configuration (100 replays).
+# Total 3550 test episodes per evaluated policy. Replays are defined by (configuration id, replay id) -> seed
 # (v2gsafe.envs.scenarios.test_seed) and fingerprinted by the 'scenarios' stage.
 defaults:
   dt_min: 15
@@ -14,6 +15,13 @@ replays:
   large_N_threshold: 100
   large_N: 50
 extra:
+  # DD36: tighter transformer (rho_tr = 3 kW per charger) at N = 20 (in-distribution size) and N = 200
+  - {profile: workplace, N: 20, rho_tr: 3.0, replays: 100}
+  - {profile: public, N: 20, rho_tr: 3.0, replays: 100}
+  - {profile: private, N: 20, rho_tr: 3.0, replays: 100}
+  - {profile: workplace, N: 200, rho_tr: 3.0, replays: 50}
+  - {profile: public, N: 200, rho_tr: 3.0, replays: 50}
+  - {profile: private, N: 200, rho_tr: 3.0, replays: 50}
   # EV2Gym V2GProfitMax.yaml: 25 chargers, 100 kW, workplace, x5, 05:00, loads/PV off. Uses our
   # constant-efficiency spec file (DD4; required by Corollary 2), see IMPLEMENTATION_NOTES.md.
   - {name: literature_N25, profile: workplace, N: 25, rho_tr: 4.0, p_tr: 100.0, loads: false, pv: false, replays: 100}

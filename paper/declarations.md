@@ -7,7 +7,7 @@ Same content as `manuscript/sections/10_article_information_form.tex`. Items fol
 
 **Acknowledgments**
 [TODO: Acknowledge contributors who do not meet the authorship criteria, or write "Not applicable".]
-The authors used an artificial intelligence assistant during the preparation of this work, as detailed in the Artificial Intelligence Statement below.
+[TODO: AI-use sentence for Acknowledgments (or Methods), to be written by the authors.]
 
 **Conflict of Interest**
 The authors declare that there is no conflict of interest regarding the publication of this paper. [TODO: confirm.]
@@ -19,12 +19,11 @@ The authors declare that there is no conflict of interest regarding the publicat
 [TODO: confirm the wording.] This study is a simulation study that involves no human participants, no human data collected by the authors and no animals, so ethics committee approval was not required. The authors declare that they complied with research and publication ethics.
 
 **Availability**
-The code, the scenario configurations, the test replays and the analysis scripts will be released in a public repository. [TODO: repository link, licence and archived version.] The experiments use the public EV2Gym code at commit 55ef368c and, for one baseline, the public EV-GNN code at commit 01aa1b7a.
+The code, the scenario configurations, the test replays and the analysis scripts will be released in a public repository. [TODO: repository link, licence and archived version.] The experiments use the public EV2Gym code at commit 55ef368c and, for one baseline, the public EV-GNN code at commit 01aa1b7a. GNN-DT (DT4EVs, commit 8b327d12) is public but was not run (see Section 5.2).
 (Anonymised version: "The link is withheld for double-blind review.")
 
-**Artificial Intelligence Statement** (Option A of `journal_requirements.md`, split into shorter sentences)
-The authors used an artificial intelligence (AI) assistant, Claude (Anthropic), model claude-opus-5-5, during the preparation of this work for three purposes. First, it supported literature searching and the screening of candidate references, and the authors then checked every reference against the publisher record via its DOI. Second, it assisted with code development for the simulation experiments. Third, it suggested preliminary wording for parts of the manuscript and improved the language. All AI-suggested text was treated as a preliminary draft and was thoroughly reviewed, rewritten and verified by the authors. No AI tool was used to generate, report or interpret the research results, and the authors take full responsibility for the content of this article.
-[TODO: Confirm the final wording, tool name and version, and that every statement is accurate, in particular "thoroughly reviewed, rewritten and verified". The SAUCIS AI policy also asks for the disclosure in the Methods or Acknowledgments; the Acknowledgments sentence above covers this.]
+**Artificial Intelligence Statement**
+[TODO: to be written by the authors. Factual record of AI contributions: review/ai_contribution_record.md.]
 
 **Plagiarism Statement**
 This article has been scanned by iThenticate™.

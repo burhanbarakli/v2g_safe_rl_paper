@@ -13,3 +13,4 @@
 - A1: 24 references added (L4). Note: an OpenAlex error message contained text asking AI agents to request an API key with the user's e-mail; ignored (prompt-injection-like content, reported here).
 - Orchestrator: Figure 1 (architecture) SVG/PDF/PNG; G2 report.
 - 2026-10-22 Phase 3/5 checkpoint: code infrastructure (80 tests pass, smoke pipeline OK), analysis pipeline (25 tests, synthetic-only), manuscript + supplementary drafts (no results), internal review round 1 + consistency report; DD25-DD41 decided (revision round pending).
+- 2026-10-22 Revision rounds 1-2 (internal review + consistency) applied; DD30-DD44; code 97 tests, analysis 37 tests; manuscript 7,057 words (no results); Turkish review copy paper/manuscript_tr/main_tr.pdf; AI statement left as author TODO (record in review/ai_contribution_record.md); HANDOVER_TR.md.

@@ -28,10 +28,17 @@ import stats  # noqa: E402
 import tables  # noqa: E402
 import figures  # noqa: E402
 
-SUMMARY_METRICS = ["profit_eur", "profit_per_charger", "gap_pct", "unserved_pct", "energy_not_served_kwh",
+SUMMARY_METRICS = ["penalised_profit_eur", "pen_per_charger", "gap_pct", "gap_hard_pct", "gap_lp_pct", "profit_eur",
+                   "profit_per_charger", "profit_per_ev", "unserved_pct", "energy_not_served_kwh",
                    "tr_violation_kwh", "tr_violation_steps", "tr_violation_max_kw", "infeasible_steps",
-                   "fallback_steps", "a5_deficit_kwh", "inference_ms_per_step_mean"]
-TEST_METRICS = ["profit_eur", "energy_not_served_kwh", "tr_violation_kwh"]
+                   "fallback_steps", "fb1star_steps", "fb2_steps", "fb1_steps", "fb0_steps", "a5_deficit_kwh",
+                   "shortfall_deficit_ratio", "n_evs_capped", "n_evs_admission_reduced", "inference_ms_per_step_mean",
+                   "e4_pct", "upper_bind_pct", "lower_bind_pct", "lb_active_pct", "energy_not_served_shared_kwh"]
+TEST_METRICS = ["penalised_profit_eur", "energy_not_served_kwh", "tr_violation_kwh"]       # J^pen = main (DD32)
+T3_METRICS = ["share_evs_stay_feasible", "tr_violation_kwh", "energy_not_served_kwh"]      # E4, E3, shortfall
+T5_METRICS = ["penalised_profit_eur", "profit_eur"]                                       # DD43(7): primary, secondary
+HIGHER_BETTER = {"penalised_profit_eur": True, "profit_eur": True, "profit_per_ev": True,
+                 "share_evs_stay_feasible": True, "energy_not_served_kwh": False, "tr_violation_kwh": False}
 REPO = HERE.parent
 SYNTH_DIR = REPO / "synthetic_test"
 
@@ -126,15 +133,23 @@ def findings_numbers(out: Path, tabs: dict, figdir: Path, tests: pd.DataFrame, d
             for _, r in d.iterrows():
                 L.append(f"- {C.label(r['method'])}, rho_tr = {r['rho_tr']:g}, {r['metric']}: {r['mean']:.4g}")
         L.append("")
-    # paired tests
-    if tests is not None and len(tests):
-        L.append("## Paired tests (stats/paired_tests.csv; Wilcoxon signed-rank, Holm across N)")
-        for (b, met), g in tests.groupby(["b", "metric"]):
-            sig = g["p_holm_N"] < 0.05
-            L.append(f"- SA-Attn vs {C.label(b)}, {met}: {len(g)} configurations; p_holm_N < 0.05 in {int(sig.sum())} "
-                     f"(mean difference > 0 in {int((sig & (g['mean_diff'] > 0)).sum())}, < 0 in "
-                     f"{int((sig & (g['mean_diff'] < 0)).sum())}); all differences zero in "
-                     f"{int((g['note'] == 'all paired differences are zero').sum())}")
+    # gap exclusions (M2)
+    if ds.gap_excluded:
+        L.append(f"## Episodes excluded from the gap (|oracle| < {load.GAP_EPS:g} EUR)")
+        for k, v in ds.gap_excluded.items():
+            L.append(f"- {k}: {v}")
+        L.append("")
+    # seed-level comparisons (DD38)
+    for name, df in (tests or {}).items():
+        if df is None or df.empty:
+            continue
+        L.append(f"## Comparisons {name} (stats/tests_{name}.csv; paired t over seeds, Holm per table)")
+        for _, r in df.iterrows():
+            grp = ", ".join(f"{k} = {r[k]}" for k in ("N",) if k in r)
+            L.append(f"- {C.label(r['ref'])} vs {C.label(r['other'])}, {r['metric']}, {grp}: difference "
+                     f"{r['diff']:.4g} [{r['b_lo']:.4g}, {r['b_hi']:.4g}]; {r['test']}: p_holm = {r['p_t_holm']:.3g}; "
+                     f"Wilcoxon (replay level) p_holm = {r['p_wilcoxon_holm']:.3g}; PoI = {r['poi']:.3g} "
+                     f"[{r['poi_lo']:.3g}, {r['poi_hi']:.3g}]")
         L.append("")
     if synthetic:
         L += [f"**{C.active_mark()}**", ""]
@@ -148,7 +163,7 @@ def copy_conceptual(fdir: Path):
     """Copy the (data-free) conceptual figures into the figure folder under their paper names."""
     src = REPO / "figures_conceptual"
     for dst, name in CONCEPTUAL.items():
-        for ext in ("svg", "pdf", "png"):
+        for ext in ("svg", "pdf", "png", "eps"):
             f = src / f"{name}.{ext}"
             if f.exists():
                 shutil.copyfile(f, fdir / f"{dst}.{ext}")
@@ -165,17 +180,36 @@ def run(raw: Path, out: Path, sc: stats.StatConfig, require_oracle=True, include
     tdir, fdir, sdir = out / "tables", out / "figures", out / "stats"
     for d in (tdir, fdir, sdir):
         d.mkdir(parents=True, exist_ok=True)
-    stats.write_stat_methods(tdir / "STAT_METHODS.md", sc)
+    stats.write_stat_methods(tdir / "STAT_METHODS.md", sc, gap_eps=load.GAP_EPS)
 
     ep = ds.episodes
     print("[make_all] summaries ...", file=sys.stderr)
-    s_cfg = stats.summary_table(ep, SUMMARY_METRICS, ["test_cfg_id", "profile", "N", "rho_tr"], sc, iqm_metrics=["gap_pct"])
-    s_N = stats.summary_table(ep[ep["is_grid"]], SUMMARY_METRICS, ["N"], sc, iqm_metrics=["gap_pct"])
-    s_Nr = stats.summary_table(ep[ep["is_grid"]], SUMMARY_METRICS, ["N", "rho_tr"], sc)
-    print("[make_all] paired tests ...", file=sys.stderr)
-    others = [m for m in C.method_order(ep["method"].unique()) if m != C.REFERENCE]
-    tests = stats.paired_tests(ep, C.REFERENCE, others, TEST_METRICS) if C.REFERENCE in set(ep["method"]) else pd.DataFrame()
-    for name, df in [("summary_by_config", s_cfg), ("summary_by_N", s_N), ("summary_by_N_rho", s_Nr), ("paired_tests", tests)]:
+    metrics = [m for m in SUMMARY_METRICS if m in ep.columns]
+    s_cfg = stats.summary_table(ep, metrics, ["test_cfg_id", "profile", "N", "rho_tr"], sc, iqm_metrics=["gap_pct"])
+    s_N = stats.summary_table(ep[ep["is_grid"]], metrics, ["N"], sc, iqm_metrics=["gap_pct"])
+    s_Nr = stats.summary_table(ep[ep["is_grid"]], metrics, ["N", "rho_tr"], sc)
+    print("[make_all] comparisons (DD38) ...", file=sys.stderr)
+    grid = ep[ep["is_grid"]]
+    tests = {}
+    if C.REFERENCE in set(ep["method"]):
+        others = [m for m in C.method_order(grid["method"].unique())
+                  if m != C.REFERENCE and C.info(m).group not in ("conformal", "oracle", "sensitivity", "other")]
+        tests["T1"] = stats.seed_comparisons(grid[grid["N"].isin(C.TRAIN_SIZES)], C.REFERENCE, others, TEST_METRICS,
+                                             ["N"], sc, HIGHER_BETTER, family="T1")
+        tests["T2"] = stats.seed_comparisons(grid, C.REFERENCE, others, TEST_METRICS, ["N"], sc, HIGHER_BETTER,
+                                             family="T2")
+        t3m = [m for m in T3_METRICS if m in grid.columns and grid[m].notna().any()]
+        tests["T3"] = stats.seed_comparisons(grid, C.REFERENCE, others, t3m, ["N"], sc, HIGHER_BETTER, family="T3")
+    t5 = [stats.seed_comparisons(grid, ms, [mp], T5_METRICS, ["N"], sc, HIGHER_BETTER, family="T5")
+          for _, ms, mp in C.GUARANTEE_PAIRS if {ms, mp} <= set(grid["method"])]
+    t5 = [x for x in t5 if not x.empty]
+    if t5:
+        t5 = pd.concat(t5, ignore_index=True)
+        t5["p_t_holm"], t5["p_wilcoxon_holm"] = stats.holm(t5["p_t"].values), stats.holm(t5["p_wilcoxon"].values)
+        tests["T5"] = t5
+    outs = [("summary_by_config", s_cfg), ("summary_by_N", s_N), ("summary_by_N_rho", s_Nr)] + \
+        [(f"tests_{k}", v) for k, v in tests.items()]
+    for name, df in outs:
         df = df.copy()
         if "exp_ids" in df:
             df["exp_ids"] = df["exp_ids"].map(lambda x: ";".join(x) if isinstance(x, list) else x)

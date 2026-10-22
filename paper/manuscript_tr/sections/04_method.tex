@@ -1,0 +1,195 @@
+% ---------------------------------------------------------------------
+\section{Önerilen Yöntem}\label{sec:method}
+% ---------------------------------------------------------------------
+
+\Fig{fig:architecture} üzerinde görüldüğü gibi \method{}, her adımda art arda çalışan üç parçadan oluşur.
+Dikkat tabanlı politika, bir şarj ünitesi belirteçleri kümesini şarj ünitesi başına bir ham eyleme eşler; güvenlik katmanı ise ham eylemleri araç başına sınırlara ve trafo limitine uyan komut güçlerine dönüştürür.
+Eğitim sırasında bir politika gradyanı yöntemi, güvenlik katmanını ortamın bir parçası olarak ele alarak politikayı gerçekleşen kâra göre günceller; aynı katman kullanım sırasında da değişmeden çalışır.
+
+\begin{figure}[t]
+\centering
+\figorbox{figures/fig_architecture.pdf}{\linewidth}{6cm}
+\caption{\method{} yönteminin mimarisi ve kontrol döngüsü. Düz oklar eğitimde ve kullanımda işletilen kontrol döngüsünü oluşturur; kesikli oklar yalnızca eğitimde kullanılır. Güvenlik katmanı (gölgeli), trafo limitini koruyan ve her EV alt sınırını aldığı sürece EV'nin gereksinimini erişilebilir tutan kesin bir izdüşümdür (Teorem~\ref{thm:invariance}).}
+\label{fig:architecture}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\subsection{Belirteç gösterimi ve dikkat tabanlı politika}\label{sec:policy}
+
+Gözlem, $N$ adet şarj ünitesi belirteci $\xi_i(t)\in\R^{12}$ ve bir küresel belirteç $\xi_0(t)\in\R^{38}$ içeren bir kümedir; hiçbir öznitelik bir şarj ünitesinin indisini ya da konumunu kodlamaz.
+Bir şarj ünitesi belirteci doluluk, enerji ve kapasite verilerini, kalan gerekli enerjiyi ve adım sayısını, \Sec{sec:bounds} içinde tanımlanan esneklik payını, güç limitlerini ve $l_i$ ile $u_i$ sınırlarını içerir.
+Küresel belirteç sonraki $H_f=8$ adımın fiyatlarını, zaman özniteliklerini, mevcut limitleri, yük ve PV tahminlerini ve dört istasyon oranını içerir.
+Tüm öznitelikler $N$ ile büyümeyecek biçimde normalize edilir; Tablo~\ref{S-tab:features} bunları listelemektedir.
+
+Her belirteç, öğrenilen iki tür gömmesinden biriyle birlikte doğrusal olarak gömülür: şarj üniteleri için $e_i=W_c\xi_i+b_c+v_c$, küresel belirteç için $e_0=W_g\xi_0+b_g+v_g$.
+$[e_0;e_1;\dots;e_N]$ dizisi, genişliği $d_m=128$ olan, $n_H=4$ başlıklı ve konum kodlaması içermeyen $n_L=3$ adet ön-LayerNorm'lu Transformer kodlayıcı katmanından geçer \cite{vaswani2017attention,ba2016layer,xiong2020layer}.
+Bir anahtar dolgu maskesi boş şarj ünitelerini dikkat anahtarları arasından çıkarır; küresel anahtar ise hiçbir zaman maskelenmez.
+Ardından ortak bir aktör başlığı, her şarj ünitesi çıktısı $h_i$'yi Gauss dağılımlı bir ham eylemin $\mu_{\theta,i}$ ortalamasına ve $\sigma_{\theta,i}$ standart sapmasına eşler; burada $\theta$ aktör parametrelerini gösterir.
+Politika $\pi_\theta(a\mid s)=\prod_{i\in\mathcal N(t)}\mathrm{Normal}\big(a_i;\mu_{\theta,i}(s),\sigma_{\theta,i}^2(s)\big)$ biçimindedir.
+$\omega$ parametreli ayrı bir kritik kodlayıcısı, maskelenmemiş tüm belirteç çıktılarını öğrenilen tek bir dikkat sorgusuyla \cite{lee2019set} havuzlayarak $V_\omega(s)$ değerini üretir.
+
+Bu yapı permütasyona eşdeğişkendir (permutation-equivariant); maskelenmiş belirteçler maskelenmemiş belirteçlerin çıktılarını etkilemez ve parametre sayısı $N$'ye bağlı değildir (Lemma~\ref{S-lem:equivariance}).
+Şarj ünitesi sayısı ne olursa olsun aktörün 610\,370, kritiğin ise 676\,481 parametresi vardır.
+Dolayısıyla $N\in\{10,20\}$ ile eğitilen ağırlıklar $N=200$ için çalıştırılabilir; ancak bu boyutta performans garanti edilmez, çünkü 200 belirteç üzerindeki dikkat, eğitimde görülenden daha fazla anahtar üzerinden ortalama alır.
+
+% ---------------------------------------------------------------------
+\subsection{Erişilebilir enerjiden türetilen araç başına sınırlar}\label{sec:bounds}
+
+Güvenlik katmanı, bağlı her EV için ayrılış gereksinimini erişilebilir tutan en küçük güce ihtiyaç duyar; karışıklığa yol açmadığı yerlerde $i$ indisi yazılmamaktadır.
+Bir adım boyunca tam güçte şarj, $E$ enerjisini $\varphi(E)=E+\Delta t\,\eta^{\sm c}\,\bar P(E)$ değerine eşler.
+\Sec{sec:invariance} içindeki A1 varsayımı, $\varphi$'nin sürekli ve azalmayan olmasını, yani bir adıma daha fazla enerjiyle başlamanın tam güçte şarjdan sonra hiçbir zaman daha az enerji bırakmamasını gerektirir.
+Gereksinime tam güçte hâlâ erişilebilen en küçük enerjiler olan geriye doğru erişilebilirlik eşikleri şunlardır:
+\begin{equation}\label{eq:thresholds}
+B(0)=\Ereq,\qquad B(k)=\min\big\{E\in[E^{\min},E^{\sm{cap}}]:\ \varphi(E)\ge B(k-1)\big\},\quad k\ge1 .
+\end{equation}
+A1 altında bir EV, $t$ adımında bireysel olarak olurludur (yani kabul edilebilir bir kontrol \Eq{eq:requirement} koşulunu sağlar) ancak ve ancak $E(t)\ge B(\tau(t))$ ise (Lemma~\ref{S-lem:reach}).
+A1 olmadan bu nitelendirme geçerliliğini yitirir, çünkü şimdi daha az şarj etmek daha sonra daha fazla erişilebilir enerji bırakabilir.
+EV2Gym'in üstel şarj gücü azalması için Lemma~\ref{S-lem:taper}, A1'i her adım uzunluğu için ispatlamaktadır.
+
+$E=E_i(t)$ enerjisine ve $\tau=\tau_i(t)$ kalan eyleme sahip bağlı bir EV için güvenlik katmanının sınırları şunlardır:
+\begin{equation}\label{eq:bounds}
+u_i(t)=\bar P(E),\qquad
+l_i(t)=\begin{cases}
+\min\Big\{u_i(t),\ \max\Big\{\pmn(E),\ g^{-1}\Big(\dfrac{\Bh(\tau-1)-E}{\Delta t}\Big)\Big\}\Big\}, & E\ge\Bh(\tau),\\[2mm]
+\bar P(E), & E<\Bh(\tau),
+\end{cases}
+\end{equation}
+burada $\Bh$ saklanan bir eşik tablosu, dıştaki minimum ise sayısal bir korumadır.
+Birinci durumda $l_i$, ardından gelen $\tau-1$ tam güç adımının $\Ereq$ değerine hâlâ ulaştığı kabul edilebilir en küçük güçtür; bireysel olarak olursuz bir EV ise en yüksek güçte şarj edilir.
+Negatif bir alt sınır, pay kaldığı sürece V2G deşarjına izin verir ve \Fig{fig:concepts}(a) üzerinde görüldüğü gibi sınır, enerjiyi en geç başlangıç yörüngesinin üzerinde ya da bu yörünge üzerinde tutar.
+
+\begin{figure}[t]
+\centering
+\figchain{\linewidth}{\analysisdir/figures/fig2_concepts.pdf}{\analysisdir/figures_conceptual/fig_concepts.pdf}{figures/fig2_concepts.pdf}
+\caption{Güvenlik katmanının kavramları. (a) Bir EV'nin kalış süresi boyunca enerjisi; en geç başlangıç yörüngesi $\Bh_i$ ve adım başına $\Delta t\,u_i$, $\Delta t\,l_i$ ve $\Delta t\,\pmn_i$ seçenekleriyle birlikte. (b) İki EV için $-\Crev\le p_1+p_2\le\Ctil$ dilimiyle kesilen $[l,u]$ kutusuna izdüşüm.}
+\label{fig:concepts}
+\end{figure}
+
+$\Bh_i(k)$, $k=0,\dots,\tau_i(t_i^{\sm{arr}})$ tablosu varışta $\varphi_i$ üzerinde ikiye bölme (bisection) yöntemiyle bir kez hesaplanır; böylece sınırların maliyeti EV ve adım başına $O(1)$ olur.
+Saklanan her tablo
+\begin{equation}\label{eq:certified}
+\Bh(0)\ge\Ereq,\qquad \varphi\big(\Bh(k)\big)\ge\Bh(k-1),\qquad \Bh(k)\le\max\{\Bh(k-1),E^{\min}\},\qquad \Bh(k)\in[E^{\min},E^{\sm{cap}}]
+\end{equation}
+anlamında sertifikalıdır ve ispatlar yalnızca bu özellikleri kullanır.
+Adım cinsinden ölçülen esneklik payı $\chi_i(t)=\big(E_i(t)-\Bh_i(\tau_i(t))\big)/\big(\eta_i^{\sm c}\Pnom_i\Delta t\big)$, ancak ve ancak EV bireysel olarak olurlu olduğunda negatif değildir.
+
+% ---------------------------------------------------------------------
+\subsection{İzdüşüm}\label{sec:projection}
+
+$x\in\R^N$, kW cinsinden ham eylem olsun; boş şarj üniteleri için $x_i=l_i=u_i=0$ alınır.
+Güvenlik katmanı, sıkılaştırılmış ileri yön limiti olan $\Ctil(t)=C(t)-n(t)\varepsilon_q$ ifadesini kullanır; burada şarj ünitesi başına $\varepsilon_q=0.008$ kW'lık pay, simülatörün eyleyici yuvarlamasını karşılar (Bölüm~\ref{S-app:actuation}).
+Olurlu küme $\mathcal K(t)=\{p\in\R^N:\ l\le p\le u,\ -\Crev(t)\le\mathbf 1^\top p\le\Ctil(t)\}$ olup güvenlik katmanı şu Öklid izdüşümüdür:
+\begin{equation}\label{eq:proj}
+\Pi_t(x)=\arg\min_{p\in\mathcal K(t)}\tfrac12\|p-x\|_2^2 .
+\end{equation}
+
+\begin{proposition}[İzdüşüm]\label{prop:projection}
+\begin{enumerate}
+\item[(i)] $\mathcal K(t)$ kümesi ancak ve ancak $l\le u$, $\sum_il_i\le\Ctil$, $\sum_iu_i\ge-\Crev$ ve $-\Crev\le\Ctil$ ise boş değildir.
+\item[(ii)] $\mathcal K(t)\neq\emptyset$ ise \Eq{eq:proj} probleminin tek minimize edicisi $p_i^{*}=\clip(x_i-\lambda^{*},l_i,u_i)$'dir. Kırpılmış nokta toplam limiti zaten sağlıyorsa ortak kaydırma $\lambda^{*}$ sıfırdır; aksi hâlde $\lambda^{*}$, $\lambda\mapsto\sum_i\clip(x_i-\lambda,l_i,u_i)$ fonksiyonunun ihlal edilen limitteki köküdür.
+\end{enumerate}
+\end{proposition}
+
+İspat Karush--Kuhn--Tucker (KKT) koşullarını doğrulamaktadır; ek materyal ayrıca Jacobi matrisini de vermektedir (Önerme~\ref{S-prop:jacobian}).
+\Fig{fig:concepts}(b) üzerinde görüldüğü gibi izdüşüm, tüm serbest koordinatları aynı miktarda kaydırır ve toplam limit sağlanana kadar kırpar.
+$2N$ kırılma noktasının $\{x_i-u_i\}\cup\{x_i-l_i\}$ bir kez sıralanması ve bunlar üzerinden bir kez geçilmesi $\lambda^{*}$ değerini verir; dolayısıyla katmanın maliyeti adım başına $O(N\log N)$'dir.
+İkiye bölme yöntemine dayalı yedekli bir son denetim, kayan nokta yuvarlamasına karşın toplam limiti korur; Algoritma~\ref{S-alg:safety} tam bir adımı listelemektedir.
+
+Bu cebir yeni değildir: \Eq{eq:proj} sürekli kuadratik sırt çantası problemidir \cite{kiwiel2007breakpoint,wang2022efficient}; sLLF hız kuralı da buna çok yakın bir biçim, yani her EV için tepe hızıyla ölçeklenen ortak bir düzey kullanır \cite{chen2022smoothed}.
+Bizim kullanımımız iki bakımdan farklıdır: girdi, boyuttan bağımsız bir politikanın öğrenilmiş şarj ünitesi başına eylemidir; $l_i$ alt sınırı ise şarj gücü azalmasını ve V2G işaret aralığını içeren geriye doğru erişilebilirlikten türetilir.
+Ayrıca toplam kısıtı iki yönlüdür ve katman eğitim sırasında da çalışır.
+
+% ---------------------------------------------------------------------
+\subsection{Olurluluğun korunması}\label{sec:invariance}
+
+Sezgisel olarak güvenlik katmanı, hiçbir EV'nin gereksinimine tam güçte hâlâ erişilebilen en küçük enerjinin altına düşmesine izin vermez; ortak kaydırma ise istasyonu trafo bandı içinde tutar.
+Bu özelliklerden yalnızca ilki sağlanamayabilir; bu durum, trafo her EV'ye alt sınırını aynı anda veremediğinde ortaya çıkar.
+$\mathcal K(t)$ boş olmadığında bir adımı olurlu olarak adlandırıyoruz; olursuz bir adımda izdüşümün yerini bir yedek kural alır.
+Sonucun koşulları aşağıda toplanmıştır ve bunlardan yalnızca ilk beşi varsayımdır.
+Teknik açıdan, sonucun dayandığı tümevarım Chen ve arkadaşlarının esneklik payı argümanını \cite{chen2022smoothed} şarj gücü azalmasına, V2G deşarjına, iki yönlü bir bağlantıya ve keyfî ham eylemlere genişletmektedir.
+
+\begin{center}
+\textbf{Teorem~\ref{thm:invariance}'in koşulları}\\[1mm]
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l>{\raggedright}p{6.4cm}>{\raggedright\arraybackslash}p{6.2cm}@{}}
+\toprule
+Etiket & Koşul & Bu çalışmadaki durumu \\
+\midrule
+A1 & $\varphi$ sürekli ve azalmayan & EV2Gym'in şarj gücü azalması için ispatlanmıştır (Lemma~\ref{S-lem:taper}) \\
+A2 & ayrılış adımı $d_i$ ve gereksinim $\Ereq_i$ varışta biliniyor & konformal sınır ile gevşetilmiştir (\Sec{sec:conformal}) \\
+A3 & tek adım modeli: \Eq{eq:limits} içindeki komutlar için $E_i(t+1)\ge E_i(t)+\Delta t\,g_i(p_i)$ ve $p_i\le\tilde p_i\le p_i+\varepsilon_q$ & EV2Gym'in eyleyici davranışı için ispatlanmıştır (Lemma~\ref{S-lem:a3}); donanımda sağlanamayabilir \\
+A4 & olurlu varış: $E_i^{\sm{arr}}\ge\Bh_i(\tau_i(t_i^{\sm{arr}}))$ & talep işleme hattı tarafından uygulanır \\
+A6 & şebeke kapasite payı: $C(t)\ge N\varepsilon_q$ ve $\Crev(t)\ge0$ & dışsaldır; yedek kural sayımlarıyla denetlenir \\
+\midrule
+A5 & olurlu adım: $\sum_il_i\le\Ctil$, $\sum_iu_i\ge-\Crev$, $\Ctil\ge-\Crev$ & kapalı döngüde ortaya çıkan bir olaydır; (a) ve (b) tarafından varsayılmaz; ölçülür \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A6, politikaya bağlı olmaması için $n(t)$ yerine şarj ünitesi sayısı $N$'yi kullanır ve senaryolarımızda epizot başına $2\times10^{-9}$'un altında bir olasılıkla sağlanamaz (Bölüm~\ref{S-app:a6}).
+
+\begin{theorem}[Olurluluğun korunması]\label{thm:invariance}
+Eğitim ya da kullanım sırasında, sonlu ham eylemlerden oluşan keyfî bir dizi için komut edilen güçler olurlu adımlarda $p(t)=\Pi_t(x(t))$, diğer adımlarda ise yedek kuralın çıktısı olsun.
+\begin{enumerate}
+\item[(a)] A3 ve A6 altında, her adımda gerçekleşen güçler $-\Crev(t)\le\sum_i\tilde p_i(t)\le C(t)$ trafo limitini, komut edilen güçler ise \Eq{eq:limits} ile verilen fiziksel limitleri sağlar.
+\item[(b)] A1--A4 altında, kalış süresi boyunca $p_i(t)\ge l_i(t)$ olan her EV $i$, $E_i(d_i+1)\ge\Ereq_i$ koşulunu sağlar; özellikle kalış süresi boyunca olursuz adımla karşılaşmayan her EV bu koşulu sağlar.
+\item[(c)] Ek olarak her adım olurlu ise her EV ayrılış gereksinimini karşılar.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[İspat taslağı]
+Olurlu adımlarda Önerme~\ref{prop:projection}(i) $p(t)\in\mathcal K(t)$ sonucunu verir ve A3, sıkılaştırılmış bandı gerçekleşen güçlere aktarır.
+A6 altında yedek kural yalnızca aşağıda açıklanan gerekli güç fazlası durumuyla karşılaşabilir ve bu durumda çıktısı, komut edilen toplamı $\Ctil(t)$ değerinde tutar.
+(b) için tek adımlık bir lemma (Lemma~\ref{S-lem:onestep}), $E_i(t)\ge\Bh_i(\tau_i(t))$ değişmezini A4'ün sağladığı varıştan itibaren $p_i\ge l_i$ olan her adım boyunca taşır; son adımda bu değişmez $E_i(d_i+1)\ge\Bh_i(0)\ge\Ereq_i$ sonucunu verir.
+(c) şıkkı (b)'den çıkar; tam ispat Bölüm~\ref{S-app:theorem} içinde verilmektedir.
+\end{proof}
+
+Trafoya ilişkin kısım ne politikaya ne de A1 ya da A5'e bağlıdır; ayrılışa ilişkin kısım ise araç başına bir ifadedir.
+A5, ortak bir plan mevcut olduğunda bile sağlanamayabilir.
+10 kW'lık bir limit altında her biri 1 saatlik iki adım içinde 10 kWh'e ihtiyaç duyan iki EV, kapasiteyi eşit biçimde paylaşabilir.
+Ancak birinci adımda boşta bekleyen bir politika, ikinci adımda $\sum_il_i=20$ kW bırakır.
+Bu nedenle EV'lerin olursuz adımlarla ne sıklıkta karşılaştığı ölçülmektedir.
+
+% ---------------------------------------------------------------------
+\subsection{Yedek kural}\label{sec:fallback}
+
+Olursuz bir adımda yedek kural, izdüşümün yerine en az esneklik payı önce ilkesine dayanan deterministik bir paylaştırma koyar.
+İlgili durumda gerekli güç $\sum_il_i$, $\Ctil$ değerini aşar.
+Bu durumda her EV fiziksel alt limiti $\pmn_i$'den başlar ve $\Ctil$ değerine kadar kalan bütçe, esneklik payı artan sırada EV'lere, her biri en fazla $l_i$'ye kadar olmak üzere dağıtılır.
+Bu çıktı trafo limitini korur ve hâlâ $l_i$ alan her olurlu EV olurlu kalır (Lemma~\ref{S-lem:fallback}).
+Üç ek durum çelişkili limitleri, aşırı PV ihracatını ve negatif bir bütçeyi kapsar; A6 bu üçünü de dışlar (Bölüm~\ref{S-app:fallback}).
+$l_i$'den daha az alan EV'ler için bir epizottaki toplam ayrılış eksikliği, bu adımlarda biriken açık ile önsel olarak sınırlanır (Lemma~\ref{S-lem:deficit}).
+Talep işleme hattındaki kabul kontrolü olursuz adımları daha seyrek hâle getirir; ancak tahminlere dayanır ve Teorem~\ref{thm:invariance} kapsamına girmez.
+
+% ---------------------------------------------------------------------
+\subsection{Ayrılış adımı için konformal alt sınır}\label{sec:conformal}
+
+Ayrılış adımı açısından A2'yi gevşetmek için tek yönlü, kantil regresyonu biçiminde \cite{romano2019conformalized} bölünmüş konformal tahmin (CP) \cite{papadopoulos2002inductive,vovk2022algorithmic,lei2018distributionfree,angelopoulos2023conformal} kullanılmaktadır.
+Bir gradyan artırma (gradient boosting) regresörü $\hat q$, $d_i$'nin alt kantilini varış adımından, haftanın gününden, varış enerjisinden, talep edilen enerjiden ve EV modelinden kestirir.
+Kalibrasyon, bağımsız tohumlarla (seed) üretilmiş $n_{\sm{cal}}$ epizodun her birinden düzgün dağılımla bir oturum seçer ve $e_j=\hat q(\mathbf w_j)-d_j$ skorlarını kullanır.
+$\hat Q_{1-\alpha}$, $\lceil(n_{\sm{cal}}+1)(1-\alpha)\rceil$'inci en küçük skor olmak üzere $\hat d_i^{\sm{lo}}=\max\{t_i^{\sm{arr}},\lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil\}$ sınırı; sınırlarda, talep işleme hattında ve özniteliklerde $d_i$'nin yerini alır ve $\hat d_i^{\sm{lo}}$ adımından sonra katman tek bir kalan adım kullanır.
+
+\begin{proposition}[Konformal ayrılış garantisi]\label{prop:conformal}
+Kalibrasyon oturumları ile test oturumu değiştirilebilir (exchangeable) olsun.
+Bu durumda $\mathbb P(d_i\ge\hat d_i^{\sm{lo}})\ge1-\alpha$ olur ve $d_i$ yerine $\hat d_i^{\sm{lo}}$ alınarak A1, A3 ve A4 altında $\mathbb P\big(E_i(d_i+1)\ge\Ereq_i\big)\ge1-\alpha-\mathbb P\big(\exists\,t\le d_i:\ p_i(t)<l_i(t)\big)$ sağlanır.
+\end{proposition}
+
+Burada $\Ereq_i$, $\hat d_i^{\sm{lo}}$ ile yeniden sertifikalanmış gereksinimdir ve olasılık, kalibrasyon verisi ile bir test epizodundan düzgün dağılımla seçilen bir EV üzerinden alınır; dolayısıyla garanti marjinaldir.
+Kalibrasyon her test yapılandırmasından veri gerektirdiğinden konformal varyant sıfır-atış değildir.
+
+% ---------------------------------------------------------------------
+\subsection{Eğitim algoritması}\label{sec:training}
+
+Politika, güvenlik katmanı, yedek kural ve eyleyici davranışı ortamın parçası olarak ele alınarak yakınsal politika optimizasyonu (PPO) \cite{schulman2017proximal} ve genelleştirilmiş avantaj kestirimi \cite{schulman2016highdimensional} ile eğitilir.
+Bu nedenle PPO, ham Gauss örneğinin olabilirlik oranını kullanır.
+Eski parametrelerdeki PPO vekil amaç gradyanına eşit olan temel (vanilla) politika gradyanı kestiricisi, bu durumda izdüşümü alınmış eylemlerin getirisi için yansızdır.
+Stokastik politikalar için ortamın içindeki ve politikanın içindeki izdüşüm bu anlamda denktir \cite{markgraf2025safe}; bu tercih aktif bir izdüşümün sıfır gradyanlarından da kaçınır \cite{kasaura2023benchmarking}.
+$u_i-l_i\le10^{-9}$ kW olan belirteçler hiçbir komut gücünü etkileyemeyeceğinden log-olasılıktan ve entropiden çıkarılır.
+Yedek kural adımları aktör kaybında maskelenir, ancak kritik için tutulur.
+Birçok ham eylem aynı izdüşüm noktasına eşlendiğinden olurlu adımlarda $\beta=0.01$ ağırlıklı bir düzenlileştirici, politika ortalamasını $\mathcal K(t)$'ye yakın tutar:
+\begin{equation}\label{eq:reg}
+\mathcal L_{\sm{reg}}(\theta)=\beta\,\mathbb E_{s}\Big[\frac1{n(t)}\sum_{i\in\mathcal N(t)}\Big(\frac{\bar x_i-\Pi_t(\bar x)_i}{P^{\sm{ref}}}\Big)^{2}\Big],\qquad \bar x=P^{\sm{ref}}\mu_\theta(s).
+\end{equation}
+Moreau özdeşliğine göre $\tfrac12\mathrm{dist}^2(x,\mathcal K)$'nin gradyanı $x-\Pi_t(x)$'tir; bu nedenle $\Pi_t(\bar x)$ gradyan durdurma (stop-gradient) altında hesaplanır \cite{chen2021enforcing,markgraf2025safe}.
+Her veri toplama turu (rollout) $N=10$ olan sekiz ve $N=20$ olan sekiz ortam çalıştırır; tam eğitim döngüsü Algoritma~\ref{S-alg:ppo} içinde verilmektedir.

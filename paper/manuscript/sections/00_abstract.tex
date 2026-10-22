@@ -3,21 +3,23 @@
 % references, third person) and keywords (3-5, alphabetical).
 % ---------------------------------------------------------------------
 \begin{abstract}
-Charge point operators that offer vehicle-to-grid (V2G) services must schedule many electric vehicles (EVs) under a transformer limit and deliver the energy that each driver requests by departure.
-Reinforcement learning (RL) controllers for this task usually treat both requirements as reward penalties, and their policy networks are tied to one station size.
-This paper proposes a safe attention policy (SA-Attn) that joins a size-agnostic policy with a closed-form safety layer.
-Each charger is a token of a transformer encoder, and a shared head maps every token to a raw power action, so one set of weights serves any number of chargers.
-The safety layer projects the raw actions onto a feasible set defined by per-EV power bounds and by the forward and reverse transformer limits.
-Its lower bound for each EV is the least power that still lets full-power charging reach the departure energy, computed from a reachable-energy operator that includes the charging taper.
-The projection reduces to clipping each action around one common shift, found in $O(N\log N)$ time for $N$ chargers.
+Charge point operators that offer vehicle-to-grid (V2G) services must keep a station within its transformer limit and deliver the agreed energy to each driver by departure.
+Reinforcement learning (RL) controllers usually treat both requirements as reward penalties, and their networks are tied to one station size.
+This paper combines a size-agnostic attention policy with a safety layer, an exact projection onto per-vehicle power bounds and the two-sided transformer limit, computed in $O(N\log N)$ time for $N$ chargers.
+Each charger is a token, so one set of weights serves any number of chargers.
 
-Under stated assumptions, the paper proves that the transformer limit and every departure energy requirement hold at every step for any raw action, during training and deployment.
-A least-laxity-first fallback rule and admission control handle steps on which the assumptions fail, and these steps are counted.
-Uncertain departure times are handled by a split-conformal lower bound that turns the guarantee into a coverage-level statement.
-The policy is trained with proximal policy optimization (PPO) on stations with 10 and 20 chargers in the EV2Gym simulator.
-Without retraining, it is evaluated on stations with up to 200 chargers, three arrival profiles and two transformer ratings.
-Performance is reported as the optimality gap to a perfect-information linear program with hard constraints, and the cost of the guarantee as the profit difference to a penalty-trained attention policy.
-\RES{one or two sentences with the main findings: optimality gap at $N=200$, constraint satisfaction and infeasible-step frequency, cost of the guarantee}
+The lower bound of each electric vehicle (EV) is the least power after which full-power charging still reaches its admitted requirement, and it includes the charging taper.
+This admitted requirement is the driver's request capped to what is reachable and admissible.
+
+For any sequence of raw actions, during training and deployment, the paper proves two results.
+Under simulator and grid-headroom conditions, the transformer limit holds at every step.
+In addition, every EV whose stay contains no infeasible step meets its admitted requirement, where a step is infeasible if the transformer cannot give every EV its lower bound.
+A least-laxity-first fallback rule handles the remaining steps.
+
+For undeclared departures, a split-conformal bound on the departure time extends the second result with marginal coverage of at least the nominal level minus the rate of EVs that receive less than their bound.
+The safe attention-based controller (\method{}) is trained with proximal policy optimization (PPO) on stations with 10 and 20 chargers in the EV2Gym simulator and tested without retraining on up to 200 chargers.
+It is compared with learned, constrained-RL, heuristic and model-predictive baselines through the gap of a penalised profit to a perfect-information optimum and through the share of EVs without infeasible steps.
+\RES{one or two sentences with the main findings: penalised-profit gap at $N=200$, fraction of EVs whose stay contains no infeasible step, cost of the guarantee}
 \end{abstract}
 
-\noindent\textbf{Keywords:} Attention mechanism, Electric vehicle charging, Safe reinforcement learning, Vehicle-to-grid, Zero-shot transfer
+\noindent\textbf{Keywords:} Electric vehicle charging, Safe reinforcement learning, Safety layer, Vehicle-to-grid, Zero-shot transfer

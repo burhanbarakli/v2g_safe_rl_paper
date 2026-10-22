@@ -1,0 +1,6 @@
+# DeepSets + safety layer (DD33(4)): per-token MLP and mean-pooled context instead of attention, otherwise SA-Attn
+# (same safety layer, reward, beta, PPO settings). Width chosen so that the parameter counts match the attention
+# actor/critic within +-10 % (DD42(3)): actor 626,530 (+2.6 % vs 610,370), critic 643,777 (-4.8 % vs 676,481).
+inherit: base.yaml
+method: deepsets_safe
+model: {arch: deepsets, d_model: 448, head_hidden: 224}

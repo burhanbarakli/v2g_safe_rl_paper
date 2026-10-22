@@ -1,0 +1,8 @@
+# Projection without the departure lower bound (DD33(1)): safety layer with l_i = p_i^min (transformer band and
+# physical limits only, no certified departure guarantee), penalty reward for departure shortfall (r_pen, DD22),
+# beta = 0.01 as SA-Attn. Isolates the contribution of the departure-aware lower bound l_i (S11).
+inherit: base.yaml
+method: attn_proj_nolb
+safety: {enabled: true, lower_bound: false, admission: true}
+reward: {type: penalty}
+ppo: {beta: 0.01}

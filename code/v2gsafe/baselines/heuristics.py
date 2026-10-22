@@ -86,6 +86,16 @@ class LLF(Controller):
 
 
 class SmoothedLLF(Controller):
+    """Smoothed least-laxity-first (sLLF) [chen2022smoothed] (DD33(5); lit/parts/L1_notes.md Sec. C).
+
+    Paper rule: r_i = [rbar_i (L(t) - l_i(t) + 1)] clipped to [0, min(rbar_i, e_i)], with the common level L(t) found
+    by bisection so that sum_i r_i = min(P(t), sum of caps). Our instantiation: rbar_i = Pnom_i, laxity measured
+    against the certified thresholds, l_i - 1 = chi0_i = (E_i - B_hat_i(tau_i - 1)) / (Pnom_i dt) (next-slot laxity,
+    the "+1" is absorbed into L), cap = u_i (one-step reachable power, incl. taper), P(t) = max(0, C_tilde(t)).
+    If sum u_i <= P(t) every EV gets u_i. Charging only (sLLF has no V2G); the bisection keeps the feasible end
+    (sum r_i <= P(t)). The '_safe' variant passes r through the safety layer, the raw variant through the clip.
+    """
+
     name = "sllf"
 
     def act(self, obs, env):
@@ -115,6 +125,10 @@ class SmoothedLLF(Controller):
 
 
 class PriceLLF(Controller):
+    """Price-aware LLF (DD33(5)): LLF filling when the current charge price is below the median of the prices seen
+    so far plus the 8-step price forecast, maximum discharge (p_min) when above, idle when equal. With '_safe' the
+    safety layer restores the departure guarantee and the transformer band."""
+
     name = "price_llf"
 
     def reset(self, env):

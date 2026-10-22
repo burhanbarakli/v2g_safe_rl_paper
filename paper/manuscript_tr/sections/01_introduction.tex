@@ -1,0 +1,41 @@
+% ---------------------------------------------------------------------
+\section{Giriş}\label{sec:intro}
+% ---------------------------------------------------------------------
+
+Bir şarj noktası işletmecisi (CPO), şarj üniteleri için enerjiyi zamanla değişen fiyatlardan satın alır; araçtan şebekeye (V2G) deşarj ise aynı işletmecinin, fiyatlar yüksekken park hâlindeki elektrikli araçlardan (EV) enerji satmasına olanak tanır.
+İki katı gereksinim bu serbestliği sınırlar.
+İstasyonun toplam gücü trafo limiti içinde kalmalı ve her EV, ayrılırken üzerinde anlaşılan enerjiye sahip olmalıdır.
+Aksi hâlde işletmeci ya ekipmanı aşırı yükler ya da sürücüye verdiği hizmet taahhüdünü yerine getiremez.
+
+Fiyatlar, varışlar ve ayrılışlar belirsiz olduğundan ve önceden modellenmeleri güç olduğundan pekiştirmeli öğrenme (RL), bu kontrol görevi için yaygın bir yaklaşım hâline gelmiştir \cite{qiu2023reinforcement,michailidis2025reinforcement}.
+EV şarjına yönelik RL denetleyicilerinin çoğu, ayrılış enerji gereksinimini ödülde ağırlıklı bir ceza olarak kodlar \cite{sadeghianpourhamami2020definition,ye2022learning,korkas2024distributed,orfanoudakis2025ev2gym}.
+Trafo limitini modelleyenler de aşırı yüklemeyi genellikle aynı şekilde cezalandırır \cite{orfanoudakis2025ev2gym,orfanoudakis2026graph}.
+Ceza, ihlalleri kârla takas ettiğinden eğitilmiş bir politika test sırasında her iki gereksinimi de ihlal edebilir \cite{orfanoudakis2025ev2gym,tabas2022computationally}.
+Kısıtlı formülasyonlar ise bunun yerine beklenen birikimli maliyeti sınırlar \cite{altman2021constrained}; ancak böyle bir sınır her adımda değil, epizotlar (episode) üzerinden ortalama olarak geçerlidir \cite{gu2024review}.
+
+İkinci bir sınırlılık istasyon boyutuyla ilgilidir: EV2Gym simülatörünün varsayılan arayüzünde \cite{orfanoudakis2025ev2gym} olduğu gibi şarj ünitesi başına bir eylem içeren düz bir gözlem, eğitilmiş bir ağı tek bir şarj ünitesi sayısına bağlar.
+Çizge ve dikkat tabanlı politikalar bu kısıtlamayı ortadan kaldırır \cite{orfanoudakis2025scalable,orfanoudakis2026graph,wang2026hetgps}; ne var ki boyuttan bağımsız bu denetleyicilerde kısıtlar hâlâ ödül terimleri, taklit verisi ya da sezgisel filtreler aracılığıyla devreye girer.
+
+Güvenlik katmanları her eylemi uygulanmadan önce düzeltir ve limitleri yapıları gereği sağlayabilir \cite{dalal2018safe,chen2021enforcing,tabas2022computationally}.
+EV istasyonları için mevcut katmanlar ya trafo kapasitesi ve şarj ünitesi akımı gibi adım başına limitleri kapsar \cite{wan2025logicinformed} ya da güvenli olmayan eylemleri başka eylemlerle değiştirir \cite{guan2024rule,zhang2025dumes}.
+Yalnızca adım başına çalışan bir katman, ayrılış enerji gereksinimini korumaz; çünkü bu gereksinim, o anki eylemi kalış süresinin sonraki her adımıyla ilişkilendirir.
+Araç başına en geç başlangıç sınırları bu bağlantıyı esneklik payına (laxity) dayalı çizelgelemede \cite{chen2022smoothed} ve yakın tarihli hiyerarşik bir V2G çizelgeleyicisinde \cite{yan2026hierarchical} ele almaktadır.
+\Sec{sec:rw-position}, bu unsurların birleşimini en yakın çalışmalarla karşılaştırarak konumlandırmaktadır.
+
+Bu makale, bir CPO istasyonunda V2G şarj kontrolü için güvenli dikkat tabanlı bir denetleyici (\method) önermektedir.
+Dikkat tabanlı politika her şarj ünitesini bir belirteç olarak ele alır ve ortak ağırlıklarla belirteç başına bir ham güç eylemi üretir.
+Olurlu kümeye kesin bir izdüşüm (projeksiyon) olan güvenlik katmanı, ham eylemleri araç başına sınırlara ve trafo limitine uyan komut güçlerine dönüştürür.
+Bir kutunun iki yönlü bir toplam kısıtıyla kesişimine izdüşüm klasik bir problemdir \cite{kiwiel2007breakpoint,wang2022efficient}; yumuşatılmış en az esneklik payı önce (sLLF) çizelgelemesinin hız kuralı da buna çok yakın bir biçime sahiptir \cite{chen2022smoothed}.
+Olurluluk argümanımız, Chen ve arkadaşlarının esneklik payı argümanını şarj gücü azalmasına (taper), V2G deşarjına ve iki yönlü bir bağlantıya genişletmektedir.
+
+Makalenin dört katkısı vardır.
+\begin{enumerate}
+\item Araç başına alt sınırı şarj gücü azalmasını içeren bir güvenlik katmanı türetilmekte ve Teorem~\ref{thm:invariance} bu katmanın sonucunu iki katmanda ifade etmektedir. Simülatöre ve şebeke kapasite payına ilişkin koşullar altında trafo limiti, her ham eylem dizisi için her adımda sağlanır; kabul edilen ayrılış gereksinimi ise kalış süresi boyunca olursuz adımla karşılaşmayan her EV tarafından karşılanır.
+\item Katmanın boyuttan bağımsız taşıyıcısı olarak şarj ünitesi belirteçlerine dayalı bir dikkat tabanlı politika kullanılmakta ve bu politika, katman eğitim döngüsünün içindeyken eğitilmektedir. Ayrılış sınırı içermeyen, katmanı yalnızca kullanım aşamasında uygulayan ve Deep Sets politikası kullanan varyantlar her bir parçanın katkısını göstermektedir.
+\item Denetleyici, EV2Gym'de 10 ve 20 şarj ünitesiyle eğitilerek ve 200 şarj ünitesine kadar boyutlarda ve daha sıkı bir trafo anma değerinde sıfır-atış (yeniden eğitim olmadan) testlerle değerlendirilmektedir. Ana ölçüt, karşılaştırılan her yöntemi üstten sınırlayan tam bilgili bir optimuma göre cezalı kâr açığıdır. Birincil sonlanım noktalarından biri olursuz adımla karşılaşmayan EV'lerin payıdır; katı kısıtlı bir optimum ise garantinin maliyeti analizini desteklemektedir.
+\item İkincil bir katkı olarak, ayrılış adımına ilişkin bölünmüş konformal bir alt sınır, ayrılışın bilindiği varsayımının yerini almakta ve Önerme~\ref{prop:conformal} ayrılış sonucunu bir kapsama ifadesine dönüştürmektedir.
+\end{enumerate}
+Bu bileşenlerin hiçbiri tek başına yeni değildir; dolayısıyla makalenin iddiası bunların birleşimine, iki katmanlı sonuca ve bu sonucun ölçülen maliyetine dayanmaktadır.
+
+\Sec{sec:related} ilgili çalışmaları gözden geçirmekte, \Sec{sec:problem} modeli kısmen gözlemlenebilir bir Markov karar süreci (POMDP) olarak ifade etmekte ve \Sec{sec:method} yöntemi sunmaktadır.
+Bölüm~\ref{sec:setup}--\ref{sec:conclusion} sırasıyla deney düzeneğini, bulguları, tartışmayı ve sonucu kapsamakta; tüm ispatlar ve ek ayrıntılar ise ek materyalde yer almaktadır.

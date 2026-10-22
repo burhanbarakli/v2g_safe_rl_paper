@@ -40,60 +40,86 @@ V, B, G, O, S, P, K, Y = (OI["vermillion"], OI["blue"], OI["green"], OI["orange"
                           OI["purple"], OI["black"], OI["grey"])
 
 METHODS: dict[str, MethodInfo] = {m.name: m for m in [
-    # learned, main
+    # learned, main (DD33: + PPO-Lagrangian, Deep Sets, layer without departure bound)
     _m("attn_safe", "SA-Attn (ours)", "learned", V, "o", "-", True, 0, True, True),
     _m("attn_penalty", "Attention+penalty", "learned", V, "o", "--", False, 1, False, True),
-    _m("mlp_safe", "MLP+safety layer", "learned", B, "s", "-", True, 2, True, True),
-    _m("mlp_penalty", "MLP+penalty", "learned", B, "s", "--", False, 3, False, True),
-    _m("evgnn", "EV-GNN (per profile)", "learned", P, "*", "--", False, 4, False, True),
-    _m("evgnn_safe", "EV-GNN+safety layer (per profile)", "learned", P, "*", "-", True, 5, True, True),
+    _m("attn_lagrangian", "Attention+PPO-Lagrangian", "learned", O, "H", "-.", False, 2, False, True),
+    _m("attn_proj_nolb", "Attention+safety layer without departure bound", "learned", V, "o", ":", True, 3, True, True),
+    _m("deepsets_safe", "Deep Sets+safety layer", "learned", S, "p", "-", True, 4, True, True),
+    _m("mlp_safe", "MLP+safety layer", "learned", B, "s", "-", True, 5, True, True),
+    _m("mlp_penalty", "MLP+penalty", "learned", B, "s", "--", False, 6, False, True),
+    _m("attn_safe_trainN50", "SA-Attn trained at N = 50 (reference)", "learned", Y, "o", ":", False, 7, True, True),
+    # EV-GNN (DD27, DD35): in-distribution rows are re-labelled by load.py (in_distribution = true)
+    _m("evgnn", "EV-GNN (zero-shot)", "learned", P, "*", "--", False, 8, False, True),
+    _m("evgnn_safe", "EV-GNN+safety layer (zero-shot)", "learned", P, "*", "-", True, 9, True, True),
+    _m("evgnn_id", "EV-GNN (in-distribution)", "learned", P, "*", ":", False, 10, False, True),
+    _m("evgnn_safe_id", "EV-GNN+safety layer (in-distribution)", "learned", P, "*", "-.", True, 11, True, True),
     # rule-based
-    _m("llf_safe", "LLF+safety layer", "heuristic", G, "P", "-", True, 10, True, False),
-    _m("llf", "LLF", "heuristic", G, "P", "--", False, 11, False, False),
-    _m("afap_safe", "AFAP+safety layer", "heuristic", O, "^", "-", True, 12, True, False),
-    _m("afap", "AFAP", "heuristic", O, "^", "--", False, 13, False, False),
-    _m("alap_safe", "ALAP+safety layer", "heuristic", S, "v", "-", True, 14, True, False),
-    _m("alap", "ALAP", "heuristic", S, "v", "--", False, 15, False, False),
-    _m("rr_safe", "Round Robin+safety layer", "heuristic", Y, "D", "-", True, 16, True, False),
-    _m("rr", "Round Robin", "heuristic", Y, "D", "--", False, 17, False, False),
-    # MPC
-    _m("empc_safe", "eMPC+safety layer", "mpc", K, "X", "-", True, 20, True, False),
-    _m("empc", "eMPC", "mpc", K, "X", "--", False, 21, False, False),
-    _m("empc_highs_safe", "eMPC-HiGHS+safety layer", "mpc", K, "d", "-", True, 22, True, False),
-    _m("empc_highs", "eMPC-HiGHS", "mpc", K, "d", "--", False, 23, False, False),
+    _m("llf_safe", "LLF+safety layer", "heuristic", G, "P", "-", True, 20, True, False),
+    _m("llf", "LLF", "heuristic", G, "P", "--", False, 21, False, False),
+    _m("sllf_safe", "sLLF+safety layer", "heuristic", G, "d", "-", True, 22, True, False),
+    _m("sllf", "sLLF", "heuristic", G, "d", "--", False, 23, False, False),
+    _m("price_llf_safe", "Price-threshold+safety layer", "heuristic", Y, "<", "-", True, 24, True, False),
+    _m("price_llf", "Price-threshold", "heuristic", Y, "<", "--", False, 25, False, False),
+    _m("afap_safe", "AFAP+safety layer", "heuristic", O, "^", "-", True, 26, True, False),
+    _m("afap", "AFAP", "heuristic", O, "^", "--", False, 27, False, False),
+    _m("alap_safe", "ALAP+safety layer", "heuristic", S, "v", "-", True, 28, True, False),
+    _m("alap", "ALAP", "heuristic", S, "v", "--", False, 29, False, False),
+    _m("rr_safe", "Round Robin+safety layer", "heuristic", Y, "D", "-", True, 30, True, False),
+    _m("rr", "Round Robin", "heuristic", Y, "D", "--", False, 31, False, False),
+    # MPC (DD34: HiGHS port in the grid; Gurobi eMPC only on the literature configuration)
+    _m("empc_highs_safe", "eMPC-HiGHS+safety layer", "mpc", K, "X", "-", True, 40, True, False),
+    _m("empc_highs", "eMPC-HiGHS", "mpc", K, "X", "--", False, 41, False, False),
+    _m("empc_highs_24h_safe", "eMPC-HiGHS-24h+safety layer", "mpc", K, "8", "-", True, 42, True, False),
+    _m("empc_highs_24h", "eMPC-HiGHS-24h", "mpc", K, "8", "--", False, 43, False, False),
+    _m("empc_safe", "eMPC (Gurobi)+safety layer", "mpc", K, "d", "-", True, 44, True, False),
+    _m("empc", "eMPC (Gurobi)", "mpc", K, "d", "--", False, 45, False, False),
     # reference
     _m("oracle", "Perfect-information optimum", "oracle", "#999999", "h", ":", True, 99, True, False),
-    # SA-Attn evaluation variant and ablations
-    _m("attn_safe_noadm", "SA-Attn, no admission control", "ablation", V, "o", "-.", True, 40, True, True),
-    _m("attn_safe_beta0", "SA-Attn, β = 0", "ablation", V, "o", "-.", True, 41, True, True),
-    _m("attn_safe_curriculum", "SA-Attn, curriculum", "ablation", V, "o", "-.", True, 42, True, True),
-    _m("attn_safe_small", "SA-Attn, small network", "ablation", V, "o", "-.", True, 43, True, True),
-    _m("attn_penalty_dense", "Attention+penalty-dense", "ablation", V, "o", ":", False, 44, False, True),
-    _m("attn_penalty_w1", "Attention+penalty, w = 1", "ablation", V, "o", ":", False, 45, False, True),
-    _m("attn_penalty_w100", "Attention+penalty, w = 100", "ablation", V, "o", ":", False, 46, False, True),
+    # evaluation variants (DD31, DD33) and ablations
+    _m("attn_penalty_safedeploy", "Attention+penalty, safety layer at deployment", "ablation", V, "o", "-.", True, 60, True, True),
+    _m("attn_safe_noadm", "SA-Attn, no admission control", "ablation", V, "o", "-.", True, 61, True, True),
+    _m("attn_penalty_noadm", "Attention+penalty, no admission control", "ablation", V, "o", ":", False, 62, False, True),
+    _m("attn_safe_beta0", "SA-Attn, \u03b2 = 0", "ablation", V, "o", "-.", True, 63, True, True),
+    _m("attn_safe_curriculum", "SA-Attn, curriculum", "ablation", V, "o", "-.", True, 64, True, True),
+    _m("attn_safe_small", "SA-Attn, small network", "ablation", V, "o", "-.", True, 65, True, True),
+    _m("attn_penalty_dense", "Attention+penalty-dense", "ablation", V, "o", ":", False, 66, False, True),
+    _m("attn_penalty_w1", "Attention+penalty, w = 1", "sensitivity", V, "o", ":", False, 67, False, True),
+    _m("attn_penalty_w100", "Attention+penalty, w = 100", "sensitivity", V, "o", ":", False, 68, False, True),
     # conformal (alpha variants are generated by info())
-    _m("attn_safe_conf_point", "SA-Attn-point (uncalibrated)", "conformal", V, "o", ":", True, 59, True, True),
+    _m("attn_safe_conf_point", "SA-Attn-point (uncalibrated)", "conformal", V, "o", ":", True, 89, True, True),
     # sensitivity (DD28)
-    _m("attn_safe_dt5", "SA-Attn, Δt = 5 min", "sensitivity", V, "o", ":", True, 70, True, True),
+    _m("attn_safe_dt5", "SA-Attn, \u0394t = 5 min", "sensitivity", V, "o", ":", True, 70, True, True),
 ]}
 
 CONF_RE = re.compile(r"^attn_safe_conf_a(?P<alpha>[0-9.]+(?:e-?[0-9]+)?)$")
 
 # method sets used by tables/figures (only those present in the data are used)
-MAIN_LEARNED = ["attn_safe", "attn_penalty", "mlp_safe", "mlp_penalty", "evgnn", "evgnn_safe"]
-SCALING_METHODS = ["attn_safe", "attn_penalty", "mlp_safe", "mlp_penalty", "evgnn", "evgnn_safe",
-                   "llf_safe", "afap_safe", "alap_safe", "rr_safe", "empc_safe", "empc", "empc_highs_safe",
-                   "empc_highs"]
-FIG_SCALING = ["attn_safe", "attn_penalty", "mlp_safe", "mlp_penalty", "evgnn", "llf_safe", "afap_safe",
-               "empc_safe", "empc_highs_safe"]
-FIG_INFERENCE = ["attn_safe", "mlp_safe", "evgnn", "llf_safe", "afap_safe", "empc_safe", "empc",
-                 "empc_highs_safe"]
+MAIN_LEARNED = ["attn_safe", "attn_penalty", "attn_lagrangian", "deepsets_safe", "mlp_safe", "mlp_penalty"]
+SCALING_METHODS = ["attn_safe", "attn_penalty", "attn_lagrangian", "attn_proj_nolb", "deepsets_safe", "mlp_safe",
+                   "mlp_penalty", "attn_safe_trainN50", "evgnn", "evgnn_safe", "evgnn_id", "evgnn_safe_id",
+                   "llf_safe", "sllf_safe", "price_llf_safe", "afap_safe", "alap_safe", "rr_safe",
+                   "empc_highs_safe", "empc_highs", "empc_highs_24h_safe"]
+FIG_SCALING = ["attn_safe", "attn_penalty", "attn_lagrangian", "deepsets_safe", "mlp_safe", "mlp_penalty",
+               "attn_safe_trainN50", "evgnn", "llf_safe", "price_llf_safe", "empc_highs_safe"]
+FIG_CONSTRAINTS = ["attn_safe", "attn_penalty", "attn_lagrangian", "attn_proj_nolb", "mlp_penalty", "evgnn",
+                   "llf", "empc_highs", "empc_highs_safe"]
+FIG_INFERENCE = ["attn_safe", "deepsets_safe", "mlp_safe", "evgnn", "llf_safe", "price_llf_safe",
+                 "empc_highs_safe", "empc_highs_24h_safe"]
 ABLATION_2X2 = {("Attention", "safety layer"): "attn_safe", ("Attention", "penalty"): "attn_penalty",
                 ("MLP", "safety layer"): "mlp_safe", ("MLP", "penalty"): "mlp_penalty"}
-EXTRA_ABLATIONS = ["attn_safe_beta0", "attn_safe_curriculum", "attn_safe_small", "attn_safe_noadm",
-                   "attn_penalty_dense", "attn_penalty_w1", "attn_penalty_w100"]
+EXTRA_ABLATIONS = ["attn_proj_nolb", "deepsets_safe", "attn_lagrangian", "attn_penalty_safedeploy",
+                   "attn_safe_noadm", "attn_penalty_noadm", "attn_safe_beta0", "attn_safe_curriculum",
+                   "attn_safe_small", "attn_penalty_dense"]
+SENS_WEIGHT_METHODS = ["attn_penalty", "attn_penalty_w1", "attn_penalty_w100"]
+SENS_METHODS = ["attn_safe", "attn_penalty", "mlp_safe", "llf_safe", "price_llf_safe", "empc_highs_safe",
+                "attn_safe_dt5"]
 GUARANTEE_PAIRS = [("Attention", "attn_safe", "attn_penalty"), ("MLP", "mlp_safe", "mlp_penalty")]
+TRANSFER_REF = {"attn_safe": "attn_safe_trainN50"}     # DD36: transfer gap to the in-distribution reference
 REFERENCE = "attn_safe"
+# fallback-case mapping (SCHEMA_ADDITIONS.md §5, consistency M7): paper case -> code label, column, step code
+FALLBACK_CASES = [("(i)", "FB-1*", "fb1star_steps", 3), ("(ii)", "FB-2", "fb2_steps", 2),
+                  ("(iii)", "FB-1", "fb1_steps", 1), ("(iv)", "FB-0", "fb0_steps", 0)]
 
 _warned: set[str] = set()
 

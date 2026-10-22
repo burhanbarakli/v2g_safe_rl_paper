@@ -1,5 +1,72 @@
 # DONE: Writing Agent A5
 
+## Revision round 2 (2026-10-22; internal review round 2, consistency report round 2, DD43)
+
+**State now.**
+- `main.pdf` has 21 pages and `supplementary.pdf` has 20 pages (fallback article class).
+- All four builds (normal and anonymous) have 0 errors, 0 undefined references, 0 overfull boxes and 0 BibTeX warnings. The anonymous PDFs carry no CreationDate.
+- The synthetic-output test build (`analysis_repo/synthetic_test`) is clean.
+
+**Counts.**
+- Sections 1-8: **7,057 running words** (8,058 including tables, captions and equations). Per section: Intro 723, Related 1,007, Problem 876, Method 1,848, Setup 1,263, Results 431, Discussion 658, Conclusion 243.
+- Abstract: 330 words.
+- **Main floats: 7** (Figures 1-5, Tables 1-2). Algorithm 1 moved to the supplement (Algorithm S1).
+
+**Main changes.**
+- Statistics text equals STAT_METHODS.md, with no adaptive seed rule.
+- E4 is used throughout (T3, T3b, Fig. 4, tests_T3).
+- Binding rates are reported.
+- Cost of the guarantee follows DD43(7).
+- The shared admitted requirement applies to all methods and passes, and the conformal variants get the gap.
+- Fairness disclosures: EV-GNN protocol, MLP only at N ≤ 20, attn_proj_nolb with β = 0.01.
+- Citation fixes: ACN, Henderson, EV-GNN row label, preprint flags, abstract-only sentence including eland2026safe.
+- AI statement rewritten (M11).
+- §4 simplified:
+  - inline conditions table, with A5 defined as a feasible step;
+  - three-part Theorem 1;
+  - fallback rule in prose;
+  - Lemma 1, FB codes, deficit equation, A6 detail and actuation detail moved to s1/s2.
+- Bib post-processing: acronyms braced, `&amp;` fixed, month macros.
+
+**Lint.** Both mirrors have no sentence, paragraph, opener or phrase flags. Only acronym false positives remain.
+
+**Open items.**
+- Fig. 1 artwork labels ("closed-form", regulariser formula) need the Orchestrator.
+- MLP n_max: 200 in base.yaml vs "N_max = 20" in DD43/STAT_METHODS.
+- IEEEtran.bst and saucis.cls are unavailable.
+- Author TODOs as listed in `response_to_internal_review_round2.md` §C.
+
+---
+
+## Revision round 1 (2026-10-22; internal review round 1, consistency report round 1, DD30-DD42)
+
+**State now.** `manuscript/main.pdf` has 23 pages and `supplementary/supplementary.pdf` has 19 pages (fallback article class). Both normal builds and both anonymous builds have 0 errors, 0 undefined references or citations and 0 overfull boxes. A test build against `analysis_repo/synthetic_test` (as `\analysisdir`) loads every generated table (T1-TS3) and figure without errors. `refs.bib` is re-extracted from the 114-key merged bib and has 79 cited keys.
+
+**Counts.** Sections 1-8 have 8,535 words of running text (9,533 including tables, captions and display equations). Per section (all words): Introduction 757, Related Work 1,399, Problem 1,260, Method 2,930, Setup 1,345, Results 760, Discussion 820, Conclusion 254. The abstract has 284 words. The main text has 7 floats (Figs. 1-5, Tables 1-2) plus Algorithm 1. The supplementary mirror has 9,161 words.
+
+**Main changes.**
+- DD30 two-layer Theorem 1 (A6 added) and the working title with a \TODO.
+- DD31 shared request pipeline.
+- DD32 J^pen gap to the soft optimum (Prop. S3), with the hard optimum and taper rows (Lemma S1, Prop. S2).
+- DD33-DD36 baselines (Lagrangian, no departure bound, Deep Sets, deploy-only, no admission, sLLF, price rule, eMPC-HiGHS 10-step and 24-h, Gurobi eMPC on the literature configuration, EV-GNN in-distribution and zero-shot, trainN50 reference). GNN-DT status corrected per DD42-6.
+- DD37 tuning, DD38 statistics, DD39 sensitivities, DD40 Jacobian moved to the supplement, DD41 AI statement.
+- Citation fixes M10-M12 and the TD3 sentence.
+- Table 1 has no "unknown" cells, and there is a single abstract-only statement.
+- The supplementary is restructured as s0 nomenclature, s1 proofs, s2 EV2Gym/A1/A3/A6/scenarios/features, s3 pipeline and optima, s4 methods/training/statistics/compute, s5 results.
+- New macros `\restable` and `\resultfig` with `\analysisdir`, plus local fallbacks, and adjustbox.
+- Item-by-item record: `response_to_internal_review_round1.md`.
+
+**Lint.** `lint_latest_main.md` and `lint_latest_supplementary.md` show no sentence, paragraph, opener or phrase flags. The only flags are acronym false positives (assumption labels, S/T item numbers, FB codes, SA, SAUCIS, DT4EVs, V2G in the title).
+
+**Deviations and open items.**
+1. Example day is Fig. S7 and pooled constraints is Fig. S6. The analysis README still plans fig5_example_day as main Fig. 5.
+2. IEEEtran.bst is unavailable (CTAN blocked, 403), so ieeetr is still used.
+3. saucis.cls is unavailable.
+4. No analysis output exists for the V2G profit share or an information/policy gap decomposition.
+5. Author tasks: R1-R3 full texts, final title, rewriting the AI-drafted sections, result interpretation, hardware, repository link, re-measuring the scenario statistics.
+
+---
+
 ## Revision 1 (2026-10-22, orchestrator request; DD25-DD29)
 
 **State now.** Main text `manuscript/main.pdf`: 23 pages (fallback article class, 10 pt, single-spaced, with references and Article Information Form). Supplementary `supplementary/supplementary.pdf`: 12 pages. Both compile with 0 errors, 0 undefined references/citations, 0 overfull boxes; anonymous builds exist. `refs.bib`: 76 cited keys (both documents).

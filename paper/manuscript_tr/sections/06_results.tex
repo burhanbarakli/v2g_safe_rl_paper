@@ -1,0 +1,84 @@
+% ---------------------------------------------------------------------
+\section{Bulgular}\label{sec:results}
+% ---------------------------------------------------------------------
+% İSKELET. Henüz hiçbir deney çalıştırılmamıştır. Her nicel ifade, yalnızca
+% analysis/scripts/make_all.py tarafından üretilen değerleri isteyen bir
+% \RES{} yer tutucusudur (T1-T7, T3b, TS1-TS3 tabloları; fig3-fig6,
+% figS1-figS6 şekilleri; stats/tests_T*.csv). Üretilen tablolar ve şekiller,
+% \analysisdir altında (varsayılan ../../analysis) ya da tables/ ve figures/
+% içindeki yerel kopyalar olarak var olduklarında otomatik olarak görünür.
+
+\TODO{İskelet: yazarlar aşağıdaki her cümle kalıbını kendi metinleriyle değiştirir, kırmızı yer tutucuları analiz çıktılarından doldurur ve tüm yorumları kendileri yazar}.
+
+\subsection{Ana karşılaştırma}\label{sec:res-main}
+
+\Tab{tab:t1}, profiller ve anma düzeyleri birleştirilerek eğitim boyutları $N\in\{10,20\}$ için tüm yöntemleri karşılaştırmaktadır.
+Bu boyutlarda \method{} yönteminin açığı \RES{açık ve \%95 güven aralığıyla IQM, \Tab{tab:t1}} olarak bulunmuştur.
+Diğer öğrenen yöntemlere göre cezalı kârdaki fark \RES{farklar, güven aralıkları ve Holm düzeltmeli $p$-değerleri, stats/tests\_T1.csv} şeklindedir.
+Kurallar ve model öngörülü yöntemler arasında \RES{güvenlik katmanıyla en iyi kural ve eMPC-HiGHS açıkları, \Tab{tab:t1}}.
+
+\restable{T1}{%
+\begin{table}[t]
+\centering
+\caption{Eğitim istasyon boyutları $N\in\{10,20\}$ için ana karşılaştırma (üç varış profili ve her iki sıkılık düzeyi birleştirilmiştir; analiz betikleri çalıştırılana kadar yer tutucudur).}
+\label{tab:t1}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Yöntem & $J^{\sm{pen}}$ [\texteuro] & Açık [\%] & IQM açık [\%] & Kâr [\texteuro] & Karşılanmayan [kWh] & Aşırı yük [kWh] \\
+\midrule
+\method{} (önerilen) & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Attention+penalty & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Attention+PPO-Lagrangian & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Deep Sets+safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Kurallar ve eMPC-HiGHS & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+\bottomrule
+\end{tabular}
+\end{table}}
+
+\subsection{İstasyon boyutları arasında sıfır-atış aktarım}\label{sec:res-scaling}
+
+\Fig{fig:zeroshot}, $N\in\{10,20\}$ için eğitilmiş ağırlıklarla şarj ünitesi başına cezalı kârı ve açığı $N$'ye göre çizmektedir.
+$N=50$, $100$ ve $200$ için \method{} yönteminin açığı \RES{\%95 güven aralığıyla her $N$ için açık, \Tab{S-tab:t2}}, $N=50$ için eğitilen referansa göre aktarım açığı ise \RES{\Tab{S-tab:t2}} olarak bulunmuştur.
+EV-GNN \RES{kendi eğitim yapılandırmasında ve sıfır-atış durumunda açık, \Tab{S-tab:t2}} değerine ulaşmakta; $\rho_{\sm{tr}}=3$ kW stres düzeyinde \method{} yönteminin açığı ise \RES{\Tab{S-tab:ts2}} olmaktadır.
+
+\begin{figure}[t]
+\centering
+\resultfig{fig3_zero_shot_scaling.pdf}{Yöntem başına $N$'ye göre şarj ünitesi başına cezalı kâr ve optimallik açığı, \%95 güven aralıkları; eğitim boyutları işaretlenmiştir.}
+\caption{5 ile 200 arasındaki $N$ değerleri için istasyon boyutları arasında sıfır-atış aktarım.}
+\label{fig:zeroshot}
+\end{figure}
+
+\subsection{Kısıtların sağlanması}\label{sec:res-constraints}
+
+\Fig{fig:constraints}, ana yöntemler için karşılanmayan enerjiyi, aşırı yük enerjisini ve olursuz adımla karşılaşmayan EV'lerin payını (E4) $N$'ye göre göstermektedir.
+Güvenlik katmanıyla aşırı yük enerjisi \RES{\Tab{S-tab:t3} içindeki değer; Teorem~\ref{thm:invariance}(a) sıfır öngörür} olmakta; katman olmadan ise yöntemler \RES{karşılanmayan enerji ve aşırı yük, \Tab{S-tab:t3}} bırakmaktadır.
+\method{} yönteminin E4 değeri \RES{her $N$ için, \Tab{S-tab:t3b}} olup toplam limitler \RES{her $N$ için bağlayıcılık oranları, \Tab{S-tab:t3b}} oranında bağlayıcı olmaktadır.
+Olursuz adımlar yedek kural durumlarına \RES{durum başına sayılar, \Tab{S-tab:t3b}} biçiminde dağılmakta ve eksik enerji \RES{açık sınırına oran, \Tab{S-tab:t3}} düzeyine ulaşmaktadır.
+
+\begin{figure}[t]
+\centering
+\resultfig{fig4_constraint_satisfaction.pdf}{Ana yöntemler için $N$'ye göre karşılanmayan enerji, aşırı yük enerjisi ve E4.}
+\caption{Kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin payı (E4) dâhil olmak üzere istasyon boyutları arasında kısıtların sağlanması.}
+\label{fig:constraints}
+\end{figure}
+
+\subsection{Garantinin maliyeti}\label{sec:res-cost}
+
+\Fig{fig:cost}, \Sec{sec:metrics} içinde tanımlanan garantinin maliyetini $N$'ye göre çizmektedir.
+Cezalı kâr açısından Attention+penalty eksi \method{} farkı \RES{her $N$ için hizmet verilen EV başına \texteuro{} ve $|J^{\sm{LP,ceil}}|$'nin \%'si olarak $\Delta J^{\sm{pen}}$, \Tab{S-tab:t5}} olarak bulunmuştur.
+Ham kâr cinsinden ölçüldüğünde fark \RES{her $N$ için $\Delta$ kâr, \Tab{S-tab:t5}} olup testler \RES{stats/tests\_T5.csv} içinde verilmektedir.
+
+\begin{figure}[t]
+\centering
+\resultfig{fig6_cost_of_guarantee.pdf}{$N$'ye göre garantinin maliyeti ($\Delta J^{\sm{pen}}$ ve $\Delta$ kâr, hizmet verilen EV başına \texteuro{}).}
+\caption{İstasyon boyutları arasında garantinin maliyeti. Pozitif bir değer, aynı epizotlar üzerinde Attention+penalty'nin \method{} yönteminden daha yüksek puan aldığı anlamına gelir.}
+\label{fig:cost}
+\end{figure}
+
+\subsection{Diğer bulgular}\label{sec:res-further}
+
+\Tab{S-tab:t4} içinde ayrılış sınırı olmayan, katmanı yalnızca kullanım aşamasında uygulayan ve kabul kontrolü içermeyen varyantlar \RES{\method{} yöntemine göre açıklar, \Tab{S-tab:t4}} sonucunu vermektedir.
+Konformal varyant için açık ve epizot ortalamalı kapsama \RES{her $\alpha$ için, \Tab{S-tab:t7}} olup $N=200$ için bir kontrol adımı \RES{çıkarım süresi, \Tab{S-tab:t6}} sürmektedir.
+Duyarlılık çalışmaları \RES{\Tab{S-tab:ts2}} sonucunu vermekte; Şekil~\ref{S-fig:exampleday} ise örnek bir epizodu göstermektedir.

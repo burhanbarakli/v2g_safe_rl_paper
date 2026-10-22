@@ -1,0 +1,52 @@
+% ---------------------------------------------------------------------
+\section{Tartışma}\label{sec:discussion}
+% ---------------------------------------------------------------------
+
+\subsection{Yorum}\label{sec:interpretation}
+
+% Bulguların yorumu yazarlar tarafından yazılmalıdır (SAUCIS yapay zekâ
+% politikası). Yönlendirmeler, her paragrafın dayandığı analiz çıktısını
+% belirtir; burada önceden yazılmış hiçbir yorum yoktur.
+
+\TODO{Paragraf 1, yazarlar tarafından: 10 ve 20 şarj ünitesiyle eğitilen ağırlıkların 200 şarj ünitesine ve stres düzeyine aktarılıp aktarılmadığını belirtin. \Fig{fig:zeroshot}, \Tab{S-tab:t2} içindeki aktarım açığı ve yedek kural sütunları, \Tab{S-tab:t3b} içindeki bağlayıcılık oranları ve \Tab{S-tab:ts2} kullanılmalıdır}.
+
+\TODO{Paragraf 2, yazarlar tarafından: \Fig{fig:cost} ve \Tab{S-tab:t5} içindeki garantinin maliyetini, \Tab{S-tab:t3} içindeki Attention+penalty ihlalleriyle ilişkilendirin. Birincil ölçü olarak $\Delta J^{\sm{pen}}$ ve stats/tests\_T5.csv kullanılmalıdır}.
+
+\TODO{Paragraf 3, yazarlar tarafından: \Tab{S-tab:t3} ve \Tab{S-tab:t3b} içindeki E4'ü ve açık sınırına göre eksik enerjiyi tartışın. Her ikisini A5'in kapalı döngü niteliğiyle ilişkilendirin}.
+
+\TODO{Paragraf 4, yazarlar tarafından: yayımlanmış EV2Gym sayılarıyla karşılaştırmayı yalnızca literatür yapılandırması üzerinde (\Tab{S-tab:ts3}) yapın; farklı simülatörler ya da senaryolar arasında asla karşılaştırma yapmayın}.
+
+\subsection{Şarj noktası işletmecileri için pratik çıkarımlar}\label{sec:implications}
+
+Bu alt bölüm, deneylerden sonra yazarlar tarafından aşağıdaki noktaları kapsayacak şekilde yazılacaktır.
+\begin{itemize}
+\item \TODO{Trafo limiti her ham eylem için sağlandığında bir CPO'nun ne kazandığı ve koşullu ayrılış sonucunun hizmet taahhüdü açısından ne anlama geldiği.}
+\item \TODO{\Tab{S-tab:t5} üzerinden, belirli bir boyuttaki istasyon için hizmet verilen EV başına avro cinsinden garantinin maliyeti.}
+\item \TODO{\Tab{S-tab:t7} üzerinden, sürücülerin ayrılış zamanlarını bildirmediği durumlarda konformal varyantın kullanımı ve kabul edilebilir kapsama düzeyleri.}
+\item \TODO{\Tab{S-tab:t6} üzerinden, 15 dakikalık kontrol adımına göre kontrol adımı başına çıkarım süresi.}
+\end{itemize}
+
+\subsection{Sınırlılıklar}\label{sec:limitations}
+
+Teorem~\ref{thm:invariance} kapsamındaki ayrılış sonucu, bildirilen ayrılış zamanlarına ve gereksinimlere (A2) dayanmaktadır.
+Konformal genişletmemiz yalnızca ayrılış adımını gevşetmekte, kapsaması marjinal kalmakta ve son tarihlerin stratejik olarak yanlış bildirilmesi \cite{ferragut2022scheduling} modelin dışında kalmaktadır.
+\Sec{sec:invariance} içindeki iki EV'li örneğin gösterdiği gibi toplam olurluluk (A5) kapalı döngüde sağlanamayabilir.
+Bu tür adımlarda ayrılış gereksinimi yalnızca Teorem~\ref{thm:invariance}(b) kapsamındaki EV'ler için garanti edilir; Lemma~\ref{S-lem:deficit} ise kalan eksik enerjiyi ortadan kaldırmadan sınırlar.
+Gelecek boyunca ortak olurluluğu sertifikalayan bir katman, zamana bağlı kısıtlara ihtiyaç duyacak ve tek toplamlı izdüşüm yapısını kaybedecektir.
+
+Trafoya ilişkin sonuç, A3 tek adım modelini ve A6'daki dışsal kapasite payını gerektirir; denetleyici A6'yı uygulamaz.
+Lemma~\ref{S-lem:a3}, kullandığımız EV2Gym ayarları için A3'ü ispatlamaktadır; buna karşın gerçek bir batarya yönetim sistemi komut edilenden daha az güç çekebilir.
+Eksik teslimat, bir EV'nin enerjisini sınırların varsaydığı değerin altına düşürür; bu nedenle donanım uygulamasında eşikler üzerinde bir pay ya da ölçülen enerjiden geri besleme gerekecektir; bu çözüm burada analiz edilmemiştir.
+A1, EV2Gym'in üstel şarj gücü azalması için geçerlidir; ancak çok daha dik bir azalma bu varsayımı bozacaktır.
+Model, gerilim limitleri ya da hat akışları olmaksızın tek bir trafonun arkasındaki tek bir istasyonu kapsar ve ek bağlantılı toplam kısıtları Önerme~\ref{prop:projection} kapsamının dışında kalacaktır.
+
+Deneylerde EV2Gym'in kayıpsız muhasebesi kullanılmakta ve deşarj fiyatı şarj fiyatına eşit alınmaktadır.
+Dolayısıyla V2G arbitrajı ne gidiş-dönüş kaybı ne de yıpranma maliyeti içerir; bu nedenle deşarjdan elde edilen kârlar iyimser olabilir ve duyarlılık çalışmaları bu etkiyi yalnızca tek bir istasyon boyutunda incelemektedir.
+Tüm sonuçlar, EV2Gym istatistiklerinden üretilen sentetik varışlar ve Hollanda gün öncesi fiyatlarıyla yapılan simülasyonlardan elde edilmiştir; bazı geç akşam oturumları epizot ufkuna sığmamakta ve tahmin gürültüsü sentetiktir.
+Şebeke büyüklükleri $N$ ile doğrusal olarak ölçeklendiğinden test istasyonlarının şarj ünitesi başına istatistikleri eğitimdekilerle örtüşmekte; bunları yalnızca stres düzeyi değiştirmektedir.
+
+Bazı karşılaştırmalar tam olarak eşdeğer koşullarda yapılmamıştır.
+EV-GNN, kendi algoritması ve ödülüyle, tek bir boyutta, her profil için ayrı olarak, çalıştırma başına tek bir yük ve PV çekilişiyle ve varsayılanından daha az adımla eğitilmektedir.
+eMPC-HiGHS yeniden gerçeklememiz ufku içindeki kesin fiyatları ve varışları bilmekte, MLP yalnızca $N\le20$ için raporlanmakta ve GNN-DT çalıştırılmamıştır.
+Optimumlar, tek adımlık bir geçiş bandı ve \%1'lik bir pay dışında kesin olan dış şarj gücü azalması satırlarını yuvarlama payıyla birlikte kullanmaktadır.
+Ayrıca optimumlar çevrim içi bir denetleyicinin bilgi kısıtlarını göz ardı etmektedir; dolayısıyla her açığın bir kısmı geleceği bilmemenin bedelidir.

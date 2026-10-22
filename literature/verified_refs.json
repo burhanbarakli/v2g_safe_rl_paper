@@ -927,7 +927,21 @@
    "L1"
   ],
   "style_corpus_only": false,
-  "year_bib": 2025
+  "year_bib": 2025,
+  "extra_verifications": [
+   {
+    "key": "ponse2025chargax",
+    "venue": "Reinforcement Learning Journal 6:364-383 (RLC 2025)",
+    "year": 2025,
+    "url_verified": "https://rlj.cs.umass.edu/2025/papers/Paper28.html",
+    "title_returned": "Chargax: A JAX Accelerated EV Charging Simulator",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": ""
+   }
+  ]
  },
  {
   "doi": "10.1016/j.apenergy.2026.128138",
@@ -1039,7 +1053,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2017
+  "year_bib": 2017,
+  "extra_verifications": [
+   {
+    "key": "achiam2017constrained",
+    "venue": "ICML 2017 (PMLR 70)",
+    "year": 2017,
+    "url_verified": "https://proceedings.mlr.press/v70/achiam17a.html",
+    "title_returned": "Constrained Policy Optimization",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 22-31"
+   }
+  ]
  },
  {
   "arxiv": "1805.11074",
@@ -1063,7 +1091,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "tessler2018reward",
+    "venue": "ICLR 2019 (poster)",
+    "year": 2019,
+    "url_verified": "https://iclr.cc/virtual/2019/poster/756",
+    "title_returned": "Reward Constrained Policy Optimization",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "OpenReview forum SkfrvsA9FX (linked from the ICLR page; openreview.net itself showed a browser check)"
+   }
+  ]
  },
  {
   "arxiv": "1801.08757",
@@ -1212,7 +1254,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "haarnoja2018soft",
+    "venue": "ICML 2018 (PMLR 80)",
+    "year": 2018,
+    "url_verified": "https://proceedings.mlr.press/v80/haarnoja18b.html",
+    "title_returned": "Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 1861-1870"
+   }
+  ]
  },
  {
   "arxiv": "1802.09477",
@@ -1236,7 +1292,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "fujimoto2018addressing",
+    "venue": "ICML 2018 (PMLR 80)",
+    "year": 2018,
+    "url_verified": "https://proceedings.mlr.press/v80/fujimoto18a.html",
+    "title_returned": "Addressing Function Approximation Error in Actor-Critic Methods",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 1587-1596"
+   }
+  ]
  },
  {
   "arxiv": "1703.00443",
@@ -1259,7 +1329,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2017
+  "year_bib": 2017,
+  "extra_verifications": [
+   {
+    "key": "amos2017optnet",
+    "venue": "ICML 2017 (PMLR 70)",
+    "year": 2017,
+    "url_verified": "https://proceedings.mlr.press/v70/amos17a.html",
+    "title_returned": "OptNet: Differentiable Optimization as a Layer in Neural Networks",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 136-145"
+   }
+  ]
  },
  {
   "arxiv": "1910.12430",
@@ -1286,7 +1370,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2019
+  "year_bib": 2019,
+  "extra_verifications": [
+   {
+    "key": "agrawal2019differentiable",
+    "venue": "NeurIPS 2019 (Advances in Neural Information Processing Systems 32)",
+    "year": 2019,
+    "url_verified": "https://proceedings.neurips.cc/paper/2019/hash/9ce3c52fc54362e22053399d3181c638-Abstract.html",
+    "title_returned": "Differentiable Convex Optimization Layers",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pages not shown on page"
+   }
+  ]
  },
  {
   "arxiv": "2104.12225",
@@ -1310,7 +1408,21 @@
    "L2"
   ],
   "style_corpus_only": false,
-  "year_bib": 2021
+  "year_bib": 2021,
+  "extra_verifications": [
+   {
+    "key": "donti2021dc3",
+    "venue": "ICLR 2021 (poster)",
+    "year": 2021,
+    "url_verified": "https://iclr.cc/virtual/2021/poster/2868",
+    "title_returned": "DC3: A learning method for optimization with hard constraints",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "OpenReview forum V1ZHVxJ6dSS"
+   }
+  ]
  },
  {
   "doi": "10.1109/access.2023.3285199",
@@ -1636,7 +1748,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2017
+  "year_bib": 2017,
+  "extra_verifications": [
+   {
+    "key": "vaswani2017attention",
+    "venue": "NIPS 2017 (Advances in Neural Information Processing Systems 30)",
+    "year": 2017,
+    "url_verified": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html",
+    "title_returned": "Attention is All you Need",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pages not shown on page"
+   }
+  ]
  },
  {
   "doi": "10.1016/j.apenergy.2020.116382",
@@ -1849,7 +1975,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2017
+  "year_bib": 2017,
+  "extra_verifications": [
+   {
+    "key": "zaheer2017deep",
+    "venue": "NIPS 2017 (Advances in Neural Information Processing Systems 30)",
+    "year": 2017,
+    "url_verified": "https://proceedings.neurips.cc/paper/2017/hash/f22e4747da1aa27e363d86d40ff442fe-Abstract.html",
+    "title_returned": "Deep Sets",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pages not shown on page"
+   }
+  ]
  },
  {
   "arxiv": "1810.00825",
@@ -1876,7 +2016,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "lee2019set",
+    "venue": "ICML 2019 (PMLR 97)",
+    "year": 2019,
+    "url_verified": "https://proceedings.mlr.press/v97/lee19d.html",
+    "title_returned": "Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 3744-3753"
+   }
+  ]
  },
  {
   "arxiv": "1803.08475",
@@ -1900,7 +2054,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "kool2019attention",
+    "venue": "ICLR 2019 (poster)",
+    "year": 2019,
+    "url_verified": "https://iclr.cc/virtual/2019/poster/1049",
+    "title_returned": "Attention, Learn to Solve Routing Problems!",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "OpenReview forum ByxBFsRqYm"
+   }
+  ]
  },
  {
   "arxiv": "2101.08001",
@@ -1925,7 +2093,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2021
+  "year_bib": 2021,
+  "extra_verifications": [
+   {
+    "key": "hu2021updet",
+    "venue": "ICLR 2021 (poster)",
+    "year": 2021,
+    "url_verified": "https://iclr.cc/virtual/2021/poster/2811",
+    "title_returned": "UPDeT: Universal Multi-agent RL via Policy Decoupling with Transformers",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "published title differs from arXiv title ('Reinforcement Learning' -> 'RL'); OpenReview forum v9c7hr9ADKx"
+   }
+  ]
  },
  {
   "arxiv": "1802.05438",
@@ -1952,7 +2134,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2018
+  "year_bib": 2018,
+  "extra_verifications": [
+   {
+    "key": "yang2018mean",
+    "venue": "ICML 2018 (PMLR 80)",
+    "year": 2018,
+    "url_verified": "https://proceedings.mlr.press/v80/yang18d.html",
+    "title_returned": "Mean Field Multi-Agent Reinforcement Learning",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 5571-5580"
+   }
+  ]
  },
  {
   "arxiv": "2310.07985",
@@ -1978,7 +2174,21 @@
    "L3"
   ],
   "style_corpus_only": false,
-  "year_bib": 2023
+  "year_bib": 2023,
+  "extra_verifications": [
+   {
+    "key": "luo2023neural",
+    "venue": "NeurIPS 2023 (Advances in Neural Information Processing Systems 36), Main Conference Track",
+    "year": 2023,
+    "url_verified": "https://papers.nips.cc/paper_files/paper/2023",
+    "title_returned": "Neural Combinatorial Optimization with Heavy Decoder: Toward Large Scale Generalization",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "listed in NeurIPS 2023 proceedings index; paper-page URL not retrievable (link hrefs not returned); arXiv comment 'Accepted at NeurIPS 2023'"
+   }
+  ]
  },
  {
   "arxiv": "2210.07013",
@@ -2228,7 +2438,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2019
+  "year_bib": 2019,
+  "extra_verifications": [
+   {
+    "key": "romano2019conformalized",
+    "venue": "NeurIPS 2019 (Advances in Neural Information Processing Systems 32)",
+    "year": 2019,
+    "url_verified": "https://proceedings.neurips.cc/paper/2019/hash/5103c3584b063c431bd1268e9b5e76fb-Abstract.html",
+    "title_returned": "Conformalized Quantile Regression",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pages not shown on page"
+   }
+  ]
  },
  {
   "arxiv": "2002.04745",
@@ -2259,7 +2483,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2020
+  "year_bib": 2020,
+  "extra_verifications": [
+   {
+    "key": "xiong2020layer",
+    "venue": "ICML 2020 (PMLR 119)",
+    "year": 2020,
+    "url_verified": "https://proceedings.mlr.press/v119/xiong20b.html",
+    "title_returned": "On Layer Normalization in the Transformer Architecture",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 10524-10533"
+   }
+  ]
  },
  {
   "arxiv": "1607.06450",
@@ -2309,7 +2547,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2015
+  "year_bib": 2015,
+  "extra_verifications": [
+   {
+    "key": "schulman2016highdimensional",
+    "venue": "ICLR 2016 (main conference, poster)",
+    "year": 2016,
+    "url_verified": "https://iclr.cc/archive/www/doku.php%3Fid=iclr2016:accepted-main.html",
+    "title_returned": "High-Dimensional Continuous Control Using Generalized Advantage Estimation",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "listed on ICLR 2016 accepted main-conference papers page"
+   }
+  ]
  },
  {
   "arxiv": "1412.6980",
@@ -2332,7 +2584,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2014
+  "year_bib": 2014,
+  "extra_verifications": [
+   {
+    "key": "kingma2015adam",
+    "venue": "ICLR 2015 (main conference)",
+    "year": 2015,
+    "url_verified": "https://iclr.cc/archive/www/doku.php%3Fid=iclr2015:accepted-main.html",
+    "title_returned": "Adam: A Method for Stochastic Optimization",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "listed on ICLR 2015 accepted main-conference papers page"
+   }
+  ]
  },
  {
   "arxiv": "2111.08819",
@@ -2357,7 +2623,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2021
+  "year_bib": 2021,
+  "extra_verifications": [
+   {
+    "key": "huang2022cleanrl",
+    "venue": "Journal of Machine Learning Research 23(274):1-18",
+    "year": 2022,
+    "url_verified": "https://www.jmlr.org/papers/v23/21-1342.html",
+    "title_returned": "CleanRL: High-quality Single-file Implementations of Deep Reinforcement Learning Algorithms",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "JMLR version has 7 authors (adds Chakraborty, Mehta, Araujo)"
+   }
+  ]
  },
  {
   "arxiv": "1603.00943",
@@ -2380,7 +2660,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2016
+  "year_bib": 2016,
+  "extra_verifications": [
+   {
+    "key": "diamond2016cvxpy",
+    "venue": "Journal of Machine Learning Research 17(83):1-5",
+    "year": 2016,
+    "url_verified": "https://www.jmlr.org/papers/v17/15-408.html",
+    "title_returned": "CVXPY: A Python-Embedded Modeling Language for Convex Optimization",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": ""
+   }
+  ]
  },
  {
   "arxiv": "1912.01703",
@@ -2422,7 +2716,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2019
+  "year_bib": 2019,
+  "extra_verifications": [
+   {
+    "key": "paszke2019pytorch",
+    "venue": "NeurIPS 2019 (Advances in Neural Information Processing Systems 32)",
+    "year": 2019,
+    "url_verified": "https://proceedings.neurips.cc/paper/2019/hash/bdbca288fee7f92f2bfa9f7012727740-Abstract.html",
+    "title_returned": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pages not shown on page"
+   }
+  ]
  },
  {
   "arxiv": "2108.13264",
@@ -2448,7 +2756,21 @@
    "L4"
   ],
   "style_corpus_only": false,
-  "year_bib": 2021
+  "year_bib": 2021,
+  "extra_verifications": [
+   {
+    "key": "agarwal2021deep",
+    "venue": "NeurIPS 2021 (Advances in Neural Information Processing Systems 34)",
+    "year": 2021,
+    "url_verified": "https://proceedings.neurips.cc/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html",
+    "title_returned": "Deep Reinforcement Learning at the Edge of the Statistical Precipice",
+    "source": "proceedings page",
+    "verified_at": "2026-10-22T04:20:01+00:00",
+    "status": "verified",
+    "method": "WebFetch of the official proceedings/journal page (curl blocked by proxy)",
+    "note": "pp. 29304-29320 (page citation metadata)"
+   }
+  ]
  },
  {
   "doi": "10.1007/978-3-030-68928-5",
@@ -2613,6 +2935,120 @@
    "L4"
   ],
   "style_corpus_only": false
+ },
+ {
+  "doi": "10.1109/pesgm58988.2026.11693326",
+  "source": "crossref",
+  "url_queried": "https://api.crossref.org/works/10.1109/pesgm58988.2026.11693326",
+  "title": "Safe Decentralized Operation of EV Virtual Power Plant with Limited Network Visibility via Multi-Agent Reinforcement Learning",
+  "authors": [
+   "Chenghao Huang",
+   "Jiarong Fan",
+   "Weiqing Wang",
+   "Hao Wang"
+  ],
+  "year": 2026,
+  "venue": "2026 IEEE Power &amp; Energy Society General Meeting (PESGM)",
+  "type": "proceedings-article",
+  "title_match_score": 1.0,
+  "key": "huang2026safe",
+  "verified_at": "2026-10-22T04:19:21+00:00",
+  "status": "verified",
+  "found_by_parts": [
+   "L5"
+  ],
+  "style_corpus_only": false
+ },
+ {
+  "doi": "10.1109/iteceats66641.2026.11592825",
+  "source": "crossref",
+  "url_queried": "https://api.crossref.org/works/10.1109/iteceats66641.2026.11592825",
+  "title": "Graph-Based Bi-Level Reinforcement Learning for Coordinated EV Fast Charging Under Distribution Constraints",
+  "authors": [
+   "Mostafa Zaman",
+   "Sherif Abdelwahed"
+  ],
+  "year": 2026,
+  "venue": "2026 IEEE Transportation Electrification Conference &amp;amp; Expo (ITEC) &amp;amp; Electric Aircraft Technologies Symposium (EATS) (ITEC+EATS)",
+  "type": "proceedings-article",
+  "title_match_score": 1.0,
+  "key": "zaman2026graph",
+  "verified_at": "2026-10-22T04:19:22+00:00",
+  "status": "verified",
+  "found_by_parts": [
+   "L5"
+  ],
+  "style_corpus_only": false
+ },
+ {
+  "doi": "10.1109/pesgm58988.2026.11693429",
+  "source": "crossref",
+  "url_queried": "https://api.crossref.org/works/10.1109/pesgm58988.2026.11693429",
+  "title": "Safe On-Policy Deep Reinforcement Learning-based Electric Vehicle Charging Management under Transformer Thermal Stress",
+  "authors": [
+   "Zhewei Zhang",
+   "Rémy Rigo-Mariani",
+   "Nouredine Hadjsaid",
+   "Yan Xu"
+  ],
+  "year": 2026,
+  "venue": "2026 IEEE Power &amp; Energy Society General Meeting (PESGM)",
+  "type": "proceedings-article",
+  "title_match_score": 1.0,
+  "key": "zhang2026safe",
+  "verified_at": "2026-10-22T04:19:24+00:00",
+  "status": "verified",
+  "found_by_parts": [
+   "L5"
+  ],
+  "style_corpus_only": false
+ },
+ {
+  "arxiv": "2606.19199",
+  "doi": "10.48550/arXiv.2606.19199",
+  "source": "openalex(arXiv DOI)",
+  "url_queried": "https://api.openalex.org/works/doi:10.48550/arXiv.2606.19199",
+  "title": "Forecasting What Matters: Decision‑Focused RL for Controlled EV Charging with Unknown Departure Times",
+  "authors": [
+   "Giuseppe Gabriele",
+   "Fabio Pavirani",
+   "Seyed Soroush Karimi Madahi",
+   "Chris Develder"
+  ],
+  "year": 2026,
+  "venue": "arXiv",
+  "type": "preprint",
+  "title_match_score": 1.0,
+  "key": "gabriele2026forecasting",
+  "verified_at": "2026-10-22T04:19:28+00:00",
+  "status": "verified",
+  "found_by_parts": [
+   "L5"
+  ],
+  "style_corpus_only": false,
+  "year_bib": 2026
+ },
+ {
+  "arxiv": "2607.00935",
+  "doi": "10.48550/arXiv.2607.00935",
+  "source": "openalex(arXiv DOI)",
+  "url_queried": "https://api.openalex.org/works/doi:10.48550/arXiv.2607.00935",
+  "title": "Deadline-Aware Electric Vehicles Charging with Distribution Transformer Overload Mitigation",
+  "authors": [
+   "B Hari Kiran Reddy"
+  ],
+  "year": 2026,
+  "venue": "arXiv",
+  "type": "preprint",
+  "title_match_score": 1.0,
+  "key": "reddy2026deadline",
+  "verified_at": "2026-10-22T04:19:34+00:00",
+  "status": "verified",
+  "found_by_parts": [
+   "L5"
+  ],
+  "style_corpus_only": false,
+  "year_bib": 2026
  },
  {
   "doi": "10.1016/j.apenergy.2021.117504",

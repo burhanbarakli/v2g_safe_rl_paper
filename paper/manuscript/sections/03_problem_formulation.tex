@@ -2,125 +2,88 @@
 \section{Problem Formulation}\label{sec:problem}
 % ---------------------------------------------------------------------
 
-\subsection{Station, time and prices}\label{sec:station}
+\subsection{Station, EVs and energy dynamics}\label{sec:station}
 
-A CPO runs a station with $N$ chargers $\mathcal N=\{1,\dots,N\}$ behind one transformer, and each charger hosts at most one EV.
-While an EV is connected, its quantities carry the index $i$ of its charger.
-Time is divided into steps $t=0,\dots,T-1$ of length $\Delta t$ [h], and the action of step $t$ is held constant on $[t\Delta t,(t+1)\Delta t)$.
-At every step the station observes the transformer rating $P_{\sm{tr}}(t)$, the inflexible load $P^{\sm{inf}}(t)\ge0$ and the photovoltaic (PV) generation $P^{\sm{pv}}(t)\ge0$, all in kW.
+A CPO runs a station with $N$ chargers $\mathcal N=\{1,\dots,N\}$ behind one transformer, and each charger hosts at most one EV, whose quantities carry the index $i$ of its charger.
+Time is divided into steps $t=0,\dots,T-1$ of length $\Delta t$ [h].
+At every step the station observes the transformer rating $P_{\sm{tr}}(t)$, the inflexible load $P^{\sm{inf}}(t)\ge0$ and the photovoltaic (PV) generation $P^{\sm{pv}}(t)\ge0$ in kW.
 Energy is bought at the price $c^{\sm{ch}}(t)$ and sold at the price $c^{\sm{dis}}(t)$ [\texteuro/kWh], and both prices may be negative.
 
-\subsection{EV energy dynamics}\label{sec:dynamics}
-
-EV $i$ arrives at step $t_i^{\sm{arr}}$ and is controlled at the steps $t=t_i^{\sm{arr}},\dots,d_i$, where the departure step $d_i$ is the last controlled step.
-The EV leaves after the action of step $d_i$ has been applied, so with $E_i(t)$ denoting the battery energy at the start of step $t$, the departure energy is $E_i(d_i+1)$.
-At step $t$, the number of remaining actions, including the current one, is
-\begin{equation}\label{eq:tau}
-\tau_i(t)=d_i-t+1 ,
-\end{equation}
-and the set of occupied chargers is $\mathcal N(t)=\{i: t_i^{\sm{arr}}\le t\le d_i\}$, with $n(t)=|\mathcal N(t)|$ connected EVs.
-
-Let $p_i(t)$ [kW] be the grid-side power of charger $i$, positive for charging and negative for V2G discharging.
+EV $i$ arrives at step $t_i^{\sm{arr}}$ and is controlled until its departure step $d_i$, the last controlled step, so its departure energy is $E_i(d_i+1)$, with $E_i(t)$ the battery energy at the start of step $t$.
+At step $t$ the EV has $\tau_i(t)=d_i-t+1$ remaining actions, and $\mathcal N(t)$ is the set of the $n(t)$ occupied chargers.
+Let $p_i(t)$ [kW] be the power commanded at charger $i$, positive for charging and negative for V2G discharging, and let $\tilde p_i(t)$ be the power reported by the simulator.
 With $p^{+}=\max(p,0)$ and $p^{-}=\max(-p,0)$, the battery energy evolves as
 \begin{equation}\label{eq:dynamics}
 E_i(t+1)=E_i(t)+\Delta t\,g_i\big(p_i(t)\big),\qquad g_i(p)=\eta_i^{\sm c}p^{+}-p^{-}/\eta_i^{\sm d},
 \end{equation}
-where $\eta_i^{\sm c},\eta_i^{\sm d}\in(0,1]$ are the charge and discharge efficiencies, and the energy map $g_i$ is continuous, strictly increasing and piecewise linear with $g_i(0)=0$.
+with charge and discharge efficiencies $\eta_i^{\sm c},\eta_i^{\sm d}\in(0,1]$.
 Per-step physical limits restrict the power to
 \begin{equation}\label{eq:limits}
 \pmn_i(E)\le p_i(t)\le \bar P_i(E),\qquad \pmn_i(E)=-\min\Big\{\Pdis_i,\ \eta_i^{\sm d}\frac{(E-E_i^{\min})^{+}}{\Delta t}\Big\},\qquad E=E_i(t),
 \end{equation}
-where $\bar P_i(E)\ge0$ is the state-dependent maximum charging power.
-This maximum includes the constant-current, constant-voltage taper and the capacity limit $\eta_i^{\sm c}\bar P_i(E)\Delta t\le E_i^{\sm{cap}}-E$, and its nominal value is $\Pnom_i=\sup_E\bar P_i(E)$.
-The maximum discharging power is $\Pdis_i\ge0$, and under \Eq{eq:limits} the energy stays in $[E_i^{\min},E_i^{\sm{cap}}]$.
+where the maximum charging power $\bar P_i(E)\ge0$ includes the charging taper and the capacity limit, $\Pnom_i=\sup_E\bar P_i(E)$ and $\Pdis_i$ is the maximum discharging power.
+The theory holds for the general map $g_i$, but EV2Gym reports, bills and meters the battery-side energy change as the charger power \cite{orfanoudakis2025ev2gym}.
+Our experiments therefore use $\eta_i^{\sm c}=\eta_i^{\sm d}=1$, a convention that removes the round-trip loss of V2G arbitrage (\Sec{sec:limitations}).
 
-The theory of \Sec{sec:method} holds for the general map $g_i$, but EV2Gym reports, bills and meters the battery-side energy change as the charger power \cite{orfanoudakis2025ev2gym}.
-Our experiments therefore use $\eta_i^{\sm c}=\eta_i^{\sm d}=1$, so that $g_i(p)=p$ and EV2Gym's own efficiencies act only as derating factors on the power limits.
-This convention removes the round-trip loss from V2G arbitrage, and \Sec{sec:limitations} lists it as a limitation.
+\subsection{Departure requirement and transformer limit}\label{sec:requirement}
 
-\subsection{Departure energy requirement}\label{sec:requirement}
-
-Each EV requests a desired departure energy $E_i^{\sm{des}}$, and at arrival the request is capped to the energy that is individually reachable during the stay,
+Each EV requests a desired departure energy $E_i^{\sm{des}}$, and a station-level request pipeline turns it into the admitted requirement $\Ereq_i$.
+The pipeline runs once per test replay before any controller, and every compared method and both optima receive the same admitted requirement.
+At arrival it caps the request to the energy that full-power charging can reach during the stay, about $10^{-6}$ kWh below that value.
+Admission control then solves a small feasibility linear program (LP) and lowers the new request if the connected EVs could otherwise not all be served under the forecast transformer limits.
+Requests already admitted are never reduced.
+Hence
 \begin{equation}\label{eq:cap}
-\Ereq_i=\min\Big\{E_i^{\sm{des}},\ E_i^{\sm{arr}}+R_i\big(\tau_i(t_i^{\sm{arr}}),E_i^{\sm{arr}}\big)\Big\},
+\Ereq_i\le\min\big\{E_i^{\sm{des}},\ \text{the energy reachable at full power from }E_i^{\sm{arr}}\text{ during the stay}\big\},
 \end{equation}
-where $E_i^{\sm{arr}}=E_i(t_i^{\sm{arr}})$ and $R_i(k,E)$ is the reachable-energy operator of \Sec{sec:bounds}.
-Without this cap, some arrivals could not be served by any controller, and a guarantee about them would be void.
-The departure energy requirement of EV $i$ is therefore
+and Section~\ref{S-sec:pipeline} gives the details.
+The departure requirement is
 \begin{equation}\label{eq:requirement}
 E_i(d_i+1)\ \ge\ \Ereq_i .
 \end{equation}
-In code, the cap uses the same certified threshold routine as the safety layer and lowers the value of \Eq{eq:cap} by at most $10^{-6}$ kWh.
-Admission control (\Sec{sec:fallback}) may lower the requirement of a newly arriving EV further, and the experiments report the number and size of capped and reduced requests.
+Without the cap, some arrivals could not be served by any controller, and a guarantee about them would be void.
+For every method, shortfall is measured against the shared admitted requirement, and the energy removed by the pipeline is reported separately.
 
-\subsection{Transformer limit}\label{sec:transformer}
-
-The net transformer power $P^{\sm{inf}}(t)-P^{\sm{pv}}(t)+\sum_{i}p_i(t)$ must stay within $[-P_{\sm{tr}}(t),P_{\sm{tr}}(t)]$, and for the EV aggregate this symmetric thermal limit gives the transformer limit
+The net transformer power $P^{\sm{inf}}(t)-P^{\sm{pv}}(t)+\sum_{i}p_i(t)$ must stay within $[-P_{\sm{tr}}(t),P_{\sm{tr}}(t)]$, so the EV aggregate has the transformer limit
 \begin{equation}\label{eq:transformer}
 -\Crev(t)\le\sum_{i\in\mathcal N}p_i(t)\le C(t),\qquad
 C(t)=P_{\sm{tr}}(t)-P^{\sm{inf}}(t)+P^{\sm{pv}}(t),\qquad \Crev(t)=P_{\sm{tr}}(t)+P^{\sm{inf}}(t)-P^{\sm{pv}}(t).
 \end{equation}
-The forward limit $C(t)$ bounds charging and the reverse limit $\Crev(t)$ bounds V2G export, and their sum $2P_{\sm{tr}}(t)$ is never negative.
-Empty chargers draw zero power, and the safety layer uses the measured inflexible load and PV of the current step.
-The policy, in contrast, observes only noisy forecasts of future load and PV.
+The forward limit $C(t)$ bounds charging and the reverse limit $\Crev(t)$ bounds V2G export.
+For the current step the safety layer uses the measured load and PV, whereas the policy observes only noisy forecasts of future values.
 
-\subsection{Online control problem}\label{sec:online}
+\subsection{Online control problem and optima}\label{sec:online}
 
-At each step the CPO chooses $p(t)\in\R^N$ using only the information available at step $t$ and no knowledge of future arrivals.
-This information comprises the arrival data and current energies of the connected EVs, current and short-window day-ahead prices, and the measured load and PV with their forecasts.
-The objective is the expected episode profit
+At each step the CPO chooses $p(t)\in\R^N$ using only the information available at step $t$.
+The profit of a controller $\pi$ in an episode, in \texteuro, is
 \begin{equation}\label{eq:objective}
-\max\ \mathbb E\Big[\sum_{t=0}^{T-1}\Delta t\sum_{i\in\mathcal N(t)}\big(c^{\sm{dis}}(t)\,p_i^{-}(t)-c^{\sm{ch}}(t)\,p_i^{+}(t)\big)\Big],
+J^{\pi}=\sum_{t=0}^{T-1}\Delta t\sum_{i\in\mathcal N(t)}\big(c^{\sm{dis}}(t)\,\tilde p_i^{-}(t)-c^{\sm{ch}}(t)\,\tilde p_i^{+}(t)\big),
 \end{equation}
-subject to \Eqs{eq:dynamics}{eq:limits} at every step, \Eq{eq:requirement} for every EV and \Eq{eq:transformer} at every step.
-
-\subsection{Perfect-information optimum}\label{sec:oracle}
-
-An oracle that knows the whole episode provides the reference for the optimality gap.
-It sees all sessions with $(t_i^{\sm{arr}},d_i,E_i^{\sm{arr}},\Ereq_i)$, all prices and the realised limits $C(t)$ and $\Crev(t)$.
-For every session and every step of its stay, the oracle uses charging and discharging powers $p_i^{\pm}(t)\ge0$, energies $E_i(t)$ and a shortfall slack $z_i\ge0$ under the constraints
-\begin{equation}\label{eq:lp}
-\begin{aligned}
-&E_i(t_i^{\sm{arr}})=E_i^{\sm{arr}},\qquad E_i(t+1)=E_i(t)+\Delta t\big(\eta_i^{\sm c}p_i^{+}(t)-p_i^{-}(t)/\eta_i^{\sm d}\big),\\
-&E_i^{\min}\le E_i(t)\le E_i^{\sm{cap}},\qquad p_i^{+}(t)\le\Pnom_i,\qquad p_i^{-}(t)\le\Pdis_i,\qquad E_i(d_i+1)+z_i\ge\Ereq_i,\\
-&-\Crev(t)\le\textstyle\sum_{i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t).
-\end{aligned}
+and the controller should maximise its expectation subject to \Eqs{eq:dynamics}{eq:limits}, \Eq{eq:requirement} for every EV and \Eq{eq:transformer} at every step.
+With the weights $w_E=w_P=10$\,\texteuro/kWh for every method, the penalised profit is
+\begin{equation}\label{eq:jpen}
+J^{\sm{pen}}(\pi)=J^{\pi}-w_E\sum_i\Delta E_i^{\sm{sh}}-w_P\,\Delta t\sum_t\Big[\Big(\sum_i\tilde p_i(t)-C(t)\Big)^{+}+\Big(-\Crev(t)-\sum_i\tilde p_i(t)\Big)^{+}\Big],
 \end{equation}
-The linear program (LP) is solved lexicographically with the HiGHS solver \cite{huangfu2018parallelizing}: stage 1 minimises the total shortfall $\sum_iz_i$, and its optimum $z^{*}$ is zero whenever all requirements are jointly feasible.
-Stage 2 then maximises the profit of \Eq{eq:objective} subject to \Eq{eq:lp} and $\sum_iz_i\le z^{*}+10^{-6}$, and its optimum is $J^{\sm{LP}}$.
+where $\Delta E_i^{\sm{sh}}=(\Ereq_i-E_i(d_i+1))^{+}$ is the departure shortfall.
 
-The LP relaxes the state-dependent taper to the nominal power $\Pnom_i$ and allows simultaneous charging and discharging, which never pays when $c^{\sm{dis}}\le c^{\sm{ch}}$ and is therefore exact in our scenarios.
-In the exact model, $J^{\sm{LP}}$ bounds the profit $J^{\pi}$ of every controller $\pi$ that respects \Eq{eq:transformer} and leaves a total shortfall of at most $z^{*}$.
-EV2Gym, however, rounds the stored energy of an active EV up to 0.01 kWh after every step and does not bill this energy.
-A feasible controller inside the simulator can therefore meet its targets while buying slightly less energy than the exact model requires, and its profit may exceed $J^{\sm{LP}}$.
-We therefore use the rounding-aware optimum $J^{\sm{LP,ceil}}$ of the same LP with $\Ereq_i$ and $E_i^{\min}$ lowered by the largest possible rounding gain of 0.01 kWh per step of the stay.
-Proposition~\ref{S-prop:oracle} in the supplementary material shows that $J^{\sm{LP,ceil}}$ bounds the profit of every such controller inside EV2Gym, and the optimality gap is defined as
+Two perfect-information LPs, solved with HiGHS \cite{huangfu2018parallelizing}, know the whole episode and serve as references.
+Both model EV2Gym's taper with outer linear rows, exact except on a one-step transition band and a 1\% margin (Lemma~\ref{S-lem:taperrows}), and both allow for EV2Gym's unbilled 0.01 kWh rounding gain.
+The soft-penalty optimum $J^{\sm{pen,LP}}$ maximises \Eq{eq:jpen} with slack variables for shortfall and overload.
+For every simulated trajectory, with shortfall measured against the shared admitted requirement, $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$ (Proposition~\ref{S-prop:softoracle}), including trajectories with shortfall or overload.
+The main metric is therefore well defined for every compared method,
 \begin{equation}\label{eq:gap}
-\mathrm{gap}(\pi)=\frac{J^{\sm{LP,ceil}}-J^{\pi}}{|J^{\sm{LP,ceil}}|}.
+\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{|J^{\sm{pen,LP}}|}\ \ge0 ,
 \end{equation}
-Profits are usually negative, because charging to the requested energy costs money, so the absolute value is needed in the denominator.
-Episodes with $|J^{\sm{LP,ceil}}|<1$\,\texteuro{} are excluded from this relative metric, and the gap with respect to $J^{\sm{LP}}$ is reported in the supplementary material.
-Because of the relaxations, the reported gap overestimates the true gap; controllers that violate the transformer limit are not covered by the bound and are flagged in the results.
+where the absolute value is needed because profits are usually negative.
+Episodes with $|J^{\sm{pen,LP}}|<1$\,\texteuro{} or a non-optimal solver status get no gap, and their number is reported.
+The hard optimum $J^{\sm{LP,ceil}}$ enforces the departure requirements and the transformer limit as constraints, after a first stage that minimises the total shortfall.
+It bounds the profit of every controller that respects the transformer limit and leaves no more shortfall (Proposition~\ref{S-prop:oracle}), and it serves the analysis of the cost of the guarantee.
 
-\subsection{Markov decision process}\label{sec:mdp}
+\subsection{Partially observable Markov decision process}\label{sec:mdp}
 
-We cast the online problem as an MDP with one decision per step, although the problem is strictly partially observable because future arrivals, prices beyond a short window and future loads are not observed.
-Following standard practice, the policy conditions on the observation described in \Sec{sec:policy}.
-
-\textbf{Action.} The policy outputs one raw action $a_i(t)\in\R$ per charger, and the action is scaled to kW as $x_i(t)=P^{\sm{ref}}a_i(t)$ with $P^{\sm{ref}}=11$ kW.
-Its executed counterpart $p(t)=\Pi_t(x(t))$ is the output of the safety layer of \Sec{sec:projection}, or of the fallback rule of \Sec{sec:fallback} when the feasible set is empty.
-No squashing function is used, so all bounding is done by $\Pi_t$.
-
-\textbf{Reward.} The reward is the realised profit of the step,
-\begin{equation}\label{eq:reward}
-r(t)=\Delta t\sum_{i\in\mathcal N(t)}\big(c^{\sm{dis}}(t)\,\tilde p_i^{-}(t)-c^{\sm{ch}}(t)\,\tilde p_i^{+}(t)\big),
-\end{equation}
-where $\tilde p_i$ is the power reported by the simulator.
-The reward contains no penalty for the departure energy requirement or the transformer limit, because the safety layer enforces both and such a penalty would vanish on every step where aggregate feasibility holds.
-On infeasible steps the fallback rule is deterministic, so a penalty there would add variance without a learnable signal.
-For training, the reward is divided by $N r^{\sm{ref}}$ with $r^{\sm{ref}}=c^{\sm{ref}}P^{\sm{ref}}\Delta t$ and $c^{\sm{ref}}=0.25$\,\texteuro/kWh, so that returns do not grow with $N$ and one critic can serve stations of different sizes.
-All reported results, in contrast, use the undivided profit $r(t)$ in \texteuro.
-
-\textbf{Transition and horizon.} Arrivals, prices, loads and PV evolve independently of the actions, and energies follow \Eq{eq:dynamics}.
-An arriving EV adds a token and an EV with $d_i=t$ leaves after step $t$, and since every EV departs before the episode ends, step $T$ is a true terminal state.
-The discount factor $\gamma=0.99$ gives an effective horizon of about one day at $\Delta t=15$ min.
+The online problem is a POMDP, because future arrivals, prices beyond a short window and future loads are not observed.
+We act on the current observation with a feed-forward actor and critic.
+The policy outputs one raw action $a_i(t)\in\R$ per charger, scaled to kW as $x_i(t)=P^{\sm{ref}}a_i(t)$ with $P^{\sm{ref}}=11$ kW, and the safety layer of \Sec{sec:projection} maps it to the commanded power without any squashing function.
+Its reward is the realised profit of the step, with no penalty for the departure requirement or the transformer limit, because the safety layer enforces both.
+For training, the reward is divided by $N r^{\sm{ref}}$ with $r^{\sm{ref}}=c^{\sm{ref}}P^{\sm{ref}}\Delta t$ and $c^{\sm{ref}}=0.25$\,\texteuro/kWh, so that returns do not grow with $N$, and all reported results use the undivided profit.
+Arrivals, prices, loads and PV evolve independently of the actions, every EV departs before the episode ends, and the discount factor $\gamma=0.99$ gives an effective horizon of about one day at $\Delta t=15$ min.

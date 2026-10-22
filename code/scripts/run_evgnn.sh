@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Optional EV-GNN baseline (DD27; algorithm.md Alg. 5 row 8; v2gsafe/baselines/evgnn_adapter.md).
 #   One EV-GNN model (TD3_ActionGNN, its own script, reward and hyperparameters) per arrival profile, trained at
-#   N = 20, rho_tr = 4 kW, 5 seeds; zero-shot evaluation on every (N, rho_tr) of that profile through our
-#   evaluate.py adapter, raw ('evgnn') and with the safety layer ('evgnn_safe').
+#   N = 20, rho_tr = 4 kW, 5 seeds; evaluation on every (N, rho_tr) of that profile through our evaluate.py
+#   adapter, raw ('evgnn') and with the safety layer ('evgnn_safe'). Column in_distribution (DD35) = true on the
+#   training configuration (N = 20, rho_tr = 4), false elsewhere (zero-shot).
 # Usage: bash scripts/run_evgnn.sh [--smoke] [--device cpu|cuda] [--seeds 5] [--steps 3000000]
 #                                  [--stage train|evaluate|all] [--jobs N]
 # Env: EVGNN_DIR (clone location, default ../ext/EV-GNN), EVGNN_SKIP_INSTALL=1 (skip pip installs), PYTHON.
@@ -24,7 +25,7 @@ export PYTHONPATH="$HERE${PYTHONPATH:+:$PYTHONPATH}"
 export WANDB_MODE=offline WANDB_SILENT=true
 if [[ $SMOKE == 1 ]]; then
   RES="$HERE/results/smoke"; GRID=configs/test_grid_smoke.yaml; SEEDS=1; PROFILES="public workplace"
-  TRAIN_ARGS=(--max_timesteps 200 --eval_freq 100 --eval_episodes 1 --start_timesteps 10 --batch_size 8)
+  TRAIN_ARGS=(--max_timesteps 200 --eval_freq 100 --eval_episodes 1 --start_timesteps 10 --batch_size 8); STEPS=200
   YAML_ARGS=(--N 5 --rho 4 --T 16 --min-stay 30 --hour 14); NTRAIN=5; EVAL_FLAGS=(--smoke)
 else
   RES="$HERE/results"; GRID=configs/test_grid.yaml; PROFILES="workplace public private"
@@ -65,9 +66,12 @@ if [[ $STAGE == evaluate || $STAGE == all ]]; then
       [[ -z "$d" ]] && { echo "[evgnn] no model for $name" >&2; exit 1; }
       mname=model.best; [[ -f "${d}model.best_actor" ]] || mname=model.last
       for m in evgnn evgnn_safe; do
-        EVGNN_MODEL_NAME="$mname" "$PYTHON" evaluate.py --method "$m" --test-set "$GRID" --only $IDS --seed "$s" \
+        Y="V2G_ProfixMaxWithLoads_ours_${prof}_N${NTRAIN}_rho4.yaml"
+        # DD43(6): training protocol as run (steps, EV-GNN's own config, one load/PV draw) -> meta.json
+        EVGNN_MODEL_NAME="$mname" EVGNN_TRAIN_N="$NTRAIN" EVGNN_TRAIN_STEPS="$STEPS" EVGNN_TRAIN_CONFIG="$Y" \
+          "$PYTHON" evaluate.py --method "$m" --test-set "$GRID" --only $IDS --seed "$s" \
             --evgnn-repo "$EVGNN_DIR" --evgnn-model-dir "$d" --test-sets-dir "$RES/test_sets" \
-            --out-root "$RES/raw" --jobs "$JOBS" "${EVAL_FLAGS[@]}"
+            --out-root "$RES/raw" --admission-cache "$RES/admission" --jobs "$JOBS" "${EVAL_FLAGS[@]}"
       done
     done
   done

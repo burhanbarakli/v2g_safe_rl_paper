@@ -1,0 +1,90 @@
+% ---------------------------------------------------------------------
+\section{Problem Formülasyonu}\label{sec:problem}
+% ---------------------------------------------------------------------
+
+\subsection{İstasyon, EV'ler ve enerji dinamiği}\label{sec:station}
+
+Bir CPO, tek bir trafonun arkasında $N$ şarj ünitesine $\mathcal N=\{1,\dots,N\}$ sahip bir istasyon işletir; her şarj ünitesine en fazla bir EV bağlanır ve bu EV'ye ait büyüklükler şarj ünitesinin $i$ indisini taşır.
+Zaman, $\Delta t$ [h] uzunluğundaki $t=0,\dots,T-1$ adımlarına bölünmüştür.
+İstasyon her adımda trafo anma gücünü $P_{\sm{tr}}(t)$, esnek olmayan yükü $P^{\sm{inf}}(t)\ge0$ ve fotovoltaik (PV) üretimi $P^{\sm{pv}}(t)\ge0$ kW cinsinden gözlemler.
+Enerji $c^{\sm{ch}}(t)$ fiyatından satın alınır ve $c^{\sm{dis}}(t)$ [\texteuro/kWh] fiyatından satılır; her iki fiyat da negatif olabilir.
+
+EV $i$, $t_i^{\sm{arr}}$ adımında varır ve son kontrol edilen adım olan ayrılış adımı $d_i$'ye kadar kontrol edilir; dolayısıyla ayrılış enerjisi $E_i(d_i+1)$'dir; burada $E_i(t)$, $t$ adımının başındaki batarya enerjisidir.
+$t$ adımında EV'nin $\tau_i(t)=d_i-t+1$ kalan eylemi vardır ve $\mathcal N(t)$, $n(t)$ adet dolu şarj ünitesinin kümesidir.
+$p_i(t)$ [kW], $i$ şarj ünitesine komut edilen güç olsun; bu güç şarj için pozitif, V2G deşarjı için negatiftir. $\tilde p_i(t)$ ise simülatörün raporladığı güç olsun.
+$p^{+}=\max(p,0)$ ve $p^{-}=\max(-p,0)$ olmak üzere batarya enerjisi
+\begin{equation}\label{eq:dynamics}
+E_i(t+1)=E_i(t)+\Delta t\,g_i\big(p_i(t)\big),\qquad g_i(p)=\eta_i^{\sm c}p^{+}-p^{-}/\eta_i^{\sm d},
+\end{equation}
+biçiminde değişir; burada $\eta_i^{\sm c},\eta_i^{\sm d}\in(0,1]$ şarj ve deşarj verimleridir.
+Adım başına fiziksel limitler gücü
+\begin{equation}\label{eq:limits}
+\pmn_i(E)\le p_i(t)\le \bar P_i(E),\qquad \pmn_i(E)=-\min\Big\{\Pdis_i,\ \eta_i^{\sm d}\frac{(E-E_i^{\min})^{+}}{\Delta t}\Big\},\qquad E=E_i(t),
+\end{equation}
+aralığıyla sınırlar; burada en yüksek şarj gücü $\bar P_i(E)\ge0$ şarj gücü azalmasını ve kapasite limitini içerir, $\Pnom_i=\sup_E\bar P_i(E)$'dir ve $\Pdis_i$ en yüksek deşarj gücüdür.
+Kuram genel $g_i$ eşlemesi için geçerlidir; ancak EV2Gym, batarya tarafındaki enerji değişimini şarj ünitesi gücü olarak raporlar, faturalandırır ve ölçer \cite{orfanoudakis2025ev2gym}.
+Bu nedenle deneylerimizde $\eta_i^{\sm c}=\eta_i^{\sm d}=1$ alınmaktadır; bu kabul, V2G arbitrajındaki gidiş-dönüş kaybını ortadan kaldırmaktadır (\Sec{sec:limitations}).
+
+\subsection{Ayrılış gereksinimi ve trafo limiti}\label{sec:requirement}
+
+Her EV, istenen bir ayrılış enerjisi $E_i^{\sm{des}}$ talep eder ve istasyon düzeyindeki bir talep işleme hattı bu talebi kabul edilen gereksinim $\Ereq_i$'ye dönüştürür.
+İşleme hattı, her test tekrarı (replay) için herhangi bir denetleyiciden önce bir kez çalışır; karşılaştırılan her yöntem ve her iki optimum aynı kabul edilen gereksinimi alır.
+Varışta talep, kalış süresi boyunca tam güçte şarjın ulaşabileceği enerjiyle, bu değerin yaklaşık $10^{-6}$ kWh altında olacak şekilde sınırlandırılır.
+Ardından kabul kontrolü küçük bir olurluluk doğrusal programı (LP) çözer ve bağlı EV'lerin tümüne öngörülen trafo limitleri altında hizmet verilemeyecekse yeni talebi düşürür.
+Daha önce kabul edilmiş talepler hiçbir zaman azaltılmaz.
+Dolayısıyla
+\begin{equation}\label{eq:cap}
+\Ereq_i\le\min\big\{E_i^{\sm{des}},\ \text{kalış süresince }E_i^{\sm{arr}}\text{ değerinden tam güçle erişilebilen enerji}\big\}
+\end{equation}
+olur; ayrıntılar Bölüm~\ref{S-sec:pipeline} içinde verilmektedir.
+Ayrılış gereksinimi şudur:
+\begin{equation}\label{eq:requirement}
+E_i(d_i+1)\ \ge\ \Ereq_i .
+\end{equation}
+Bu sınırlama olmasaydı bazı varışlara hiçbir denetleyici hizmet veremezdi ve bunlara ilişkin bir garanti anlamsız olurdu.
+Her yöntem için eksik enerji, ortak kabul edilen gereksinime göre ölçülür; işleme hattının çıkardığı enerji ise ayrıca raporlanır.
+
+Net trafo gücü $P^{\sm{inf}}(t)-P^{\sm{pv}}(t)+\sum_{i}p_i(t)$, $[-P_{\sm{tr}}(t),P_{\sm{tr}}(t)]$ aralığında kalmalıdır; dolayısıyla EV toplamı için trafo limiti
+\begin{equation}\label{eq:transformer}
+-\Crev(t)\le\sum_{i\in\mathcal N}p_i(t)\le C(t),\qquad
+C(t)=P_{\sm{tr}}(t)-P^{\sm{inf}}(t)+P^{\sm{pv}}(t),\qquad \Crev(t)=P_{\sm{tr}}(t)+P^{\sm{inf}}(t)-P^{\sm{pv}}(t)
+\end{equation}
+biçimindedir.
+İleri yön limiti $C(t)$ şarjı, ters yön limiti $\Crev(t)$ ise V2G ile dışarı verilen gücü sınırlar.
+Güvenlik katmanı mevcut adım için ölçülen yük ve PV değerlerini kullanırken politika gelecekteki değerlerin yalnızca gürültülü tahminlerini gözlemler.
+
+\subsection{Çevrim içi kontrol problemi ve optimumlar}\label{sec:online}
+
+CPO her adımda $p(t)\in\R^N$ değerini yalnızca $t$ adımında mevcut olan bilgiyi kullanarak seçer.
+Bir $\pi$ denetleyicisinin bir epizottaki \texteuro{} cinsinden kârı
+\begin{equation}\label{eq:objective}
+J^{\pi}=\sum_{t=0}^{T-1}\Delta t\sum_{i\in\mathcal N(t)}\big(c^{\sm{dis}}(t)\,\tilde p_i^{-}(t)-c^{\sm{ch}}(t)\,\tilde p_i^{+}(t)\big)
+\end{equation}
+olarak tanımlanır ve denetleyici bunun beklenen değerini \Eqs{eq:dynamics}{eq:limits}, her EV için \Eq{eq:requirement} ve her adımda \Eq{eq:transformer} kısıtları altında en büyüklemelidir.
+Her yöntem için $w_E=w_P=10$\,\texteuro/kWh ağırlıklarıyla cezalı kâr
+\begin{equation}\label{eq:jpen}
+J^{\sm{pen}}(\pi)=J^{\pi}-w_E\sum_i\Delta E_i^{\sm{sh}}-w_P\,\Delta t\sum_t\Big[\Big(\sum_i\tilde p_i(t)-C(t)\Big)^{+}+\Big(-\Crev(t)-\sum_i\tilde p_i(t)\Big)^{+}\Big]
+\end{equation}
+olarak tanımlanır; burada $\Delta E_i^{\sm{sh}}=(\Ereq_i-E_i(d_i+1))^{+}$ ayrılıştaki eksik enerjidir.
+
+HiGHS \cite{huangfu2018parallelizing} ile çözülen iki tam bilgili LP, epizodun tamamını bilir ve referans olarak kullanılır.
+Her ikisi de EV2Gym'in şarj gücü azalmasını dış doğrusal kısıt satırlarıyla modeller; bu satırlar tek adımlık bir geçiş bandı ve \%1'lik bir pay dışında kesindir (Lemma~\ref{S-lem:taperrows}); ayrıca her ikisi de EV2Gym'in faturalandırılmayan 0.01 kWh'lik yuvarlama kazancını hesaba katar.
+Yumuşak cezalı optimum $J^{\sm{pen,LP}}$, eksik enerji ve aşırı yük için gevşek değişkenlerle \Eq{eq:jpen} ifadesini en büyükler.
+Eksik enerji ortak kabul edilen gereksinime göre ölçüldüğünde, eksik enerji ya da aşırı yük içeren yörüngeler de dâhil olmak üzere simüle edilen her yörünge için $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$ sağlanır (Önerme~\ref{S-prop:softoracle}).
+Dolayısıyla ana ölçüt, karşılaştırılan her yöntem için iyi tanımlıdır:
+\begin{equation}\label{eq:gap}
+\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{|J^{\sm{pen,LP}}|}\ \ge0 ;
+\end{equation}
+burada mutlak değer gereklidir, çünkü kârlar genellikle negatiftir.
+$|J^{\sm{pen,LP}}|<1$\,\texteuro{} olan ya da çözücü durumu optimal olmayan epizotlar için açık hesaplanmaz ve bunların sayısı raporlanır.
+Katı optimum $J^{\sm{LP,ceil}}$, toplam eksik enerjiyi en küçükleyen ilk aşamadan sonra ayrılış gereksinimlerini ve trafo limitini kısıt olarak uygular.
+Bu optimum, trafo limitine uyan ve daha fazla eksik enerji bırakmayan her denetleyicinin kârını üstten sınırlar (Önerme~\ref{S-prop:oracle}) ve garantinin maliyeti analizinde kullanılır.
+
+\subsection{Kısmen gözlemlenebilir Markov karar süreci}\label{sec:mdp}
+
+Gelecekteki varışlar, kısa bir pencerenin ötesindeki fiyatlar ve gelecekteki yükler gözlemlenmediğinden çevrim içi problem bir POMDP'dir.
+Mevcut gözlem üzerinden ileri beslemeli bir aktör ve kritik ile eylem seçilmektedir.
+Politika her şarj ünitesi için bir ham eylem $a_i(t)\in\R$ üretir; bu eylem $P^{\sm{ref}}=11$ kW olmak üzere $x_i(t)=P^{\sm{ref}}a_i(t)$ biçiminde kW'a ölçeklenir ve \Sec{sec:projection} içindeki güvenlik katmanı onu herhangi bir sıkıştırma fonksiyonu kullanmadan komut edilen güce eşler.
+Politikanın ödülü adımın gerçekleşen kârıdır; ayrılış gereksinimi ya da trafo limiti için ceza içermez, çünkü güvenlik katmanı her ikisini de uygular.
+Eğitimde ödül, getirilerin $N$ ile büyümemesi için $r^{\sm{ref}}=c^{\sm{ref}}P^{\sm{ref}}\Delta t$ ve $c^{\sm{ref}}=0.25$\,\texteuro/kWh olmak üzere $N r^{\sm{ref}}$'ye bölünür; raporlanan tüm sonuçlar ise bölünmemiş kârı kullanır.
+Varışlar, fiyatlar, yükler ve PV eylemlerden bağımsız olarak değişir, her EV epizot bitmeden ayrılır ve indirim faktörü $\gamma=0.99$, $\Delta t=15$ dk için yaklaşık bir günlük etkin ufuk sağlar.

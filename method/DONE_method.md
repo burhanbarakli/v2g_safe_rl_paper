@@ -1,6 +1,6 @@
 # DONE — Method and Theory (Agent A2)
 
-Version 4, 2026-10-22: implementation feedback (DD25-DD29, `code_repo/code/IMPLEMENTATION_NOTES.md`). Version 3: arrival profiles. Version 2: revision after the internal proof check. Version 1: first release.
+Version 5, 2026-10-22: internal review round 1 (DD30-DD41). Version 4: implementation feedback (DD25-DD29). Version 3: arrival profiles. Version 2: revision after the internal proof check. Version 1: first release.
 
 ## Produced files (all in `/home/claude/work/method/`)
 
@@ -15,6 +15,54 @@ Version 4, 2026-10-22: implementation feedback (DD25-DD29, `code_repo/code/IMPLE
 | `projection_ref.py` | NumPy reference: `phi_ev2gym`, `thresholds`, `cap_request`, `bounds`, `is_feasible`, `sanitize`, `project` (robust), `_bisect_safe`, `project_bisect`, `jacobian`, `fallback`, `actuation` |
 | `check_A1.py` → `check_A1_results.txt` | A1/A1′/A3 on EV2Gym's `EV` class (768 configurations) |
 | `verify_projection.py` → `verify_projection_results.txt` | T1 (vs SLSQP, KKT, bisection), **T1b (review M1: tight A5, $|x|$ up to $10^8$, hyperplane, NaN)**, T2 Jacobian, T3 Moreau gradient, T4 closed loop with EV2Gym `EV` objects (5138 EVs) |
+
+## Change log, version 5 (2026-10-22, internal review round 1, DD30-DD41)
+
+- **DD30, calibrated main result.** New **Theorem 1′** in safety_layer.md Sec. 5.1, with a new **assumption A6** (exogenous headroom $C\ge N\varepsilon_q$, $C_{\mathrm{rev}}\ge0$; policy-independent).
+  - (a) The transformer limit holds for every raw-action sequence, on feasible and fallback steps, under A3 and A6 only. It needs neither A1 nor A5, thanks to the $l\le u$ guard.
+  - (b) Physical limits hold at every step.
+  - (c) The departure requirement holds per EV whenever $p_i\ge l_i$ during its stay (under A1, A2, A4).
+  - (d) Theorem 1 is the special case.
+  - Supporting changes:
+    - intuition paragraph and the explicit link to the laxity argument of [chen2022smoothed];
+    - proof in Sec. 5.4;
+    - Corollary 2 item 8: A6 holds under DD24 scaling except with probability below $2\times10^{-9}$ per episode;
+    - Lemma 2(c) and the assumption table updated.
+- **DD31, station-level request pipeline.** S 7.4 is rewritten; Alg. 3.0 is new.
+  - The pre-pass runs once per replay with a nominal plan, is shared by all methods and the oracles, and is causal.
+  - A4 is preserved for every method, because the certificate depends only on the EV's own exogenous arrival state and its admitted request, re-certified by `cap_request`.
+  - Precise lists of what admission control guarantees and what it does not.
+  - S 7.5: A5-complete EV fraction and fallback rate are headline metrics; shortfall is measured against the post-admission request for all methods.
+- **DD32, oracles.** formulation.md Sec. 3 is rewritten.
+  - Taper rows (O4b, O4c) via **Lemma O0**: $\bar P\le\min\{\bar P^{\mathrm{nom}},\varrho_\kappa(E^{\mathrm{cap}}-E)\}$ with equality outside the one-step transition band, and $\sup\bar P/(E^{\mathrm{cap}}-E)=\varrho_\kappa$, under C0 and $\kappa\le\kappa^{*}(m)$. Proven, and checked by `check_O0.py` on 320 configurations: violation $\le1.7\times10^{-13}$ kW.
+  - Proposition O1 (hard oracle with taper rows and ceil allowance is an upper bound).
+  - **Proposition O2:** the soft-penalty oracle upper-bounds $J^{\mathrm{pen}}$ of every controller with the same admitted requests, using only EV2Gym physics.
+  - Main metric $\mathrm{gap}^{\mathrm{pen}}$ (mean of ratios and ratio of sums, excluded episodes stated). The complementarity relaxation is exact in the main economics and only a relaxation in the DD39 sensitivities.
+- **DD33-DD35, methods.** Alg. 5 is rewritten with precise definitions of:
+  - the transformer-only projection;
+  - deploy-only projection;
+  - PPO-Lagrangian (CMDP, combined advantage, projected dual ascent, $\Lambda_{\max}=1000$, $\eta_\Lambda$ tuned);
+  - Deep Sets with **Lemma N2** (equivariance) in formulation Sec. 5;
+  - sLLF instantiation;
+  - price-threshold LLF;
+  - eMPC-HiGHS 10-step and 24 h (all $N$), Gurobi eMPC only on the literature configuration;
+  - EV-GNN in-distribution and zero-shot, with its +$\Pi$ mapping;
+  - GNN-DT status (public code, porting cost);
+  - MLP as fixed-size reference only ($N\le20$ plus the literature configuration).
+- **DD36-DD39, experiments.**
+  - Alg. 7.3: 43 configurations including the $\rho_{\mathrm{tr}}=3$ kW stress level at $N\in\{20,200\}$, 3550 episodes per policy; zero-shot = size and stress level only, with the profile claim removed; `trainN50` reference; per-$N$ difficulty diagnostics.
+  - Sensitivity set: SoC 0.8, 5 min, $c^{\mathrm{thr}}=0.05$, $f^{\mathrm{dis}}=0.9$.
+  - Alg. 6: equal tuning budget (7 methods × 12 configurations on the training mixture, $w$ and $\eta_\Lambda$ in the grids, selection by $J^{\mathrm{pen}}$ at $w=10$).
+  - Statistics: the seed is the unit; paired $t$ on seed means plus stratified bootstrap; Wilcoxon secondary; Holm per table; IQM and probability of improvement; pre-declared endpoints E1-E4.
+  - Alg. 7.4: compute from the code README (core about 27 GPU-h + 80-130 CPU-h).
+- **DD40.** Proposition 1(iii) (Jacobian) is marked as supplementary material.
+- **formulation.md:** explicit POMDP statement (feed-forward actor and critic); throughput cost in the reward for the sensitivity only.
+- **nomenclature.md:** A6, $J^{\mathrm{pen}}$, $J^{\mathrm{pen,LP}}$, $\mathrm{Pr}$, $o^{\pm}$, $c^{\mathrm{thr}}$, $\varrho_\kappa$, $\varrho^{\mathrm{out}}$, $\Lambda$, $\eta_\Lambda$, $c_E$, $c_P$, $\phi_i$, $\bar\phi$ added.
+- **Renames (review m4):** $S_j\to e_j$, $B_{\mathrm{mb}}\to n_{\mathrm{mb}}$, admission slope $\rho_i\to\varrho_i^{\mathrm{in}}$.
+- **Flags for the Orchestrator:**
+  1. DD39 says the throughput cost is "applied in reward", but the code evaluates the main policies without retraining. The docs follow the code and state it.
+  2. The code puts `trainN50` (DD36) and `empc_highs_24h` (DD33(7)) in the optional *extended* set, although the review treats them as required.
+  3. DD41 (AI disclosure) concerns the manuscript only; no method-doc change is needed.
 
 ## Change log, version 4 (2026-10-22, implementation feedback DD25-DD29)
 

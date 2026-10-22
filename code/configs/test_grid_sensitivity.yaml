@@ -1,5 +1,7 @@
-# Sensitivity configurations (DD28): N = 20, rho_tr = 4, all profiles; desired SoC 0.8 (main policies) and
-# 5-min steps (policy trained with configs/ablations/train_attn_safe_dt5.yaml). Run: ./reproduce.sh --stage sensitivity
+# Sensitivity configurations (DD28, DD39): N = 20, rho_tr = 4, all profiles; desired SoC 0.8 (main policies),
+# 5-min steps (policy trained with configs/ablations/train_attn_safe_dt5.yaml) and two economics variants evaluated
+# with the main policies (no retraining): battery-throughput cost 0.05 EUR/kWh (charged on |p| in the reward and in
+# profit_eur) and discharge price factor 0.9 (EV2Gym discharge_price_factor). Run: ./reproduce.sh --stage sensitivity
 defaults:
   N: 20
   rho_tr: 4.0
@@ -12,3 +14,9 @@ extra:
   - {profile: workplace, dt_min: 5}
   - {profile: public, dt_min: 5}
   - {profile: private, dt_min: 5}
+  - {profile: workplace, throughput_cost: 0.05}
+  - {profile: public, throughput_cost: 0.05}
+  - {profile: private, throughput_cost: 0.05}
+  - {profile: workplace, discharge_price_factor: 0.9}
+  - {profile: public, discharge_price_factor: 0.9}
+  - {profile: private, discharge_price_factor: 0.9}

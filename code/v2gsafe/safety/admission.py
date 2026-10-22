@@ -48,21 +48,41 @@ class AdmissionController:
             E = min(p.cap, E + dt_h * min(p.pnom, rho * (p.cap - E)))
         return E
 
-    def y_max(self, t0: int, E_arr: float, d_new: int, params: EVParams, rho: float, existing: list,
-              Chat: np.ndarray, Crhat: np.ndarray, n_now: int, dt_h: float, target_new: float | None = None):
-        """Solve the admission LP. With target_new None: maximise E_new(d_new+1) (returns y_max or None if
-        infeasible). Otherwise: pure feasibility with E_new(d+1) >= target_new (returns target_new or None)."""
-        recs = [(float(s.ev.current_capacity), int(s.d_ctrl), float(s.E_req), s.params, float(s.rho))
-                for s in existing]
-        recs.append((float(E_arr), int(d_new), None, params, float(rho)))
+    def _targets(self, recs, t0, dt_h):
+        """Final-energy targets of the existing EVs (None for the arriving EV)."""
+        out = []
+        for E0, d, Ereq, p, rh in recs:
+            if Ereq is None:
+                out.append(None)
+                continue
+            tgt = Ereq
+            if self.existing_targets == "lp_reachable":
+                tgt = min(Ereq, self._lp_reach(E0, max(1, d - t0 + 1), p, rh, dt_h) - 1e-6)
+            out.append(tgt)
+        return out
+
+    def solve_records(self, t0: int, recs: list, Chat: np.ndarray, Crhat: np.ndarray, n_now: int, dt_h: float,
+                      target_new: float | None = None, plan: bool = False):
+        """Admission LP over records (E0, d, E_req or None for the arriving EV, params, rho).
+
+        plan=False, target_new=None: maximise the arriving EV's final energy (returns (y_max | None, None)).
+        plan=False, target_new=y: feasibility with E_new(d+1) >= y (returns (y | None, None)).
+        plan=True: elastic nominal plan (DD31): targets (arriving EV: ``target_new``) and the aggregate band get
+        slacks with weight 1e5 EUR-free units; the objective maximises sum_k sum_i min(E_i(k), target_i) (reach the
+        targets as early as possible). Returns (total slack, {record index: E trajectory E(t0..d+1)})."""
         H = len(Chat)
         lp = LPBuilder()
         agg_cols = [[] for _ in range(H)]
         obj_col = None
-        for k, (E0, d, Ereq, p, rh) in enumerate(recs):
+        tg = self._targets(recs, t0, dt_h)
+        cost_idx, cost_val = [], []
+        traj = {}
+        M = 1e5
+        for k, ((E0, d, Ereq, p, rh), tgt) in enumerate(zip(recs, tg)):
             K = d - t0 + 1
             if K < 1:
                 continue
+            E0 = float(min(max(E0, p.e_min), p.cap))
             pmin0 = -min(p.pdis, max(0.0, E0 - p.e_min) / dt_h)
             u0 = (phi_scalar(E0, p.cap, p.pnom, p.s_tr, p.m, dt_h) - E0) / dt_h
             plo = np.full(K, -p.pdis)
@@ -72,44 +92,85 @@ class AdmissionController:
             elo = np.full(K, p.e_min)
             ehi = np.full(K, p.cap)
             is_new = Ereq is None
-            if not is_new:
-                tgt = Ereq
-                if self.existing_targets == "lp_reachable":
-                    tgt = min(Ereq, self._lp_reach(E0, K, p, rh, dt_h) - 1e-6)
+            if is_new:
+                tgt = target_new
+            if not plan and tgt is not None:
                 elo[-1] = max(elo[-1], tgt)
-            elif target_new is not None:
-                elo[-1] = max(elo[-1], target_new)
             elo = np.minimum(elo, ehi)
-            if elo[-1] > ehi[-1] + 1e-12:
-                return None
+            if not plan and elo[-1] > ehi[-1] + 1e-12:
+                return None, None
             ec = lp.add_vars(K, elo, ehi)        # ec[k] = E(t0+k+1)
-            # dynamics E(k+1) = E(k) + dt p(k) and taper minorant p(k) <= rho (E_cap - E(k)) for k >= 1
             add_ev_dynamics(lp, pc, ec, E0, dt_h, rho=rh, cap=p.cap)
-            for kk in range(K):
-                if kk < H:
-                    agg_cols[kk].append(pc[kk])
+            for kk in range(min(K, H)):
+                agg_cols[kk].append(pc[kk])
             if is_new:
                 obj_col = ec[-1]
+            if plan:
+                traj[k] = (E0, ec)
+                if tgt is not None:
+                    tgt = float(min(tgt, p.cap))
+                    z = lp.add_vars(1, 0.0, np.inf)[0]
+                    lp.add_row([ec[-1], z], [1.0, 1.0], tgt, np.inf)
+                    cost_idx.append(z)
+                    cost_val.append(-M)
+                    mk = lp.add_vars(K, -np.inf, tgt)          # m_k <= min(E(k), target)
+                    lp.add_rows_coo(K, np.repeat(np.arange(K), 2), np.stack([mk, ec], 1).ravel(),
+                                    np.tile([1.0, -1.0], K), -np.inf, 0.0)
+                    cost_idx += mk.tolist()
+                    cost_val += [1.0] * K
         for tau in range(H):
             if agg_cols[tau]:
-                lp.add_row(agg_cols[tau], 1.0, -Crhat[tau], Chat[tau] - n_now * self.eps_q)
+                hi = Chat[tau] - n_now * self.eps_q
+                if plan:
+                    o = lp.add_vars(2, 0.0, np.inf)
+                    lp.add_row(list(agg_cols[tau]) + [o[0], o[1]], [1.0] * len(agg_cols[tau]) + [-1.0, 1.0],
+                               -Crhat[tau], hi)
+                    cost_idx += o.tolist()
+                    cost_val += [-M, -M]
+                else:
+                    lp.add_row(agg_cols[tau], 1.0, -Crhat[tau], hi)
         cost = np.zeros(lp.n)
         sense = "min"
-        if target_new is None and obj_col is not None:
+        if plan:
+            np.add.at(cost, np.asarray(cost_idx, int), np.asarray(cost_val, float))
+            sense = "max"
+        elif target_new is None and obj_col is not None:
             cost[obj_col] = 1.0
             sense = "max"
         res = lp.solve(cost, sense)
         self.n_lp += 1
         self.lp_time += res.time_s
         if not res.optimal:
-            return None
+            return None, None
+        if plan:
+            slack = float(-sum(res.x[i] * v for i, v in zip(cost_idx, cost_val) if v < 0) / M)
+            return slack, {k: np.concatenate([[E0], res.x[ec]]) for k, (E0, ec) in traj.items()}
         if target_new is None:
-            return float(res.x[obj_col]) if obj_col is not None else float(E_arr)
-        return float(target_new)
+            return (float(res.x[obj_col]) if obj_col is not None else float(recs[-1][0])), None
+        return float(target_new), None
+
+    def y_max(self, t0: int, E_arr: float, d_new: int, params: EVParams, rho: float, existing: list,
+              Chat: np.ndarray, Crhat: np.ndarray, n_now: int, dt_h: float, target_new: float | None = None):
+        """Solve the admission LP for connected EV slots ``existing`` (objects with .ev.current_capacity, .d_ctrl,
+        .E_req, .params, .rho) plus the arriving EV. With target_new None: maximise E_new(d_new+1) (returns y_max
+        or None if infeasible). Otherwise: pure feasibility with E_new(d+1) >= target_new (returns target_new or
+        None)."""
+        recs = [(float(s.ev.current_capacity), int(s.d_ctrl), float(s.E_req), s.params, float(s.rho))
+                for s in existing]
+        recs.append((float(E_arr), int(d_new), None, params, float(rho)))
+        return self.solve_records(t0, recs, Chat, Crhat, n_now, dt_h, target_new)[0]
+
+    def admit_records(self, t0, recs, E_req, Chat, Crhat, n_now, dt_h):
+        """``admit`` for record tuples (last record = the arriving EV with E_req None)."""
+        ymax = self.solve_records(t0, recs, Chat, Crhat, n_now, dt_h)[0]
+        return self._bisect(ymax, recs[-1][0], E_req)
 
     def admit(self, t0, E_arr, d_new, E_req, params, rho, existing, Chat, Crhat, n_now, dt_h):
         """Return (E_req_new, info). info: {'reduced': bool, 'not_restored': bool, 'y_max': float|None}."""
         ymax = self.y_max(t0, E_arr, d_new, params, rho, existing, Chat, Crhat, n_now, dt_h)
+        return self._bisect(ymax, E_arr, E_req)
+
+    def _bisect(self, ymax, E_arr, E_req):
         feas = (lambda y: ymax is not None and y <= ymax + self.tol)  # noqa: E731  exact monotone predicate
         if feas(E_req):
             return E_req, {"reduced": False, "not_restored": False, "y_max": ymax}

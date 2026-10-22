@@ -1,0 +1,37 @@
+% ---------------------------------------------------------------------
+% Nomenclature (review m4)
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\caption{Main symbols. Units are given in brackets; quantities of EV $i$ carry the index of its charger.}
+\label{tab:nomenclature}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{2.3cm}>{\raggedright}p{5.25cm}>{\raggedright}p{2.3cm}>{\raggedright\arraybackslash}p{5.25cm}@{}}
+\toprule
+Symbol & Meaning & Symbol & Meaning \\
+\midrule
+$N$, $\mathcal N(t)$, $n(t)$ & chargers, occupied chargers, connected EVs & $\Delta t$, $T$ & step length [h], horizon [steps] \\
+$t_i^{\sm{arr}}$, $d_i$ & arrival step, last controlled step & $\tau_i(t)$ & remaining actions, $d_i-t+1$ \\
+$E_i(t)$, $E_i^{\sm{cap}}$, $E_i^{\min}$ & battery energy, capacity, minimum [kWh] & $E_i^{\sm{des}}$, $\Ereq_i$ & desired and admitted energy [kWh] \\
+$p_i$, $\tilde p_i$ & commanded and reported power [kW] & $g_i$, $\eta_i^{\sm c}$, $\eta_i^{\sm d}$ & energy map and efficiencies \\
+$\bar P_i(E)$, $\Pnom_i$ & maximum charging power, its nominal value [kW] & $\pmn_i(E)$, $\Pdis_i$ & physical lower limit, discharge power [kW] \\
+$P_{\sm{tr}}$, $\rho_{\sm{tr}}$ & transformer rating, rating per charger [kW] & $P^{\sm{inf}}$, $P^{\sm{pv}}$ & inflexible load, PV generation [kW] \\
+$C$, $\Crev$, $\Ctil$ & forward, reverse and tightened forward limit [kW] & $\varepsilon_q$ & actuation margin, 0.008 kW \\
+$c^{\sm{ch}}$, $c^{\sm{dis}}$, $c^{\sm{thr}}$ & charging, discharge and throughput price [\texteuro/kWh] & $\varepsilon_{\sm{sat}}$ & saturation threshold, 0.001 kW \\
+$\varphi_i$, $\Psi_{i,k}$, $R_i$ & one-step full-power map, $k$-fold map, reachable energy & $B_i(k)$, $\Bh_i(k)$ & exact and certified thresholds [kWh] \\
+$l_i$, $u_i$ & lower and upper bound of the safety layer [kW] & $\chi_i$ & laxity [steps] \\
+$x_i$, $a_i$, $P^{\sm{ref}}$ & raw action [kW], raw sample, scale 11 kW & $\mathcal K(t)$, $\Pi_t$ & feasible set, projection \\
+$\lambda^{*}$, $\mathcal F$ & common shift [kW], free set & $b$ & fallback budget [kW] \\
+$\varsigma$, $\varsigma^{\sm{tr}}$, $m$, $\kappa$ & state of charge, taper start, multiplier, exponent & $z_0(m)$, $\kappa^{*}(m)$ & exact-delivery constants \\
+$\varrho_i^{\sm{in}}$, $\varrho_i^{\sm{out}}$ & inner and outer taper slope [1/h] & $G_i^{\max}$ & rounding allowance [kWh] \\
+$J^{\pi}$, $J^{\sm{pen}}$ & profit, penalised profit [\texteuro] & $J^{\sm{pen,LP}}$, $J^{\sm{LP,ceil}}$ & soft and hard optimum [\texteuro] \\
+$w_E$, $w_P$, $w$ & evaluation and training penalty weights [\texteuro/kWh] & $\Delta E_i^{\sm{sh}}$ & departure shortfall [kWh] \\
+$\xi_i$, $\xi_0$ & charger and global token & $d_m$, $n_L$, $n_H$ & width, layers, heads \\
+$\theta$, $\omega$ & actor and critic parameters & $\beta$ & regulariser weight \\
+$\gamma$, $\lambda_{\sm{GAE}}$, $\epsilon_{\sm{clip}}$ & discount, GAE parameter, clip range & $n_{\sm{mb}}$, $c_{\sm{vf}}$, $c_{\sm{ent}}$ & minibatch size, loss coefficients \\
+$\Lambda_E$, $\Lambda_P$, $\eta_\Lambda$ & Lagrange multipliers, dual step size & $\alpha$, $n_{\sm{cal}}$ & miscoverage level, calibration size \\
+$\hat q$, $e_j$, $\hat Q_{1-\alpha}$ & quantile predictor, score, conformal quantile & $\hat d_i^{\sm{lo}}$, $\tau_i^{\sm{lo}}$ & departure bound, remaining steps \\
+\bottomrule
+\end{tabular}
+\end{table}

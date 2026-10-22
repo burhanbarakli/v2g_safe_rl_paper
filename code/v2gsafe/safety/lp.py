@@ -80,7 +80,8 @@ class LPBuilder:
         v = np.concatenate(self.vals)
         return sp.coo_matrix((v, (r, c)), shape=(m, self.n)).tocsc()
 
-    def solve(self, cost, sense: str = "min", time_limit: float | None = None, extra_rows=None) -> LPResult:
+    def solve(self, cost, sense: str = "min", time_limit: float | None = None, extra_rows=None,
+              options: dict | None = None) -> LPResult:
         A = self.matrix()
         row_lo = np.asarray(self.row_lo, float)
         row_hi = np.asarray(self.row_hi, float)
@@ -90,7 +91,7 @@ class LPBuilder:
             row_lo = np.concatenate([row_lo, [e[1] for e in extra_rows]])
             row_hi = np.concatenate([row_hi, [e[2] for e in extra_rows]])
         return solve_lp(np.asarray(cost, float), A, row_lo, row_hi, np.concatenate(self.col_lo),
-                        np.concatenate(self.col_hi), sense, time_limit)
+                        np.concatenate(self.col_hi), sense, time_limit, options)
 
 
 def add_ev_dynamics(lp: LPBuilder, pc: np.ndarray, ec: np.ndarray, E0: float, dt_h: float,
@@ -134,7 +135,7 @@ def add_ev_dynamics_split(lp: LPBuilder, pp: np.ndarray, pm: np.ndarray, ec: np.
         lp.add_rows_coo(K - 1, r2, c2, v2, -INF, rho * cap)
 
 
-def solve_lp(c, A, row_lo, row_hi, col_lo, col_hi, sense="min", time_limit=None) -> LPResult:
+def solve_lp(c, A, row_lo, row_hi, col_lo, col_hi, sense="min", time_limit=None, options=None) -> LPResult:
     if highspy is None:  # pragma: no cover
         raise ImportError("highspy is required (pip install highspy)")
     t0 = time.perf_counter()
@@ -143,6 +144,8 @@ def solve_lp(c, A, row_lo, row_hi, col_lo, col_hi, sense="min", time_limit=None)
     h.setOptionValue("output_flag", False)
     if time_limit is not None:
         h.setOptionValue("time_limit", float(time_limit))
+    for k, v in (options or {}).items():
+        h.setOptionValue(k, v)
     lp = highspy.HighsLp()
     lp.num_col_ = int(A.shape[1])
     lp.num_row_ = int(A.shape[0])

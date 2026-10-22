@@ -1,0 +1,63 @@
+% =====================================================================
+% TÜRKÇE İNCELEME KOPYASI (gönderim sürümü değildir; SAUCIS yalnızca
+% İngilizce kabul eder). Kaynak: ../manuscript/main.tex
+% Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik
+% Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme
+% (çalışma başlığı, DD30)
+% Hedef dergi: SAUCIS (Sakarya University Journal of Computer and
+% Information Sciences). Derleme: latexmk -pdf main_tr.tex
+% Resmi şablon dosyası saucis.cls bu klasöre konursa otomatik olarak
+% kullanılır; aksi hâlde standart article sınıfı kullanılır.
+% =====================================================================
+\newif\ifsaucis
+\IfFileExists{saucis.cls}{\saucistrue\documentclass[final,9pt,onecolumn]{saucis}}{\saucisfalse\documentclass[10pt]{article}}
+
+% ---------------- çift kör anahtar --------------------------------
+% \anonymoustrue  -> hakem değerlendirmesi için anonim PDF (yazarlar,
+%                   kurumlar, teşekkür adları ve depo bağlantısı gizlenir)
+% \anonymousfalse -> yazar bilgilerini içeren PDF
+\newif\ifanonymous
+\anonymousfalse
+
+\input{preamble}
+\graphicspath{{figures/}}
+\externaldocument[S-]{../supplementary/supplementary}
+
+% =====================================================================
+% Çalışma başlığı (DD30). Nihai başlığı yazar belirler.
+\title{Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme}
+\ifanonymous
+  \author{Anonim yazar(lar)\\ \small (yazar bilgileri çift kör değerlendirme için kaldırılmıştır)}
+\else
+  \author{Yazar Ad(lar)ı\thanks{Sorumlu yazar: \TODO{her yazarın adı, e-posta adresi ve ORCID kimliği}}\\
+  \small \TODO{Kurum(lar), şehir, ülke}}
+\fi
+\date{\TODO{Nihai başlığı yazar belirler; bu, çalışma başlığıdır.}}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\small\itshape
+Bu belge yazarın incelemesi için hazırlanmış Türkçe çeviridir; gönderim sürümü İngilizcedir. Şekillerin içindeki metinler İngilizce bırakılmıştır.}}
+\end{center}
+
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_problem_formulation}
+\input{sections/04_method}
+\input{sections/05_experimental_setup}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
+
+
+\input{sections/10_article_information_form}
+
+\input{sections/11_glossary}
+
+\IfFileExists{IEEEtran.bst}{\bibliographystyle{IEEEtran}}{\bibliographystyle{ieeetr}}
+\bibliography{refs}
+
+\end{document}

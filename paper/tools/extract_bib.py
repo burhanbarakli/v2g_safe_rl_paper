@@ -26,6 +26,7 @@ UNI = {
 MONTHS = {m.lower(): m[:3].lower() for m in ["January", "February", "March", "April", "May", "June", "July",
                                               "August", "September", "October", "November", "December"]}
 MONTHS.update({"sept": "sep"})
+MONTHS.update({v: v for v in list(MONTHS.values())})
 
 
 def entries(text):
@@ -43,12 +44,37 @@ def entries(text):
                     break
 
 
+ACRONYMS = r"(EVs?|RL|V2G|G2V|PV|GNN|MPC|PPO|TD3|DRL|MARL|HetGPS|LP|QP|CMDP|AC|DC|LLF|ACN)"
+
+
+def brace_acronyms(e):
+    """Protect acronyms in the title field from lower-casing by the bibliography style."""
+    m = re.search(r"(\btitle\s*=\s*)\{", e)
+    if not m:
+        return e
+    i = m.end() - 1
+    depth = 0
+    for k in range(i, len(e)):
+        if e[k] == "{":
+            depth += 1
+        elif e[k] == "}":
+            depth -= 1
+            if depth == 0:
+                break
+    inner = e[i + 1:k]
+    parts = re.split(r"(\{[^{}]*\})", inner)  # keep already braced groups unchanged
+    parts = [p if p.startswith("{") else re.sub(r"(?<![A-Za-z0-9])" + ACRONYMS + r"(?![A-Za-z0-9])", r"{\1}", p) for p in parts]
+    return e[:i + 1] + "".join(parts) + e[k:]
+
+
 def normalise(e):
     for a, b in UNI.items():
         e = e.replace(a, b)
-    e = e.replace("&amp;", "&")
+    while "&amp;" in e:
+        e = e.replace("&amp;", "&")
     e = re.sub(r"(?<!\\)&", r"\\&", e)
-    e = re.sub(r"month\s*=\s*\{?([A-Za-z]+)\}?", lambda m: "month=" + MONTHS.get(m.group(1).lower(), "{" + m.group(1) + "}"), e)
+    e = re.sub(r"month\s*=\s*\{?([A-Za-z]+)\}?", lambda m: "month=" + MONTHS.get(m.group(1).lower(), MONTHS.get(m.group(1).lower()[:3], "{" + m.group(1) + "}")), e)
+    e = brace_acronyms(e)
     if e.lower().startswith("@inbook") and "booktitle" in e:
         e = "@incollection" + e[len("@inbook"):]
     if e.lower().startswith("@article") and not re.search(r"\bjournal\s*=", e):

@@ -60,12 +60,13 @@ def test_unknown_key_rejected_and_hash_stable(tmp_path):
     assert s["smoke"] and s["scenario"]["T"] == 16 and {g["N"] for g in s["envs"]["groups"]} == {3, 5}
 
 
-def test_test_grid_36_plus_literature_3100_episodes():
+def test_test_grid_36_plus_rho3_plus_literature_3550_episodes():
     grid = load_test_grid(ROOT / "configs/test_grid.yaml")
-    assert len(grid) == 37
-    assert sum(n for _, n in grid) == 3100
+    assert len(grid) == 43                       # 36 + 6 rho_tr = 3 configurations (DD36) + literature
+    assert sum(n for _, n in grid) == 3550
     ids = {s.cfg_id for s, _ in grid}
     assert "workplace_N50_rho4" in ids and "private_N200_rho7" in ids and "literature_N25" in ids
+    assert {f"{p}_N{N}_rho3" for p in ("workplace", "public", "private") for N in (20, 200)} <= ids
     lit = next(s for s, _ in grid if s.cfg_id == "literature_N25")
     assert lit.P_tr == 100.0 and not lit.loads and not lit.pv and lit.horizon == 112
     for s, n in grid:

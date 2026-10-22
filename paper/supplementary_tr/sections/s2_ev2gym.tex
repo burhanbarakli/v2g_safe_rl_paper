@@ -1,0 +1,202 @@
+% ---------------------------------------------------------------------
+\section{EV2Gym modellemesine ilişkin notlar}\label{sec:ev2gym}
+% ---------------------------------------------------------------------
+
+Bu bölüm, ana metindeki modelin \texttt{55ef368c} commit'indeki EV2Gym'e nasıl karşılık geldiğini belgelemektedir; simülatör kaynak kodunda değişiklik yapılmadan kullanılmaktadır.
+Simülatörün varsayılan ayarlarından tüm sapmalar kendi sarmalayıcımız, yapılandırma dosyalarımız ve EV belirtim dosyamız aracılığıyla yapılmaktadır.
+
+\subsection{Şarj gücü azalması ve A1 varsayımı}\label{app:taper}
+
+Şarj durumu birimlerinde $\varsigma=E/E^{\sm{cap}}$ olmak üzere $\delta=\Pnom\Delta t/E^{\sm{cap}}$ tam güçteki bir adımın kazancı, $\varsigma^{\sm{tr}}\in(0,1]$ geçiş şarj durumu, $m$ şarj gücü azalması çarpanı ve $\kappa=m\delta/(1-\varsigma^{\sm{tr}})$ olsun.
+EV'nin en yüksek alternatif akım şarj gücü şarj ünitesinin anma değerini aşmadığında, EV2Gym'in şarj rutininin tam akımda okunması şu sonucu verir:
+\begin{equation}\label{eq:taper}
+\frac{\varphi(E)}{E^{\sm{cap}}}=\min\{\hat\varphi(\varsigma),\varsigma+\delta\},\qquad
+\hat\varphi(\varsigma)=\begin{cases}
+\varsigma+\delta, & \varsigma+\delta\le\varsigma^{\sm{tr}},\\
+1-(1-\varsigma^{\sm{tr}})\exp\!\Big(-m\dfrac{\varsigma+\delta-\varsigma^{\sm{tr}}}{1-\varsigma^{\sm{tr}}}\Big), & \varsigma<\varsigma^{\sm{tr}}<\varsigma+\delta,\\
+1-(1-\varsigma)\,e^{-\kappa}, & \varsigma\ge\varsigma^{\sm{tr}}.
+\end{cases}
+\end{equation}
+Kodla birlikte yayımlanan bir denetim betiğine göre bu kapalı biçim, EV2Gym'in şarj rutiniyle $1.4\times10^{-14}$ kWh duyarlılığında örtüşmektedir.
+Denetim; EV modeli, verim, geçiş şarj durumu, $m\in\{1,5\}$ çarpanı ve $\Delta t\in\{5,15\}$ dk adım uzunluğunun 768 kombinasyonunu kapsamaktadır.
+\TODO{Yazarlar bu denetimi yeniden çalıştırıp doğrular}.
+
+\begin{lemma}[EV2Gym'de A1]\label{lem:taper}
+EV'nin en yüksek alternatif akım şarj gücünün şarj ünitesinin anma değerini aşmadığını varsayalım.
+Bu durumda her adım uzunluğu için EV2Gym'in \Eq{eq:taper} ile verilen tek adımlık tam güç eşlemesi sürekli, azalmayan ve 1-Lipschitz'tir.
+\end{lemma}
+
+\begin{proof}
+$\varsigma=\varsigma^{\sm{tr}}-\delta$ noktasında $\hat\varphi$'nin ilk iki dalı da $\varsigma^{\sm{tr}}$'ye, $\varsigma=\varsigma^{\sm{tr}}$ noktasında ise son iki dalı da $1-(1-\varsigma^{\sm{tr}})e^{-\kappa}$'ya eşittir.
+Dolayısıyla eşleme, sürekli fonksiyonların minimumu olarak süreklidir.
+Dallarının eğimleri $1$, $m\exp(\cdot)>0$ ve $e^{-\kappa}\in(0,1)$'dir ve $\varsigma+\delta$'nın eğimi 1'dir; dolayısıyla eşleme, azalmayan fonksiyonların minimumu olarak azalmayandır ve A1 sağlanır.
+Yalnızca orta dalın eğimi 1'in üzerinde olabilir; bu da $m>1$ olduğunda gerçekleşir.
+$(\varsigma^{\sm{tr}}-\delta,\varsigma^{\sm{tr}})$ aralığında $\hat h(\varsigma)=\hat\varphi(\varsigma)-\varsigma-\delta$ fonksiyonu kesin içbükeydir ve $\hat h(\varsigma^{\sm{tr}}-\delta)=0$'dır.
+Bir iç noktada $\hat h(\varsigma_1)<0$ ise içbükeylik $\hat h'(\varsigma_1)\le \hat h(\varsigma_1)/(\varsigma_1-\varsigma^{\sm{tr}}+\delta)<0$ sonucunu verir; dolayısıyla $\hat\varphi'(\varsigma_1)<1$'dir.
+Böylece \Eq{eq:taper} içindeki minimumun kesin olarak $\hat\varphi$'yi seçtiği her yerde eğim 1'in altındadır; diğer yerlerde minimum, eğimi 1 olan $\varsigma+\delta$'yı seçer.
+Dolayısıyla eşleme, eğimleri $[0,1]$ aralığında olan parçalı sürekli türevlenebilir bir fonksiyondur ve bu nedenle 1-Lipschitz'tir.
+\end{proof}
+
+EV2Gym'de $\eta^{\sm c}=1$ ve $\varphi(E)=E+\Delta t\,\bar P(E)$'dir; dolayısıyla 1-Lipschitz bir $\varphi$, Lemma~\ref{lem:deficit} içindeki ek koşul olan artmayan bir $\bar P$ ile denktir.
+Gücü kWh başına $1/(\eta^{\sm c}\Delta t)$ kW'tan daha hızlı düşen bir şarj gücü azalması A1'i ihlal eder ve sertifikalı eşikler ayrılış sonucunu onaramaz.
+
+\subsection{Eyleyici davranışı ve A3 varsayımı}\label{app:actuation}
+
+Karar değişkeni $p_i$, EV2Gym'in raporladığı, faturalandırdığı ve trafoya gönderdiği güçtür ve adım başına batarya tarafındaki enerji değişimine eşittir.
+Bu kabulle \Eq{M-eq:dynamics} içinde $\eta_i^{\sm c}=\eta_i^{\sm d}=1$ olur; EV2Gym'in şarj ve deşarj verimleri $\zeta_i^{\sm c}$ ve $\zeta_i^{\sm d}$ ise yalnızca güç limitleri üzerinde düşürme (derating) çarpanları olarak etki eder.
+
+Belirtim dosyamız her EV modeli için tek bir verim sabitlemektedir: yedi model için 0.90, bir model için 0.93; bu değerler simülatörün tablosundan modelin nominal akımında alınmıştır.
+EV2Gym, normalize edilmiş eylemi (komutun $\zeta_i^{\sm c}P^{\sm{cs}}$'ye bölümü; burada şarj ünitesi anma değeri $P^{\sm{cs}}=22.17$ kW'tır) beş ondalık basamağa yuvarlar ve 0.01 A'in altındaki deşarj akımlarını yok sayar.
+Ayrıca her etkin adımdan sonra depolanan enerjiyi, eklenen enerjiyi faturalandırmadan 0.01 kWh'e yukarı yuvarlar.
+Bu nedenle eyleyici eşlemesi, bir komutu $u_i$'nin $\varepsilon_{\sm{sat}}=10^{-3}$ kW yakınında olduğunda tam akım olarak gönderir; aksi hâlde komutu beş ondalık basamaklı eylem ızgarasında yukarı yuvarlar.
+\Alg{alg:safety}, bu eyleyici davranışıyla güvenlik katmanının tam bir adımını listelemektedir.
+$\sum_il_i$ makine duyarlılığında $\Ctil$ değerine eşit olduğunda yuvarlama toplam limiti bozabilir.
+Bu nedenle gerçekleme her izdüşümden sonra limiti denetler ve başarısız olan bir satırı, aralığının olurlu ucunu koruyan bir ikiye bölme yöntemiyle yeniden hesaplar.
+
+\begin{algorithm}[t]
+\caption{Güvenlik katmanının bir adımı}\label{alg:safety}
+\begin{algorithmic}[1]
+\Require ham eylem $x\in\R^N$ (sonlu olmayan girdiler 0 yapılır); bağlı her EV için: $E_i(t)$, $\tau_i(t)$, sertifikalı tablo $\Bh_i$; limitler $C(t)$, $\Crev(t)$
+\For{dolu her şarj ünitesi $i$}
+  \State $u_i\gets\bar P_i(E_i)$;\quad $\pmn_i\gets$ \Eq{M-eq:limits}
+  \If{$E_i\ge\Bh_i(\tau_i)-10^{-9}$} $l_i\gets\min\{u_i,\max\{\pmn_i,\,g_i^{-1}((\Bh_i(\tau_i-1)-E_i)/\Delta t)\}\}$ \Else\ $l_i\gets u_i$ \EndIf
+  \State $\chi_i\gets(E_i-\Bh_i(\tau_i))/(\eta_i^{\sm c}\Pnom_i\Delta t)$
+\EndFor
+\State $\Ctil\gets C-n(t)\varepsilon_q$
+\If{$\sum_il_i\le\Ctil$ \textbf{and} $\sum_iu_i\ge-\Crev$ \textbf{and} $\Ctil\ge-\Crev$} \Comment{olurlu adım (A5)}
+  \State $p^{0}\gets\clip(x,l,u)$
+  \If{$\mathbf 1^\top p^{0}\in[-\Crev,\Ctil]$} $p\gets p^{0}$
+  \Else
+    \State $\{x_i-u_i\}\cup\{x_i-l_i\}$ kırılma noktalarını sırala; $\lambda^{*}$ değerini tek geçişte bul
+    \State $p\gets\clip(x-\lambda^{*},l,u)$; $\mathbf 1^\top p\notin[-\Crev,\Ctil]$ ise güvenli ikiye bölme ile yeniden hesapla
+  \EndIf
+\Else
+  \State $p\gets$ \Sec{app:fallback} içindeki yedek kural; durumu kaydet
+\EndIf
+\State $p$'yi simülatöre gönder: $p_i\ge u_i-10^{-3}$ ise tam akım, değilse eylem ızgarasında yukarı yuvarlanmış değer
+\State \Return $p$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{lemma}[EV2Gym'de A3]\label{lem:a3}
+Her EV'nin en yüksek alternatif akım şarj gücünün şarj ünitesinin anma değerini aşmadığını ve verimlerin akım düzeylerinden bağımsız olarak sabit olduğunu varsayalım.
+Şarj üniteleri ve EV'ler üç fazlı olsun; her şarj ünitesinde bir EV bulunsun ve şarj için ölü bantlar sıfır olsun.
+Ayrıca V2G'nin etkin olduğunu ve tüm EV'lerin epizot bitmeden ayrıldığını varsayalım; $m>1$ için $z_0(m)\in(0,1)$, $1-e^{-mz}=z$ denkleminin pozitif kökü olsun.
+Her EV için $\kappa\le\kappa^{*}(m)=m\,z_0(m)$ ise eyleyici eşlemesi A3'ü $\varepsilon_q=0.008$ kW ile gerçekler.
+\end{lemma}
+
+\begin{proof}
+Önce, normalize edilmiş eylemin pilot değeri $p/(\zeta^{\sm c}P^{\sm{cs}})$ olarak gönderilen en yüksek değerin altındaki her $p\in(0,\bar P(E)]$ şarj komutunun tam olarak teslim edildiği gösterilir.
+$\hat\delta=p\Delta t/E^{\sm{cap}}$ bu komutun kazancı olsun; $\hat\delta\le\hat\delta^{*}=\varphi(E)/E^{\sm{cap}}-\varsigma\le\delta$'dır.
+Düşürülmüş bir pilot için EV2Gym geçiş noktasını $\varsigma_x=1-(\hat\delta/\delta)(1-\varsigma^{\sm{tr}})\ge\varsigma^{\sm{tr}}$ değerine kaydırır ve $\Omega=1-\varsigma_x$ yazılır.
+Teslim edilen kazanç $\min\{\hat\delta,\hat\varphi_x(\varsigma)-\varsigma\}$'dir; burada $\hat\varphi_x$, $(\varsigma^{\sm{tr}},\delta)$ yerine $(\varsigma_x,\hat\delta)$ konmuş \Eq{eq:taper} eşlemesidir ve kaydırılmış şarj gücü azalmasının üssü $m\hat\delta/\Omega$, $\kappa$'ya eşittir.
+
+$\varsigma+\hat\delta\le\varsigma_x$ ise adım sabit akım dalında kalır ve kazanç $\hat\delta$'dır.
+$\varsigma\ge\varsigma_x$ için azalma dalı $\hat\varphi_x(\varsigma)-\varsigma=(1-\varsigma)(1-e^{-\kappa})$ sonucunu verir.
+$\varsigma\ge\varsigma^{\sm{tr}}$ olduğundan \Eq{eq:taper} $\hat\delta\le\hat\delta^{*}\le(1-\varsigma)(1-e^{-\kappa})$ sonucunu verir ve kazanç yine $\hat\delta$'dır.
+
+Kalan $\varsigma<\varsigma_x<\varsigma+\hat\delta$ durumunda $y=\varsigma+\hat\delta-\varsigma_x>0$ ve $\psi=y/\Omega$ olsun.
+Bu durumda $\hat\varphi_x(\varsigma)-\varsigma-\hat\delta=\Omega(1-e^{-m\psi}-\psi)$ olur; bu, $\psi$'nin 0'da ve $z_0(m)$'de sıfırlanan içbükey bir fonksiyonudur; dolayısıyla $\psi\le z_0(m)$ olduğunda kazanç $\hat\delta$'dır.
+$\psi=1-(1-\varsigma-\hat\delta)/\Omega$ olduğundan bu koşul $1-\varsigma-\hat\delta\ge(1-z_0)\,\hat\delta(1-\varsigma^{\sm{tr}})/\delta$ biçimini alır.
+$\varsigma<\varsigma^{\sm{tr}}$ ise \Eq{eq:taper} gereğince $1-\varsigma-\hat\delta\ge1-\varphi(E)/E^{\sm{cap}}\ge(1-\varsigma^{\sm{tr}})e^{-\kappa}$'dır ve $\hat\delta\le\delta$ ile koşul, $e^{-\kappa}\ge1-z_0=e^{-mz_0}$ ise, yani $\kappa\le mz_0$ ise sağlanır.
+$\varsigma\ge\varsigma^{\sm{tr}}$ için $\hat\delta\le(1-\varsigma)(1-e^{-\kappa})$ sınırı $1-\varsigma-\hat\delta\ge(1-\varsigma)e^{-\kappa}$ sonucunu verir.
+Bu durumda koşulun sağ tarafı en fazla $(1-z_0)(1-\varsigma)(1-e^{-\kappa})m/\kappa$'dır; dolayısıyla $\kappa/(e^{\kappa}-1)\ge m(1-z_0)$ olması yeterlidir.
+$\kappa=mz_0$ noktasında iki taraf eşittir, çünkü $e^{mz_0}=1/(1-z_0)$'dır ve sol taraf $\kappa$'da azalır; dolayısıyla yine $\kappa\le mz_0$ yeterlidir.
+Deşarjda şarj gücü azalması yoktur; EV2Gym, $[\pmn(E),0)$ içindeki bir deşarj komutunu $E^{\min}$ ile alttan ve deşarj limitiyle üstten sınırlanmış olarak tam teslim eder.
+
+Ardından gerçekleşen güç sınırlanır.
+Doymuş bir komut $\varphi(E)-E=\Delta t\,u_i$ teslim eder ve $u_i-p_i\le\varepsilon_{\sm{sat}}=10^{-3}$ kW'tır.
+$u_i-\varepsilon_{\sm{sat}}$'nin altındaki her pozitif komut en fazla $\zeta^{\sm c}P^{\sm{cs}}10^{-5}\le2.22\times10^{-4}$ kW yukarı yuvarlanır, $u_i$'nin altında kalır ve ilk kısım gereğince tam teslim edilir; EV2Gym'in kendi yuvarlaması ise ızgara üzerindeki bir değeri değiştirmez.
+Negatif komutlar en fazla $2.22\times10^{-4}$ kW sıfıra doğru yuvarlanır; ölü bant devreye girerse gerçekleşen güç 0 olur ve $0-p_i<0.0069+2.22\times10^{-4}$ kW'tır.
+Aksi hâlde $\tilde p_i\ge p_i\ge\pmn(E)$'dir; dolayısıyla ne deşarj limiti ne de enerji tabanı komutu kırpar.
+Her durumda $0\le\tilde p_i-p_i\le0.0072<\varepsilon_q$ kW'tır ve boş şarj üniteleri sıfır güç çeker.
+
+Son olarak depolanan enerji $E(t+1)=\lceil E+\Delta t\,\tilde p_i\rceil_{0.01}\ge E+\Delta t\,\tilde p_i\ge E+\Delta t\,p_i$'dir.
+Ayrıca $E+\Delta t\,\tilde p_i\le\varphi(E)\le E^{\sm{cap}}$'dir ve her kapasite, yuvarlamadan sonra tam olarak temsil edilebilen 0.01 kWh'in bir katı olduğundan yukarı yuvarlama $E^{\sm{cap}}$ değerini aşamaz.
+\end{proof}
+
+$m=5$ için kök $z_0(5)=0.99302$ ve eşik $\kappa^{*}(5)=4.965$'tir.
+Yapılandırmamızda sekiz EV modelinin tümü için $\Delta t=15$ dk'da $\kappa\le2.391$ ve $\Delta t=5$ dk'da $\kappa\le0.797$'dir; dolayısıyla Lemma~\ref{lem:a3} uygulanabilir.
+$m\le1$ için teslim, geçiş noktası yakınında kesin değildir; bu nedenle şarj gücü azalması çarpanı varsayılan değeri olan 5'te tutulmaktadır.
+Kodla birlikte yayımlanan kapalı döngü bir denetime göre, ileri yön limiti $n(t)\varepsilon_q$ kadar sıkılaştırılmasaydı gerçekleşen güçler sıkı adımlarda ileri yön limitini yaklaşık $n(t)\cdot0.007$ kW'a kadar aşardı.
+
+\subsection{Dışsal kapasite payı (A6 varsayımı)}\label{app:a6}
+
+EV2Gym, esnek olmayan yükün tepe değerini $m_L\sim\mathrm{Normal}(0.4,0.1^2)$ olmak üzere $m_LP_{\sm{tr}}$'ye ölçekler ve yükü $P_{\sm{tr}}$'de kırpar.
+PV üretimi, normalize edilmiş bir $\mathrm{pv}(t)\le0.853\cdot1.1<0.94$ profili ve $m_P\sim\mathrm{Normal}(0.4,0.1^2)$ ile $\mathrm{pv}(t)\,m_PP_{\sm{tr}}$'dir; her ikisi de epizot başına bir kez çekilir.
+Dolayısıyla $C(t)\ge P_{\sm{tr}}(1-m_L)$'dir; $P_{\sm{tr}}=\rho_{\sm{tr}}N$ ve $\rho_{\sm{tr}}\ge3$ kW ile $C(t)\ge N\varepsilon_q$ koşulu yalnızca $m_L>1-\varepsilon_q/\rho_{\sm{tr}}\ge0.997$ ise, yani yaklaşık altı standart sapmalık bir olayda sağlanamaz.
+Benzer şekilde $\Crev(t)\ge P_{\sm{tr}}(1-0.94\,m_P)$ yalnızca $m_P>1.06$ ise, yani altı standart sapmadan büyük bir olayda negatif olur.
+Dolayısıyla A6, epizot başına $2\times10^{-9}$'un altında bir olasılıkla sağlanamaz.
+A6 dışsal olduğundan herhangi bir ihlal, yedek kuralın (i), (ii) ya da (iv) durumuna ait bir adım olarak görünür; dolayısıyla sonuç tablolarındaki yedek kural sayıları bunu her tekrarda denetler.
+
+\subsection{Senaryolar, varış profilleri ve gözlem}\label{app:scenarios}
+
+\Tab{tab:scenarios} üzerinde görüldüğü gibi şebeke büyüklükleri ve varış hızı şarj ünitesi sayısı $N$ ile doğrusal olarak ölçeklenir, fiyatlar ise ölçeklenmez.
+EV2Gym'in üç varış profili varış zamanları, kalış süreleri ve talep edilen enerjiler bakımından farklılaşır.
+
+İşyeri varışları hafta içi sabahlarında yoğunlaşır, kamusal varışlar öğleden sonra ve akşam tepe noktasıyla gün boyuna yayılır, özel varışlar ise geç öğleden sonra ve akşam gerçekleşir ve gece boyu kalışları içerir.
+EV2Gym, ayrılışı epizot sonuna dört adımdan daha yakın düşecek bir EV üretmez; dolayısıyla epizot çok geç başladığında gece boyu süren oturumlar sessizce eksik kalır.
+Bu nedenle kamusal ve özel profiller 05:00 yerine 12:00'de başlar.
+Yalnızca senaryo üreteci üzerinde, düşürülen üretim denemelerinin payı bu durumda \%6.8 ve \%3.7'ye düşer; profil başına üretim çarpanları ortalama şarj ünitesi doluluğunu yaklaşık 0.21 düzeyinde eşitler.
+Bu çarpanlar şarj ünitesi başına enerji talebini de yaklaşık \%5 içinde eşitler; bu senaryo üreteci istatistikleri sonuç değil tasarım denetimleridir \TODO{yazarlar bunları yeniden ölçüp doğrular}.
+Epizot boş başlar; yükler ve PV her epizot için yeniden çekilir.
+Literatür yapılandırmamız, EV belirtim dosyamızı kullanarak EV2Gym'in 100 kW'lık, işyeri profilli, yük ve PV içermeyen 25 şarj üniteli V2G kâr en büyükleme durumunu yeniden üretir.
+
+\begin{table}[t]
+\centering
+\caption{Senaryo parametreleri. ``Doğrusal'' olarak işaretlenen büyüklükler şarj ünitesi sayısı $N$ ile ölçeklenir.}
+\label{tab:scenarios}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright}p{3.4cm}>{\raggedright}p{9.6cm}l@{}}
+\toprule
+Öge & Ayar & Ölçekleme \\
+\midrule
+Simülatör & EV2Gym, commit \texttt{55ef368c}, değiştirilmemiş; şarj ünitesi başına bir EV & -- \\
+İstasyon boyutları & eğitim $N\in\{10,20\}$; test $N\in\{5,10,20,50,100,200\}$ & -- \\
+Trafo anma gücü & $P_{\sm{tr}}=\rho_{\sm{tr}}N$; $\rho_{\sm{tr}}\in\{4,7\}$ kW (sıkı, orta); $N\in\{20,200\}$ için 3 kW stres düzeyi & doğrusal \\
+Esnek olmayan yük & ortalama tepe $0.4P_{\sm{tr}}$, $P_{\sm{tr}}$'de kırpılır, her epizotta yeniden çekilir & doğrusal \\
+PV üretimi & ortalama tepe yaklaşık $0.38P_{\sm{tr}}$, her epizotta yeniden çekilir & doğrusal \\
+Talep tepkisi & kapalı & -- \\
+Adım, ufuk & $\Delta t=15$ dk, $T=112$ (28 h); duyarlılık 5 dk, $T=336$ & -- \\
+Profiller (başlangıç, üretim çarpanı, günler) & işyeri (05:00, 5, hafta içi); kamusal (12:00, 4, tüm günler); özel (12:00, 2.5, tüm günler) & şarj ünitesi başına \\
+Ortalama doluluk & tüm profiller için yaklaşık 0.21 & -- \\
+EV modelleri & V2G destekli 8 model; verim 0.90 (bir model için 0.93); $E^{\min}=5$ kWh; en kısa kalış 180 dk & -- \\
+Şarj gücü azalması çarpanı & 5 (EV2Gym varsayılanı) & -- \\
+İstenen enerji & tam batarya; duyarlılık \%80 şarj durumu & -- \\
+Fiyatlar & Hollanda gün öncesi fiyatları; deşarj fiyatı $=$ şarj fiyatı; 0.9 çarpanı ve 0.05 \texteuro/kWh enerji akışı maliyetiyle duyarlılıklar & -- \\
+Tahmin gürültüsü & Gauss, standart sapma değerin \%10'u & -- \\
+Test ızgarası & 36 yapılandırma ($N$, $\rho_{\sm{tr}}$, profil), 6 stres yapılandırması ve literatür yapılandırması & -- \\
+Test epizotları & $N\le50$ ve literatür yapılandırması için yapılandırma başına 100, $N\ge100$ için 50; politika başına 3550 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Tab{tab:features}, iki belirteç türünün özniteliklerini listelemektedir.
+Boş bir şarj ünitesi için tüm öznitelikler 0'dır ve boş şarj üniteleri ayrıca dikkat anahtarı olarak maskelenir.
+Tahminler, bağımsız standart normal $\epsilon_{t,k}$ ile $\hat P(t+k)=\max\{0,P(t+k)(1+0.1\epsilon_{t,k})\}$ biçimindedir; epizot sonunun ötesinde son gerçek değer korunur.
+$P_{\sm{tr}}^{\sm{nom}}=\max_tP_{\sm{tr}}(t)$ ve $N_{\sm{day}}=24/\Delta t$ olmak üzere her küresel öznitelik $N$ ile büyümeyen bir orandır.
+Varış profili bir öznitelik değildir.
+
+\begin{table}[t]
+\centering
+\caption{Şarj ünitesi belirtecinin ($F_c=12$) ve küresel belirtecin ($F_g=38$) öznitelikleri ve normalizasyonları.}
+\label{tab:features}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{7.6cm}>{\raggedright\arraybackslash}p{7.6cm}@{}}
+\toprule
+Şarj ünitesi belirteci $\xi_i$ & Küresel belirteç $\xi_0$ \\
+\midrule
+1: doluluk bayrağı & 1--2: $c^{\sm{ch}}(t)$, $c^{\sm{dis}}(t)$ $/c^{\sm{ref}}$ \\
+2--3: $E_i(t)$, $E_i^{\sm{cap}}$ $/E^{\sm{ref}}$ & 3--10: $c^{\sm{ch}}(t+k)$, $k=1,\dots,8$, $/c^{\sm{ref}}$ \\
+4: şarj durumu $E_i/E_i^{\sm{cap}}$ & 11--12: günün saatinin sinüsü ve kosinüsü \\
+5: kalan gerekli enerji $(\Ereq_i-E_i)^{+}/E^{\sm{ref}}$ & 13: hafta sonu bayrağı; 14: epizodun kalan oranı $(T-t)/T$ \\
+6: kalan adımlar $\tau_i$ (konformal varyant: $\tau_i^{\sm{lo}}$) $/N_{\sm{day}}$ & 15--16: $C(t)$, $\Crev(t)$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+7: esneklik payı $\chi_i$, $[-N_{\sm{day}},2N_{\sm{day}}]$ aralığına kırpılmış, $/N_{\sm{day}}$ & 17--18: ölçülen $P^{\sm{inf}}(t)$, $P^{\sm{pv}}(t)$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+8--9: $\Pnom_i$, $\Pdis_i$ $/P^{\sm{ref}}$ & 19--34: $k=1,\dots,8$ için $P^{\sm{inf}}$ ve $P^{\sm{pv}}$ tahminleri, $/P_{\sm{tr}}^{\sm{nom}}$ \\
+10: fiziksel alt limit $\pmn_i(E_i)$ $/P^{\sm{ref}}$ & 35: doluluk oranı $n(t)/N$; 36: şarj ünitesi başına anma gücü $P_{\sm{tr}}^{\sm{nom}}/(NP^{\sm{ref}})$ \\
+11--12: sınırlar $l_i$, $u_i$ $/P^{\sm{ref}}$ & 37--38: $\sum_il_i$, $\sum_iu_i$ $/P_{\sm{tr}}^{\sm{nom}}$ \\
+\bottomrule
+\end{tabular}
+\end{table}

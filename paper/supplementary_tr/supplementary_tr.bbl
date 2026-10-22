@@ -1,0 +1,72 @@
+\begin{thebibliography}{10}
+
+\bibitem{kasaura2023benchmarking}
+K.~Kasaura, S.~Miura, T.~Kozuno, R.~Yonetani, K.~Hoshino, and Y.~Hosoe,
+  ``Benchmarking actor-critic deep reinforcement learning algorithms for
+  robotics control with action constraints,'' {\em IEEE Robotics and Automation
+  Letters}, vol.~8, pp.~4449--4456, Aug. 2023.
+
+\bibitem{vovk2022algorithmic}
+V.~Vovk, A.~Gammerman, and G.~Shafer, {\em Algorithmic Learning in a Random
+  World}.
+\newblock Springer International Publishing, 2022.
+
+\bibitem{lei2018distributionfree}
+J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J. Tibshirani, and L.~Wasserman,
+  ``Distribution-free predictive inference for regression,'' {\em Journal of
+  the American Statistical Association}, vol.~113, pp.~1094--1111, June 2018.
+
+\bibitem{huangfu2018parallelizing}
+Q.~Huangfu and J.~A.~J. Hall, ``Parallelizing the dual revised simplex
+  method,'' {\em Mathematical Programming Computation}, vol.~10, pp.~119--142,
+  Dec. 2018.
+
+\bibitem{altman2021constrained}
+E.~Altman, {\em Constrained {Markov} Decision Processes: Stochastic Modeling}.
+\newblock Routledge, Dec. 2021.
+
+\bibitem{tessler2018reward}
+C.~Tessler, D.~J. Mankowitz, and S.~Mannor, ``Reward constrained policy
+  optimization,'' in {\em Proceedings of the International Conference on
+  Learning Representations (ICLR)}, 2019.
+
+\bibitem{chen2022smoothed}
+N.~Chen, C.~Kurniawan, Y.~Nakahira, L.~Chen, and S.~H. Low, ``Smoothed
+  least-laxity-first algorithm for electric vehicle charging: Online decision
+  and performance analysis with resource augmentation,'' {\em IEEE Transactions
+  on Smart Grid}, vol.~13, pp.~2209--2217, May 2022.
+
+\bibitem{diazlondono2026open}
+C.~Diaz-Londono, S.~Orfanoudakis, P.~P. Vergara, P.~Palensky, F.~Ruiz, and
+  G.~Gruosso, ``Open source algorithms for maximizing {V2G} flexibility based
+  on model predictive control,'' {\em Electric Power Systems Research},
+  vol.~250, p.~112082, Jan. 2026.
+
+\bibitem{orfanoudakis2025scalable}
+S.~Orfanoudakis, V.~Robu, E.~M. Salazar, P.~Palensky, and P.~P. Vergara,
+  ``Scalable reinforcement learning for large-scale coordination of electric
+  vehicles using graph neural networks,'' {\em Communications Engineering},
+  vol.~4, p.~118, July 2025.
+
+\bibitem{orfanoudakis2026graph}
+S.~Orfanoudakis, N.~K. Panda, P.~Palensky, and P.~P. Vergara, ``A graph neural
+  network enhanced decision transformer for efficient optimization in dynamic
+  smart charging environments,'' {\em Energy and AI}, vol.~23, p.~100679, Jan.
+  2026.
+
+\bibitem{wilcoxon1945individual}
+F.~Wilcoxon, ``Individual comparisons by ranking methods,'' {\em Biometrics
+  Bulletin}, vol.~1, p.~80, Dec. 1945.
+
+\bibitem{agarwal2021deep}
+R.~Agarwal, M.~Schwarzer, P.~S. Castro, A.~C. Courville, and M.~G. Bellemare,
+  ``Deep reinforcement learning at the edge of the statistical precipice,'' in
+  {\em Advances in Neural Information Processing Systems}, vol.~34,
+  pp.~29304--29320, Curran Associates, Inc., 2021.
+
+\bibitem{henderson2018deep}
+P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup, and D.~Meger, ``Deep
+  reinforcement learning that matters,'' {\em Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~32, Apr. 2018.
+
+\end{thebibliography}

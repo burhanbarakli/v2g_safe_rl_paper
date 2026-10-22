@@ -1,0 +1,227 @@
+% ---------------------------------------------------------------------
+\section{İspatlar}\label{app:proofs}
+% ---------------------------------------------------------------------
+
+Bu bölüm ana metindeki biçimsel sonuçları ispatlamakta ve ana metnin atıf yaptığı yardımcı lemmaları ifade etmektedir.
+Tüm ifadeler her EV için ayrı ayrı geçerlidir ve karışıklığa yol açmadığı yerlerde $i$ indisi yazılmamaktadır.
+Eşitsizlikler gerçek sayı aritmetiğinde kesindir; gerçekleme bunları kW ya da kWh cinsinden, $\varepsilon_q$ payının kullanılmayan kısmının karşıladığı tek bir $10^{-9}$ toleransıyla denetler.
+
+\subsection{Dikkat tabanlı politikanın boyuttan bağımsızlığı}\label{app:equivariance}
+
+\begin{lemma}[Eşdeğişkenlik ve boyuttan bağımsızlık]\label{lem:equivariance}
+$\varpi$, küresel belirteç sabit kalırken şarj ünitesi belirteçlerini ve maskelerini permüte etsin.
+\begin{enumerate}
+\item[(i)] Ortalamalar $\mu_{\theta}$ ve standart sapmalar $\sigma_{\theta}$ permütasyona eşdeğişkendir, değer $V_\omega$ ise permütasyona göre değişmezdir.
+\item[(ii)] Maskelenmemiş belirteçlerin çıktıları ve değer, maskelenmiş belirteçlerin özniteliklerine ya da sayısına bağlı değildir.
+\item[(iii)] Parametre sayısı $N$'ye bağlı değildir.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Gömmeler, katman normalizasyonu, ileri beslemeli bloklar ve aktör başlığı satır bazında çalışır; dolayısıyla permütasyonla değişmeli (commute) davranır.
+Tek bir dikkat başlığı için anahtar maskesi yalnızca anahtar indisine bağlıdır; bu nedenle belirteçleri ve maskeyi permüte etmek, küresel belirteci sabit bırakan $P$ permütasyon matrisi için maske matrisi $M$'yi $PMP^\top$'ye eşler.
+Satır bazındaki softmax $\mathrm{softmax}(PXP^\top)=P\,\mathrm{softmax}(X)P^\top$ eşitliğini sağlar; dolayısıyla maskeli bir dikkat başlığı permüte edilmiş girdileri permüte edilmiş çıktılara eşler ve bileşke, aktör için (i)'yi verir.
+Maskelenmiş bir anahtar her softmax'ta sıfır ağırlık alır; bu nedenle değeri hiçbir zaman başka bir belirtecin çıktısına girmez ve satır bazındaki yapıyla birlikte bu özellik (ii)'yi verir.
+Dikkat havuzlama anahtarlar üzerinden toplam aldığından değişmezdir; her ağırlık matrisinin boyutu yalnızca $(F_c,F_g,d_m,n_H,n_L)$ ile belirlenir; dolayısıyla (iii) geçerlidir.
+Güvenlik katmanı da permütasyona eşdeğişkendir, çünkü problemi $p$, $x$, $l$ ve $u$'nun ortak permütasyonu altında değişmezdir ve minimize edicisi tektir.
+\end{proof}
+
+Parametre sayıları aktör için 610\,370, kritik için 676\,481 olup her $N$ için toplam 1\,286\,851'dir.
+Küçük ablasyon ağı ($d_m=64$, $n_L=2$, ileri besleme genişliği 256, başlık genişliği 32) için aktör ve kritiğin toplam 228\,067 parametresi vardır.
+Deep Sets, belirteç başına bir ağı her şarj ünitesi belirtecine, tüm belirteç gömmelerinin maskeli ortalaması ve küresel belirteçle birlikte uygular; dolayısıyla aynı argüman bu yapıyı da kapsar.
+Genişliği, parametre sayısını \method{} ile \%10 içinde eşleştirecek biçimde seçilmiştir. 20 yuvalı ve 640 birimlik iki gizli katmanlı MLP karşılaştırma yönteminin aktörü 614\,440 parametreye sahiptir; bu sayı yuva sayısıyla doğrusal olarak artar.
+
+\subsection{Erişilebilir enerji ve eşikler}\label{app:reach}
+
+\begin{lemma}[Erişilebilir enerji]\label{lem:reach}
+A1 altında $\Psi_k$, her $k\ge0$ için sürekli ve azalmayandır.
+$E(t)$'den başlayan herhangi bir kabul edilebilir güç dizisi $E(t+k)\le\Psi_k(E(t))$ sonucunu verir; eşitlik tam güçte şarj için sağlanır.
+Bir EV, $t$ adımında bireysel olarak olurludur (yani kabul edilebilir bir kontrol \Eq{M-eq:requirement} koşulunu sağlar) ancak ve ancak $E(t)\ge B(\tau(t))$ ise.
+\end{lemma}
+
+\begin{proof}
+Sürekli ve azalmayan eşlemelerin bileşkesi sürekli ve azalmayandır; dolayısıyla $\Psi_k=\varphi^{k}$ her iki özelliği de A1'den devralır.
+Erişim sınırı için $k$ üzerinde tümevarım kullanılır; $k=0$ durumu açıktır.
+Tümevarım adımında, kabul edilebilir bir $p\le\bar P(E)$ gücü, $g$ artan olduğundan $E(t+1)=E+\Delta t\,g(p)\le E+\Delta t\,g(\bar P(E))=\varphi(E)$ sonucunu verir; $E(t+1)$'den başlayan tümevarım hipotezi $\Psi_{k-1}$'in monotonluğuyla birlikte
+\[
+E(t+k)\le\Psi_{k-1}\big(E(t+1)\big)\le\Psi_{k-1}\big(\varphi(E)\big)=\Psi_k(E)
+\]
+sonucunu verir.
+Tam güçte şarj her adımda eşitlik sağlar.
+
+Eşik nitelendirmesi için tümevarımla $\{E\in[E^{\min},E^{\sm{cap}}]:\Psi_k(E)\ge\Ereq\}=[B(k),E^{\sm{cap}}]$ olduğu gösterilir; $k=0$ durumu $B(0)=\Ereq$ tanımıdır.
+\Eq{M-eq:thresholds} içindeki küme boş değildir, çünkü $\varphi(E^{\sm{cap}})=E^{\sm{cap}}\ge\Ereq\ge B(k-1)$'dir.
+Tümevarım adımında $\Psi_k(E)=\Psi_{k-1}(\varphi(E))\ge\Ereq$ ancak ve ancak $\varphi(E)\ge B(k-1)$ ise sağlanır; $\varphi$ sürekli ve azalmayan olduğundan $\{E:\varphi(E)\ge B(k-1)\}$ minimumu $B(k)$ olan kapalı bir üst kümedir.
+Erişim sınırına göre, $E(t)$'den başlayarak kabul edilebilir bir kontrolün \Eq{M-eq:requirement} koşulunu sağlaması ancak ve ancak tam güçte şarjın bunu sağlamasıyla, yani ancak ve ancak $\Psi_{\tau(t)}(E(t))\ge\Ereq$ olmasıyla mümkündür.
+\end{proof}
+
+Sertifikalı bir tablo için \Eq{M-eq:certified} içindeki ilk iki özellik bileşen bazında $\Bh\ge B$ sonucunu doğurur, çünkü $\varphi(\Bh(k))\ge\Bh(k-1)\ge B(k-1)$ eşitsizliği \Eq{M-eq:thresholds} içindeki minimallik nedeniyle $\Bh(k)\ge B(k)$ sonucunu verir.
+
+\subsection{İzdüşüm}\label{app:projection}
+
+\begin{proof}[İspat (Önerme~\ref{M-prop:projection})]
+(i) $p\in\mathcal K(t)$ ise $l\le p\le u$ ifadesi $l\le u$ ve $\sum_il_i\le\mathbf 1^\top p\le\sum_iu_i$ sonuçlarını verir; bu eşitsizlikler $-\Crev\le\mathbf 1^\top p\le\Ctil$ ile birleştirildiğinde dört koşulu verir.
+Tersine, $\upsilon\in[0,1]$ için $p(\upsilon)=l+\upsilon(u-l)$ kutunun içinde kalır ve $\mathbf 1^\top p(\upsilon)$, $[\sum_il_i,\sum_iu_i]$ aralığındaki her değeri alır; bu aralık dört koşul altında $[-\Crev,\Ctil]$ ile kesişir.
+
+(ii) \Eq{M-eq:proj} içindeki problem, boş olmayan bir çokyüzlü üzerinde kesin dışbükey bir kuadratiği en küçükler; dolayısıyla minimize edici vardır ve tektir, KKT koşulları ise gerekli ve yeterlidir.
+Toplam kısıtları için $\mu^{+},\mu^{-}\ge0$ ve kutu için $\nu^{l},\nu^{u}\ge0$ çarpanlarıyla bu koşullar şöyledir:
+\[
+\begin{gathered}
+p-x+(\mu^{+}-\mu^{-})\mathbf 1-\nu^{l}+\nu^{u}=0,\qquad \mu^{+}(\mathbf 1^\top p-\Ctil)=0,\qquad \mu^{-}(\mathbf 1^\top p+\Crev)=0,\\
+\nu^{l}_i(p_i-l_i)=0,\qquad \nu^{u}_i(u_i-p_i)=0.
+\end{gathered}
+\]
+Toplam yanıt $\mathcal S(\lambda)=\sum_i\clip(x_i-\lambda,l_i,u_i)$ sürekli, artmayan ve parçalı doğrusaldır; $\lambda\le\min_i(x_i-u_i)$ için $\mathcal S(\lambda)=\sum_iu_i$ ve $\lambda\ge\max_i(x_i-l_i)$ için $\mathcal S(\lambda)=\sum_il_i$'dir.
+$\mathcal S(0)>\Ctil\ge\sum_il_i$ ise ara değer teoremi $\mathcal S(\lambda)=\Ctil$ denkleminin bir kökünü verir ve böyle her kök pozitiftir; $\mathcal S(0)<-\Crev\le\sum_iu_i$ durumu negatif bir kökle simetriktir.
+Şimdi $p=\clip(x-\lambda^{*},l,u)$, $\mu^{+}=\max(\lambda^{*},0)$ ve $\mu^{-}=\max(-\lambda^{*},0)$ alınsın ve kutu çarpanları koordinat koordinat seçilsin.
+$l_i<x_i-\lambda^{*}<u_i$ olan serbest koordinatlar $\nu_i^{l}=\nu_i^{u}=0$, $x_i-\lambda^{*}\le l_i$ olan koordinatlar $\nu_i^{l}=l_i-x_i+\lambda^{*}\ge0$ ve $\nu_i^{u}=0$, geri kalanlar ise $\nu_i^{u}=x_i-\lambda^{*}-u_i\ge0$ ve $\nu_i^{l}=0$ değerlerini alır.
+Bu durumda durağanlık koordinat bazında sağlanır; tümleyenlik de sağlanır, çünkü $\lambda^{*}>0$ yalnızca $\mathbf 1^\top p=\Ctil$ olduğunda ve $\lambda^{*}<0$ yalnızca $\mathbf 1^\top p=-\Crev$ olduğunda gerçekleşir.
+$\lambda^{*}=0$ için $\mathbf 1^\top p=\mathcal S(0)$ olan nokta olurludur; dolayısıyla her durumda $p=p^{*}$'dır.
+$\lambda_1<\lambda_2$ her ikisi de kök ise her $\clip(x_i-\lambda,l_i,u_i)$ koordinatı $\lambda$'da artmayandır ve toplamlar eşittir; dolayısıyla tüm koordinatlar eşittir.
+\end{proof}
+
+PPO güvenlik katmanını ortamın bir parçası olarak ele alır ve Jacobi matrisini hiçbir zaman kullanmaz.
+Bununla birlikte Jacobi matrisi, katmanın ham eylemdeki değişiklikleri komut edilen güçlere nasıl aktardığını betimler.
+
+\begin{proposition}[İzdüşümün Jacobi matrisi]\label{prop:jacobian}
+$\mathcal F=\{i:l_i<x_i-\lambda^{*}<u_i\}$ serbest küme ve $D$ bu kümenin göstergelerinden oluşan köşegen matris olsun.
+$p^{*}=\Pi_t(x)$'in türevlenebilir olduğu her yerde Jacobi matrisi, toplam kısıtı etkin değilse $D$, $\mathcal F\neq\emptyset$ iken etkinse $D-\mathbf 1_{\mathcal F}\mathbf 1_{\mathcal F}^\top/|\mathcal F|$'dir; burada $\mathbf 1_{\mathcal F}$, $\mathcal F$'nin gösterge vektörüdür.
+\end{proposition}
+
+\begin{proof}
+Toplam kısıtı etkin değilse yerel olarak $i\in\mathcal F$ için $p_i=x_i$'dir ve diğer durumlarda $p_i\in\{l_i,u_i\}$ sabittir; dolayısıyla Jacobi matrisi $D$'dir.
+Toplam kısıtı $\vartheta\in\{\Ctil,-\Crev\}$ hedefinde etkin olduğunda ise $\sum_{i\in\mathcal F}(x_i-\lambda)+\sum_{i\notin\mathcal F}p_i=\vartheta$ olur.
+Buradan $\partial\lambda/\partial x_j=\mathbb 1[j\in\mathcal F]/|\mathcal F|$ ve $\partial p_i/\partial x_j=\mathbb 1[i\in\mathcal F]\big(\mathbb 1[i=j]-\mathbb 1[j\in\mathcal F]/|\mathcal F|\big)$ elde edilir.
+$\mathcal F=\emptyset$ ise $p$ noktası yerel olarak sabittir; $p^{*}$'ın türevlenebilir olmadığı sıfır ölçülü kümede ise komşu bölgelerin matrisleri Clarke'ın genelleştirilmiş Jacobi matrisinin elemanlarıdır.
+\end{proof}
+
+Jacobi matrisi simetrik ve idempotenttir; dışbükey bir küme üzerine Öklid izdüşümü olarak $\Pi_t$ genişletmeyen (non-expansive) bir eşlemedir.
+Etkin bir satırda Jacobi matrisi tüm kırpılmış koordinatlar için sıfırdır; bu, katmanı ortamın parçası olarak ele almayı gerekçelendiren sıfır gradyan etkisidir \cite{kasaura2023benchmarking}.
+
+\subsection{Tek adımlık değişmezlik}\label{app:onestep}
+
+Ana metindeki Teorem~\ref{M-thm:invariance} için verilen ispat taslağı ve aşağıdaki tam ispat, her ikisi de aşağıdaki lemmaya dayanmaktadır.
+
+\begin{lemma}[Tek adımlık değişmezlik]\label{lem:onestep}
+A1 ve A3 varsayılsın ve $\Bh$, \Eq{M-eq:certified} koşullarını sağlasın.
+EV $i$, $t$ adımında $\tau=\tau_i(t)$ kalan eylem ve $E=E_i(t)\ge\Bh(\tau)$ enerjisiyle bağlı olsun.
+Bu durumda $\pmn(E)\le l_i(t)\le u_i(t)$'dir ve komut edilen her $p\in[l_i(t),u_i(t)]$ gücü $E_i(t+1)\ge\Bh(\tau-1)$ sonucunu doğurur.
+\end{lemma}
+
+\begin{proof}
+$\pmn\le l_i$ sınırı geçerlidir, çünkü $\pmn\le0\le u_i$'dir ve \Eq{M-eq:bounds} içindeki dış minimumun her iki argümanı da en az $\pmn$'dir.
+$l_i\le u_i$ için dış minimum yeterlidir ve koruma kesin aritmetikte etkin değildir; çünkü $g^{-1}\big((\Bh(\tau-1)-E)/\Delta t\big)\le\bar P(E)$, $\Bh(\tau-1)\le\varphi(E)$ ile denktir ve A1, \Eq{M-eq:certified} ile birlikte $\varphi(E)\ge\varphi(\Bh(\tau))\ge\Bh(\tau-1)$ sonucunu verir.
+İkinci iddiaya geçersek, $y=(\Bh(\tau-1)-E)/\Delta t$ olsun; kesin aritmetikte $l_i\ge\min\{u_i,g^{-1}(y)\}=g^{-1}(y)$ olduğundan ve $g$ artan olduğundan her $p\ge l_i$ için $g(p)\ge y$ sağlanır ve A3, $E_i(t+1)\ge E+\Delta t\,g(p)\ge\Bh(\tau-1)$ sonucunu verir.
+\end{proof}
+
+$\tau\ge2$ olduğunda EV $t+1$ adımında bireysel olarak olurludur, çünkü $\tau_i(t+1)=\tau-1$'dir; $\tau=1$ olduğunda ise lemma $E_i(d_i+1)\ge\Bh(0)\ge\Ereq_i$ sonucunu verir.
+
+\subsection{Olurluluğun korunması}\label{app:theorem}
+
+Teorem~\ref{M-thm:invariance} için verilen ispat sırasıyla olurlu adımları, olursuz adımları ve ayrılışa ilişkin kısmı ele almaktadır.
+(a) iddiası yalnızca A3 ve A6'yı kullanır; ayrılışa ilişkin kısım ise ek olarak A1, A2 ve A4'ü kullanır.
+A1--A6 koşulları \Sec{M-sec:invariance} içinde listelenenlerdir; A5 olurlu adımın tanımıdır.
+
+\begin{proof}[İspat (Teorem~\ref{M-thm:invariance})]
+\emph{Olurlu adımlarda (a) iddiası.}
+\Eq{M-eq:bounds} içindeki koruma, EV bireysel olarak olurlu olsun ya da olmasın, her adımda bağlı her EV için $\pmn_i\le l_i\le u_i$ sonucunu verir; boş şarj ünitelerinde ise $l_i=u_i=0$'dır.
+\Alg{alg:safety} içindeki olurluluk testi geçilirse Önerme~\ref{M-prop:projection}(i) $\mathcal K(t)\neq\emptyset$ sonucunu verir; dolayısıyla her sonlu $x(t)$ için $p(t)=\Pi_t(x(t))\in\mathcal K(t)$'dir.
+Fiziksel limitler $p_i(t)\in[l_i,u_i]\subseteq[\pmn_i(E_i(t)),\bar P_i(E_i(t))]$ ilişkisinden çıkar.
+Trafo limiti için $\mathbf 1^\top p(t)\in[-\Crev(t),\Ctil(t)]$'dir ve A3
+\[
+\sum_i\tilde p_i(t)\in\Big[\sum_ip_i(t),\ \sum_ip_i(t)+n(t)\varepsilon_q\Big]\subseteq\big[-\Crev(t),\ \Ctil(t)+n(t)\varepsilon_q\big]=\big[-\Crev(t),C(t)\big]
+\]
+sonucunu verir.
+
+\emph{Olursuz adımlarda (a) iddiası.}
+A6 altında $\Ctil(t)=C(t)-n(t)\varepsilon_q\ge(N-n(t))\varepsilon_q\ge0$ ve $\Crev(t)\ge0$'dır; dolayısıyla yedek kuralın (i) durumu $\Ctil<-\Crev\le0$ gerektirir ve bu nedenle olanaksızdır.
+$u_i\ge0$ olduğundan $\sum_iu_i<-\Crev\le0$ olan (ii) durumu da olanaksızdır.
+(iv) alt durumu $b=\Ctil-\sum_i\pmn_i<0$ gerektirir ve $\pmn_i\le0$ olduğundan ortaya çıkamaz.
+Dolayısıyla her olursuz adım (iii) durumuna ait bir adımdır ve Lemma~\ref{lem:fallback} $\pmn\le p\le l\le u$ ile $\mathbf 1^\top p=\Ctil\in[-\Crev,\Ctil]$ sonuçlarını verir.
+Fiziksel limitler buradan çıkar ve A3, toplam sınırını olurlu adımlarda olduğu gibi gerçekleşen güçlere aktarır.
+
+\emph{(b) iddiası.}
+Kalış süresinin her adımında $p_i(t)\ge l_i(t)$ olan bir EV $i$ sabitlensin ve $E_i(t)\ge\Bh_i(\tau_i(t))$ değişmezi ele alınsın.
+Varışta bu değişmez A4'tür.
+Değişmez $t$ adımında sağlanıyorsa $l_i(t)$, \Eq{M-eq:bounds} içindeki birinci durumu izler ve izdüşümün ya da yedek kuralın her çıktısı $p_i(t)\le u_i(t)$'yi sağlar; dolayısıyla $p_i(t)\in[l_i(t),u_i(t)]$'dir.
+Bu durumda Lemma~\ref{lem:onestep} $E_i(t+1)\ge\Bh_i(\tau_i(t)-1)$ sonucunu verir.
+$d_i>t$ için bu eşitsizlik $t+1$ adımındaki değişmezdir; $d_i=t$ için ise $E_i(d_i+1)\ge\Bh_i(0)\ge\Ereq_i$ ayrılış gereksinimidir.
+Argüman yalnızca EV $i$'ye gönderilen komutları kullanır; dolayısıyla diğer şarj ünitelerinde ne olursa olsun geçerlidir.
+Kalış süresi boyunca olursuz adımla karşılaşmayan her EV, kalışının her adımında $p_i\in[l_i,u_i]$ alır ve kapsama dâhildir.
+EV2Gym her EV'yi en geç $T-2$ adımında çıkardığından epizottaki her EV ayrılışına ufuk içinde ulaşır ve argümanın ayrılışa ilişkin kısmı bunların tümüne uygulanır.
+
+\emph{(c) iddiası.}
+A5 her adımda sağlanıyorsa epizodun hiçbir adımı olursuz değildir ve dolayısıyla (b) iddiası epizottaki her EV'ye uygulanır.
+\end{proof}
+
+A2, sınırların her adımda ihtiyaç duyduğu kalan eylemler $\tau_i(t)$ aracılığıyla devreye girer.
+Kabul kontrolü varıştan sonra bir gereksinimi hiçbir zaman değiştirmez; dolayısıyla değişmezde kullanılan gereksinim kalış süresince sabittir.
+
+\textbf{A5 için politikadan bağımsız bir yeterli koşul.}
+Alt sınır $l_i$, birinci durumundaki her iki terim de $E$'de artmayan olduğundan $E$'de artmayandır; $l_i^{\max}(t)$ ile $l_i$'nin $E=\Bh_i(\tau_i(t))$ noktasındaki değeri gösterilsin.
+Her adımda $\Crev(t)\ge0$, $\Ctil(t)\ge-\Crev(t)$ ve $\sum_{i\in\mathcal N(t)}l_i^{\max}(t)\le\Ctil(t)$ olduğu varsayılsın.
+Değişmez altında $l_i(t)\le l_i^{\max}(t)$ ve $\sum_iu_i\ge0\ge-\Crev$'dir; dolayısıyla A5 $t$ adımında sağlanır ve tümevarımla A5 her politika için sağlanır.
+Ancak $\Bh_i(\tau_i)>E_i^{\min}$ olduğunda $l_i^{\max}(t)=\bar P_i(\Bh_i(\tau_i))$'dir; dolayısıyla bu koşul, trafonun önemsiz olmayan biçimde kısıtlanmış tüm EV'lere aynı anda tam güçte hizmet vermesini gerektirir.
+
+\subsection{Yedek kural ve açık sınırı}\label{app:fallback}
+
+Olurluluk testi başarısız olduğunda izdüşümün yerini yedek kural alır.
+$l\le u$ yapısı gereği sağlandığından üç durum kalır; bunlardan üçüncüsünün bir alt durumu vardır.
+\begin{enumerate}
+\item[(i)] Çelişkili limitler, $\Ctil<-\Crev$: (iii) durumunun prosedürü uygulanır; dolayısıyla ileri yön limiti önceliklidir.
+\item[(ii)] Aşırı PV ihracatı, $\sum_iu_i<-\Crev$: dolu her şarj ünitesi $p_i=u_i$ alır.
+\item[(iii)] Gerekli güç fazlası, $\sum_il_i>\Ctil$: her EV $\pmn_i$'den başlar ve $b=\Ctil-\sum_i\pmn_i$ bütçesi esneklik payı artan sırada dağıtılır; her EV en fazla $l_i-\pmn_i$ kadar alır.
+\item[(iv)] (i) ve (iii) durumlarının $b<0$ olan alt durumu: çıktı $p=\pmn$'de, yani ileri yön limitine en yakın kabul edilebilir komutta kalır.
+\end{enumerate}
+(iii) durumunda eşitlik hâlinde önce daha büyük $l_i-\pmn_i$ farkı, ardından daha küçük şarj ünitesi indisi öncelik alır.
+Kayıtlar (i), (ii), (iii) ve (iv) durumlarını 3, 2, 1 ve 0 sayısal kodlarıyla FB-1*, FB-2, FB-1 ve FB-0 olarak etiketler ve her analiz tablosu bu eşlemeyi kullanır.
+A6 altında (i), (ii) ve (iv) durumları ortaya çıkamaz (Teorem~\ref{M-thm:invariance} ispatı); dolayısıyla sonuç tablolarındaki sayıları her tekrarda A6'yı doğrular.
+
+\begin{lemma}[Yedek kural]\label{lem:fallback}
+Yedek kuralın $b\ge0$ olan (iii) durumunda çıktı $\pmn\le p\le l$ ve $\mathbf 1^\top p=\Ctil$ koşullarını sağlar; dolayısıyla trafo limiti ve fiziksel limitler sağlanır.
+$t$ adımında bireysel olarak olurlu olan ve $p_i=l_i$ alan her EV bireysel olarak olurlu kalır.
+(ii) ve (iv) durumlarında çıktı, $[\pmn,u]$ kutusu üzerinde trafo ihlalini en küçükler; dolayısıyla hiçbir kabul edilebilir komut bu ihlalden kaçınamaz.
+\end{lemma}
+
+\begin{proof}
+(iii) durumunda $\sum_i(l_i-\pmn_i)>\Ctil-\sum_i\pmn_i=b$'dir; dolayısıyla bütçe, her EV $l_i$'ye ulaşmadan tükenir; buradan $\mathbf 1^\top p=\Ctil$ ve $p\le l$ elde edilir.
+(i) durumu dışında ayrıca $\Ctil\ge-\Crev$'dir ve $p_i=l_i$ alan bireysel olarak olurlu bir EV, Lemma~\ref{lem:onestep} gereğince olurlu kalır.
+$[\pmn,u]$ kutusu üzerinde $\mathbf 1^\top p$ toplamı $\pmn$'de en küçük, $u$'da en büyüktür; dolayısıyla (iv) ve (ii) durumlarının çıktıları komut edilen ihlali en küçükler.
+\end{proof}
+
+\begin{lemma}[Açık sınırı]\label{lem:deficit}
+A1, A3 ve A4 varsayılsın ve $\bar P_i$'nin $E$'de artmayan olduğu varsayılsın.
+EV2Gym gerçeklememizdeki gibi $\eta^{\sm c}=\eta^{\sm d}=1$ ile filonun bir epizottaki toplam ayrılış eksikliği en fazla
+\begin{equation}\label{eq:deficit}
+\Delta t\sum_{t\in\mathcal T_{\mathrm{iii}}}\Big(\sum_il_i(t)-\Ctil(t)\Big)+\Delta t\sum_{t\in\mathcal T_{\mathrm{iv}}}\sum_i\big(l_i(t)-\pmn_i(t)\big)
+\end{equation}
+kadardır; burada $\mathcal T_{\mathrm{iii}}$ ve $\mathcal T_{\mathrm{iv}}$, (iii) ve (iv) durumlarına ait adımlardır.
+\end{lemma}
+
+\Sec{sec:ev2gym} içindeki Lemma~\ref{lem:taper}, EV2Gym'in şarj gücü azalmasının Lemma~\ref{lem:deficit} içindeki ek koşulu sağladığını göstermektedir.
+
+\begin{proof}
+$E_i(t)\ge\Bh_i(\tau_i(t))$ ise $\tilde l_i(t)=l_i(t)$, aksi hâlde $\tilde l_i(t)=u_i(t)$ olsun ve $\tau(d_i+1)=0$ olmak üzere olurluluk açığı $\Delta E^{\sm{def}}(t)=(\Bh(\tau(t))-E(t))^{+}$ olarak tanımlansın.
+$\Bh(0)\ge\Ereq$ olduğundan eksik enerji $(\Ereq-E(d_i+1))^{+}$ en fazla $\Delta E^{\sm{def}}(d_i+1)$'dir ve A4 gereğince $\Delta E^{\sm{def}}(t_i^{\sm{arr}})=0$'dır.
+Dolayısıyla her adımda $\Delta E^{\sm{def}}(t+1)\le\Delta E^{\sm{def}}(t)+\Delta t\,\big(g(\tilde l)-g(p)\big)^{+}$ olduğunu göstermek ve bu artışları kalış süresi boyunca toplamak yeterlidir.
+$E\ge\Bh(\tau)$ ise \Eq{M-eq:bounds} gereğince $E+\Delta t\,g(l)\ge\Bh(\tau-1)$'dir ve A3, $E(t+1)\ge\Bh(\tau-1)-\Delta t\,(g(l)-g(p))^{+}$ sonucunu verir.
+$E<\Bh(\tau)$ olduğunda ise $\tilde l=u$ ve $E+\Delta t\,g(u)=\varphi(E)$'dir; \Eq{M-eq:certified}, $\varphi$'nin 1-Lipschitz özelliğiyle birlikte $\Bh(\tau-1)-\varphi(E)\le\varphi(\Bh(\tau))-\varphi(E)\le\Bh(\tau)-E=\Delta E^{\sm{def}}(t)$ sonucunu verir.
+Dolayısıyla bu durumda da $\Bh(\tau-1)-E(t+1)\le\Delta E^{\sm{def}}(t)+\Delta t\,(g(u)-g(p))$'dir.
+$g$ özdeşlik fonksiyonu olmak üzere filo sınırı için olurlu adımlarda $p_i\ge\tilde l_i$, yedek kuralın (ii) durumunda ise $p=u$ sağlanır.
+(iii) durumunda $p\le l$ ve $\sum_i(l_i-p_i)=\sum_il_i-\Ctil$'dir; (iv) durumunda $p=\pmn$'dir; dolayısıyla adım başına artışların tüm EV'ler üzerinden toplanması \Eq{eq:deficit} ifadesini verir.
+\end{proof}
+
+\subsection{Konformal ayrılış garantisi}\label{app:conformal}
+
+\begin{proof}[İspat (Önerme~\ref{M-prop:conformal})]
+(i) Değiştirilebilirlik gereğince test skoru $e_{n_{\sm{cal}}+1}=\hat q(\mathbf w_i)-d_i$'nin $e_1,\dots,e_{n_{\sm{cal}}+1}$ skorları arasındaki sırası, eşitlikler dışında düzgün dağılımlıdır; dolayısıyla $\mathbb P(e_{n_{\sm{cal}}+1}\le\hat Q_{1-\alpha})\ge\lceil(n_{\sm{cal}}+1)(1-\alpha)\rceil/(n_{\sm{cal}}+1)\ge1-\alpha$'dır \cite{vovk2022algorithmic,lei2018distributionfree}.
+$e_{n_{\sm{cal}}+1}\le\hat Q_{1-\alpha}$ olayı $d_i\ge\hat q(\mathbf w_i)-\hat Q_{1-\alpha}$ ile, $d_i$ bir tam sayı olduğundan da $d_i\ge\lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil$ ile denktir.
+$t_i^{\sm{arr}}$ ile maksimumun alınması hiçbir şeyi değiştirmez, çünkü $d_i\ge t_i^{\sm{arr}}$ kesinlikle sağlanır.
+
+(ii) $d_i\ge\hat d_i^{\sm{lo}}$ olduğu ve kalış süresinin her adımında $p_i(t)\ge l_i(t)$ olduğu olay ele alınsın.
+Bu olay üzerinde, $t=\hat d_i^{\sm{lo}}$'ya kadar $\tau^{\sm{lo}}$ ile uygulanan Lemma~\ref{lem:onestep}, $E_i(\hat d_i^{\sm{lo}}+1)\ge\Bh(0)$ sonucunu verir.
+Kalan $\hat d_i^{\sm{lo}}<t\le d_i$ adımları için $\tau^{\sm{lo}}=1$'dir ve \Eq{M-eq:certified} içindeki üçüncü özellik $\Bh(1)\le\max\{\Bh(0),E^{\min}\}\le E_i(t)$ sonucunu verir.
+Bu durumda $\tau=1$ ile Lemma~\ref{lem:onestep} yine $E_i(t+1)\ge\Bh(0)\ge\Ereq$ sonucunu verir; dolayısıyla olay üzerinde $E_i(d_i+1)\ge\Ereq$ sağlanır ve birleşim sınırı ifade edilen olasılığı verir.
+Kalış süresinin hiçbir adımı hemen hemen kesin olarak olursuz değilse ikinci olasılık sıfırlanır ve sınır $1-\alpha$ olur.
+Sınır, A5'in sağlandığı olaya koşullu olarak geçerli değildir, çünkü bu olay $d_i$ ile ilişkili olabilir.
+\end{proof}

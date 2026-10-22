@@ -1,0 +1,73 @@
+% =====================================================================
+% TÜRKÇE İNCELEME KOPYASI (gönderim sürümü değildir; SAUCIS yalnızca
+% İngilizce kabul eder). Kaynak: ../supplementary/supplementary.tex
+% "Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik
+%  Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme" için ek
+%  materyal (çalışma başlığı, DD30; nihai başlığı yazar belirler)
+% Derleme: latexmk -pdf supplementary_tr.tex (ana metne yapılan çapraz
+% göndermelerin çözülmesi için önce ../manuscript_tr/main_tr.tex bir kez
+% derlenmelidir)
+% =====================================================================
+\newif\ifsaucis
+\IfFileExists{saucis.cls}{\saucistrue\documentclass[final,9pt,onecolumn]{saucis}}{\saucisfalse\documentclass[10pt]{article}}
+\newif\ifanonymous
+\anonymousfalse
+
+\input{../manuscript_tr/preamble}
+\graphicspath{{figures/}}
+\externaldocument[M-]{../manuscript_tr/main_tr}
+
+% ek materyal numaralandırması: Bölüm S1, Lemma S1, Tablo S1, Şekil S1, (S1)
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thelemma}{S\arabic{lemma}}
+\renewcommand{\theproposition}{S\arabic{proposition}}
+\renewcommand{\thealgorithm}{S\arabic{algorithm}}
+% algoritma girdisi etiketi (denetim sözcükleri sözde kod sözdizimi olarak İngilizce bırakılmıştır)
+\algrenewcommand\algorithmicrequire{\textbf{Girdi:}}
+% analiz betiklerinin üreteceği tablo için yer tutucu
+\newcommand{\placeholdertable}[3]{%
+\begin{table}[t]\centering
+\caption{#2 (analiz betikleri çalıştırılana kadar yer tutucudur).}\label{#1}% beklenen dosya: analysis/tables/#3
+\footnotesize \RES{\texttt{analysis/scripts/make\_all.py} tarafından üretilen tablo}
+\end{table}}
+
+\title{Ek Materyal\\[1mm]\large Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme}
+\ifanonymous
+  \author{Anonim yazar(lar)}
+\else
+  \author{Yazar Ad(lar)ı\\ \small \TODO{Kurum(lar)}}
+\fi
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\small\itshape
+Bu belge yazarın incelemesi için hazırlanmış Türkçe çeviridir; gönderim sürümü İngilizcedir. Şekillerin içindeki metinler İngilizce bırakılmıştır.}}
+\end{center}
+
+Bu belge ana metni tamamlamaktadır.
+Bölüm~\ref{app:proofs} biçimsel sonuçları ispatlamakta, Bölüm~\ref{sec:ev2gym} modellemenin EV2Gym'de nasıl yapıldığını belgelemekte ve Bölüm~\ref{sec:pipeline} talep işleme hattını ve tam bilgili optimumları vermektedir.
+Karşılaştırılan yöntemler, eğitim, ayarlama ve istatistikler Bölüm~\ref{sec:training-supp} içinde ele alınmakta; Bölüm~\ref{sec:results-supp} ise ek bulguları bir araya getirmektedir.
+Ana metnin denklemlerine, lemmalarına ve şekillerine ana metindeki numaralarıyla atıf yapılmakta; bu belgedeki ögeler ise S önekini taşımaktadır.
+Kısaltmalar ana metni izlemektedir: bir şarj noktası işletmecisi (CPO) istasyonunda araçtan şebekeye (V2G) hizmetleri ve fotovoltaik (PV) üretim içeren elektrikli araç (EV) şarjı.
+Yöntem, yakınsal politika optimizasyonu (PPO) ile eğitilen ve çok katmanlı algılayıcı (MLP), ekonomik model öngörülü kontrol (eMPC) ve heterojen çizge politikası (EV-GNN) ile karşılaştırılan güvenli dikkat tabanlı denetleyicidir (\method{}).
+Diğer kısaltmalar doğrusal program (LP), Karush--Kuhn--Tucker (KKT) koşulları, en az esneklik payı önce (LLF) çizelgelemesi ve konformal tahmindir (CP).
+\Tab{tab:nomenclature} başlıca sembolleri listelemektedir.
+
+\input{sections/s0_nomenclature}
+\input{sections/s1_proofs}
+\input{sections/s2_ev2gym}
+\input{sections/s3_pipeline}
+\input{sections/s4_training}
+\input{sections/s5_results}
+
+\clearpage
+\IfFileExists{IEEEtran.bst}{\bibliographystyle{IEEEtran}}{\bibliographystyle{ieeetr}}
+\bibliography{../manuscript_tr/refs}
+
+\end{document}

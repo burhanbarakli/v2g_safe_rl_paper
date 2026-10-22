@@ -1,0 +1,115 @@
+% ---------------------------------------------------------------------
+\section{Talep işleme hattı ve tam bilgili optimumlar}\label{sec:pipeline}
+% ---------------------------------------------------------------------
+
+\subsection{İstasyon düzeyinde talep işleme hattı}\label{app:admission}
+
+Varış sınırlaması ve kabul kontrolü denetleyiciye değil, istasyon işletmecisinin talep ayarına aittir.
+Her test tekrarı için bunlar herhangi bir denetleyici çalışmadan önce bir kez hesaplanır ve ortaya çıkan kabul edilen talepler $\Ereq_i$, karşılaştırılan her yöntem ve her iki optimum tarafından paylaşılır.
+Sarmalayıcı, kabul edilen gereksinimi varışta EV2Gym'in EV nesnesine yazar; böylece EV-GNN ve Gurobi eMPC gibi harici karşılaştırma yöntemleri de aynı hedefi izler.
+HiGHS eMPC, ufku içindeki varışlar için paylaşılan girdileri kullanır.
+Konformal geçişler, paylaşılan gereksinimi kendi $\hat d_i^{\sm{lo}}$ sınırlarıyla yeniden sertifikalar; dolayısıyla bu geçişlerin gereksinimi hiçbir zaman daha büyük değildir; kabul kontrolü içermeyen geçişler ise varışta sınırlandırılmış talebi korur.
+Her geçişte eksik enerji, paylaşılan kabul edilen gereksinime göre ölçülür.
+
+Varışlar zaman sırasına göre işlenir; eşitlik hâlinde şarj ünitesi indisi belirleyicidir.
+Varan bir EV $j$; dışsal varış enerjisi, istenen enerjisi, ayrılış adımı ve EV parametreleriyle girer ve \Eq{M-eq:cap} ile verilen sınırlama, sertifikalı bir eşik tablosuyla birlikte ilk gereksinimini verir.
+Ardından kabul kontrolü, varış adımı $t_0$'da, daha önce kabul edilmiş ve hâlâ bağlı olan EV'ler ile EV $j$ üzerinde \Eq{eq:admission} ile verilen olurluluk LP'sini çözer:
+\begin{equation}\label{eq:admission}
+\begin{aligned}
+&E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\qquad E_i^{\min}\le E_i(t+1)\le E_i^{\sm{cap}},\qquad E_i(d_i+1)\ge E_i^{\sm{tgt}},\\
+&-\Pdis_i\le p_i(t)\le\Pnom_i,\qquad p_i(t)\le\varrho_i^{\sm{in}}\,(E_i^{\sm{cap}}-E_i(t))\ (t>t_0),\qquad p_i(t_0)\in[\pmn_i,\bar P_i],\\
+&-\hat C_{\sm{rev}}(t)\le\textstyle\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q .
+\end{aligned}
+\end{equation}
+Önceki EV'lerin $t_0$'daki enerjileri herhangi bir denetleyicinin yörüngesinden değil, nominal bir plandan okunur.
+Her kabul kararından sonra aynı LP'nin esnek bir sürümü bu planı, hedeflere olabildiğince erken ulaşılacak şekilde günceller.
+$\hat C$ ve $\hat C_{\sm{rev}}$ limitleri $t_0$'daki ölçülen değerleri, sonraki $H_f$ adım için gürültülü tahminleri ve sonrasında son tahmini kullanır.
+Eğim $\varrho_i^{\sm{in}}$, tüm $E$ değerleri için $\bar P_i(E)\ge\min\{\Pnom_i,\varrho_i^{\sm{in}}(E_i^{\sm{cap}}-E)\}$ koşulunu sağlayan en büyük değerdir; dolayısıyla doğrusal şarj gücü azalması modeli bir iç yaklaşıklıktır ve LP açısından olurlu her çizelge fiziksel olarak gerçeklenebilir.
+
+LP içinde yeni EV'nin hedefi $E_j^{\sm{tgt}}=\Ereq_j$'dir; önceki bir EV'nin hedefi ise $\Ereq_i$ ile $\Psi_i^{\sm{LP}}(E_i(t_0))-10^{-6}$ değerlerinin küçüğüdür.
+Burada $\Psi_i^{\sm{LP}}$, LP'nin şarj gücü azalması modelinde erişilebilen en büyük ayrılış enerjisidir ve bu hedef yalnızca kabul LP'si içinde kullanılır.
+Tam batarya talepleri doğrudan hedef olarak alınsaydı, böyle bir EV bağlı olduğu her durumda LP olursuz olurdu; çünkü doğrusal şarj gücü azalması modeli sonlu sayıda adımda hiçbir zaman tam şarja ulaşmaz.
+Olurluluk yeni talepte monotondur; dolayısıyla $E_j(d_j+1)$'i en büyükleyen tek bir LP, kabul edilebilir en büyük talebi verir.
+Daha önce kabul edilen talepler hiçbir zaman azaltılmaz ve EV $j$'nin düşürülmüş talebi yeniden sınırlama rutininden geçer; dolayısıyla A4 her EV ve her yöntem için sağlanır.
+LP en düşük talep için bile olursuz ise talep varış enerjisine eşitlenir.
+
+Her karar yalnızca $t_0$'da mevcut olan bilgiyi kullanır; dolayısıyla bir istasyon işletmecisi işleme hattını çevrim içi olarak çalıştırabilir.
+LP olurlu ise, başka bir EV gelmemesi koşuluyla, öngörülen limitler altında nominal plan enerjilerinden başlayarak tüm hedefleri karşılayan bir açık döngü çizelge vardır.
+İşleme hattı hiçbir denetleyici için A5'i garanti etmez; çünkü gerçekleşen enerjiler nominal planın altında kalabilir, tahminler gürültülüdür ve sonraki varışlar yük ekler.
+Bu nedenle Teorem~\ref{M-thm:invariance} kapsamına girmez; etkisini kabul kontrolü içermeyen değerlendirme geçişleri ölçer.
+
+\subsection{Optimumların doğrusal programları}\label{app:oracle}
+
+Her iki tam bilgili LP de epizodun tüm oturumlarını varış ve ayrılış adımları, varış enerjileri ve kabul edilen gereksinimleriyle; tüm fiyatları ve gerçekleşen $C(t)$ ve $\Crev(t)$ limitlerini birlikte bilir.
+Her $i$ oturumu ve $t\in\mathcal T_i=\{t_i^{\sm{arr}},\dots,d_i\}$ adımı için değişkenler $p_i^{+}(t),p_i^{-}(t)\ge0$ ve $E_i(t)$'dir; bunlara bir eksik enerji gevşek değişkeni $z_i\ge0$ ve yumuşak LP'de aşırı yük gevşek değişkenleri $o^{\pm}(t)\ge0$ eşlik eder.
+$G_i^{\max}=0.01\,(d_i-t_i^{\sm{arr}}+1)$ kWh yuvarlama payıyla kısıtlar şunlardır:
+\begin{equation}\label{eq:lp}
+\begin{aligned}
+&E_i(t_i^{\sm{arr}})=E_i^{\sm{arr}},\qquad E_i(t+1)=E_i(t)+\Delta t\,\big(p_i^{+}(t)-p_i^{-}(t)\big),\qquad E_i^{\min}-G_i^{\max}\le E_i(t+1)\le E_i^{\sm{cap}},\\
+&p_i^{+}(t)\le\Pnom_i,\qquad p_i^{-}(t)\le\Pdis_i,\qquad p_i^{+}(t_i^{\sm{arr}})\le\bar P_i(E_i^{\sm{arr}}),\qquad p_i^{+}(t)\le\varrho_i^{\sm{out}}\big(E_i^{\sm{cap}}-E_i(t)\big)\ (t>t_i^{\sm{arr}}),\\
+&E_i(d_i+1)+z_i\ge\Ereq_i-G_i^{\max},\qquad -\Crev(t)-o^{-}(t)\le\textstyle\sum_{i}\big(p_i^{+}(t)-p_i^{-}(t)\big)\le C(t)+o^{+}(t),
+\end{aligned}
+\end{equation}
+burada katı LP $o^{\pm}=0$ olarak sabitler.
+Bir çizelgenin kârı $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$'dir; enerji akışı maliyeti $c^{\sm{thr}}$ tek bir duyarlılık çalışması dışında sıfırdır.
+
+\begin{lemma}[Şarj gücü azalması satırları]\label{lem:taperrows}
+Her EV, Lemma~\ref{lem:a3} koşullarını sağlasın ve $\varrho_{\kappa,i}=(1-e^{-\kappa_i})/\Delta t$ olsun.
+Bu durumda her $E\in[E^{\min},E^{\sm{cap}}]$ için $\bar P_i(E)\le\min\{\Pnom_i,\varrho_{\kappa,i}(E_i^{\sm{cap}}-E)\}$'dir.
+Eşitlik, tek adımlık geçiş bandı $\varsigma\in(\varsigma_i^{\sm{tr}}-\delta_i,\varsigma_i^{\sm{tr}})$ dışında sağlanır ve $\sup_E\bar P_i(E)/(E_i^{\sm{cap}}-E)=\varrho_{\kappa,i}$'dir.
+\end{lemma}
+
+\begin{proof}
+Şarj durumu birimlerinde \Eq{eq:taper} gereğince $\bar P\Delta t/E^{\sm{cap}}=\varphi/E^{\sm{cap}}-\varsigma$'dır ve $\varsigma\ge\varsigma^{\sm{tr}}$ için bu kazanç $\min\{\delta,(1-\varsigma)(1-e^{-\kappa})\}$ olup sağ tarafa eşittir.
+$\varsigma+\delta\le\varsigma^{\sm{tr}}$ sabit akım bölgesinde kazanç $\delta$'dır ve sağ taraf ancak ve ancak $\delta\le(1-\varsigma)(1-e^{-\kappa})$ ise $\delta$'ya eşittir.
+$1-\varsigma\ge1-\varsigma^{\sm{tr}}=m\delta/\kappa$ olduğundan $\kappa\le m(1-e^{-\kappa})$ olması yeterlidir; $\kappa=mz$ ile bu $z\le1-e^{-mz}$, yani $\kappa\le\kappa^{*}(m)$ demektir.
+Geçiş bandında $y=\varsigma^{\sm{tr}}-\varsigma\in(0,\delta)$ olsun; böylece $1-\varphi/E^{\sm{cap}}\ge(1-\varsigma^{\sm{tr}})e^{-m(\delta-y)/(1-\varsigma^{\sm{tr}})}$ olur.
+$e^{v}\ge1+v$ ve $m\ge1$ ile bu sınırın sağ tarafı en az $e^{-\kappa}(1-\varsigma^{\sm{tr}}+my)\ge e^{-\kappa}(1-\varsigma)$'dır.
+Dolayısıyla kazanç en fazla $(1-\varsigma)(1-e^{-\kappa})$'dır ve zaten en fazla $\delta$'dır; dolayısıyla eşitsizlik her yerde sağlanır ve supremum üst bölgedeki eşitlikten çıkar.
+\end{proof}
+
+Kod, kesin değerden \%1 daha gevşek, geçerli bir dış satır olan $\varrho_i^{\sm{out}}=1.01\,\varrho_{\kappa,i}$'yi kullanır.
+Kodla birlikte yayımlanan bir denetim betiği, 320 yapılandırmada eşitsizliği $1.7\times10^{-13}$ kW duyarlılığında ve bant dışındaki eşitliği doğrulamaktadır.
+Bu satırlarla LP'ler, EV2Gym'in şarj limitini geçiş bandının adım ayrıklaştırması ve \%1'lik pay dışında modeller.
+Kalan gevşetmeler yuvarlama payı ve eşzamanlı şarj ile deşarjdır; ikincisi, ana ızgaradaki gibi $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ ve $c^{\sm{thr}}=0$ olduğunda maliyet ve enerji açısından nötrdür ve dolayısıyla kesindir.
+Enerji akışı maliyeti içeren ya da negatif fiyatlarda 0.9 deşarj fiyatı çarpanı kullanan duyarlılık çalışmalarında LP'ler geçerli üst sınırlar olarak kalır.
+Bu durumda eşzamanlı şarj ve deşarj kullanabilirler ve bu tür adımların sayısı raporlanır.
+
+\subsection{Üst sınırlar}\label{app:bounds}
+
+Katı LP, HiGHS \cite{huangfu2018parallelizing} ile sözlükbilimsel olarak çözülür.
+Aşama 1, $G^{\max}=0$ ile en küçük toplam eksik enerjiyi $z^{*}=\min\sum_iz_i$ hesaplar; aşama 2 ise yuvarlama payı ve $\sum_iz_i\le z^{*}+10^{-6}$ ile $\mathrm{Pr}(p)$'yi en büyükleyerek $J^{\sm{LP,ceil}}$'i verir.
+$G^{\max}=0$ ile aynı aşama 2, yalnızca \Sec{sec:results-supp} içinde raporlanan $J^{\sm{LP}}$'yi verir.
+Buna karşılık yumuşak LP, \Eq{eq:lp} altında $\mathrm{Pr}(p)-w_E\sum_iz_i-w_P\Delta t\sum_t(o^{+}(t)+o^{-}(t))$ ifadesini tek aşamada en büyükleyerek $J^{\sm{pen,LP}}$'yi verir.
+
+\begin{proposition}[Katı optimum]\label{prop:oracle}
+Lemma~\ref{lem:a3} yapılandırması geçerli olsun ve $\pi$, raporlanan güçleri her adımda \Eq{M-eq:transformer} koşulunu sağlayan ve kabul edilen gereksinimlere göre gerçekleşen toplam eksik enerjisi en fazla $z^{*}$ olan herhangi bir denetleyici olsun.
+Bu durumda $J^{\pi}\le J^{\sm{LP,ceil}}$'dir.
+\end{proposition}
+
+\begin{proof}
+$\tilde p_i(t)$ raporlanan güçler ve $E_i^{\sm{nom}}(t)=E_i^{\sm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$ yalnızca faturalandırılan güçlerin üreteceği enerji olsun.
+EV2Gym tam olarak $\tilde p$'yi faturalandırır; dolayısıyla $J^{\pi}$, $p^{\pm}=\tilde p^{\pm}$ noktasındaki $\mathrm{Pr}$'ye eşittir.
+Yuvarlama etkin adım başına 0.01 kWh'ten daha az ekler; dolayısıyla yörünge boyunca $E_i^{\sm{real}}(t)-G_i^{\max}\le E_i^{\sm{nom}}(t)\le E_i^{\sm{real}}(t)\le E_i^{\sm{cap}}$'dir.
+Bu nedenle düşürülmüş enerji tabanı ve düşürülmüş ayrılış satırı, $z_i=(\Ereq_i-E_i^{\sm{real}}(d_i+1))^{+}$ ile $E^{\sm{nom}}$ için sağlanır; güç satırları da $\tilde p_i\le\bar P_i(E_i^{\sm{real}})\le\Pnom_i$ ve $\tilde p_i\ge-\Pdis_i$ olduğundan sağlanır.
+Ayrıca $E^{\sm{nom}}(t_i^{\sm{arr}})=E_i^{\sm{arr}}$ olduğundan ilk adım satırı sağlanır.
+Şarj gücü azalması satırları için EV2Gym hiçbir zaman $\varphi(E)-E$'den fazlasını teslim etmez; dolayısıyla Lemma~\ref{lem:taperrows} $\tilde p_i(t)\le\varrho_{\kappa,i}(E^{\sm{cap}}-E_i^{\sm{real}}(t))\le\varrho_i^{\sm{out}}(E^{\sm{cap}}-E_i^{\sm{nom}}(t))$ sonucunu verir.
+Trafo satırları varsayımın kendisidir ve $\sum_iz_i\le z^{*}$'dır; dolayısıyla yörünge aşama 2 için olurludur ve amaç değeri $J^{\pi}$'ye eşittir.
+\end{proof}
+
+\begin{proposition}[Yumuşak cezalı optimum]\label{prop:softoracle}
+Lemma~\ref{lem:a3} yapılandırması geçerli olsun ve komutlar \Eq{M-eq:limits} ile verilen fiziksel limitlere kırpılsın.
+Bir tekrar üzerinde simüle edilen her yörünge için, eksik enerji paylaşılan kabul edilen gereksinime göre ölçüldüğünde, $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$'dir.
+\end{proposition}
+
+\begin{proof}
+$p^{\pm}=\tilde p^{\pm}$, $E=E^{\sm{nom}}$, $z_i=\Delta E_i^{\sm{sh}}$ alınsın ve $o^{\pm}(t)$ her iki yöndeki gerçekleşen aşırı yüklere eşit olsun.
+Enerji, güç, ilk adım ve şarj gücü azalması satırları Önerme~\ref{prop:oracle} ispatındaki gibi sağlanır; çünkü bunlar denetleyicinin uyduğu herhangi bir kısıtı değil, yalnızca EV2Gym'in fiziğini kullanır.
+Ayrılış satırı için $E^{\sm{nom}}(d_i+1)+z_i\ge E^{\sm{real}}(d_i+1)-G_i^{\max}+z_i\ge\Ereq_i-G_i^{\max}$'dir; trafo satırları ise $o^{\pm}$ tanımı gereği sağlanır.
+Bu noktada amaç değeri, aynı faturalandırılan güçler, eksik enerji ve aşırı yük enerjisiyle $J^{\sm{pen}}(\pi)$'ye eşittir.
+\end{proof}
+
+Sınır denetleyicinin değil ölçümün bir özelliğidir; dolayısıyla eksik enerji ya da aşırı yük içeren denetleyicileri, konformal ve kabul kontrolsüz geçişleri ve harici karşılaştırma yöntemlerini kapsar.
+Sarmalayıcıdaki her geçiş fiziksel kırpmayı uygular ve Gurobi eMPC bağdaştırıcısı da komutlarını aynı şekilde kırpar.
+Kodla birlikte yayımlanan bir birim testi, rastgele eylemler de dâhil olmak üzere küçük tekrarlarda tüm kural tabanlı yöntemler için $J^{\sm{pen}}\le J^{\sm{pen,LP}}$ koşulunu denetler.
+EV2Gym içinde bir denetleyici faturalandırılmayan yuvarlama kazancı yoluyla $J^{\sm{LP}}$'yi aşabilir; bu nedenle ana metin garantinin maliyeti için $J^{\sm{LP,ceil}}$'i kullanır ve $J^{\sm{LP}}$'yi yalnızca burada raporlar.

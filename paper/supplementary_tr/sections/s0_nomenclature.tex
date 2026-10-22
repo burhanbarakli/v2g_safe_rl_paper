@@ -1,0 +1,37 @@
+% ---------------------------------------------------------------------
+% Semboller (hakem notu m4)
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\caption{Başlıca semboller. Birimler köşeli parantez içinde verilmiştir; EV $i$'ye ait büyüklükler şarj ünitesinin indisini taşır.}
+\label{tab:nomenclature}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{2.3cm}>{\raggedright}p{5.25cm}>{\raggedright}p{2.3cm}>{\raggedright\arraybackslash}p{5.25cm}@{}}
+\toprule
+Sembol & Anlamı & Sembol & Anlamı \\
+\midrule
+$N$, $\mathcal N(t)$, $n(t)$ & şarj üniteleri, dolu şarj üniteleri, bağlı EV'ler & $\Delta t$, $T$ & adım uzunluğu [h], ufuk [adım] \\
+$t_i^{\sm{arr}}$, $d_i$ & varış adımı, son kontrol edilen adım & $\tau_i(t)$ & kalan eylemler, $d_i-t+1$ \\
+$E_i(t)$, $E_i^{\sm{cap}}$, $E_i^{\min}$ & batarya enerjisi, kapasite, minimum [kWh] & $E_i^{\sm{des}}$, $\Ereq_i$ & istenen ve kabul edilen enerji [kWh] \\
+$p_i$, $\tilde p_i$ & komut edilen ve raporlanan güç [kW] & $g_i$, $\eta_i^{\sm c}$, $\eta_i^{\sm d}$ & enerji eşlemesi ve verimler \\
+$\bar P_i(E)$, $\Pnom_i$ & en yüksek şarj gücü, nominal değeri [kW] & $\pmn_i(E)$, $\Pdis_i$ & fiziksel alt limit, deşarj gücü [kW] \\
+$P_{\sm{tr}}$, $\rho_{\sm{tr}}$ & trafo anma gücü, şarj ünitesi başına anma gücü [kW] & $P^{\sm{inf}}$, $P^{\sm{pv}}$ & esnek olmayan yük, PV üretimi [kW] \\
+$C$, $\Crev$, $\Ctil$ & ileri yön, ters yön ve sıkılaştırılmış ileri yön limiti [kW] & $\varepsilon_q$ & eyleyici payı, 0.008 kW \\
+$c^{\sm{ch}}$, $c^{\sm{dis}}$, $c^{\sm{thr}}$ & şarj, deşarj ve enerji akışı (throughput) fiyatı [\texteuro/kWh] & $\varepsilon_{\sm{sat}}$ & doyma eşiği, 0.001 kW \\
+$\varphi_i$, $\Psi_{i,k}$, $R_i$ & tek adımlık tam güç eşlemesi, $k$ katlı eşleme, erişilebilir enerji & $B_i(k)$, $\Bh_i(k)$ & kesin ve sertifikalı eşikler [kWh] \\
+$l_i$, $u_i$ & güvenlik katmanının alt ve üst sınırı [kW] & $\chi_i$ & esneklik payı [adım] \\
+$x_i$, $a_i$, $P^{\sm{ref}}$ & ham eylem [kW], ham örnek, ölçek 11 kW & $\mathcal K(t)$, $\Pi_t$ & olurlu küme, izdüşüm \\
+$\lambda^{*}$, $\mathcal F$ & ortak kaydırma [kW], serbest küme & $b$ & yedek kural bütçesi [kW] \\
+$\varsigma$, $\varsigma^{\sm{tr}}$, $m$, $\kappa$ & şarj durumu, şarj gücü azalmasının başlangıcı, çarpan, üs & $z_0(m)$, $\kappa^{*}(m)$ & kesin teslim sabitleri \\
+$\varrho_i^{\sm{in}}$, $\varrho_i^{\sm{out}}$ & şarj gücü azalmasının iç ve dış eğimi [1/h] & $G_i^{\max}$ & yuvarlama payı [kWh] \\
+$J^{\pi}$, $J^{\sm{pen}}$ & kâr, cezalı kâr [\texteuro] & $J^{\sm{pen,LP}}$, $J^{\sm{LP,ceil}}$ & yumuşak ve katı optimum [\texteuro] \\
+$w_E$, $w_P$, $w$ & değerlendirme ve eğitim ceza ağırlıkları [\texteuro/kWh] & $\Delta E_i^{\sm{sh}}$ & ayrılıştaki eksik enerji [kWh] \\
+$\xi_i$, $\xi_0$ & şarj ünitesi ve küresel belirteç & $d_m$, $n_L$, $n_H$ & genişlik, katman, başlık sayısı \\
+$\theta$, $\omega$ & aktör ve kritik parametreleri & $\beta$ & düzenlileştirici ağırlığı \\
+$\gamma$, $\lambda_{\sm{GAE}}$, $\epsilon_{\sm{clip}}$ & indirim faktörü, GAE parametresi, kırpma aralığı & $n_{\sm{mb}}$, $c_{\sm{vf}}$, $c_{\sm{ent}}$ & mini yığın boyutu, kayıp katsayıları \\
+$\Lambda_E$, $\Lambda_P$, $\eta_\Lambda$ & Lagrange çarpanları, dual adım büyüklüğü & $\alpha$, $n_{\sm{cal}}$ & kapsama dışı kalma düzeyi, kalibrasyon boyutu \\
+$\hat q$, $e_j$, $\hat Q_{1-\alpha}$ & kantil tahmincisi, skor, konformal kantil & $\hat d_i^{\sm{lo}}$, $\tau_i^{\sm{lo}}$ & ayrılış sınırı, kalan adımlar \\
+\bottomrule
+\end{tabular}
+\end{table}

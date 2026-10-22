@@ -1,0 +1,17 @@
+# Smoke overlay (merged on top of any training config with --overlay configs/smoke.yaml):
+# N in {3, 5}, T = 16 steps of 15 min, about 2k env steps, tiny network, in-process envs.
+# min_time_of_stay is reduced to 30 min so that EV2Gym can spawn sessions within the 4-h horizon.
+# SMOKE OUTPUTS ARE NEVER REPORTED (tagged smoke = true).
+smoke: true
+model: {d_model: 32, n_layers: 1, n_heads: 2, head_hidden: 32, mlp_hidden: 64, n_max: 8}
+ppo: {total_env_steps: 2048, rollout_len: 32, minibatch: 64, epochs: 2}
+envs:
+  groups:
+    - {N: 3, count: 2}
+    - {N: 5, count: 2}
+  backend: sync
+  curriculum: {groups: [{N: 3, count: 4}]}
+scenario: {T: 16, min_time_of_stay: 30, hour: 14, profiles: [public, workplace]}  # private sessions cannot fit in 4 h
+conformal: {cache_dir: results/smoke/conformal, n_train: 20, n_cal: 50}
+train: {save_every: 4}
+eval: {test_grid: configs/test_grid_smoke.yaml, test_sets: results/smoke/test_sets, max_replays: 2}

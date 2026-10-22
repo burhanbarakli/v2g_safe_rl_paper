@@ -1,0 +1,182 @@
+{
+  "source": "ev_specs_v2g_enabled2024.json",
+  "rule": "3ph efficiency at the current level closest to I_nom",
+  "models": {
+    "Tesla Model 3": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        87,
+        87,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 57.5,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Tesla Model Y": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        87,
+        87,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 57.5,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Kia Niro": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        90,
+        90,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 64.8,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Volkswagen ID.3": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        87,
+        87,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 58,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Skoda Enyaq": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        87,
+        90,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 58,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Hyundai Kona": {
+      "eta_percent": 93.0,
+      "original_3ph": [
+        90,
+        90,
+        93,
+        93,
+        93,
+        93,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 64,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    },
+    "Peugeot 208": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        84,
+        87,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 46.3,
+      "max_ac_charge_power": 7.4,
+      "max_ac_discharge_power": 7.4
+    },
+    "Volkswagen ID.4": {
+      "eta_percent": 90.0,
+      "original_3ph": [
+        90,
+        90,
+        90,
+        90,
+        90,
+        90,
+        90,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "battery_capacity": 77,
+      "max_ac_charge_power": 11,
+      "max_ac_discharge_power": 11
+    }
+  }
+}

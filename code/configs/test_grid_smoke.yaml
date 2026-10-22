@@ -1,0 +1,7 @@
+# Smoke test grid: N in {3, 5}, T = 16, two profiles, 2 replays each. SMOKE ONLY.
+defaults: {dt_min: 15, T: 16, min_time_of_stay: 30, hour: 14}
+grid:
+  profiles: [public, workplace]
+  N: [3, 5]
+  rho_tr: [4.0]
+replays: {default: 2}

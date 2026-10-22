@@ -1,0 +1,23 @@
+% ---------------------------------------------------------------------
+% Abstract (SAUCIS: <= 400 words, no citations, no figure/table/section
+% references, third person) and keywords (3-5, alphabetical).
+% ---------------------------------------------------------------------
+\begin{abstract}
+Charge point operators that offer vehicle-to-grid (V2G) services must schedule many electric vehicles (EVs) under a transformer limit and deliver the energy that each driver requests by departure.
+Reinforcement learning (RL) controllers for this task usually treat both requirements as reward penalties, and their policy networks are tied to one station size.
+This paper proposes a safe attention policy (SA-Attn) that joins a size-agnostic policy with a closed-form safety layer.
+Each charger is a token of a transformer encoder, and a shared head maps every token to a raw power action, so one set of weights serves any number of chargers.
+The safety layer projects the raw actions onto a feasible set defined by per-EV power bounds and by the forward and reverse transformer limits.
+Its lower bound for each EV is the least power that still lets full-power charging reach the departure energy, computed from a reachable-energy operator that includes the charging taper.
+The projection reduces to clipping each action around one common shift, found in $O(N\log N)$ time for $N$ chargers.
+
+Under stated assumptions, the paper proves that the transformer limit and every departure energy requirement hold at every step for any raw action, during training and deployment.
+A least-laxity-first fallback rule and admission control handle steps on which the assumptions fail, and these steps are counted.
+Uncertain departure times are handled by a split-conformal lower bound that turns the guarantee into a coverage-level statement.
+The policy is trained with proximal policy optimization (PPO) on stations with 10 and 20 chargers in the EV2Gym simulator.
+Without retraining, it is evaluated on stations with up to 200 chargers, three arrival profiles and two transformer ratings.
+Performance is reported as the optimality gap to a perfect-information linear program with hard constraints, and the cost of the guarantee as the profit difference to a penalty-trained attention policy.
+\RES{one or two sentences with the main findings: optimality gap at $N=200$, constraint satisfaction and infeasible-step frequency, cost of the guarantee}
+\end{abstract}
+
+\noindent\textbf{Keywords:} Attention mechanism, Electric vehicle charging, Safe reinforcement learning, Vehicle-to-grid, Zero-shot transfer

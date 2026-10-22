@@ -1,0 +1,18 @@
+% ---------------------------------------------------------------------
+\section{Conclusion}\label{sec:conclusion}
+% ---------------------------------------------------------------------
+
+This paper combined a size-agnostic attention policy with a closed-form safety layer for V2G charging control at a CPO station.
+Each charger is a token, and one set of weights serves any number of chargers.
+The safety layer projects raw actions onto per-EV bounds derived from a reachable-energy operator and onto the two-sided transformer limit, using the known form of a common shift with clipping in $O(N\log N)$ time.
+Under stated assumptions, Theorem~\ref{thm:invariance} guarantees the transformer limit and every departure energy requirement at every step for any raw action, so the guarantee holds during training as well as deployment.
+A least-laxity-first fallback rule, admission control and a deficit bound handle the steps on which aggregate feasibility fails.
+For uncertain departures, a split-conformal bound on the departure step replaces the known-departure assumption at a stated coverage level.
+
+In the zero-shot evaluation, \RES{one or two sentences on the optimality gap up to $N=200$}.
+Regarding constraint satisfaction, \RES{one sentence on violations, shortfall and the frequency of infeasible steps}.
+The cost of the guarantee was \RES{one sentence on its size relative to the profit and to the violations avoided}.
+
+Future work can extend the feasible set to several transformers and to linearised voltage constraints, at the price of coupled sum constraints beyond the single-sum form used here.
+A second direction is a layer that certifies joint feasibility over the future, for example through nested deadline constraints, so that the closed-loop assumption on aggregate feasibility is no longer needed.
+Finally, a conformal bound on the requested energy and tests with recorded charging sessions would narrow the gap between the model and practice.

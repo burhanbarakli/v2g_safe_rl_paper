@@ -1,6 +1,6 @@
 # Nomenclature
 
-Agent A2 (Method and Theory). Version 2, 2026-10-22, revised after the internal proof check.
+Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback.
 
 This file defines one symbol per concept for `formulation.md`, `safety_layer.md` and `algorithm.md`.
 - Section references: F = `formulation.md`, S = `safety_layer.md`, Alg. = `algorithm.md` sections Alg. 1-7.
@@ -82,6 +82,8 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 | $\Delta E_i^{\mathrm{sh}}$ | Departure shortfall, $(E_i^{\mathrm{req}}-E_i(d_i+1))^{+}$ | kWh | S 7.3 |
 | $\Delta E_i^{\mathrm{def}}(t)$ | Feasibility deficit, $(\hat B_i(\tau_i(t))-E_i(t))^{+}$ (Lemma 3) | kWh | S 7.3 |
 | $\rho_i$ | Slope of the linear taper minorant used by admission control | 1/h | S 7.4 |
+| $\Psi_i^{\mathrm{LP}}(E)$ | Maximum departure energy reachable in the admission-LP model (exact first step, minorant afterwards) | kWh | S 7.4 |
+| $E_i^{\mathrm{tgt}}$ | Departure target inside the admission LP (DD25): $E_j^{\mathrm{req}}$ for the new EV, $\min\{E_i^{\mathrm{req}},\Psi_i^{\mathrm{LP}}(E_i(t_0))-10^{-6}\}$ for connected EVs | kWh | S 7.4 |
 
 ## EV2Gym-specific constants
 
@@ -149,7 +151,7 @@ This file defines one symbol per concept for `formulation.md`, `safety_layer.md`
 
 | Symbol | Meaning | Unit | Defined in |
 |---|---|---|---|
-| $J^{\mathrm{LP}}$, $J^{\mathrm{LP,ceil}}$ | Optimal profit of the perfect-information LP (DD10, DD19), and its rounding-aware variant | € | F 3 |
+| $J^{\mathrm{LP}}$, $J^{\mathrm{LP,ceil}}$ | Optimal profit of the perfect-information LP (DD10, DD19), and its rounding-aware variant, which is the reference of the main optimality gap (DD26) | € | F 3 |
 | $J^{\pi}$ | Profit of controller $\pi$ in an episode | € | F 3 |
 | $z_i$, $z^{*}$ | Shortfall slack of session $i$; minimal total shortfall (stage 1) | kWh | F 3 |
 | $G_i^{\max}$ | Bound on EV2Gym's unreported ceil gain, $0.01(d_i-t_i^{\mathrm{arr}}+1)$ | kWh | F 3 |

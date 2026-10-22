@@ -1,0 +1,93 @@
+% ---------------------------------------------------------------------
+\section{Results}\label{sec:results}
+% ---------------------------------------------------------------------
+% SKELETON. No experiment has been run yet. Every quantitative statement
+% is a \RES{} placeholder that the author fills from the analysis outputs.
+% Tables and figures are read from ../../analysis/ (analysis/README.md)
+% and appear automatically once the analysis scripts have produced them.
+
+\TODO{Skeleton: fill every red result placeholder from the analysis outputs, use the past tense and write the interpretation yourself}.
+
+\subsection{Main comparison}\label{sec:res-main}
+
+\Tab{tab:t1} compares all methods on the test configurations that match the training sizes, $N\in\{10,20\}$, pooled over profiles and ratings.
+For each method the table reports the profit, the optimality gap, the share of unserved EVs, the transformer violation energy and the number of infeasible steps.
+At these sizes, the optimality gap of \method{} is \RES{mean gap and 95\% confidence interval at $N\in\{10,20\}$}.
+Relative to Attention+penalty, its profit differs by \RES{difference in \texteuro{} per episode and Wilcoxon $p$-value}, and the penalty method leaves \RES{unserved EVs and violation energy of Attention+penalty}.
+Among the heuristics with the safety layer, \RES{best heuristic and its gap}, and the economic MPC reaches \RES{gap of the MPC, with its information advantage noted}.
+Methods whose profit exceeds $J^{\sm{LP,ceil}}$ through transformer violations are \RES{list of such methods, or ``none''}.
+
+\resulttable{../../analysis/tables/T1.tex}{%
+\begin{table}[t]
+\centering
+\caption{Main comparison at the training station sizes $N\in\{10,20\}$ (three arrival profiles and both tightness levels pooled; placeholder until the analysis scripts have run).}
+\label{tab:t1}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Method & Profit [\texteuro] & Gap [\%] & IQM gap [\%] & Unserved [\%] & Violation [kWh] & Infeasible \\
+\midrule
+\method{} (ours) & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Attention+penalty & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+MLP+safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+MLP+penalty & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+EV-GNN / +safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Heuristics / +safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+Economic MPC / HiGHS port & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
+\bottomrule
+\end{tabular}
+\end{table}}
+
+\subsection{Zero-shot scaling}\label{sec:res-scaling}
+
+\Fig{fig:zeroshot} plots the profit per charger and the optimality gap against the number of chargers, with weights trained at $N\in\{10,20\}$ applied without retraining up to $N=200$.
+At $N=50$, $100$ and $200$, the gap of \method{} is \RES{gap with 95\% confidence interval at each size}.
+From the training sizes to $N=200$, the gap changes by \RES{change in percentage points}, against \RES{change for MLP+safety layer and for EV-GNN}.
+Across arrival profiles and transformer ratings, \RES{differences between the three profiles and the two ratings}, and \Tab{S-tab:t2} in the supplementary material lists all values.
+\TODO{Interpret the scaling trend in your own words and relate it to the size independence of \Sec{sec:policy}}.
+
+\begin{figure}[t]
+\centering
+\resultfig{../../analysis/figures/fig3_zero_shot_scaling.pdf}{Profit per charger and optimality gap versus $N$ per method, 95\% confidence intervals; training sizes marked.}
+\caption{Zero-shot scaling of the learned methods and of the heuristics with the safety layer for $N$ from 5 to 200.}
+\label{fig:zeroshot}
+\end{figure}
+
+\subsection{Constraint satisfaction}\label{sec:res-constraints}
+
+\Fig{fig:constraints} shows the energy not served at departure and the transformer violation energy per method and station size.
+On feasible steps, the methods with the safety layer record a transformer violation energy of \RES{value from the logs; Theorem~\ref{thm:invariance} predicts zero}.
+The penalty-based methods leave \RES{shortfall and violation energy per $N$}.
+Infeasible steps occur in \RES{fraction of steps per $N$, profile and rating, split into fallback cases}, and the measured shortfall amounts to \RES{shortfall as a fraction of the deficit bound of \Eq{eq:deficit}}.
+Requests are capped by more than 0.01 kWh for \RES{number of EVs}, and admission control reduces \RES{number of requests and kWh}, as listed in \Tab{S-tab:t3}.
+
+\begin{figure}[t]
+\centering
+\resultfig{../../analysis/figures/fig4_constraint_satisfaction.pdf}{Energy not served and transformer violation energy versus $N$, per method.}
+\caption{Constraint satisfaction across station sizes.}
+\label{fig:constraints}
+\end{figure}
+
+\subsection{Cost of the guarantee}\label{sec:res-cost}
+
+\Fig{fig:cost} plots the cost of the guarantee against $N$, together with the violations of the penalty-trained policy.
+A positive cost means that the penalty-trained policy earned more profit than \method{} on the same episodes.
+Per EV, the cost of the guarantee is \RES{cost in \texteuro{} per EV and in percent of $|J^{\sm{LP,ceil}}|$ at each $N$}.
+For that profit, the penalty-trained policy incurs \RES{shortfall and violation energy}, and with penalty weights of 1 and 100\,\texteuro/kWh the cost becomes \RES{values of the sensitivity runs}.
+\TODO{Interpret the trade-off in your own words}.
+
+\begin{figure}[t]
+\centering
+\resultfig{../../analysis/figures/fig6_cost_of_guarantee.pdf}{Cost of the guarantee (profit of the penalty-based policy minus profit with the safety layer) versus $N$, with the violations of the penalty-based policy.}
+\caption{Cost of the guarantee across station sizes.}
+\label{fig:cost}
+\end{figure}
+
+\subsection{Further results}\label{sec:res-further}
+
+The supplementary material reports the remaining analyses, and their main values are summarised here.
+In the ablation study (\Tab{S-tab:t4}), removing admission control changes the share of infeasible steps by \RES{value}, and setting $\beta=0$ changes the gap by \RES{value}.
+For the conformal variant (\Tab{S-tab:t7}), the episode-averaged coverage is \RES{coverage for each $\alpha$}, at a profit loss of \RES{loss relative to known departure steps}.
+At $N=200$, one control step takes \RES{mean inference time of policy and safety layer} (\Tab{S-tab:t6}), and the sensitivity studies give \RES{gap at desired state of charge 0.8 and at $\Delta t=5$ min}.
+An example episode at $N=20$ in \Fig{S-fig:exampleday} shows \RES{how aggregate power follows the price and the limits}.

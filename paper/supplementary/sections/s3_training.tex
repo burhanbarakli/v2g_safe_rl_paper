@@ -1,0 +1,77 @@
+% ---------------------------------------------------------------------
+\section{Training details}\label{sec:training-supp}
+% ---------------------------------------------------------------------
+
+\subsection{Training loop}\label{app:ppo}
+
+\Alg{alg:ppo} lists the training loop of \method{}, in which the safety layer of \Alg{M-alg:safety} acts as part of the environment.
+Each environment writes into its own buffer, and at update time all token tensors are right-padded to the largest $N$ in the batch with masked entries.
+Padding changes neither the actor outputs of real tokens nor the value (Lemma~\ref{lem:equivariance}), and the log-probability, entropy and regulariser sums run over masks only.
+The learning reward is the profit divided by $N r^{\sm{ref}}$, so that returns of stations with different $N$ have the same scale, and every reported result uses the undivided profit.
+
+\begin{algorithm}[t]
+\caption{PPO training of \method{} with a variable number of chargers}\label{alg:ppo}
+\begin{algorithmic}[1]
+\Require 16 environments (8 with $N=10$, 8 with $N=20$); actor $\pi_\theta$ and critic $V_\omega$
+\While{fewer than $3\times10^{6}$ environment steps}
+  \For{128 steps in every environment}
+    \State observe tokens, $l$, $u$, $\Ctil$, $\Crev$ and the feasibility flag
+    \State sample $a\sim\pi_\theta(\cdot\mid s)$; $x\gets P^{\sm{ref}}a$
+    \State $p\gets\Pi_t(x)$ if feasible, else fallback rule \Comment{\Alg{M-alg:safety}}
+    \State step the simulator; $r\gets$ \Eq{M-eq:reward}; store $r/(N r^{\sm{ref}})$, $a$, $\log\pi_\theta(a\mid s)$ over tokens with $u_i-l_i>10^{-9}$
+  \EndFor
+  \State compute advantages with GAE ($\gamma=0.99$, $\lambda_{\sm{GAE}}=0.95$); pad tokens to the largest $N$ in the batch
+  \For{10 epochs, minibatches of $B_{\sm{mb}}$ transitions}
+    \State clipped surrogate ($\epsilon_{\sm{clip}}=0.2$) on feasible transitions, normalised by $B_{\sm{mb}}$
+    \State loss $\gets-$surrogate $+\,c_{\sm{vf}}\cdot$value loss $-\,c_{\sm{ent}}\cdot$entropy $+\,\mathcal L_{\sm{reg}}$ (\Eq{M-eq:reg})
+    \State Adam step with gradient-norm clipping 0.5; stop the epochs early if the approximate KL divergence exceeds 0.03
+  \EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Hyperparameters and tuning}\label{app:hyper}
+
+\Tab{tab:hyper} lists the hyperparameters of \method{} and of the learned baselines.
+Tuning uses the tight 10-charger station and 20 validation episodes that cycle through the three profiles, with seeds disjoint from training and test seeds.
+For each of the four learned methods of our own code, a full grid of 18 configurations is trained for $0.5\times10^{6}$ steps with seed 0, and selection uses the training objective of the method.
+The conformal variant and the ablations of \method{} inherit the selection of \method{}, the penalty ablations inherit that of Attention+penalty, and EV-GNN keeps its published hyperparameters.
+Penalty weights, $\beta$, the architecture and all other PPO constants are fixed a priori and not tuned.
+
+\begin{table}[t]
+\centering
+\caption{Hyperparameters and tuning grid of \method{} and of the learned baselines.}
+\label{tab:hyper}
+\footnotesize
+\begin{tabular}{@{}lll@{}}
+\toprule
+Group & Parameter & Value \\
+\midrule
+Network & embedding width $d_m$, layers $n_L$, heads $n_H$ & 128, 3 (pre-LayerNorm), 4 \\
+ & feed-forward width, dropout & 512 (GELU), 0 \\
+ & actor head (shared) & $128\to64\to2$ \\
+ & critic readout & attention pooling, 1 query, $128\to64\to1$ \\
+ & parameters (actor / critic) & 610,370 / 676,481 \\
+PPO & optimiser, learning rate & Adam, tuned in $\{10^{-4},3\times10^{-4},10^{-3}\}$, linear decay \\
+ & minibatch, entropy coefficient & tuned in $\{256,1024\}$ and $\{0,10^{-3},10^{-2}\}$ \\
+ & discount $\gamma$, GAE $\lambda_{\sm{GAE}}$ & 0.99 ($0.99^{1/3}$ at 5 min), 0.95 \\
+ & clip range, value coefficient & 0.2, 0.5 \\
+ & parallel environments, rollout length & 16 (8 with $N=10$, 8 with $N=20$), 128 \\
+ & epochs, target KL, gradient-norm clip & 10, 0.03, 0.5 \\
+ & environment steps per run, seeds & $3\times10^{6}$, 5 \\
+Safety layer & $P^{\sm{ref}}$, $\beta$ & 11 kW, 0.01 \\
+ & $\varepsilon_q$, numerical tolerance & 0.008 kW, $10^{-9}$ \\
+Features & $E^{\sm{ref}}$, $c^{\sm{ref}}$, $H_f$ & 100 kWh, 0.25 \texteuro/kWh, 8 steps \\
+Penalty baselines & $w_E$, $w_P$ & 10 \texteuro/kWh each (fixed) \\
+Conformal & $n_{\sm{cal}}$, $\alpha$ & 5,000 per configuration, $\{0.01,0.05,0.1,0.2\}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Compute budget}\label{app:compute}
+
+The main experiments train five methods with five seeds each, namely MLP+penalty, MLP+safety layer, Attention+penalty, \method{} and \method{}-CP at $\alpha=0.1$.
+Four ablations with five seeds and two penalty-weight sensitivities with three seeds add 26 runs, for 51 runs of $3\times10^{6}$ steps, or about $1.5\times10^{8}$ environment steps.
+Tuning adds 72 short runs with $3.6\times10^{7}$ steps in total, and the optional EV-GNN baseline and the 5-min sensitivity add 15 and 5 runs.
+The conformal variant is evaluated at all four values of $\alpha$ without retraining, because Proposition~\ref{M-prop:conformal} holds for any policy.
+\RES{measured wall-clock training and evaluation time on the hardware of the main text}.

@@ -1,0 +1,25 @@
+# conda env create -f environment.yml && conda activate v2gsafe && bash scripts/install_ev2gym.sh
+# For a CUDA GPU, install the matching torch wheel afterwards (see README, "GPU").
+name: v2gsafe
+channels: [conda-forge]
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - numpy>=1.26
+      - scipy>=1.11
+      - pandas>=2.1
+      - pyyaml>=6.0
+      - torch>=2.3
+      - highspy>=1.7
+      - scikit-learn>=1.4
+      - gymnasium>=0.29
+      - matplotlib>=3.8
+      - pyarrow>=14
+      - pytest>=7.4
+      - pandapower>=2.13
+      - numba>=0.59
+      - multicopula>=0.0.2
+      - psutil>=5.9
+      - networkx>=3.0
+      - setuptools<81

@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{vovk2022algorithmic}
+V.~Vovk, A.~Gammerman, and G.~Shafer, {\em Algorithmic Learning in a Random
+  World}.
+\newblock Springer International Publishing, 2022.
+
+\bibitem{lei2018distributionfree}
+J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J. Tibshirani, and L.~Wasserman,
+  ``Distribution-free predictive inference for regression,'' {\em Journal of
+  the American Statistical Association}, vol.~113, pp.~1094--1111, June 2018.
+
+\end{thebibliography}

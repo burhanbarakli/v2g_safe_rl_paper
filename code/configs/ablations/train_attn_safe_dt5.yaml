@@ -1,0 +1,5 @@
+# 5-min sensitivity (DD13): T = 336, gamma = 0.99**(1/3). See IMPLEMENTATION_NOTES.md (sensitivity scope).
+inherit: ../base.yaml
+method: attn_safe_dt5
+scenario: {dt_min: 5}
+ppo: {gamma: 0.996655493, rollout_len: 128}

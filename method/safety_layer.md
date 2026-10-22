@@ -1,6 +1,6 @@
 # Safety layer: bounds, projection and feasibility invariance
 
-Agent A2 (Method and Theory). Version 2, 2026-10-22, revised after the internal proof check (`review/proof_check.md`; change log in `DONE_method.md`). Symbols: `nomenclature.md`. Model equations (F1)-(F9): `formulation.md`.
+Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback (DD25-DD29) (`review/proof_check.md`; change log in `DONE_method.md`). Symbols: `nomenclature.md`. Model equations (F1)-(F9): `formulation.md`.
 Executable specification: `projection_ref.py`. Numerical checks: `check_A1.py` (results in `check_A1_results.txt`) and `verify_projection.py` (results in `verify_projection_results.txt`).
 
 The **safety layer, a closed-form projection onto the feasible set**, maps the raw per-charger action $x(t)=P^{\mathrm{ref}}a(t)$ [kW] to the commanded power
@@ -385,7 +385,7 @@ $$\sum_i\tilde p_i\in\Big[\sum_ip_i,\ \sum_ip_i+n(t)\varepsilon_q\Big]\subseteq[
 
 **Corollary 2 (EV2Gym instantiation).** In EV2Gym at the pinned commit, A1 and A3 hold if all of the following configuration items hold:
 1. C0: $P_i^{\mathrm{ev}}\le P^{\mathrm{cs}}$ for every EV model (true for the 8 models);
-2. **efficiency constant over current levels, per EV.** DD4 is realised by our own spec JSON whose `3ph_ch_efficiency` table is constant across current levels. Without the table key, EV2Gym draws a random scalar per EV instead. The layer reads $\zeta_i^{\mathrm c},\zeta_i^{\mathrm d}$ from each EV object;
+2. **efficiency constant over current levels, per EV.** DD4 is realised by our own spec JSON whose `3ph_ch_efficiency` table is constant across current levels: the table value at the current level closest to the model's nominal AC current, i.e. 0.90 for all models and 0.93 for the Hyundai Kona (IMPLEMENTATION_NOTES I-17). Without the table key, EV2Gym draws a random scalar per EV instead. The layer reads $\zeta_i^{\mathrm c},\zeta_i^{\mathrm d}$ from each EV object;
 3. one port per charger (DD5), 3-phase chargers and EVs (`phases: 3`, `ev_phases = 3`);
 4. zero dead-bands: EV `min_ac_charge_power = min_discharge_power = 0` (the heterogeneous-spec default), and charger `min_charge_current = min_discharge_current = 0` (`V2GProfitMax.yaml`);
 5. `v2g_enabled: True`, so that negative actions and $P^{\mathrm{dis}}>0$ are available;
@@ -520,23 +520,45 @@ For the fleet bound: on feasible steps $p_i\ge\tilde l_i$. On FB-2 steps $p=u$. 
 
 T4 confirms the bound on 5138 EVs, and the reviewer's check on about 30000 EVs, both with zero violations wherever A1′ holds. The logged per-step quantity $\Delta t\sum_i(g(\tilde l_i)-g(p_i))^{+}$ therefore bounds the departure shortfall a priori, and is reported alongside it.
 
-### 7.4 Admission control (DD9, DD20)
+### 7.4 Admission control (DD9, DD20, DD25)
 
 When EV $j$ arrives at step $t_0$, after the DD2 cap, solve the following feasibility LP with HiGHS [huangfu2018parallelizing]. It covers all $i\in\mathcal N(t_0)$ (including $j$) and $t=t_0,\dots,d_i$, with $E_i(t_0)$ equal to the current energies. In the EV2Gym instantiation $g=\mathrm{id}$; otherwise split $p=p^{+}-p^{-}$ as in (O2).
 $$
 \begin{aligned}
-&E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\quad E_i^{\min}\le E_i(t+1)\le E_i^{\mathrm{cap}},\quad E_i(d_i+1)\ge E_i^{\mathrm{req}},\\
-&-P_i^{\mathrm{dis}}\le p_i(t)\le\bar P_i^{\mathrm{nom}},\quad p_i(t)\le\rho_i\,(E_i^{\mathrm{cap}}-E_i(t)),\quad p_i(t_0)\in[p_i^{\min}(E_i(t_0)),\bar P_i(E_i(t_0))],\\
-&-\hat C_{\mathrm{rev}}(t)\le\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q,
+&E_i(t+1)=E_i(t)+\Delta t\,p_i(t),\quad E_i^{\min}\le E_i(t+1)\le E_i^{\mathrm{cap}},\quad E_i(d_i+1)\ge E_i^{\mathrm{tgt}},\\
+&-P_i^{\mathrm{dis}}\le p_i(t)\le\bar P_i^{\mathrm{nom}},\quad p_i(t)\le\rho_i\,(E_i^{\mathrm{cap}}-E_i(t))\ (t>t_0),\quad p_i(t_0)\in[p_i^{\min}(E_i(t_0)),\bar P_i(E_i(t_0))],\\
+&-\hat C_{\mathrm{rev}}(t)\le\sum_ip_i(t)\le\hat C(t)-n(t_0)\varepsilon_q.
 \end{aligned}
 $$
-- $\hat C(t)$ and $\hat C_{\mathrm{rev}}(t)$ use the realised values at $t_0$ and the forecasts for $t>t_0$. Beyond the forecast window the last forecast is held.
-- $\rho_i$ is the largest slope with $\bar P_i(E)\ge\min\{\bar P_i^{\mathrm{nom}},\rho_i(E_i^{\mathrm{cap}}-E)\}$ for all $E$. It is computed per EV on a 2000-point grid with a 1 % safety factor. This linear minorant is an inner approximation of the taper.
-- If the LP is infeasible, bisect (12 iterations) on $E_j^{\mathrm{req}}\in[\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}}),E_j^{\mathrm{req}}]$ for the largest feasible value. Requests of EVs already admitted are never reduced.
-- If even the lower end is infeasible, set $E_j^{\mathrm{req}}=\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}})$ and log "admission did not restore feasibility".
-- **The reduced request is then passed through `cap_request`** (Sec. 3.4), which re-certifies A4 for the stored table.
 
-Admission control is a heuristic for A5 and **does not enter Theorem 1**: it uses forecasts, ignores future arrivals, and the policy need not follow the LP plan (Sec. 7.1). Ablation: no admission control.
+**Inputs.**
+- $\hat C(t)$ and $\hat C_{\mathrm{rev}}(t)$ use the realised values and $P_{\mathrm{tr}}(t)$ at $t_0$, the noisy forecasts for $t_0+1,\dots,t_0+H_f$, and the last forecast held afterwards. The horizon is $\max_id_i$.
+- $\rho_i$ is the largest slope with $\bar P_i(E)\ge\min\{\bar P_i^{\mathrm{nom}},\rho_i(E_i^{\mathrm{cap}}-E)\}$ for all $E$. It is computed per EV on a 2000-point grid with a 1 % safety factor. This linear minorant is an **inner** approximation of the taper, so every LP-feasible schedule is physically realisable (A1, Lemma E2). The first step uses the exact bounds.
+
+**Targets (DD25).**
+- New EV: $E_j^{\mathrm{tgt}}=E_j^{\mathrm{req}}$ (after the DD2 cap).
+- Connected EVs ($i\ne j$): $E_i^{\mathrm{tgt}}=\min\{E_i^{\mathrm{req}},\ \Psi_i^{\mathrm{LP}}(E_i(t_0))-10^{-6}\}$. Here $\Psi_i^{\mathrm{LP}}(E_i(t_0))$ is the maximum departure energy reachable **in the LP model** (exact first step, minorant afterwards, no transformer limit), computed by forward simulation.
+- Admitted requests are never reduced. The modified target is used **only inside the admission LP**; the safety layer keeps the admitted $E_i^{\mathrm{req}}$.
+
+**Why the faithful version fails.** The literal version uses $E_i^{\mathrm{tgt}}=E_i^{\mathrm{req}}$ for connected EVs. With EV2Gym's default full-battery target ($E^{\mathrm{des}}=E^{\mathrm{cap}}$), the DD2 cap is mostly inactive in floating point, so $E_i^{\mathrm{req}}=E_i^{\mathrm{cap}}$. Under the linear minorant, the gap $E^{\mathrm{cap}}-E$ shrinks at most by the factor $(1-\rho_i\Delta t)$ per step. It therefore never reaches 0 in finitely many steps, and $E_i(d_i+1)\ge E_i^{\mathrm{cap}}$ is unattainable in the LP. The LP is thus infeasible whenever such an EV is connected, independently of the new EV and of the transformer. The same happens when a connected EV is individually infeasible after a fallback step. The faithful rule then sets every new request to $E_j^{\mathrm{arr}}$, a zero requirement (IMPLEMENTATION_NOTES I-3). With DD25, the targets of connected EVs are only as high as the LP model can deliver. The new EV's request is reduced only by genuine capacity conflicts, or by the LP model's gap to the exact taper (about $10^{-5}$-$10^{-2}$ kWh for full targets, below the 0.01 kWh reporting threshold). The faithful variant remains selectable (`safety.admission_existing_targets: admitted`).
+
+**Reduction of the new request.**
+- Feasibility is monotone in $E_j^{\mathrm{tgt}}$, so the largest feasible request $y_{\max}$ is obtained from one LP that maximises $E_j(d_j+1)$ under the same constraints. The 12-step bisection on $[\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}}),E_j^{\mathrm{req}}]$ is then evaluated with the exact predicate $y\le y_{\max}+10^{-6}$. This gives the same result as 12 LP solves.
+- If even the lower end is infeasible, set $E_j^{\mathrm{req}}=\min(E_j^{\mathrm{arr}},E_j^{\mathrm{req}})$ and log "admission did not restore feasibility".
+- The reduced request is then passed through `cap_request` (Sec. 3.4), which re-certifies A4 for the stored table.
+
+**What admission control guarantees, and what it does not.**
+- *Guarantees* (in the model):
+  1. A4 for the new EV (by `cap_request`).
+  2. Requests of admitted EVs are never changed.
+  3. If the LP is feasible, there exists an open-loop schedule that meets the new EV's (possibly reduced) request and the LP-reachable targets of all connected EVs. This schedule is physically realisable under the taper (inner approximation) and respects the transformer limit under the **forecast** capacity, if no further EV arrives.
+- *Does not guarantee:*
+  1. A5 in closed loop: the policy need not follow the LP plan (Sec. 7.1).
+  2. Feasibility under the realised capacity: forecasts are noisy.
+  3. Feasibility after future arrivals.
+  4. That connected EVs reach their full admitted $E_i^{\mathrm{req}}$ when it exceeds $\Psi_i^{\mathrm{LP}}$ (only up to the LP-model gap).
+
+Admission control therefore **does not enter Theorem 1**. Its effect (infeasible steps, reductions) is measured, and "no admission control" is an evaluation-only ablation.
 
 ### 7.5 What is counted in the experiments
 
@@ -638,7 +660,7 @@ $$\mathcal L_{\mathrm{reg}}(\theta)=\beta\ \mathbb E_{s}\Big[\frac1{n(t)}\sum_{i
 | A1′ | $\varphi_i$ 1-Lipschitz ($\bar P_i$ non-increasing) | Lemma 3; numerical room in the DD2 cap | Proven (Lemma E1); excess $1.4\times10^{-14}$ kWh |
 | A2 | $d_i$ and $E_i^{\mathrm{req}}$ known at arrival | Theorem 1 | Exact in EV2Gym; relaxed for $d_i$ by Proposition 2 |
 | A3 | Realised energy $\ge E+\Delta tg(p)$ and $\le E^{\mathrm{cap}}$; realised power in $[p,p+\varepsilon_q]$ | Lemma 1, Theorem 1(a) | Lemmas E2 and E3 under Corollary 2's configuration; logged as $\max_t(\sum\tilde p-\sum p)$ and $\min_t(E(t+1)-E(t)-\Delta tp)$ |
-| A4 | $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}}))$ | Theorem 1 base | By construction (`cap_request`, also after admission control); caps reported with threshold 0.01 kWh |
+| A4 | $E_i^{\mathrm{arr}}\ge\hat B_i(\tau_i(t_i^{\mathrm{arr}}))$ | Theorem 1 base | By construction (`cap_request`, also after admission control, DD25); caps reported with threshold 0.01 kWh |
 | A5 | $\sum l_i\le\tilde C$, $\sum u_i\ge-C_{\mathrm{rev}}$, $\tilde C\ge-C_{\mathrm{rev}}$ at every closed-loop step | Theorem 1 | Checked online at every step; infeasible steps, FB-0/1/2/1*, A5 slack and the Lemma 3 deficit reported per $N$ and scenario |
 | $\epsilon_{\mathrm{num}}$ | Single numerical tolerance $10^{-9}$ | Sec. 6.4 | Absorbed by the unused part of $\varepsilon_q$ and far below 0.001 kWh |
 | DD1 | EV2Gym lossless accounting ($g=\mathrm{id}$), efficiencies as derating | All | Stated as a limitation |

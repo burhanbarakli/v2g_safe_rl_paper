@@ -1,0 +1,14 @@
+# Sensitivity configurations (DD28): N = 20, rho_tr = 4, all profiles; desired SoC 0.8 (main policies) and
+# 5-min steps (policy trained with configs/ablations/train_attn_safe_dt5.yaml). Run: ./reproduce.sh --stage sensitivity
+defaults:
+  N: 20
+  rho_tr: 4.0
+replays:
+  default: 100
+extra:
+  - {profile: workplace, desired_soc: 0.8}
+  - {profile: public, desired_soc: 0.8}
+  - {profile: private, desired_soc: 0.8}
+  - {profile: workplace, dt_min: 5}
+  - {profile: public, dt_min: 5}
+  - {profile: private, dt_min: 5}

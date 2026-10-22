@@ -1,6 +1,6 @@
 # Problem formulation, MDP and attention policy
 
-Agent A2 (Method and Theory). Version 2, 2026-10-22, revised after the internal proof check (change log in `DONE_method.md`). Symbols: `nomenclature.md`. The safety layer, its bounds and all proofs about constraints are in `safety_layer.md` (cited as S x.y). EV2Gym facts are from `ev2gym_notes.md` (pinned commit `55ef368`). Binding design decisions are DD1-DD24 in `design_decisions.md`.
+Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback (change log in `DONE_method.md`). Symbols: `nomenclature.md`. The safety layer, its bounds and all proofs about constraints are in `safety_layer.md` (cited as S x.y). EV2Gym facts are from `ev2gym_notes.md` (pinned commit `55ef368`). Binding design decisions are DD1-DD29 in `design_decisions.md`.
 
 ---
 
@@ -66,7 +66,7 @@ Here $\hat B_i(k;y)$ is the certified backward-reachable threshold for target $y
 The **departure energy requirement** is
 $$E_i(d_i+1)\ \ge\ E_i^{\mathrm{req}}.\tag{F7}$$
 
-Remark (taper and full-battery targets): EV2Gym's taper approaches full SoC only asymptotically, $1-(1-s)e^{-\kappa}$ per step. With $E_i^{\mathrm{des}}=E_i^{\mathrm{cap}}$, the cap (F6) is therefore active for almost every EV, usually by a negligible amount (median 0.001 kWh in `verify_projection.py`, T4). Cap statistics must be reported with a threshold, e.g. "capped by more than 0.01 kWh". This threshold is EV2Gym's own rounding unit.
+Remark (taper and full-battery targets): EV2Gym's taper approaches full SoC geometrically: per full-power step, the remaining gap $1-\varsigma$ shrinks by the factor $e^{-\kappa}$. Whether the DD2 cap (F6) binds for $E_i^{\mathrm{des}}=E_i^{\mathrm{cap}}$ therefore depends on the stay. For the long stays of the main scenarios, the exponential tail reaches $E^{\mathrm{cap}}$ within floating-point precision, so the cap is inactive and $E_i^{\mathrm{req}}=E_i^{\mathrm{cap}}$ (IMPLEMENTATION_NOTES I-3). For short stays it binds, often by a negligible amount: median 0.001 kWh in the short-stay toy test T4 of `verify_projection.py`. Cap statistics are therefore reported with a threshold, "capped by more than 0.01 kWh", which is EV2Gym's own rounding unit. Full targets are also why the admission LP needs the DD25 targets (S 7.4).
 
 ### 1.4 Transformer limit
 
@@ -155,9 +155,16 @@ So the trajectory is feasible for stage 2, and its objective equals $J^{\pi}$.
 
 The rest is as in (a). $\square$
 
-**Optimality gap.** The main metric is $\mathrm{gap}(\pi)=(J^{\mathrm{LP}}-J^{\pi})/|J^{\mathrm{LP}}|$ per episode. Profits are usually negative, because charging to the target costs money, so the absolute value is needed. Episodes with $|J^{\mathrm{LP}}|<1$ € are excluded from the relative metric, and the absolute gap in € per EV is also reported. $J^{\mathrm{LP,ceil}}-J^{\mathrm{LP}}$ is reported once per scenario to show that the ceil effect is negligible. Because of the two relaxations, the reported gap overestimates the true gap.
+**Optimality gap (DD26).** The main metric is computed against the rounding-aware oracle:
+$$\mathrm{gap}(\pi)=\frac{J^{\mathrm{LP,ceil}}-J^{\pi}}{|J^{\mathrm{LP,ceil}}|}\quad\text{per episode.}$$
+- Profits are usually negative, because charging to the target costs money, so the absolute value is needed.
+- Episodes with $|J^{\mathrm{LP,ceil}}|<1$ € are excluded from the relative metric, and the absolute gap in € per EV is also reported.
+- The gap with respect to $J^{\mathrm{LP}}$, and the difference $J^{\mathrm{LP,ceil}}-J^{\mathrm{LP}}$, go to the supplementary material.
+- Because of the relaxations (taper, complementarity, ceil allowance), the reported gap overestimates the true gap.
 
-The bound applies only to controllers that respect (F8). Raw heuristics and penalty-based RL can exceed $J^{\mathrm{LP}}$ by violating the transformer limit; this is flagged in the tables.
+**Why $J^{\mathrm{LP}}$ is not the main reference.** $J^{\mathrm{LP}}$ is an upper bound only in the exact model (Proposition O1(a)). Inside EV2Gym, `current_capacity` is rounded up to 0.01 kWh after every active step, and this energy is never billed. A controller can therefore reach its departure targets while buying slightly less energy than the exact model requires, and its realised profit can exceed $J^{\mathrm{LP}}$. This was observed in the smoke run: a feasible LLF+$\Pi$ controller, with no violation and no shortfall, scored $-2.376$ € against $J^{\mathrm{LP}}=-2.386$ € (IMPLEMENTATION_NOTES I-4). A gap measured against $J^{\mathrm{LP}}$ could thus be negative, which is meaningless for a bound. $J^{\mathrm{LP,ceil}}$ relaxes the departure and $E^{\min}$ constraints by the largest possible ceil gain $G_i^{\max}$, so it is a rigorous upper bound for every EV2Gym controller that respects (F8) and has realised shortfall $\le z^{*}$ (Proposition O1(b)). The unit test `test_oracle_upper_bounds_heuristics_on_tiny_replay` checks this. The bound applies only to controllers that respect (F8).
+
+Raw heuristics and penalty-based RL can exceed $J^{\mathrm{LP,ceil}}$ by violating the transformer limit; this is flagged in the tables.
 
 ---
 
@@ -218,7 +225,7 @@ Normalisation constants:
 | 36 | rating per charger $P_{\mathrm{tr}}^{\mathrm{nom}}/(NP^{\mathrm{ref}})$ | – |
 | 37-38 | aggregate tightness $\sum_{i\in\mathcal N(t)}l_i(t)$, $\sum_{i\in\mathcal N(t)}u_i(t)$ | $/P_{\mathrm{tr}}^{\mathrm{nom}}$ |
 
-$P_{\mathrm{tr}}^{\mathrm{nom}}=\max_tP_{\mathrm{tr}}(t)$. The arrival profile (workplace, public, private) is deliberately **not** a feature; the policy infers it from the tokens and the time features (DD24, `algorithm.md` Alg. 7.1). All global features are intensive, i.e. ratios that do not grow with $N$. This keeps the inputs in distribution when a policy trained at $N\in\{10,20\}$ is applied at $N=200$ with $P_{\mathrm{tr}}$ scaled in proportion to $N$. When $c^{\mathrm{dis}}=f^{\mathrm{dis}}c^{\mathrm{ch}}$, no separate discharge-price forecast is needed.
+Forecasts are $\hat P(t+k)=\max\{0,P(t+k)(1+0.1\epsilon_{t,k})\}$ with $\epsilon_{t,k}\sim\mathcal N(0,1)$ drawn independently for every $(t,k)$. Beyond the episode end, the last true value of load, PV and price is held. $P_{\mathrm{tr}}^{\mathrm{nom}}=\max_tP_{\mathrm{tr}}(t)$. The arrival profile (workplace, public, private) is deliberately **not** a feature; the policy infers it from the tokens and the time features (DD24, `algorithm.md` Alg. 7.1). All global features are intensive, i.e. ratios that do not grow with $N$. This keeps the inputs in distribution when a policy trained at $N\in\{10,20\}$ is applied at $N=200$ with $P_{\mathrm{tr}}$ scaled in proportion to $N$. When $c^{\mathrm{dis}}=f^{\mathrm{dis}}c^{\mathrm{ch}}$, no separate discharge-price forecast is needed.
 
 ### 4.3 Action
 
@@ -280,7 +287,7 @@ $$H\leftarrow H+\mathrm{MHA}(\mathrm{LN}(H);\text{mask}),\qquad H\leftarrow H+\m
 - **No positional encoding.**
 
 **Actor head (shared across chargers).**
-- $(\mu_{\theta,i},\ell_i)=\mathrm{MLP}_a(h_i)$, with sizes $d_m\to64\to2$ and GELU.
+- $(\mu_{\theta,i},\ell_i)=\mathrm{MLP}_a(h_i)$, with sizes $d_m\to d_m/2\to2$ (128 → 64 → 2) and GELU.
 - $\log\sigma_{\theta,i}=\operatorname{clamp}(\ell_i,-5,0.5)$.
 - Policy:
 $$\pi_\theta(a\mid s)=\prod_{i\in\mathcal N(t)}\mathcal N\big(a_i;\mu_{\theta,i},\sigma_{\theta,i}^2\big).$$
@@ -289,7 +296,7 @@ $$\pi_\theta(a\mid s)=\prod_{i\in\mathcal N(t)}\mathcal N\big(a_i;\mu_{\theta,i}
 
 **Critic.**
 - Attention pooling (pooling by multi-head attention [lee2019set]) with one learned query $q\in\mathbb R^{d_m}$ ($n_H$ heads, same key mask) over the encoder outputs of all unmasked tokens, global token included.
-- Then $V_\omega(s)=\mathrm{MLP}_v(\mathrm{pool})$, with sizes $d_m\to64\to1$.
+- Then $V_\omega(s)=\mathrm{MLP}_v(\mathrm{pool})$, with sizes $d_m\to d_m/2\to1$ (128 → 64 → 1).
 - The returns are intensive (Sec. 4.4), so an averaging readout is adequate.
 - A global-token readout ($V=\mathrm{MLP}_v(h_0)$) is an acceptable alternative.
 
@@ -311,14 +318,14 @@ $$A(PH)=P\,\mathrm{softmax}(QK^\top/\sqrt{d_k}+M)P^\top PV=P\,A(H).$$
 6. For (iv), a masked key receives weight $e^{-\infty}=0$ in every softmax, so its value never enters the output of any other token. Its own row is computed but discarded. Row-wise operations do not mix tokens.
 7. For (v), every weight matrix has a shape determined by $(F_c,F_g,d_m,n_H,n_L)$, never by $N$. $\square$
 
-**Parameter counts** ($d_m=128$, $n_L=3$, FFN 512, $F_c=12$, $F_g=38$):
+**Parameter counts** ($d_m=128$, $n_L=3$, FFN 512, $F_c=12$, $F_g=38$; all counts reproduced exactly by the implementation, IMPLEMENTATION_NOTES I-21):
 
 | Network | Parameters |
 |---|---|
 | Actor | 610,370 |
 | Critic | 676,481 |
 | Total | 1,286,851, independent of $N$ |
-| Small variant ($d_m=64$, $n_L=2$), total | 228,067 |
+| Small variant ($d_m=64$, $n_L=2$, FFN 256, heads $d_m\to d_m/2$), total | 228,067 (actor 105,698, critic 122,369; with heads of width 64 instead: 232,323) |
 | MLP baseline actor ($N_{\max}=200$, two hidden layers of 256) | 792,976; grows linearly with $N_{\max}$ |
 
 **Consequence for zero-shot transfer.** By (iv), a station with $N$ chargers, $n$ of them occupied, gives the same per-EV outputs as a station with only those $n$ chargers, except through the global features 35-38. These features are ratios. Together with (i) and (iii), this is the structural basis for applying weights trained at $N\in\{10,20\}$ to $N\in[5,200]$. It is not by itself a performance guarantee: attention over 200 tokens averages over more keys than seen in training. This is exactly what C3 measures.

@@ -1,0 +1,6 @@
+# Smoke version of the sensitivity grid (DD28): desired SoC 0.8 and 5-min steps, N = 3. SMOKE ONLY.
+defaults: {N: 3, rho_tr: 4.0, min_time_of_stay: 30, hour: 14}
+replays: {default: 2}
+extra:
+  - {profile: public, desired_soc: 0.8, T: 16}
+  - {profile: public, dt_min: 5, T: 48}

@@ -1,0 +1,98 @@
+% ---------------------------------------------------------------------
+\section{Related Work}\label{sec:related}
+% ---------------------------------------------------------------------
+
+\subsection{Reinforcement learning for EV charging and V2G}\label{sec:rw-rl}
+
+Deep RL for EV charging has moved from single-vehicle agents \cite{li2020constrained} to stations with photovoltaics, storage and V2G \cite{korkas2024distributed,zhang2025dumes}, to coordinated stations \cite{song2025longterm} and to fleets under distribution-grid limits \cite{zhang2024hamlet,caballe2026largescale}.
+Two reviews list safety, dependence on simulation and the lack of a standard benchmark among the open problems \cite{qiu2023reinforcement,michailidis2025reinforcement}.
+In most studies, the energy owed to a departing vehicle enters the reward as a penalty \cite{sadeghianpourhamami2020definition,korkas2024distributed,ye2022learning}.
+
+EV2Gym models a CPO whose chargers sit under transformers with inflexible load, solar generation and demand response \cite{orfanoudakis2025ev2gym}.
+Its default RL interface uses one action per charger port and a flat observation, so a trained policy is tied to one station size.
+The simulator records transformer overload without preventing it, and in its V2G benchmark penalty-based agents earned profit but left many users short of their requested energy.
+Optimisation-based controllers treat both requirements as hard constraints, and the Adaptive Charging Network (ACN) solves a convex program in receding horizon \cite{lee2021adaptive}.
+Economic model predictive control (MPC) with hard departure and transformer constraints is also available inside EV2Gym \cite{diazlondono2026open}.
+Recent EV2Gym-based work trains actors through a differentiable power-flow model, but voltage and departure targets remain soft penalties there \cite{orfanoudakis2026physics}.
+
+\subsection{Constraint handling and safe reinforcement learning}\label{sec:rw-safe}
+
+Weighted violation terms in the reward do not prevent violations at test time \cite{tabas2022computationally,fan2024safety}.
+The constrained Markov decision process (CMDP) replaces the fixed weight with a bound on expected cumulative cost \cite{altman2021constrained}, solved by Lagrangian \cite{tessler2018reward} or trust-region \cite{achiam2017constrained} updates.
+Reviews classify both approaches as soft or probabilistic guarantees \cite{gu2024review,su2025review}, and CMDP formulations have been applied to EV charging with voltage limits \cite{fan2024safety}, transformer thermal stress \cite{zhang2025modelfree} and V2G aggregators \cite{eland2026safe}.
+
+A second family corrects each action before execution, through shields \cite{alshiekh2018safe}, learned linear safety layers \cite{dalal2018safe} or quadratic programs with a fallback controller \cite{ceusters2023adaptive}.
+EV examples include rule-based shields \cite{guan2024rule}, action-replacement layers \cite{zhang2025dumes} and grid-code shielding \cite{demirel2025multiobjective}.
+Such a filter is only as safe as its internal model: HetGPS combines a learned risk model with a linearised power-flow projection, yet its authors make no pointwise feasibility claim \cite{wang2026hetgps}.
+The EV2Gym authors have also added a safety layer to a graph-enhanced twin delayed deep deterministic (TD3) agent \cite{fujimoto2018addressing}.
+According to its abstract, the layer preserves charging requirements and enforces power limits, but the abstract describes neither the mechanism nor a formal guarantee \cite{orfanoudakis2026can}.
+\TODO{Describe the layer of \cite{orfanoudakis2026can} precisely once the full text is read}.
+
+A third family makes the policy output feasible by construction.
+Differentiable convex optimisation layers pass gradients through an exact solve \cite{amos2017optnet,agrawal2019differentiable}, and Chen et al. used such a projection inside energy-system policies \cite{chen2021enforcing}.
+Gauge maps give feasible points in closed form \cite{li2023learning}, and Tabas and Zhang used one to prove that a learned frequency controller stays in a controlled-invariant safe set \cite{tabas2022computationally}.
+For EV stations, Wan et al. prove per-step feasibility of a quadratic-program projection that covers transformer and charger-current limits but not departure energy \cite{wan2025logicinformed}.
+Yan et al. derive per-EV bounds from remaining energy and time, and in the version we read their formal result covers only first-order power balance \cite{yan2026hierarchical}.
+A depot-charging preprint reports no breaches with a closed-form projection but states no proof in its abstract \cite{arif2026constraint}.
+
+Projection also alters learning, because naive projection biases policy gradients \cite{gros2020safe} and many infeasible actions map to the same projected point \cite{kasaura2023benchmarking}.
+For stochastic policies, projection inside the environment is equivalent to projection as a policy layer \cite{markgraf2025safe}, and a distance penalty between pre- and post-projection actions limits drift of the raw actions \cite{chen2021enforcing,markgraf2025safe}.
+
+\subsection{Size-agnostic architectures}\label{sec:rw-scale}
+
+Deep Sets \cite{zaheer2017deep}, self-attention \cite{vaswani2017attention} and the Set Transformer \cite{lee2019set} process sets of any size with shared weights, and UPDeT decoded entity-wise actions so that one model served multi-agent tasks of different sizes \cite{hu2021updet}.
+Size transfer is not automatic, since neural routing solvers trained on small graphs often fail on larger ones \cite{joshi2022learning}.
+In EV charging, aggregation gave the first size-independent states.
+Sadeghianpourhamami et al. binned vehicles by time to departure and remaining charging time, reported the gap to a perfect-knowledge optimum and tested scaled arrival rates \cite{sadeghianpourhamami2020definition}.
+Aggregated representations, however, hide per-vehicle detail or move it into disaggregation rules \cite{zhang2022transfer,salesortiz2024efficient}.
+
+Parameter sharing keeps the per-vehicle detail.
+The heterogeneous graph policy (EV-GNN) of \cite{orfanoudakis2025scalable} scales to 1000 charge points with a reward that penalises transformer overload and unmet demand.
+In contrast, the graph-enhanced decision transformer (GNN-DT) of \cite{orfanoudakis2026graph} transfers zero-shot from 25 to 100 chargers, with performance degrading as size grows.
+HetGPS keeps one parameter set from 1,236 to 3,218 vehicles \cite{wang2026hetgps}, and a graph actor for voltage control has been deployed on a larger feeder without retraining \cite{jin2026telemetry}.
+In all size-agnostic controllers that we could read in full, constraints enter through reward terms, imitation data or heuristic screens.
+
+\subsection{Laxity-based scheduling and departure uncertainty}\label{sec:rw-laxity}
+
+Chen et al. proved that a schedule is feasible exactly when every laxity, the slack between the time left and the time still needed to finish charging, stays non-negative \cite{chen2022smoothed}.
+Their sLLF rule clips each rate around a common level found by bisection under the station power limit, and their resource-augmentation bounds indicate that online feasibility generally requires extra power.
+Least-laxity-first (LLF) priorities also perform well under hard cable capacities \cite{vanhuffelen2025grid} and in rule-based aggregators that avoid transformer overload \cite{christensen2025multiagent}.
+These methods assume that users declare departure time and energy at arrival.
+Residential plug-in durations are hard to predict \cite{dyo2022behavior}, users can gain by under-reporting deadlines \cite{ferragut2022scheduling}, and forecasts of departure improve prioritisation under scarce supply \cite{frendo2021improving}.
+Conformal prediction gives distribution-free coverage under exchangeability \cite{lei2018distributionfree,angelopoulos2023conformal} and has tightened constraints in safe planning \cite{lindemann2023safe}.
+Our screening, however, found no peer-reviewed work that feeds a calibrated departure bound into an RL safety layer for EV charging.
+
+\subsection{Positioning}\label{sec:rw-position}
+
+As seen in \Tab{tab:positioning}, each ingredient of our design already exists in some form.
+Size-agnostic graph and attention policies with zero-shot transfer exist for EV charging \cite{orfanoudakis2026graph,wang2026hetgps}, and provable projection layers exist in safe RL \cite{tabas2022computationally,wan2025logicinformed}.
+The clip-around-a-common-level rule appears in sLLF \cite{chen2022smoothed}, and per-EV latest-start bounds appear in the scheduler of Yan et al. \cite{yan2026hierarchical}.
+Train-small, test-large evaluation with a gap to an optimum dates back at least to the binned-state study of \cite{sadeghianpourhamami2020definition}.
+To our knowledge, no prior work joins these elements in one controller with a proof of multi-step feasibility.
+\method{} uses one set of weights for any number of chargers, and its safety layer keeps departure energy and the transformer limit feasible at every step under stated assumptions, as we prove.
+Zero-shot results up to 200 chargers are reported as gaps to a hard-constrained perfect-information optimum, together with the cost of the guarantee.
+
+\begin{table}[t]
+\centering
+\caption{Positioning against the closest works. ``Penalty'' means a reward term; ``hard'' means enforced by construction. Entries rest on full-text readings except where marked (abstract only).}
+\label{tab:positioning}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright}p{2.6cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.0cm}>{\raggedright}p{2.2cm}>{\raggedright}p{1.9cm}>{\raggedright\arraybackslash}p{2.0cm}@{}}
+\toprule
+Work & Size-agnostic policy & Departure energy & Transformer limit & Guarantee & Zero-shot size test & Gap to optimum \\
+\midrule
+EV2Gym agents \cite{orfanoudakis2025ev2gym} & no (flat) & penalty & penalty & none & no & oracle as baseline \\
+EV-GNN \cite{orfanoudakis2025scalable} & yes (graph) & penalty & penalty & none & not in version read & oracle or MPC baseline \\
+GNN-DT \cite{orfanoudakis2026graph} & yes (graph) & penalty & penalty & none & 25 to 100 chargers & reward within 5\% of oracle \\
+HetGPS \cite{wang2026hetgps} & yes (graph attention) & reward and heuristic & not constrained & empirical (voltage filter) & 8 to 32 transformers & no \\
+Yan et al. \cite{yan2026hierarchical} & no & hard (per-EV rule) & not modelled & first-order power balance & no & gap to MPC \\
+Wan et al. \cite{wan2025logicinformed} & no & not modelled & hard (quadratic-program projection) & per-step feasibility & no & no \\
+sLLF \cite{chen2022smoothed} & rule, any size & laxity rule & hard (common level) & feasibility theorems & not learned & no \\
+Sadeghian\-pourhamami et al. \cite{sadeghianpourhamami2020definition} & yes (aggregate state) & penalty & not modelled & none & scaled arrivals & yes \\
+Orfanoudakis et al. \cite{orfanoudakis2026can} (abstract only) & graph policy & safety layer & safety layer & unknown & unknown & unknown \\
+\midrule
+This work & yes (charger tokens) & hard (bound $l_i$) & hard (common shift) & proven, Assumptions A1--A5 & 10/20 to 200 chargers & hard-constrained linear program; cost of the guarantee \\
+\bottomrule
+\end{tabular}
+\end{table}

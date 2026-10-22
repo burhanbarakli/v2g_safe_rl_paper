@@ -1,0 +1,3 @@
+inherit: ../train_attn_penalty.yaml
+method: attn_penalty_w100
+reward: {w_E: 100.0, w_P: 100.0}

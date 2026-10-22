@@ -1,0 +1,64 @@
+% ---------------------------------------------------------------------
+\section{Discussion}\label{sec:discussion}
+% ---------------------------------------------------------------------
+
+\subsection{Interpretation}\label{sec:interpretation}
+
+% DRAFT. The interpretation of results must be written by the authors
+% (SAUCIS AI policy). The prompts below mark what each paragraph needs.
+
+\TODO{Paragraph 1: state whether weights trained at 10 and 20 chargers transfer to 200 chargers (\Fig{fig:zeroshot}, \Tab{tab:t1}) and compare the gaps}.
+The main finding on zero-shot transfer is \RES{one-sentence summary}.
+
+\TODO{Paragraph 2: relate the cost of the guarantee (\Fig{fig:cost}) to the violations of the penalty-trained policy, i.e.\ lost profit versus profit from violations}.
+The main finding on the cost of the guarantee is \RES{one-sentence summary}.
+
+\TODO{Paragraph 3: discuss how often A5 failed and the shortfall left by the fallback rule (\Fig{fig:constraints}), relating it to the closed-loop nature of A5}.
+The main finding on infeasible steps is \RES{one-sentence summary}.
+
+\TODO{Paragraph 4: compare with \Tab{tab:positioning} only on the literature configuration, never across different simulators or scenarios}.
+
+\subsection{Practical implications for charge point operators}\label{sec:implications}
+
+This subsection is to be written by the authors after the experiments, covering the following points.
+\begin{itemize}
+\item \TODO{What a CPO gains when the guarantees hold for any raw action, e.g.\ for certification or grid-operator agreements.}
+\item \TODO{The cost of the guarantee in euros per EV and per year for a station of given size.}
+\item \TODO{Use of the conformal variant where drivers do not declare departure times; acceptable coverage levels.}
+\item \TODO{Inference time of \Tab{S-tab:t6} relative to the 15-min control step.}
+\end{itemize}
+
+\subsection{Limitations}\label{sec:limitations}
+
+The guarantee of Theorem~\ref{thm:invariance} rests on known departure times and requested energies (A2).
+Our conformal extension relaxes only the departure step, and it gives a marginal coverage statement rather than a per-EV guarantee.
+Requested energies are still assumed to be declared at arrival, and strategic misreporting of deadlines \cite{ferragut2022scheduling} lies outside the model.
+
+Aggregate feasibility (A5) can fail in closed loop, as the two-EV example of \Sec{sec:invariance} shows.
+On such steps the fallback rule keeps the transformer limit and spreads the deficit in order of laxity, so the departure guarantee holds only for the EVs covered by Corollary~\ref{cor:local}.
+Lemma~\ref{S-lem:deficit} bounds the remaining shortfall but does not remove it.
+A layer that certifies joint feasibility over the future would need time-coupled constraints, and its projection would lose the single-sum form.
+
+The model covers one station behind one transformer, and it ignores voltage limits, line flows and other distribution-network constraints.
+Several transformers or a network model would add further coupled sum constraints to $\mathcal K(t)$, a case that Proposition~\ref{prop:projection} does not cover.
+
+Our experiments use EV2Gym's lossless accounting, in which the billed power equals the battery-side energy change.
+V2G arbitrage therefore carries no round-trip loss, so profits from discharging may be optimistic.
+Efficiencies are constant per EV model instead of following the current-dependent tables of the simulator.
+The theory covers lossy, piecewise-linear energy maps, but the experiments do not exercise them.
+
+Assumption A1 requires a monotone maximum-charging map.
+Lemma~\ref{S-lem:taper} proves A1 for the exponential taper of EV2Gym, provided the charging power of the EV does not exceed the charger rating.
+A taper whose power drops faster than $1/(\eta^{\sm c}\Delta t)$ kW per kWh would violate A1, and certified thresholds would not repair the guarantee.
+Exact delivery of sub-maximal commands (A3) also depends on the default taper multiplier of the simulator.
+
+All results come from simulation with synthetic arrivals drawn from EV2Gym's statistics and with Dutch day-ahead prices.
+Some late evening sessions of the public and private profiles do not fit into the episode horizon and are therefore not generated.
+Forecast noise is synthetic, and real metering delays are not modelled.
+
+Our EV-GNN baseline is trained per arrival profile at a single size with its own algorithm, so that comparison is not fully like-for-like.
+The same holds for the MPC beyond 25 chargers, a related but not identical port.
+In addition, the perfect-information LP relaxes the charging taper to the nominal power, so the reported optimality gap overestimates the true gap.
+Part of any gap is also the price of not knowing the future, because the LP ignores the information limits of an online controller.
+Finally, the novelty claims depend on the full texts of the closest works listed as open risks in the related-work review.
+\TODO{Remove or adapt the last sentence once the novelty risks are closed}.

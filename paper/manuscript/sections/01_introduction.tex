@@ -1,0 +1,45 @@
+% ---------------------------------------------------------------------
+\section{Introduction}\label{sec:intro}
+% ---------------------------------------------------------------------
+
+A charge point operator (CPO) buys energy for its chargers at time-varying prices, and vehicle-to-grid (V2G) discharging lets the same operator sell energy from parked electric vehicles (EVs) when prices are high.
+Two hard requirements limit this freedom.
+The aggregate power of the station must stay within the transformer limit, and each EV must hold its requested energy when it leaves.
+A schedule that breaks the first requirement overloads equipment, and one that breaks the second requirement breaks the service promise to the driver.
+
+Reinforcement learning (RL) has become a common approach to this control task, because prices, arrivals and departures are uncertain and hard to model in advance \cite{qiu2023reinforcement,michailidis2025reinforcement}.
+Most RL controllers for EV charging encode the departure energy requirement and the transformer limit as weighted penalties in the reward \cite{sadeghianpourhamami2020definition,ye2022learning,korkas2024distributed,orfanoudakis2025ev2gym}.
+A penalty trades violations against profit, so a trained policy may still violate either requirement at test time \cite{orfanoudakis2025ev2gym,tabas2022computationally}.
+Constrained formulations replace the fixed weight with a bound on the expected cumulative cost \cite{altman2021constrained}, but such a bound holds on average over episodes and not at every step \cite{gu2024review,su2025review}.
+
+A second limitation concerns station size.
+The default interface of the EV2Gym simulator assigns one action to each charger and uses a flat observation, so a trained network is tied to one number of chargers \cite{orfanoudakis2025ev2gym}.
+Graph and attention policies remove this restriction \cite{orfanoudakis2025scalable,orfanoudakis2026graph,wang2026hetgps}, yet in these size-agnostic controllers the constraints still enter through reward terms, imitation data or heuristic filters.
+The authors of one of them state explicitly that their filter makes no pointwise feasibility claim \cite{wang2026hetgps}.
+
+Safety layers correct each action before execution and can enforce limits by construction \cite{dalal2018safe,chen2021enforcing,tabas2022computationally}.
+For EV stations, existing layers cover per-step limits such as transformer capacity and charger current \cite{wan2025logicinformed}, or they apply rule-based shields \cite{guan2024rule,zhang2025dumes}.
+A per-step layer alone does not protect the departure energy requirement, because that requirement couples the present action with every later step of the stay.
+Per-EV latest-start bounds address this coupling in laxity-based scheduling \cite{chen2022smoothed} and in hierarchical V2G scheduling \cite{yan2026hierarchical}.
+To our knowledge, no published controller combines such bounds with a learned policy that runs at any station size and comes with a proof of multi-step feasibility.
+\TODO{Confirm this sentence against the full texts of \cite{orfanoudakis2026can}, \cite{song2025longterm} and \cite{eland2026safe} before submission (novelty risks listed in the gap analysis)}.
+
+This paper proposes a safe attention policy (\method) for V2G charging control at a CPO station.
+An attention policy treats each charger as a token and outputs one raw power action per token with shared weights.
+A safety layer, a closed-form projection onto the feasible set, maps the raw actions to commanded powers that respect the per-EV bounds and the transformer limit.
+The projection has the same form as the rate rule of smoothed least-laxity-first (sLLF) scheduling \cite{chen2022smoothed}, and it is the classical Euclidean projection onto a box intersected with one sum constraint \cite{kiwiel2007breakpoint,wang2022efficient}.
+Our contribution therefore lies in the bounds fed to this projection, in its use during training and deployment, and in the multi-step argument built on it.
+
+The paper makes four contributions, and each of them corresponds to a part of the evaluation in \Sec{sec:results}.
+\begin{enumerate}
+\item We design an attention policy for V2G charging control in which each charger is a token and a shared head produces one action per token. The policy is permutation-equivariant, ignores empty chargers by masking and has a parameter count that does not depend on the number of chargers.
+\item We derive a safety layer whose per-EV lower bound follows from a reachable-energy operator that includes the charging taper. Theorem~\ref{thm:invariance} proves that the transformer limit and every departure energy requirement hold at every step for any raw action, under stated assumptions. A least-laxity-first fallback rule and admission control handle the steps on which aggregate feasibility fails.
+\item We define a zero-shot evaluation in EV2Gym that trains on 10 and 20 chargers and tests on up to 200 chargers without retraining. Performance is measured as the optimality gap to a perfect-information linear program with hard constraints, and the cost of the guarantee is measured against penalty-based training of the same network.
+\item As a secondary contribution, we replace the known-departure assumption with a split-conformal lower bound on the departure step, and Proposition~\ref{prop:conformal} turns the guarantee into a coverage-level statement.
+\end{enumerate}
+\Sec{sec:related} shows that none of these ingredients is new in isolation, so the claim of the paper rests on their combination and on the measured price of the guarantee.
+
+\Sec{sec:related} reviews related work, and \Sec{sec:problem} states the system model and the Markov decision process (MDP).
+The attention policy, the safety layer and the training algorithm follow in \Sec{sec:method}, and \Sec{sec:setup} describes the experimental setup.
+Results appear in \Sec{sec:results} and the discussion in \Sec{sec:discussion}.
+\Sec{sec:conclusion} concludes the paper, and the supplementary material contains all proofs, the EV2Gym modelling details, the training details and further result tables.

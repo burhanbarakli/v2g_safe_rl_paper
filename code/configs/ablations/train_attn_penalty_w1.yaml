@@ -1,0 +1,4 @@
+# penalty-weight sensitivity (Alg. 5 rule 2), 3 seeds
+inherit: ../train_attn_penalty.yaml
+method: attn_penalty_w1
+reward: {w_E: 1.0, w_P: 1.0}

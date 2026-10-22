@@ -1,0 +1,65 @@
+% ---------------------------------------------------------------------
+\section{Experimental Setup}\label{sec:setup}
+% ---------------------------------------------------------------------
+
+\subsection{Simulator and scenarios}\label{sec:scenarios}
+
+All experiments use EV2Gym \cite{orfanoudakis2025ev2gym} at commit \texttt{55ef368c} without changes to its source.
+A wrapper computes the observations, applies the safety layer, the fallback rule and the actuation map, logs all metrics and never reads future arrivals.
+Each station has $N$ chargers with one port each behind a single transformer, and EV specifications are drawn from the eight V2G-capable EV models of the simulator with one constant efficiency per model.
+The desired energy is the full battery, prices are the Dutch day-ahead prices shipped with EV2Gym, and the discharge price equals the charging price.
+\Tab{S-tab:scenarios} in the supplementary material lists all scenario parameters, and Section~\ref{S-sec:ev2gym} documents the modelling details.
+
+Every exogenous quantity scales linearly with $N$.
+The transformer rating is $P_{\sm{tr}}=\rho_{\sm{tr}}N$ with a tight level of $\rho_{\sm{tr}}=4$ kW per charger, the ratio of EV2Gym's 25-charger V2G configuration, and a moderate level of 7 kW.
+Inflexible load and PV are scaled to a mean peak of $0.4P_{\sm{tr}}$, so the PV peak stays below the rating.
+Forecasts in the observation carry Gaussian noise with a standard deviation of 10\% of the value.
+Three arrival profiles of EV2Gym are used, namely workplace, public and private (residential).
+Their start hours and spawn multipliers are chosen so that overnight sessions fit into the 28-h horizon and the mean charger occupancy is about 0.21 for all profiles.
+The policy does not observe the profile, so the profile forms a further zero-shot dimension.
+
+Training mixes $N\in\{10,20\}$, the three profiles and the two ratings within every batch.
+The test grid covers $N\in\{5,10,20,50,100,200\}$, both ratings and all profiles, i.e.\ 36 configurations with 100 fixed test episodes each for $N\le50$ and 50 for $N\ge100$.
+EV2Gym's original 25-charger configuration adds 100 episodes for comparability with earlier EV2Gym studies, so each evaluated policy runs 3,100 test episodes shared across methods.
+Two sensitivity studies at $N=20$ and $\rho_{\sm{tr}}=4$ kW cover all three profiles.
+The first evaluates the main policies with a desired state of charge of 0.8, and the second trains a separate policy with $\Delta t=5$ min and $\gamma=0.99^{1/3}$.
+
+\subsection{Compared methods}\label{sec:baselines}
+
+The learned baselines isolate the two parts of \method{}: Attention+penalty uses the same attention policy without the safety layer and learns from a penalty reward.
+A multilayer perceptron (MLP) with two hidden layers of 256 units over the concatenated tokens, zero-padded to 200 slots, replaces the attention policy in MLP+safety layer and in MLP+penalty.
+Without the safety layer, a raw action passes only the per-EV physical clip $\clip(x_i,\pmn_i,u_i)$, and that clip contains neither the lower bound $l_i$ nor the transformer coupling.
+The penalty reward subtracts 10\,\texteuro{} per kWh of departure shortfall and per kWh of transformer overload energy, more than eleven times the highest hourly price in the data, so no violation can pay.
+
+
+Four heuristics complete the comparison: as fast as possible (AFAP), as late as possible (ALAP), round robin and LLF, each in a raw form and with its output passed through the safety layer.
+The economic MPC of EV2Gym \cite{diazlondono2026open} runs with true prices and arrivals inside its 10-step horizon, an information advantage that is flagged in the results.
+Its commercial solver licence limits it to $N\le25$, so larger stations use a related but not identical HiGHS port, reported under its own name.
+EV-GNN \cite{orfanoudakis2025scalable} runs from its public code at commit \texttt{01aa1b7a} with its own TD3 training script, reward and published hyperparameters.
+Its script accepts one scenario per run, so one model per arrival profile is trained at $N=20$ and $\rho_{\sm{tr}}=4$ kW with five seeds and evaluated zero-shot on all sizes and ratings of that profile.
+GNN-DT \cite{orfanoudakis2026graph} is not included, because we found no public code for it.
+The perfect-information LP of \Sec{sec:oracle} provides the reference profit $J^{\sm{LP,ceil}}$.
+
+Ablations of \method{} remove admission control, set $\beta=0$, train with a curriculum or use a smaller network.
+The conformal variant \method{}-CP($\alpha$) is evaluated at all four levels of $\alpha$.
+
+\subsection{Metrics}\label{sec:metrics}
+
+Per episode we record the profit in \texteuro{} and the optimality gap of \Eq{eq:gap}.
+Service is measured by the departure shortfall in kWh and the share of EVs that miss $\Ereq_i$ by more than 0.01 kWh, and grid safety by the transformer violation energy in kWh.
+For the safety layer we count the infeasible steps per fallback case and record the deficit bound of \Eq{eq:deficit} and the number of capped and admission-reduced requests.
+The cost of the guarantee is the profit of Attention+penalty minus the profit of \method{} on the same episodes, reported together with the violations that the penalty method incurs.
+For the conformal variant, coverage is the episode-averaged fraction of EVs with $d_i\ge\hat d_i^{\sm{lo}}$.
+
+\subsection{Training, tuning and statistics}\label{sec:hyper}
+
+All learned methods of our own code receive the same tuning budget of 18 configurations over learning rate, minibatch size and entropy coefficient, each trained for $0.5\times10^{6}$ steps on the tight 10-charger station.
+The selected configuration is retrained with five seeds for $3\times10^{6}$ steps, and variants such as \method{}-CP inherit the selection of their parent method.
+\Tab{S-tab:hyper} in the supplementary material lists all hyperparameters and the tuning grid.
+In total, the main experiments, ablations and penalty-weight sensitivities comprise 51 training runs of our own PPO code, plus the tuning runs and the optional EV-GNN and 5-min runs.
+
+Aggregate scores over seeds and episodes are reported as the mean and the interquartile mean with stratified-bootstrap 95\% confidence intervals \cite{agarwal2021deep}, following the reproducibility guidance of \cite{henderson2018deep}.
+Paired comparisons on common episodes use the Wilcoxon signed-rank test \cite{wilcoxon1945individual} on per-episode profit and shortfall, with Holm correction across $N$.
+The implementation uses PyTorch \cite{paszke2019pytorch}, a single-file PPO in the style of CleanRL \cite{huang2022cleanrl} and the Adam optimiser \cite{kingma2015adam}, with the safety layer in double precision.
+Code, configurations and analysis scripts will be released with the paper, pinned to the EV2Gym and EV-GNN commits above \TODO{repository link}.
+\TODO{Add the hardware (CPU, GPU, memory, operating system, Python and PyTorch versions) used for the reported runs}.

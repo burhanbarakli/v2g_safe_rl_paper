@@ -1,0 +1,302 @@
+% ---------------------------------------------------------------------
+\section{Proposed Method}\label{sec:method}
+% ---------------------------------------------------------------------
+
+As seen in \Fig{fig:architecture}, \method{} has three parts that act in sequence at every step.
+An attention policy maps a set of charger tokens to one raw action per charger, and a safety layer turns the raw actions into commanded powers that respect the per-EV bounds and the transformer limit.
+During training, a policy-gradient method updates the policy from the realised profit with the safety layer treated as part of the environment, and the same safety layer acts unchanged during deployment.
+
+\begin{figure}[t]
+\centering
+\figorbox{figures/fig_architecture.pdf}{\linewidth}{6cm}
+\caption{Architecture and control loop of \method{}. Solid arrows form the control loop used in training and deployment; dashed arrows are used in training only. The safety layer (shaded) is a closed-form projection with a provable feasibility guarantee under Assumptions A1--A5.}
+\label{fig:architecture}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\subsection{Token representation and attention policy}\label{sec:policy}
+
+The observation is a set of $N$ charger tokens $\xi_i(t)\in\R^{F_c}$ and one global token $\xi_0(t)\in\R^{F_g}$ with $F_c=12$ and $F_g=38$, and no feature encodes the index or the position of a charger.
+A charger token holds the occupancy flag $o_i$, the current energy, the capacity, the state of charge, the remaining required energy $(\Ereq_i-E_i(t))^{+}$ and the remaining steps $\tau_i(t)$.
+It also holds the laxity $\chi_i(t)$ of \Sec{sec:bounds}, the nominal charging and discharging powers, the physical lower limit $\pmn_i$ and the bounds $l_i$ and $u_i$ of the safety layer.
+Energies are divided by $E^{\sm{ref}}=100$ kWh, powers by $P^{\sm{ref}}$ and step counts by the number of steps per day, and an empty charger has an all-zero token.
+
+The global token carries the current prices and the day-ahead charging prices of the next $H_f=8$ steps, divided by $c^{\sm{ref}}$, together with time-of-day and weekend features.
+It also holds the remaining episode fraction, the current limits $C(t)$ and $\Crev(t)$, the measured load and PV, and noisy forecasts of load and PV for $H_f$ steps.
+Its last features are the occupancy ratio $n(t)/N$, the rating per charger and the sums $\sum_il_i(t)$ and $\sum_iu_i(t)$.
+All grid quantities are divided by the nominal rating $P_{\sm{tr}}^{\sm{nom}}=\max_tP_{\sm{tr}}(t)$, so every global feature is a ratio that does not grow with $N$.
+The arrival profile of the station is deliberately left out of the observation, so that the policy can serve stations whose profile is mixed or unknown.
+
+Each token is embedded linearly and receives one of two learned type embeddings, one for charger tokens and one for the global token.
+The sequence $[e_0;e_1;\dots;e_N]$ then passes through $n_L=3$ transformer encoder layers \cite{vaswani2017attention} in the pre-LayerNorm arrangement \cite{ba2016layer,xiong2020layer}, with width $d_m=128$, $n_H=4$ heads and no positional encoding.
+A key-padding mask removes empty chargers as attention keys, but the global key is never masked, so every softmax is well defined.
+Each charger output $h_i$ then enters a shared actor head, a two-layer perceptron that returns the mean $\mu_{\theta,i}$ and the standard deviation $\sigma_{\theta,i}$ of a Gaussian raw action.
+The policy is therefore the product over occupied chargers,
+\begin{equation}\label{eq:policy}
+\pi_\theta(a\mid s)=\prod_{i\in\mathcal N(t)}\mathcal N\big(a_i;\mu_{\theta,i}(s),\sigma_{\theta,i}^2(s)\big).
+\end{equation}
+The critic has a separate encoder of the same form, pools all unmasked token outputs with one learned attention query \cite{lee2019set} and maps the result to the value $V_\omega(s)$.
+
+The construction is permutation-equivariant, masked tokens do not influence the outputs of unmasked tokens, and the number of parameters does not depend on $N$ (Lemma~\ref{S-lem:equivariance} in the supplementary material).
+With these settings the actor has 610,370 parameters and the critic 676,481, whatever the number of chargers.
+A station with $N$ chargers of which $n$ are occupied therefore gives the same per-EV outputs as a station with only those $n$ chargers, apart from the global ratios.
+That property is the structural basis for applying weights trained at $N\in\{10,20\}$ to $N=200$, but it does not guarantee performance there, because attention over 200 tokens averages over more keys than seen in training.
+
+% ---------------------------------------------------------------------
+\subsection{Per-EV bounds from reachable energy}\label{sec:bounds}
+
+The safety layer needs, for each connected EV, the least power that keeps its departure energy requirement reachable, and we drop the index $i$ where no confusion arises.
+Full-power charging for one step maps the energy $E$ to
+\begin{equation}\label{eq:phi}
+\varphi(E)=E+\Delta t\,\eta^{\sm c}\,\bar P(E).
+\end{equation}
+
+\begin{assumption}[A1, monotone maximum-charging map]
+The map $\varphi$ is continuous and non-decreasing on $[E^{\min},E^{\sm{cap}}]$.
+\end{assumption}
+
+Under A1, starting a step with more energy never leaves less energy after full-power charging, and A1 holds whenever the taper lowers the power by at most $1/(\eta^{\sm c}\Delta t)$ kW per extra kWh.
+Let $\Psi_k=\varphi^{k}$ denote the $k$-fold composition, with $\Psi_0$ the identity, and define the reachable-energy operator recursively by
+\begin{equation}\label{eq:reach}
+R(0,\cdot)=0,\qquad R(k,E)=\Delta t\,\eta^{\sm c}\bar P(E)+R\big(k-1,\varphi(E)\big),
+\end{equation}
+so that $\Psi_k(E)=E+R(k,E)$ is the energy after $k$ full-power steps.
+The backward-reachable thresholds, the least energies from which the requirement is still reachable, are
+\begin{equation}\label{eq:thresholds}
+B(0)=\Ereq,\qquad B(k)=\min\big\{E\in[E^{\min},E^{\sm{cap}}]:\ \varphi(E)\ge B(k-1)\big\},\quad k\ge1 .
+\end{equation}
+Under A1, $\Psi_k$ is non-decreasing, and no admissible power sequence from $E(t)$ ends above $\Psi_k(E(t))$ after $k$ steps (Lemma~\ref{S-lem:reach}).
+An EV is therefore individually feasible at step $t$, in the sense that some admissible control meets \Eq{eq:requirement}, exactly when $E(t)\ge B(\tau(t))$.
+Without A1 this characterisation fails, because charging less now could leave more reachable energy later.
+For EV2Gym's exponential taper, Lemma~\ref{S-lem:taper} proves A1 for every step length whenever the EV's charging power does not exceed the charger rating, a condition met by all eight EV models of the simulator.
+
+For a connected EV with energy $E=E_i(t)$ and $\tau=\tau_i(t)$ remaining actions, the bounds of the safety layer are
+\begin{equation}\label{eq:bounds}
+u_i(t)=\bar P(E),\qquad
+l_i(t)=\begin{cases}
+\max\Big\{\pmn(E),\ g^{-1}\Big(\dfrac{\Bh(\tau-1)-E}{\Delta t}\Big)\Big\}, & E\ge\Bh(\tau),\\[2mm]
+\bar P(E), & E<\Bh(\tau),
+\end{cases}
+\end{equation}
+where $\Bh$ is the stored threshold table described below, and the first case applies to individually feasible EVs.
+There, $l_i$ is the smallest admissible power after which $\tau-1$ full-power steps still reach $\Ereq$, whereas an individually infeasible EV is charged at maximum power.
+Without taper, the thresholds have the closed form $B(k)=\max\{E^{\min},\Ereq-k\,\eta^{\sm c}\Pnom\Delta t\}$, and in the EV2Gym instantiation the lower bound becomes
+\begin{equation}\label{eq:lclosed}
+l_i=\max\Big\{-\min\Big(\Pdis,\frac{E-E^{\min}}{\Delta t}\Big),\ \frac{\Ereq-E}{\Delta t}-(\tau-1)\Pnom\Big\}.
+\end{equation}
+A negative second term allows V2G discharging down to the energy from which $\tau-1$ full-power steps still reach $\Ereq$.
+As seen in \Fig{fig:concepts}(a), the bound $l_i$ keeps the energy on or above the latest-start trajectory and therefore permits discharging only while slack remains.
+
+\begin{figure}[t]
+\centering
+\figchain{\linewidth}{../../analysis/figures/fig2_concepts.pdf}{../../analysis/figures_conceptual/fig_concepts.pdf}{figures/fig2_concepts.pdf}
+\caption{Concepts of the safety layer. (a) Energy of one EV during its stay. The latest-start trajectory $\Bh_i$ marks the least energy from which full-power charging still reaches $\Ereq$ by departure; states in the hatched region below it cannot meet the requirement. From the current energy $E_i(t)$, the steps $\Delta t\,u_i$, $\Delta t\,l_i$ and $\Delta t\,\pmn_i$ show maximum charging, the lowest admissible power and maximum discharging. The dashed upper envelope is maximum charging with taper, and $\tau_i(t)$ counts the remaining steps. (b) Projection for two EVs. The feasible set $\mathcal K(t)$ (shaded) is the box $[l,u]$ cut by the slab $-\Crev\le p_1+p_2\le\Ctil$. Clipping the raw action $x$ to the box alone gives an infeasible point; the projection shifts $x$ by $-\lambda^{*}(1,1)$ and then clips, which gives $p^{*}=\Pi_t(x)$ on the line $p_1+p_2=\Ctil$.}
+\label{fig:concepts}
+\end{figure}
+
+With a taper, the table $\Bh_i(k)$ for $k=0,\dots,\tau_i(t_i^{\sm{arr}})$ is computed once at arrival by bisection on $\varphi_i$, so the per-step cost of \Eq{eq:bounds} is $O(1)$ per EV.
+Each stored table is certified in the sense that
+\begin{equation}\label{eq:certified}
+\begin{gathered}
+\Bh(0)\ge\Ereq,\qquad \varphi\big(\Bh(k)\big)\ge\Bh(k-1),\\
+\Bh(k)\le\max\{\Bh(k-1),E^{\min}\},\qquad \Bh(k)\in[E^{\min},E^{\sm{cap}}]\qquad(k\ge1).
+\end{gathered}
+\end{equation}
+Any table with the first two properties dominates the exact thresholds, and the proofs use only these properties.
+The laxity $\chi_i(t)=\big(E_i(t)-\Bh_i(\tau_i(t))\big)/\big(\eta_i^{\sm c}\Pnom_i\Delta t\big)$, measured in steps, is non-negative exactly when the EV is individually feasible, and it serves as a token feature and as the priority of the fallback rule.
+
+% ---------------------------------------------------------------------
+\subsection{Projection}\label{sec:projection}
+
+Let $x\in\R^N$ be the raw action in kW, with $x_i=l_i=u_i=0$ for empty chargers, and let $\Ctil(t)=C(t)-n(t)\varepsilon_q$ be the tightened forward limit explained in \Sec{sec:invariance}.
+The feasible set is then
+\begin{equation}\label{eq:K}
+\mathcal K(t)=\big\{p\in\R^N:\ l\le p\le u,\ -\Crev(t)\le\mathbf 1^\top p\le\Ctil(t)\big\},
+\end{equation}
+and the safety layer is the Euclidean projection
+\begin{equation}\label{eq:proj}
+\Pi_t(x)=\arg\min_{p\in\mathcal K(t)}\tfrac12\|p-x\|_2^2 .
+\end{equation}
+
+\begin{proposition}[Projection]\label{prop:projection}
+\begin{enumerate}
+\item[(i)] The set $\mathcal K(t)$ is non-empty if and only if $l\le u$, $\sum_il_i\le\Ctil$, $\sum_iu_i\ge-\Crev$ and $-\Crev\le\Ctil$.
+\item[(ii)] Let $\mathcal S(\lambda)=\sum_i\clip(x_i-\lambda,l_i,u_i)$. If $\mathcal K(t)\neq\emptyset$, the unique minimiser of \Eq{eq:proj} is $p_i^{*}=\clip(x_i-\lambda^{*},l_i,u_i)$. The shift $\lambda^{*}$ is zero if $\mathcal S(0)\in[-\Crev,\Ctil]$. Otherwise, it is a root of $\mathcal S(\lambda)=\Ctil$ when $\mathcal S(0)>\Ctil$ and a root of $\mathcal S(\lambda)=-\Crev$ when $\mathcal S(0)<-\Crev$.
+\item[(iii)] Let $\mathcal F=\{i:l_i<x_i-\lambda^{*}<u_i\}$ be the free set and $D=\mathrm{diag}(\mathbb 1[i\in\mathcal F])$. Where $\mathcal F$ and the active constraint are locally constant, the Jacobian is $\partial p^{*}/\partial x=D-(D\mathbf 1)(\mathbf 1^\top D)/(\mathbf 1^\top D\mathbf 1)$ if the aggregate constraint is active and $\mathcal F\neq\emptyset$. It is $D$ if the aggregate constraint is inactive.
+\end{enumerate}
+\end{proposition}
+
+The proof in the supplementary material verifies the Karush--Kuhn--Tucker (KKT) conditions of the strictly convex problem, with $\lambda^{*}$ as the multiplier of the aggregate constraint.
+As seen in \Fig{fig:concepts}(b), the projection shifts all free coordinates by the same amount and clips them until the aggregate limit holds.
+Computing $\lambda^{*}$ needs one sort of the $2N$ breakpoints $\{x_i-u_i\}\cup\{x_i-l_i\}$ and one pass over them, so the layer costs $O(N\log N)$ per step.
+Floating-point rounding needs care when $\sum_il_i$ equals $\Ctil$ up to rounding, so the implementation checks the aggregate limit after each projection.
+A failing row is recomputed by a bisection that keeps the feasible end of its bracket.
+\Alg{alg:safety} lists one complete step of the safety layer.
+
+The algebra of Proposition~\ref{prop:projection} is not new: the problem in \Eq{eq:proj} is the continuous quadratic knapsack problem, solved by breakpoint algorithms \cite{kiwiel2007breakpoint} and by a semismooth Newton method \cite{wang2022efficient}.
+Its clipping form $\clip(x_i-\lambda,l_i,u_i)$ with a common level found by one-dimensional search is also the rate rule of sLLF \cite{chen2022smoothed}.
+Our use differs in its input, a learned per-charger action of a size-agnostic policy, and in the lower bound $l_i$ from backward reachability with taper and V2G sign range.
+Moreover, the aggregate constraint is two-sided, the layer acts during training, and it carries the multi-step argument of \Sec{sec:invariance}.
+
+\begin{algorithm}[t]
+\caption{One step of the safety layer}\label{alg:safety}
+\begin{algorithmic}[1]
+\Require raw action $x\in\R^N$; for each connected EV: $E_i(t)$, $\tau_i(t)$, certified table $\Bh_i$; limits $C(t)$, $\Crev(t)$
+\For{each occupied charger $i$}
+  \State $u_i\gets\bar P_i(E_i)$;\quad $\pmn_i\gets$ \Eq{eq:limits}
+  \If{$E_i\ge\Bh_i(\tau_i)$} $l_i\gets\max\{\pmn_i,\,g_i^{-1}((\Bh_i(\tau_i-1)-E_i)/\Delta t)\}$ \Else\ $l_i\gets u_i$ \EndIf
+  \State $\chi_i\gets(E_i-\Bh_i(\tau_i))/(\eta_i^{\sm c}\Pnom_i\Delta t)$
+\EndFor
+\State $\Ctil\gets C-n(t)\varepsilon_q$
+\If{$\sum_il_i\le\Ctil$ \textbf{and} $\sum_iu_i\ge-\Crev$ \textbf{and} $\Ctil\ge-\Crev$} \Comment{A5 holds}
+  \State $p^{0}\gets\clip(x,l,u)$
+  \If{$\mathbf 1^\top p^{0}\in[-\Crev,\Ctil]$} $p\gets p^{0}$
+  \Else
+    \State $\vartheta\gets\Ctil$ if $\mathbf 1^\top p^{0}>\Ctil$, else $-\Crev$
+    \State sort breakpoints $\{x_i-u_i\}\cup\{x_i-l_i\}$; find $\lambda^{*}$ with $\mathcal S(\lambda^{*})=\vartheta$ by one pass
+    \State $p\gets\clip(x-\lambda^{*},l,u)$; if $\mathbf 1^\top p\notin[-\Crev,\Ctil]$, recompute by safe bisection
+  \EndIf
+\Else
+  \State $p\gets$ fallback rule of \Sec{sec:fallback}; log the case
+\EndIf
+\State send $p$ to the simulator, rounded upwards on its action grid
+\State \Return $p$
+\end{algorithmic}
+\end{algorithm}
+
+% ---------------------------------------------------------------------
+\subsection{Feasibility invariance}\label{sec:invariance}
+
+Besides A1, Theorem~\ref{thm:invariance} needs four assumptions on the data, the simulator, the arrivals and the aggregate limits.
+
+\begin{assumption}[A2, known data]
+The departure step $d_i$ and the requirement $\Ereq_i$ are known at arrival.
+\end{assumption}
+
+\begin{assumption}[A3, one-step model]
+For every connected EV and every commanded power $p_i$ within the limits of \Eq{eq:limits}, the realised energy satisfies $E_i(t)+\Delta t\,g_i(p_i)\le E_i(t+1)\le E_i^{\sm{cap}}$, the realised power satisfies $p_i\le\tilde p_i\le p_i+\varepsilon_q$, and empty chargers draw zero power.
+\end{assumption}
+
+\begin{assumption}[A4, individual feasibility at arrival]
+Every EV is individually feasible when it arrives, that is, $E_i^{\sm{arr}}\ge\Bh_i\big(\tau_i(t_i^{\sm{arr}})\big)$ holds for its stored threshold table.
+\end{assumption}
+
+\begin{assumption}[A5, aggregate feasibility]
+At every step of the closed loop, the bounds and limits satisfy $\sum_{i}l_i(t)\le\Ctil(t)$, $\sum_{i}u_i(t)\ge-\Crev(t)$ and $\Ctil(t)\ge-\Crev(t)$.
+\end{assumption}
+
+In the exact model $\varepsilon_q=0$, but EV2Gym rounds the normalised action to five decimals and ignores discharge currents below 0.01 A.
+We therefore round commands upwards on the action grid and use a margin of $\varepsilon_q=0.008$ kW that covers both effects, at a cost of at most 1.6 kW of forward capacity at $N=200$.
+Lemma~\ref{S-lem:a3} in the supplementary material lists the simulator settings under which A3 holds in EV2Gym, and the cap of \Eq{eq:cap} enforces A4 by construction.
+
+\begin{lemma}[One-step invariance]\label{lem:onestep}
+Assume A1 and A3, and let $\Bh$ satisfy \Eq{eq:certified}.
+Let EV $i$ be connected at step $t$ with $\tau=\tau_i(t)$ remaining actions and energy $E=E_i(t)\ge\Bh(\tau)$.
+Then $\pmn(E)\le l_i(t)\le u_i(t)$, and every commanded power $p\in[l_i(t),u_i(t)]$ leads to $E_i(t+1)\ge\Bh(\tau-1)$.
+\end{lemma}
+
+\begin{theorem}[Feasibility invariance]\label{thm:invariance}
+At every step $t$, let the commanded powers be $p(t)=\Pi_t(x(t))$ for an arbitrary finite raw action $x(t)$, during training or deployment.
+Under A1--A5, the following statements hold for every step $t$ and every EV $i$.
+\begin{enumerate}
+\item[(a)] The realised powers satisfy the transformer limit $-\Crev(t)\le\sum_i\tilde p_i(t)\le C(t)$ at every step, whatever the raw action.
+\item[(b)] The commanded powers satisfy the physical limits of \Eq{eq:limits} for every connected EV at every step.
+\item[(c)] Every EV meets its departure energy requirement $E_i(d_i+1)\ge\Ereq_i$ when it leaves the station.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The proof is an induction over $t$ on the invariant $\mathrm I(t)$: $E_i(t)\ge\Bh_i(\tau_i(t))$ for all $i\in\mathcal N(t)$, and new arrivals satisfy their part of the invariant by A4.
+If $\mathrm I(t)$ holds, Lemma~\ref{lem:onestep} gives valid bounds, and A5 with Proposition~\ref{prop:projection}(i) makes $\mathcal K(t)$ non-empty.
+The projection then returns a point of $\mathcal K(t)$, from which claim (b) follows directly and claim (a) follows through the margin of A3.
+Lemma~\ref{lem:onestep} carries every connected EV to $\mathrm I(t+1)$, and at $\tau=1$ it yields $E_i(d_i+1)\ge\Bh_i(0)\ge\Ereq_i$, so claim (c) holds.
+The supplementary material gives the full proof.
+\end{proof}
+
+The theorem holds for any raw action, so it covers the random exploration of training as well as deployment.
+A1 enters the proof exactly once, in the implication $E\ge\Bh(\tau)\Rightarrow\varphi(E)\ge\varphi(\Bh(\tau))$, and a certified table does not compensate for a violation of A1.
+
+\begin{corollary}[Localisation]\label{cor:local}
+Assume A1--A4.
+Every EV that receives $p_i(t)\ge l_i(t)$ at every step of its stay meets its departure energy requirement, whatever happens at other steps; in particular, every EV whose stay contains no infeasible step meets it.
+The physical limits hold at every step, and the transformer limit holds at every step except in cases (i), (ii) and (iv) of the fallback rule in \Sec{sec:fallback}.
+\end{corollary}
+
+Assumption A5 is a closed-loop condition, because $l_i(t)$ depends on the energies that the policy has produced, and per-EV bounds cannot guarantee it.
+For example, two EVs that each need 10 kWh within two 1-h steps under a 10 kW limit can share the capacity equally.
+A policy that idles in the first step, however, leaves $\sum_il_i=20$ kW in the second step.
+Policy-independent sufficient conditions for A5 exist, but they ask the transformer to serve all constrained EVs at full power at once (supplementary material).
+We therefore state the guarantee conditionally on A5, localise it per EV, and count how often A5 fails in the experiments.
+
+% ---------------------------------------------------------------------
+\subsection{Fallback rule and admission control}\label{sec:fallback}
+
+When the feasibility test of Proposition~\ref{prop:projection}(i) fails, the fallback rule replaces the projection, and since $l\le u$ holds by construction, four exclusive cases remain.
+\begin{enumerate}
+\item[(i)] Contradictory limits, $\Ctil<-\Crev$: the procedure of case (iii) is applied with priority on the forward limit.
+\item[(ii)] Excess PV export, $\sum_iu_i<-\Crev$: every occupied charger receives $p_i=u_i$.
+\item[(iii)] Excess required power, $\sum_il_i>\Ctil$: every EV starts at $\pmn_i$, and the budget $b=\Ctil-\sum_i\pmn_i$ is distributed in increasing order of laxity, each EV receiving up to $l_i-\pmn_i$.
+\item[(iv)] Negative budget within case (iii): the output stays at the maximal discharge $p=\pmn$.
+\end{enumerate}
+Case (iii) is the least-laxity-first fallback rule, and individually infeasible EVs have negative laxity and therefore come first.
+It keeps the transformer limit, and every feasible EV that receives $l_i$ stays feasible (Lemma~\ref{S-lem:fallback}).
+In our scenarios the PV peak stays below the rating, so case (ii) cannot occur, and since EV2Gym clips the inflexible load at the rating, case (iv) needs $C(t)<n(t)\varepsilon_q$.
+The resulting departure shortfall of an episode is bounded a priori by
+\begin{equation}\label{eq:deficit}
+\Delta t\sum_{t\in\mathcal T_{\mathrm{iii}}}\Big(\sum_il_i(t)-\Ctil(t)\Big)+\Delta t\sum_{t\in\mathcal T_{\mathrm{iv}}}\sum_i\big(l_i(t)-\pmn_i(t)\big),
+\end{equation}
+where $\mathcal T_{\mathrm{iii}}$ and $\mathcal T_{\mathrm{iv}}$ are the steps of cases (iii) and (iv) (Lemma~\ref{S-lem:deficit}).
+
+Admission control lowers the frequency of case (iii) by checking each arrival in advance.
+When an EV arrives, a small feasibility LP checks whether all connected EVs can still reach their targets under the forecast transformer limits.
+The LP starts from the current energies and replaces the taper by a linear inner approximation.
+Inside this LP only, the target of an EV that is already connected is its admitted requirement, lowered where necessary to the maximum energy that the LP's taper model can deliver.
+Without this adjustment, full-battery targets would make the LP infeasible whenever such an EV is connected, because the linear taper model never reaches full charge in finitely many steps.
+If the LP is infeasible, the request of the new EV is lowered to the largest feasible value, but requests of EVs already admitted are never reduced.
+The reduced request passes through the same certified routine as the cap of \Eq{eq:cap}, so A4 still holds.
+Admission control is a heuristic, because it relies on forecasts and ignores future arrivals, and it does not enter Theorem~\ref{thm:invariance}.
+
+% ---------------------------------------------------------------------
+\subsection{Conformal lower bound on the departure step}\label{sec:conformal}
+
+Assumption A2 requires the departure step at arrival, and we relax it for $d_i$ with split conformal prediction (CP) \cite{papadopoulos2002inductive,vovk2022algorithmic,lei2018distributionfree,angelopoulos2023conformal} in a one-sided, quantile-regression form \cite{romano2019conformalized}.
+A gradient-boosting regressor $\hat q$ estimates a lower quantile of $d_i$ from features $\mathbf w_i$, namely the arrival step, the weekday, the arrival energy, the requested energy and the EV model.
+The regressor is fitted on separate simulated sessions, and calibration draws $n_{\sm{cal}}$ sessions from independently seeded episodes of the test configuration, one per episode and chosen uniformly at random.
+With the scores $S_j=\hat q(\mathbf w_j)-d_j$, the conformal quantile $\hat Q_{1-\alpha}$ is the $k$-th smallest score with $k=\lceil(n_{\sm{cal}}+1)(1-\alpha)\rceil$, and the bound for a test EV is
+\begin{equation}\label{eq:conformal}
+\hat d_i^{\sm{lo}}=\max\big\{t_i^{\sm{arr}},\ \lceil\hat q(\mathbf w_i)-\hat Q_{1-\alpha}\rceil\big\},\qquad \tau_i^{\sm{lo}}(t)=\max\{1,\ \hat d_i^{\sm{lo}}-t+1\}.
+\end{equation}
+The safety layer, the cap and the token features then use $\tau_i^{\sm{lo}}$ in place of $\tau_i$, and a departure is observed when it occurs.
+
+\begin{proposition}[Conformal departure guarantee]\label{prop:conformal}
+Let the calibration sessions and the test session be exchangeable.
+\begin{enumerate}
+\item[(i)] $\mathbb P\big(d_i\ge\hat d_i^{\sm{lo}}\big)\ge1-\alpha$.
+\item[(ii)] Under A1, A3 and A4 with $\tau^{\sm{lo}}$ in place of $\tau$, $\mathbb P\big(E_i(d_i+1)\ge\Ereq_i\big)\ge1-\alpha-\mathbb P\big(\exists\,t\le d_i:\ p_i(t)<l_i(t)\big)$. If A5 holds almost surely at every step of the stay, the probability is at least $1-\alpha$.
+\end{enumerate}
+\end{proposition}
+
+The probability is over the calibration data and a uniformly chosen EV of a test episode, so it equals the expected within-episode fraction of covered EVs.
+It is neither a per-EV guarantee nor a guarantee conditional on $\mathbf w_i$.
+Calibration is repeated for every test configuration, including every $N$, because the law of a uniformly chosen session depends on the configuration.
+A conservative bound has a price in larger lower bounds, more capped requests and lower profit, and the experiments report this price for $\alpha\in\{0.01,0.05,0.1,0.2\}$.
+
+% ---------------------------------------------------------------------
+\subsection{Training algorithm}\label{sec:training}
+
+The policy is trained with proximal policy optimization (PPO) \cite{schulman2017proximal} and generalised advantage estimation \cite{schulman2016highdimensional}, and the safety layer, the fallback rule and the actuation map are treated as part of the environment.
+PPO therefore uses the likelihood ratio of the raw Gaussian sample $a$, and for this MDP the score-function gradient is unbiased for the return of the projected actions.
+For stochastic policies, projection inside the environment and inside the policy are equivalent in this sense \cite{markgraf2025safe}.
+Our choice avoids the bias of scoring a projected action under the unprojected density \cite{gros2020safe} and the zero-gradient problem of back-propagating through an active projection \cite{kasaura2023benchmarking}.
+
+Two masks reduce variance without biasing the score-function gradient: tokens with $u_i-l_i\le10^{-9}$ kW cannot influence any executed power and are dropped from the log-probability and the entropy.
+Transitions of fallback steps do not depend on the action, so they are masked out of the actor loss but kept for the critic, and the masked loss is normalised by the fixed minibatch size.
+Many raw actions map to the same projected point, so the policy mean can drift far outside $\mathcal K(t)$ without changing the return.
+A regulariser with weight $\beta=0.01$ counters this drift,
+\begin{equation}\label{eq:reg}
+\mathcal L_{\sm{reg}}(\theta)=\beta\,\mathbb E_{s}\Big[\frac1{n(t)}\sum_{i\in\mathcal N(t)}\Big(\frac{\bar x_i-\Pi_t(\bar x)_i}{P^{\sm{ref}}}\Big)^{2}\Big],\qquad \bar x=P^{\sm{ref}}\mu_\theta(s).
+\end{equation}
+By the Moreau identity, the gradient of $\tfrac12\mathrm{dist}^2(x,\mathcal K)$ is $x-\Pi_t(x)$, so $\Pi_t(\bar x)$ can be evaluated under stop-gradient and no Jacobian of the projection is needed.
+Distance terms of this kind are an established remedy against drift \cite{chen2021enforcing,markgraf2025safe}.
+Each rollout runs sixteen environments, eight with $N=10$ chargers and eight with $N=20$, and token tensors of different $N$ are padded with masked entries at update time.
+Algorithm~\ref{S-alg:ppo} in the supplementary material gives the full training loop.

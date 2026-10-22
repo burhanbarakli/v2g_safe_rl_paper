@@ -1,0 +1,420 @@
+\begin{thebibliography}{10}
+
+\bibitem{qiu2023reinforcement}
+D.~Qiu, Y.~Wang, W.~Hua, and G.~Strbac, ``Reinforcement learning for electric
+  vehicle applications in power systems:a critical review,'' {\em Renewable and
+  Sustainable Energy Reviews}, vol.~173, p.~113052, Mar 2023.
+
+\bibitem{michailidis2025reinforcement}
+P.~Michailidis, I.~Michailidis, and E.~Kosmatopoulos, ``Reinforcement learning
+  for electric vehicle charging management: Theory and applications,'' {\em
+  Energies}, vol.~18, p.~5225, Oct 2025.
+
+\bibitem{sadeghianpourhamami2020definition}
+N.~Sadeghianpourhamami, J.~Deleu, and C.~Develder, ``Definition and evaluation
+  of model-free coordination of electrical vehicle charging with reinforcement
+  learning,'' {\em IEEE Transactions on Smart Grid}, vol.~11, pp.~203--214, Jan
+  2020.
+
+\bibitem{ye2022learning}
+Z.~Ye, Y.~Gao, and N.~Yu, ``Learning to operate an electric vehicle charging
+  station considering vehicle-grid integration,'' {\em IEEE Transactions on
+  Smart Grid}, vol.~13, pp.~3038--3048, July 2022.
+
+\bibitem{korkas2024distributed}
+C.~D. Korkas, C.~D. Tsaknakis, A.~C. Kapoutsis, and E.~Kosmatopoulos,
+  ``Distributed and multi-agent reinforcement learning framework for optimal
+  electric vehicle charging scheduling,'' {\em Energies}, vol.~17, p.~3694,
+  July 2024.
+
+\bibitem{orfanoudakis2025ev2gym}
+S.~Orfanoudakis, C.~Diaz-Londono, Y.~Emre~Y{\i}lmaz, P.~Palensky, and P.~P.
+  Vergara, ``Ev2gym: A flexible v2g simulator for ev smart charging research
+  and benchmarking,'' {\em IEEE Transactions on Intelligent Transportation
+  Systems}, vol.~26, pp.~2410--2421, Feb 2025.
+
+\bibitem{tabas2022computationally}
+D.~Tabas and B.~Zhang, ``Computationally efficient safe reinforcement learning
+  for power systems,'' in {\em 2022 American Control Conference (ACC)},
+  pp.~3303--3310, IEEE, June 2022.
+
+\bibitem{altman2021constrained}
+E.~Altman, {\em Constrained Markov Decision Processes: Stochastic Modeling}.
+\newblock Routledge, Dec 2021.
+
+\bibitem{gu2024review}
+S.~Gu, L.~Yang, Y.~Du, G.~Chen, F.~Walter, J.~Wang, and A.~Knoll, ``A review of
+  safe reinforcement learning: Methods, theories, and applications,'' {\em IEEE
+  Transactions on Pattern Analysis and Machine Intelligence}, vol.~46,
+  pp.~11216--11235, Dec 2024.
+
+\bibitem{su2025review}
+T.~Su, T.~Wu, J.~Zhao, A.~Scaglione, and L.~Xie, ``A review of safe
+  reinforcement learning methods for modern power systems,'' {\em Proceedings
+  of the IEEE}, vol.~113, pp.~213--255, Mar 2025.
+
+\bibitem{orfanoudakis2025scalable}
+S.~Orfanoudakis, V.~Robu, E.~M. Salazar, P.~Palensky, and P.~P. Vergara,
+  ``Scalable reinforcement learning for large-scale coordination of electric
+  vehicles using graph neural networks,'' {\em Communications Engineering},
+  vol.~4, July 2025.
+
+\bibitem{orfanoudakis2026graph}
+S.~Orfanoudakis, N.~K. Panda, P.~Palensky, and P.~P. Vergara, ``A graph neural
+  network enhanced decision transformer for efficient optimization in dynamic
+  smart charging environments,'' {\em Energy and AI}, vol.~23, p.~100679, Jan
+  2026.
+
+\bibitem{wang2026hetgps}
+X.~Wang, N.~I. Nimalsiri, Y.~Xia, P.~Wang, and S.~K. Halgamuge, ``Hetgps:
+  Scalable graph multi-agent reinforcement learning with physics-anchored
+  adaptive safety for ev charging,'' 2026.
+\newblock arXiv preprint arXiv:2608.00679.
+
+\bibitem{dalal2018safe}
+G.~Dalal, K.~Dvijotham, M.~Vecer{\'\i}k, T.~Hester, C.~P{\u{a}}duraru, and
+  Y.~Tassa, ``Safe exploration in continuous action spaces,'' 2018.
+\newblock arXiv preprint arXiv:1801.08757.
+
+\bibitem{chen2021enforcing}
+B.~Chen, P.~L. Donti, K.~Baker, J.~Z. Kolter, and M.~Berg{\'e}s, ``Enforcing
+  policy feasibility constraints through differentiable projection for energy
+  optimization,'' in {\em Proceedings of the Twelfth ACM International
+  Conference on Future Energy Systems}, e-Energy '21, pp.~199--210, ACM, June
+  2021.
+
+\bibitem{wan2025logicinformed}
+G.~Wan, P.~Zeng, X.~Dong, C.~Song, S.~Cui, D.~Li, Q.~Dong, Y.~Liu, and H.~Bai,
+  ``Logic-informed reinforcement learning for cross-domain optimization of
+  large-scale cyber-physical systems,'' 2025.
+\newblock arXiv preprint arXiv:2511.00806.
+
+\bibitem{guan2024rule}
+Y.~Guan, J.~Zhang, W.~Ma, and L.~Che, ``Rule-based shields embedded safe
+  reinforcement learning approach for electric vehicle charging control,'' {\em
+  International Journal of Electrical Power \& Energy Systems}, vol.~157,
+  p.~109863, June 2024.
+
+\bibitem{zhang2025dumes}
+A.~Zhang, C.~Liu, K.~Makantasis, X.~Chen, T.~Ward, and L.~Cheng, ``Dumes: Deep
+  reinforcement learning-based ev charging scheduling with dual-layer safety
+  modules,'' {\em IET Smart Energy Systems}, vol.~1, pp.~232--246, Nov 2025.
+
+\bibitem{chen2022smoothed}
+N.~Chen, C.~Kurniawan, Y.~Nakahira, L.~Chen, and S.~H. Low, ``Smoothed
+  least-laxity-first algorithm for electric vehicle charging: Online decision
+  and performance analysis with resource augmentation,'' {\em IEEE Transactions
+  on Smart Grid}, vol.~13, pp.~2209--2217, May 2022.
+
+\bibitem{yan2026hierarchical}
+H.~Yan, S.~Ding, J.~Zhang, X.~Yao, Y.~Liu, H.~Wang, C.~Luo, and Y.~Shi,
+  ``Hierarchical constrained reinforcement learning with dynamic boundary for
+  spatio-temporal vehicle-to-grid scheduling,'' 2026.
+\newblock arXiv preprint arXiv:2608.03409.
+
+\bibitem{orfanoudakis2026can}
+S.~Orfanoudakis, B.~Elders, P.~Palensky, and P.~P. Vergara, ``Can a.i.
+  revolutionize ev dispatch?,'' in {\em Machine Learning and Principles and
+  Practice of Knowledge Discovery in Databases}, pp.~11--25, Springer Nature
+  Switzerland, 2026.
+
+\bibitem{song2025longterm}
+G.~Song, H.~Xie, J.~Zhang, H.~Fu, Z.~Shi, D.~Feng, X.~Song, and H.~Zhang,
+  ``Long-term efficient energy management for multi-station collaborative
+  electric vehicle charging: A transformer-based multi-agent reinforcement
+  learning approach,'' {\em Applied Energy}, vol.~397, p.~126315, Nov 2025.
+
+\bibitem{eland2026safe}
+R.~Eland, S.~Orfanoudakis, and P.~P. Vergara, ``Safe reinforcement learning for
+  v2g-enabled electric vehicle aggregators,'' in {\em Machine Learning and
+  Principles and Practice of Knowledge Discovery in Databases}, pp.~76--91,
+  Springer Nature Switzerland, 2026.
+
+\bibitem{kiwiel2007breakpoint}
+K.~C. Kiwiel, ``Breakpoint searching algorithms for the continuous quadratic
+  knapsack problem,'' {\em Mathematical Programming}, vol.~112, pp.~473--491,
+  Nov 2006.
+
+\bibitem{wang2022efficient}
+B.~Wang, L.~Lin, and Y.-J. Liu, ``Efficient projection onto the intersection of
+  a half-space and a box-like set and its generalized jacobian,'' {\em
+  Optimization}, vol.~71, pp.~1073--1096, July 2021.
+
+\bibitem{li2020constrained}
+H.~Li, Z.~Wan, and H.~He, ``Constrained ev charging scheduling based on safe
+  deep reinforcement learning,'' {\em IEEE Transactions on Smart Grid},
+  vol.~11, pp.~2427--2439, May 2020.
+
+\bibitem{zhang2024hamlet}
+F.~Zhang, Q.~Yang, and D.~An, ``Hamlet: Hierarchical multi-objective
+  reinforcement learning method for charging power control of electric vehicles
+  with dynamic quantity,'' {\em IEEE Transactions on Smart Grid}, vol.~15,
+  pp.~783--794, Jan 2024.
+
+\bibitem{caballe2026largescale}
+J.~Caball{\'e}, P.~Segovia, C.~Ocampo-Martinez, and N.~Quijano, ``Large-scale
+  ev charging coordination: a detailed exploration of mean-field and
+  reinforcement learning approaches,'' {\em Control Engineering Practice},
+  vol.~168, p.~106669, Mar 2026.
+
+\bibitem{lee2021adaptive}
+Z.~J. Lee, G.~Lee, T.~Lee, C.~Jin, R.~Lee, Z.~Low, D.~Chang, C.~Ortega, and
+  S.~H. Low, ``Adaptive charging networks: A framework for smart electric
+  vehicle charging,'' {\em IEEE Transactions on Smart Grid}, vol.~12,
+  pp.~4339--4350, Sept. 2021.
+
+\bibitem{diazlondono2026open}
+C.~Diaz-Londono, S.~Orfanoudakis, P.~P. Vergara, P.~Palensky, F.~Ruiz, and
+  G.~Gruosso, ``Open source algorithms for maximizing v2g flexibility based on
+  model predictive control,'' {\em Electric Power Systems Research}, vol.~250,
+  p.~112082, Jan 2026.
+
+\bibitem{orfanoudakis2026physics}
+S.~Orfanoudakis, F.~A. Oliehoek, P.~Palensky, and P.~P. Vergara,
+  ``Physics-informed reinforcement learning for large-scale ev smart charging
+  considering distribution network voltage constraints,'' {\em Applied Energy},
+  vol.~421, p.~128224, Oct 2026.
+
+\bibitem{fan2024safety}
+J.~Fan, A.~Liebman, and H.~Wang, ``Safety-aware reinforcement learning for
+  electric vehicle charging station management in distribution network,'' in
+  {\em 2024 IEEE Power \& Energy Society General Meeting (PESGM)}, pp.~1--5,
+  IEEE, July 2024.
+
+\bibitem{tessler2018reward}
+C.~Tessler, D.~J. Mankowitz, and S.~Mannor, ``Reward constrained policy
+  optimization,'' 2018.
+\newblock arXiv preprint arXiv:1805.11074.
+
+\bibitem{achiam2017constrained}
+J.~Achiam, D.~Held, A.~Tamar, and P.~Abbeel, ``Constrained policy
+  optimization,'' 2017.
+\newblock arXiv preprint arXiv:1705.10528.
+
+\bibitem{zhang2025modelfree}
+Z.~Zhang, R.~Rigo-Mariani, N.~Hadjsaid, and Y.~Xu, ``Model-free safe deep
+  reinforcement learning for grid-to-vehicle management considering grid
+  constraints and transformer thermal stress,'' {\em Engineering Applications
+  of Artificial Intelligence}, vol.~162, p.~112529, Dec 2025.
+
+\bibitem{alshiekh2018safe}
+M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, and U.~Topcu,
+  ``Safe reinforcement learning via shielding,'' {\em Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~32, Apr 2018.
+
+\bibitem{ceusters2023adaptive}
+G.~Ceusters, M.~A. Putratama, R.~Franke, A.~Now{\'e}, and M.~Messagie, ``An
+  adaptive safety layer with hard constraints for safe reinforcement learning
+  in multi-energy management systems,'' {\em Sustainable Energy, Grids and
+  Networks}, vol.~36, p.~101202, Dec 2023.
+
+\bibitem{demirel2025multiobjective}
+G.~Demirel, S.~Grafenhorst, J.~Ohm, B.~Sch{\"a}fer, K.~F{\"o}rderer, and
+  V.~Hagenmeyer, ``Multi-objective reinforcement learning with shielding for
+  control and safety in power grids,'' {\em ACM SIGEnergy Energy Informatics
+  Review}, vol.~5, pp.~93--104, Sept. 2025.
+
+\bibitem{fujimoto2018addressing}
+S.~Fujimoto, H.~van Hoof, and D.~Meger, ``Addressing function approximation
+  error in actor-critic methods,'' 2018.
+\newblock arXiv preprint arXiv:1802.09477.
+
+\bibitem{amos2017optnet}
+B.~Amos and J.~Z. Kolter, ``Optnet: Differentiable optimization as a layer in
+  neural networks,'' 2017.
+\newblock arXiv preprint arXiv:1703.00443.
+
+\bibitem{agrawal2019differentiable}
+A.~Agrawal, B.~Amos, S.~T. Barratt, S.~Boyd, S.~Diamond, and J.~Z. Kolter,
+  ``Differentiable convex optimization layers,'' 2019.
+\newblock arXiv preprint arXiv:1910.12430.
+
+\bibitem{li2023learning}
+M.~Li, S.~Kolouri, and J.~Mohammadi, ``Learning to solve optimization problems
+  with hard linear constraints,'' {\em IEEE Access}, vol.~11, pp.~59995--60004,
+  2023.
+
+\bibitem{arif2026constraint}
+M.~A.~B. Arif and s.~iqbal, ``Constraint satisfaction by projection rather than
+  by reward: deep reinforcement learning for electric bus depot charging on a
+  weak distribution feeder,'' 2026.
+\newblock SSRN preprint.
+
+\bibitem{gros2020safe}
+S.~Gros, M.~Zanon, and A.~Bemporad, ``Safe reinforcement learning via
+  projection on a safe set: How to achieve optimality?,'' {\em
+  IFAC-PapersOnLine}, vol.~53, no.~2, pp.~8076--8081, 2020.
+
+\bibitem{kasaura2023benchmarking}
+K.~Kasaura, S.~Miura, T.~Kozuno, R.~Yonetani, K.~Hoshino, and Y.~Hosoe,
+  ``Benchmarking actor-critic deep reinforcement learning algorithms for
+  robotics control with action constraints,'' {\em IEEE Robotics and Automation
+  Letters}, vol.~8, pp.~4449--4456, Aug 2023.
+
+\bibitem{markgraf2025safe}
+H.~Markgraf, S.~Sawant, H.~Krasowski, L.~Sch{\"a}fer, S.~Gros, and M.~Althoff,
+  ``Safe reinforcement learning using action projection: Safeguard the policy
+  or the environment?,'' 2025.
+\newblock arXiv preprint arXiv:2509.12833.
+
+\bibitem{zaheer2017deep}
+M.~Zaheer, S.~Kottur, S.~Ravanbakhsh, B.~P{\'o}czos, R.~Salakhutdinov, and
+  A.~J. Smola, ``Deep sets,'' 2017.
+\newblock arXiv preprint arXiv:1703.06114.
+
+\bibitem{vaswani2017attention}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez,
+  {\L}.~Kaiser, and I.~Polosukhin, ``Attention is all you need,'' 2017.
+\newblock arXiv preprint arXiv:1706.03762.
+
+\bibitem{lee2019set}
+J.~Lee, Y.~Lee, J.~Kim, A.~R. Kosiorek, S.~Choi, and Y.~W. Teh, ``Set
+  transformer: A framework for attention-based permutation-invariant neural
+  networks,'' 2018.
+\newblock arXiv preprint arXiv:1810.00825.
+
+\bibitem{hu2021updet}
+S.~Hu, F.~Zhu, X.~Chang, and X.~Liang, ``Updet: Universal multi-agent
+  reinforcement learning via policy decoupling with transformers,'' 2021.
+\newblock arXiv preprint arXiv:2101.08001.
+
+\bibitem{joshi2022learning}
+C.~K. Joshi, Q.~Cappart, L.-M. Rousseau, and T.~Laurent, ``Learning the
+  travelling salesperson problem requires rethinking generalization,'' {\em
+  Constraints}, vol.~27, pp.~70--98, Apr 2022.
+
+\bibitem{zhang2022transfer}
+Y.~Zhang, X.~Chen, and Y.~Zhang, ``Transfer deep reinforcement learning-based
+  large-scale v2g continuous charging coordination with renewable energy
+  sources,'' 2022.
+\newblock arXiv preprint arXiv:2210.07013.
+
+\bibitem{salesortiz2024efficient}
+J.~Sales-Ortiz and O.~Ardakanian, ``Efficient trading of aggregate
+  bidirectional ev charging flexibility with reinforcement learning,'' in {\em
+  The 15th ACM International Conference on Future and Sustainable Energy
+  Systems}, e-Energy '24, pp.~134--146, ACM, May 2024.
+
+\bibitem{jin2026telemetry}
+B.~Jin, S.~Sun, Y.~Zhang, S.~Zheng, and H.~Yu, ``Telemetry-robust safe
+  zero-shot graph multi-agent reinforcement learning for active voltage control
+  across distribution feeders,'' {\em Sensors}, vol.~26, p.~5752, Sept. 2026.
+
+\bibitem{vanhuffelen2025grid}
+E.~van Huffelen, R.~Brouwer, and M.~van~den Akker, ``Grid-constrained online
+  scheduling of flexible electric vehicle charging,'' {\em Energies}, vol.~18,
+  p.~5063, Sept. 2025.
+
+\bibitem{christensen2025multiagent}
+K.~Christensen, B.~N. J{\o}rgensen, and Z.~G. Ma, ``A multi-agent, laxity-based
+  aggregation strategy for cost-effective electric vehicle charging and local
+  transformer overload prevention,'' {\em Sustainability}, vol.~17, p.~3847,
+  Apr 2025.
+
+\bibitem{dyo2022behavior}
+V.~Dyo, ``Behavior-neutral smart charging of plugin electric vehicles:
+  Reinforcement learning approach,'' {\em IEEE Access}, vol.~10,
+  pp.~64095--64104, 2022.
+
+\bibitem{ferragut2022scheduling}
+A.~Ferragut, L.~Narbondo, and F.~Paganini, ``Scheduling ev charging with
+  uncertain departure times,'' {\em ACM SIGMETRICS Performance Evaluation
+  Review}, vol.~49, pp.~10--15, Mar 2022.
+
+\bibitem{frendo2021improving}
+O.~Frendo, N.~Gaertner, and H.~Stuckenschmidt, ``Improving smart charging
+  prioritization by predicting electric vehicle departure time,'' {\em IEEE
+  Transactions on Intelligent Transportation Systems}, vol.~22, pp.~6646--6653,
+  Oct 2021.
+
+\bibitem{lei2018distributionfree}
+J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J. Tibshirani, and L.~Wasserman,
+  ``Distribution-free predictive inference for regression,'' {\em Journal of
+  the American Statistical Association}, vol.~113, pp.~1094--1111, June 2018.
+
+\bibitem{angelopoulos2023conformal}
+A.~N. Angelopoulos and S.~Bates, ``Conformal prediction: A gentle
+  introduction,'' {\em Foundations and Trends\textregistered{} in Machine
+  Learning}, vol.~16, pp.~494--591, Mar 2023.
+
+\bibitem{lindemann2023safe}
+L.~Lindemann, M.~Cleaveland, G.~Shim, and G.~J. Pappas, ``Safe planning in
+  dynamic environments using conformal prediction,'' {\em IEEE Robotics and
+  Automation Letters}, vol.~8, pp.~5116--5123, Aug 2023.
+
+\bibitem{huangfu2018parallelizing}
+Q.~Huangfu and J.~A.~J. Hall, ``Parallelizing the dual revised simplex
+  method,'' {\em Mathematical Programming Computation}, vol.~10, pp.~119--142,
+  Dec 2017.
+
+\bibitem{ba2016layer}
+J.~L. Ba, J.~Kiros, and G.~E. Hinton, ``Layer normalization,'' 2016.
+\newblock arXiv preprint arXiv:1607.06450.
+
+\bibitem{xiong2020layer}
+R.~Xiong, Y.~Yang, D.~He, K.~W. Zheng, S.~Zheng, C.~Xing, H.~Zhang, Y.~Lan,
+  L.~Wang, and T.-Y. Liu, ``On layer normalization in the transformer
+  architecture,'' 2020.
+\newblock arXiv preprint arXiv:2002.04745.
+
+\bibitem{papadopoulos2002inductive}
+H.~Papadopoulos, K.~Proedrou, V.~Vovk, and A.~Gammerman, ``Inductive confidence
+  machines for regression,'' in {\em Machine Learning: ECML 2002},
+  pp.~345--356, Springer Berlin Heidelberg, 2002.
+
+\bibitem{vovk2022algorithmic}
+V.~Vovk, A.~Gammerman, and G.~Shafer, {\em Algorithmic Learning in a Random
+  World}.
+\newblock Springer International Publishing, 2022.
+
+\bibitem{romano2019conformalized}
+Y.~Romano, E.~Patterson, and E.~J. Cand{\`e}s, ``Conformalized quantile
+  regression,'' 2019.
+\newblock arXiv preprint arXiv:1905.03222.
+
+\bibitem{schulman2017proximal}
+J.~D. Schulman, F.~Wolski, P.~Dhariwal, A.~Radford, and O.~Klimov, ``Proximal
+  policy optimization algorithms,'' 2017.
+\newblock arXiv preprint arXiv:1707.06347.
+
+\bibitem{schulman2016highdimensional}
+J.~Schulman, P.~Moritz, S.~Levine, M.~I. Jordan, and P.~Abbeel,
+  ``High-dimensional continuous control using generalized advantage
+  estimation,'' 2015.
+\newblock arXiv preprint arXiv:1506.02438.
+
+\bibitem{agarwal2021deep}
+R.~Agarwal, M.~Schwarzer, P.~S. Castro, A.~C. Courville, and M.~G. Bellemare,
+  ``Deep reinforcement learning at the edge of the statistical precipice,''
+  2021.
+\newblock arXiv preprint arXiv:2108.13264.
+
+\bibitem{henderson2018deep}
+P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup, and D.~Meger, ``Deep
+  reinforcement learning that matters,'' {\em Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~32, Apr 2018.
+
+\bibitem{wilcoxon1945individual}
+F.~Wilcoxon, ``Individual comparisons by ranking methods,'' {\em Biometrics
+  Bulletin}, vol.~1, p.~80, Dec 1945.
+
+\bibitem{paszke2019pytorch}
+A.~Paszke, S.~Gross, F.~Massa, A.~K. Lerer, J.~Bradbury, G.~Chanan, T.~Killeen,
+  Z.~Lin, N.~E. Gimelshein, L.~Antiga, A.~Desmaison, A.~K{\"o}pf, E.~Z. Yang,
+  Z.~DeVito, M.~Raison, A.~Tejani, S.~Chilamkurthy, B.~Steiner, L.~Fang,
+  J.~Bai, and S.~Chintala, ``Pytorch: An imperative style, high-performance
+  deep learning library,'' 2019.
+\newblock arXiv preprint arXiv:1912.01703.
+
+\bibitem{huang2022cleanrl}
+S.~Huang, R.~F.~J. Dossa, C.~Ye, and J.~Braga, ``Cleanrl: High-quality
+  single-file implementations of deep reinforcement learning algorithms,''
+  2021.
+\newblock arXiv preprint arXiv:2111.08819.
+
+\bibitem{kingma2015adam}
+D.~P. Kingma and J.~L. Ba, ``Adam: A method for stochastic optimization,''
+  2014.
+\newblock arXiv preprint arXiv:1412.6980.
+
+\end{thebibliography}

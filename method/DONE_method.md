@@ -1,6 +1,6 @@
 # DONE — Method and Theory (Agent A2)
 
-Version 2, 2026-10-22: revision after the internal proof check (`review/proof_check.md`). Version 1 was 2026-10-22, earlier the same day.
+Version 4, 2026-10-22: implementation feedback (DD25-DD29, `code_repo/code/IMPLEMENTATION_NOTES.md`). Version 3: arrival profiles. Version 2: revision after the internal proof check. Version 1: first release.
 
 ## Produced files (all in `/home/claude/work/method/`)
 
@@ -15,6 +15,36 @@ Version 2, 2026-10-22: revision after the internal proof check (`review/proof_ch
 | `projection_ref.py` | NumPy reference: `phi_ev2gym`, `thresholds`, `cap_request`, `bounds`, `is_feasible`, `sanitize`, `project` (robust), `_bisect_safe`, `project_bisect`, `jacobian`, `fallback`, `actuation` |
 | `check_A1.py` → `check_A1_results.txt` | A1/A1′/A3 on EV2Gym's `EV` class (768 configurations) |
 | `verify_projection.py` → `verify_projection_results.txt` | T1 (vs SLSQP, KKT, bisection), **T1b (review M1: tight A5, $|x|$ up to $10^8$, hyperplane, NaN)**, T2 Jacobian, T3 Moreau gradient, T4 closed loop with EV2Gym `EV` objects (5138 EVs) |
+
+## Change log, version 4 (2026-10-22, implementation feedback DD25-DD29)
+
+- **safety_layer.md S 7.4 (DD25):**
+  - inside the admission LP, connected EVs use $E_i^{\mathrm{tgt}}=\min\{E_i^{\mathrm{req}},\Psi_i^{\mathrm{LP}}-10^{-6}\}$; admitted requests are never reduced;
+  - explanation why the faithful LP is always infeasible with full-battery targets (the linear minorant never reaches $E^{\mathrm{cap}}$);
+  - one-LP $y_{\max}$ implementation of the bisection (I-5);
+  - explicit list of what admission control guarantees and what it does not;
+  - Corollary 2 item 2 states the constant efficiency values (I-17).
+- **formulation.md:**
+  - the main optimality gap is now w.r.t. $J^{\mathrm{LP,ceil}}$ (DD26), with the $J^{\mathrm{LP}}$ gap in the supplement;
+  - added why $J^{\mathrm{LP}}$ is not an upper bound inside EV2Gym (unbilled ceil gain; smoke example −2.376 vs −2.386 €);
+  - the full-battery cap remark is corrected: the cap is inactive in floating point for long stays (I-3);
+  - forecast details (I-12); head widths $d_m\to d_m/2$ and small-variant breakdown (I-21).
+- **algorithm.md:**
+  - Alg. 3 uses DD25 targets;
+  - Alg. 4: predictor details, spec-class one-hot, the $-10^{-9}$ in the bound, measured calibration cost 10-15 CPU-h with caching and workers (I-7, I-22);
+  - Alg. 5:
+    - penalty-method rules (admission off, untightened limits, token mask; I-13);
+    - eMPC adapter, and eMPC-HiGHS as a non-identical port (I-6);
+    - EV-GNN per DD27 (per-profile, $N=20$, $\rho=4$, 5 seeds, not tuned); GNN-DT not included;
+  - Alg. 6: tuning for methods 1-4 only, inheritance rules, validation profile cycling (I-18), head width;
+  - Alg. 7:
+    - loads/PV redrawn per episode via `tr_seed` (I-2);
+    - EV2Gym forecast keys 100/10 for eMPC-HiGHS;
+    - the literature configuration uses our spec file (I-11);
+    - sensitivity scope (DD28);
+    - compute section rewritten with the implementation's per-update timings (indicative) and run counts: 51 own PPO runs, plus EV-GNN 15 and dt5 5, both optional.
+- **nomenclature.md:** $\Psi_i^{\mathrm{LP}}$ and $E_i^{\mathrm{tgt}}$ added; $J^{\mathrm{LP,ceil}}$ marked as the main gap reference.
+- **Check of IMPLEMENTATION_NOTES' "faithful implementation choices"** (I-2, I-5, I-6, I-7, I-9, I-11 to I-19): all agree with or refine the docs. The docs were updated where they were silent or imprecise. I found no item where the code is wrong.
 
 ## Change log, version 3 (2026-10-22, Orchestrator request: arrival profiles)
 
@@ -113,13 +143,13 @@ Recorded as DD24 (version 3), with the three arrival profiles.
 ## Open issues
 
 1. **A5 is closed-loop** and cannot be guaranteed by per-EV bounds. There is a counterexample at constant capacity, and the policy-independent sufficient condition is very conservative. Its failure frequency on the Alg. 7 scenarios is unknown until the experiments run (risk R8).
-2. **Full-battery targets with the asymptotic taper.** Almost every EV gets a tiny DD2 cap. Report caps above 0.01 kWh only.
+2. **Full-battery targets with the taper.** The DD2 cap is inactive in floating point for long stays and binds, often negligibly, for short ones. Caps are reported above 0.01 kWh only. The admission LP needs the DD25 targets.
 3. **L4 bib keys** are in `lit/parts/L4_verified.bib` but not yet merged into `lit/merged/references.bib`. The merge is needed before A5 writes the manuscript.
 4. **Missing venv packages:** `torch`, `highspy`, `scikit-learn`.
 5. **EV2Gym MPC** runs only up to $N\le25$ under the restricted Gurobi licence. A HiGHS port or an academic licence is needed beyond that.
 6. **EV-GNN/GNN-DT compatibility** with our commit and scenarios is unchecked.
 7. **General-$\eta$ model** is covered by the theory; the reviewer's closed loop exercised lossy $\eta$ (0 violations), our own scripts did not.
 8. **Projection norm.** The projection uses the Euclidean norm in kW; a weighted norm was not explored.
-9. **Alg. 7 load/PV multipliers (0.4), forecast noise (10 %) and per-profile start hours** are my proposal. They should be confirmed by whoever owns the experiment design.
+9. **Alg. 7 load/PV multipliers (0.4), forecast noise (10 %) and per-profile start hours** were proposed by me and adopted in the implementation configs. They should be confirmed by whoever owns the experiment design.
 10. **Remaining dropped spawns** (public 6.8 %, private 3.7 %) bias those samples slightly towards shorter stays. Reported as a limitation.
 11. **Compute figures** for the PPO update and the HiGHS MPC are estimates. Only EV2Gym step times were measured.

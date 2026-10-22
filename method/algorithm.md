@@ -1,6 +1,6 @@
 # Algorithms, hyperparameters, baselines and scenarios
 
-Agent A2 (Method and Theory). Version 2, 2026-10-22, revised after the internal proof check (change log in `DONE_method.md`). Symbols: `nomenclature.md`. Equations (F·): `formulation.md`; (S·): `safety_layer.md`. Design decisions DD1-DD24: `design_decisions.md`.
+Agent A2 (Method and Theory). Version 4, 2026-10-22, revised after the internal proof check and the implementation feedback (`code_repo/code/IMPLEMENTATION_NOTES.md`; change log in `DONE_method.md`). Symbols: `nomenclature.md`. Equations (F·): `formulation.md`; (S·): `safety_layer.md`. Design decisions DD1-DD29: `design_decisions.md`.
 
 The NumPy reference `projection_ref.py` is the executable specification of Alg. 1 and Alg. 3. Any PyTorch [paszke2019pytorch] port must match it to $10^{-9}$ in float64 on the tests T1 and T1b of `verify_projection.py`, including the tight-A5 and large-magnitude families.
 
@@ -211,8 +211,9 @@ for t = 0..T-1:
         E_req_j, Bhat_j = cap_request(E_des, E_arr, K, phi_j, E_min, C_cap)     # DD2 cap, certifies A4
      c. if admission == on:                                                     # DD20
            rho_j = taper_minorant(phi_j)                                        # S 7.4
-           if not admission_LP_feasible(N(t), E_req):                           # forecasts for t' > t
-               y = bisect_largest_feasible(E_req_j, lower=min(E_arr, E_req_j), iters=12)
+           # targets: new EV E_req_j; connected EVs min(E_req_i, Psi_LP_i(E_i) - 1e-6)   (DD25)
+           if not admission_LP_feasible(N(t), targets):                         # forecasts for t' > t
+               y = bisect_largest_feasible(E_req_j, lower=min(E_arr, E_req_j), iters=12)  # via one LP for y_max (S 7.4)
                E_req_j, Bhat_j = cap_request(y, E_arr, K, phi_j, E_min, C_cap)  # re-certifies A4
                log reduction
      d. log capped/reduced amounts
@@ -238,22 +239,33 @@ Split conformal prediction [papadopoulos2002inductive; vovk2022algorithmic; lei2
 ```
 For every test configuration c = (profile, N, rho_tr, dt, start hour, spawn multiplier, date range)   # DD23, DD24
   Data generation (seed ranges disjoint from RL training, validation and test):
-    S_train(c): 2,000 episodes of c; take ALL sessions -> fit predictor q_hat (quantile GBM, loss='quantile', alpha)
-                features w = [arrival step mod N_day, weekday, E_arr/E_cap, (E_des-E_arr)/E_ref, EV model one-hot]
+    S_train(c): 2,000 episodes of c; take ALL sessions -> fit predictor q_hat
+                (sklearn GradientBoostingRegressor(loss='quantile', alpha), 200 trees, depth 3)
+                features w = [episode arrival step t_arr mod N_day (start hour fixed per c), weekday, E_arr/E_cap,
+                              (E_des-E_arr)/E_ref, one-hot of the 6 distinct (capacity, AC power) spec classes]
+    Sessions are drawn with EV2Gym's own EV_spawner after replicating reset's seeding/date logic (same law,
+    cheaper than full resets); generated once per c for all alpha and cached.
     S_cal(c):   n_cal = 5,000 independent episodes of c; from each, pick ONE session uniformly at random
                 (calibration points are i.i.d., hence exchangeable with a uniformly chosen EV of a test episode of c)
   Calibration:
     scores S_j = q_hat(w_j) - d_j,  j = 1..n_cal
     k = ceil((n_cal + 1)*(1 - alpha));  Q = k-th smallest score  (Q = +inf if k > n_cal)
   Online bound for a test EV of configuration c:
-    dlo = max(t_arr, ceil(q_hat(w) - Q))      # integer; S 8
+    dlo = max(t_arr, ceil(q_hat(w) - Q - 1e-9))   # integer; the -1e-9 only lowers the bound (still valid); S 8
 Report per configuration and alpha in {0.01, 0.05, 0.1, 0.2}:
   coverage as the EPISODE-AVERAGED fraction of EVs with d >= dlo (the quantity Proposition 2 guarantees),
   the pooled fraction as secondary, mean (d - dlo) in steps, shortfall of uncovered EVs, profit,
   cost of the guarantee vs. known-d SA-Attn.
 ```
 
-One predictor is fitted per $(c,\alpha)$. The configurations are the 36 test configurations plus the literature configuration of Alg. 7, so there are $37\times4=148$ calibrations. Generating the sessions needs only EV2Gym's arrival model, not RL rollouts. `scikit-learn` must be installed in the venv.
+One predictor is fitted per $(c,\alpha)$. The configurations are the 36 test configurations plus the literature configuration of Alg. 7, so there are $37\times4=148$ calibrations. Generating the sessions needs only EV2Gym's arrival model, not RL rollouts.
+
+**Cost (measured, IMPLEMENTATION_NOTES I-7/I-22).** EV2Gym's spawner costs about 4 ms per EV, because it fills a 101-entry efficiency table per EV. This amounts to about 1 h per $N=200$ configuration and **10-15 CPU-hours in total**. The earlier estimate of under 1 CPU-hour was wrong. Three measures keep it manageable:
+- sessions are generated once per configuration for all $\alpha$;
+- sessions are cached, so re-calibration takes seconds;
+- session generation runs in parallel workers and parallel configurations.
+
+Calibration stays per configuration, including $\rho_{\mathrm{tr}}$, as DD23 requires, although the session law does not depend on $\rho_{\mathrm{tr}}$. SA-Attn-CP is trained with $\tau^{\mathrm{lo}}$ calibrated at $\alpha=0.1$ for each training configuration; these coincide with test configurations and reuse their calibrations.
 
 ---
 
@@ -273,6 +285,12 @@ Fairness rules:
 
 Without the safety layer, a raw action is executed after the **per-EV physical clip only**: $p_i=\operatorname{clip}(x_i,p_i^{\min},u_i)$. EV2Gym does this internally anyway; we make it explicit so that actuation is identical. The clip contains neither the departure bound $l_i$ nor the transformer coupling.
 
+Further rules for the penalty-based methods:
+- Admission control is off; $E^{\mathrm{req}}$ is the DD2-capped value.
+- $r^{\mathrm{pen}}$ uses the untightened $C(t)$ and $C_{\mathrm{rev}}(t)$ and the realised powers.
+- The dense variant uses the commanded $p$.
+- In their actor loss, the token mask is $o_i\wedge(u_i-p_i^{\min}>\epsilon_{\mathrm{num}})$ (the action can influence $p_i$), and there is no fallback mask.
+
 | # | Method | Policy / rule | Safety layer | Reward | Notes |
 |---|---|---|---|---|---|
 | 1 | MLP+penalty | MLP actor/critic (2×256, tanh) on the concatenation of charger tokens in charger order, zero-padded to $N_{\max}=200$ slots, plus the global token; outputs 200 means and log-stds | No (physical clip only) | $r^{\mathrm{pen}}$ | Runs at any $N\le200$ with the same weights (zero padding). Not permutation-equivariant; slots 21-200 are never filled in training |
@@ -283,9 +301,9 @@ Without the safety layer, a raw action is executed after the **per-EV physical c
 | 5b | ALAP | $x_i=\max(0,l_i^{\mathrm{G2V}})$, $l^{\mathrm{G2V}}$ = (S11) with $p^{\min}:=0$ | raw and +$\Pi$ | – | Our implementation (EV2Gym's ignores $\eta$ and the taper) |
 | 5c | Round Robin | G2V: rotating pointer over occupied chargers, each gets $u_i$ until $\tilde C(t)$ is used (last partially); pointer advances by one per step | raw and +$\Pi$ | – | Forward-transformer-safe by construction, not departure-aware |
 | 5d | LLF | G2V: allocate $\tilde C(t)$ in increasing laxity $\chi_i$ at $u_i$ each | raw and +$\Pi$ | – | Classical baseline, cf. [chen2022smoothed] |
-| 6 | EV2Gym MPC | `eMPC_V2G` (`baselines/mpc/eMPC.py`): economic MPC with V2G, transformer constraint and hard departure constraint; horizon 10 steps | raw (as published) and +$\Pi$ | – | Uses true prices and future arrivals within the horizon (information advantage, flagged). Restricted Gurobi licence $\Rightarrow$ only $N\le25$; larger $N$ needs an academic licence or our HiGHS port ("eMPC-HiGHS") |
+| 6 | EV2Gym MPC | `eMPC_V2G` (`baselines/mpc/eMPC.py`): economic MPC with V2G, transformer constraint and hard departure constraint; horizon 10 steps. Run through an adapter subclass with the identical formulation that fixes two numpy-2/efficiency issues (1-D solution vector; percent efficiency divided by 100) without modifying EV2Gym | raw (as published) and +$\Pi$ | – | Uses true prices and future arrivals within the horizon (information advantage, flagged); one efficiency (first EV) for all EVs; zero actions when infeasible (published behaviour). Restricted Gurobi licence $\Rightarrow$ only $N\le25$. For larger $N$: **eMPC-HiGHS**, a related but **not identical** port: net-power LP (exact for $c^{\mathrm{dis}}=c^{\mathrm{ch}}$), per-EV limits, exact first-step bounds including the taper, the wrapper's $E^{\mathrm{req}}$, an elastic departure constraint (1000 €/kWh), and EV2Gym's internal load/PV forecasts made unbiased by the scenario config (`forecast_mean: 100`, `forecast_std: 10`). It is reported under its own name |
 | 7 | Perfect-information optimum | LP of F 3 (HiGHS), lexicographic shortfall-then-profit (DD19) | – | – | Upper bound $J^{\mathrm{LP}}$ (Proposition O1); not a controller |
-| 8 | EV-GNN [orfanoudakis2025scalable] (or GNN-DT [orfanoudakis2026graph]) | public code, its default reward (penalty-based) and its own algorithm; trained at $N\in\{10,20\}$ with the same budget | raw and +$\Pi$ | its own | Only if it runs on our commit and scenarios |
+| 8 | EV-GNN [orfanoudakis2025scalable] (optional, DD27) | public code at a pinned commit, its own training script, default reward (penalty-based), algorithm and hyperparameters (not tuned). The script accepts one scenario per run, so **one model per arrival profile** is trained at $N=20$, $\rho_{\mathrm{tr}}=4$ kW, 5 seeds | raw and +$\Pi$ | its own | Evaluated zero-shot on all $(N,\rho_{\mathrm{tr}})$ of its profile and reported as "trained per profile"; this protocol difference (per-profile vs. mixed training, single training size) is stated. Run unmodified via a launcher restoring numpy aliases removed in numpy 2. **GNN-DT [orfanoudakis2026graph] is not included**: no public code was found, and the paper says so |
 | 9 | SA-Attn-CP($\alpha$) | as 4, with $\tau^{\mathrm{lo}}$ in features and layer | Yes | $r$ | $\alpha\in\{0.01,0.05,0.1,0.2\}$; plus SA-Attn-point ($\hat Q=0$, uncalibrated) as ablation |
 | 10 | Ablations of 4 | no admission control; $\beta=0$; curriculum vs mixed; small network ($d_m=64$, $n_L=2$) | Yes | $r$ | – |
 
@@ -302,7 +320,7 @@ Without the safety layer, a raw action is executed after the **per-EV physical c
 |  | heads $n_H$ | 4 |
 |  | FFN width | 512, GELU |
 |  | dropout | 0 |
-|  | actor head | $128\to64\to2$, shared over chargers |
+|  | actor head | $d_m\to d_m/2\to2$ ($128\to64\to2$), shared over chargers; critic head $d_m\to d_m/2\to1$ |
 |  | $\log\sigma$ clamp / init | $[-5,0.5]$ / $-0.5$ |
 |  | critic readout | attention pooling (1 learned query, 4 heads), $128\to64\to1$ |
 |  | actor / critic weights | separate encoders |
@@ -334,8 +352,8 @@ Without the safety layer, a raw action is executed after the **per-EV physical c
 | Conformal | $n_{\mathrm{cal}}$ / training episodes | 5,000 / 2,000 per configuration |
 
 **Tuning protocol (equal budget for all learned methods).**
-- The tuning is done on the 10-charger station only (tight level $\rho_{\mathrm{tr}}=4$ kW, the three profiles mixed as in training), with validation seeds disjoint from training and test seeds.
-- Full grid of 18 configurations per learned method (methods 1-4 and 8; method 9 inherits from 4):
+- The tuning is done on the 10-charger station only (tight level $\rho_{\mathrm{tr}}=4$ kW), with validation seeds disjoint from training and test seeds. The 20 validation episodes cycle through the profiles (7/7/6).
+- Full grid of 18 configurations per learned method, for methods 1-4. Method 9 and the SA-Attn ablations inherit the selection of method 4, and the penalty ablations that of method 3. EV-GNN (method 8) uses its published hyperparameters (DD27):
   - learning rate $\in\{1\times10^{-4},3\times10^{-4},1\times10^{-3}\}$;
   - minibatch $\in\{256,1024\}$;
   - entropy coefficient $\in\{0,10^{-3},10^{-2}\}$.
@@ -412,7 +430,9 @@ The cost is that the critic cannot anticipate profile-specific future arrivals b
 | EV fleet | heterogeneous specs from our own JSON (DD4: efficiency constant over current levels), `transition_soc_multiplier: 5`, `desired_capacity: 1.0` (main) and 0.8 (sensitivity, DD2), `min_time_of_stay: 180` | `heterogeneous_ev_specs: True`, `ev_specs_file`, `ev.*` | – |
 | Time | $\Delta t=15$ min, $T=112$, `random_day: True`, `random_hour: False`; 5-min sensitivity with $T=336$ (same start hours) | `timescale`, `simulation_length`, `hour` | – |
 | Prices | NL day-ahead (EV2Gym), `discharge_price_factor: 1` | – | identical |
-| Forecasts in the observation | true value + Gaussian noise with std 10 % of the value (DD6) | our wrapper | – |
+| Forecasts in the observation | $\max\{0,\text{true}\cdot(1+0.1\epsilon)\}$, $\epsilon\sim\mathcal N(0,1)$ i.i.d. per $(t,k)$; last true value (and price) held beyond $T$ (DD6) | our wrapper | – |
+| EV2Gym's internal load/PV forecasts (used only by eMPC-HiGHS) | unbiased: `forecast_mean: 100`, `forecast_std: 10` (EV2Gym defaults 30/5 are biased) | `inflexible_loads.*`, `solar_power.*` | – |
+| Load/PV randomness | redrawn per episode: the wrapper sets `env.tr_seed` to the episode seed before each reset (EV2Gym's `tr_seed: -1` would reuse the constructor seed for all resets); every replay is a (configuration, seed) pair with a fingerprint of sessions, prices, loads, PV and rating | attribute, no patch | – |
 | Horizon handling | `empty_ports_at_end_of_simulation: True` (every EV departs by $T-2$; no session truncated; dropped spawns logged) | constructor argument | – |
 
 **What scaling achieves.** The expected aggregate demand and the transformer headroom per charger, $(P_{\mathrm{tr}}-P^{\mathrm{inf}}+P^{\mathrm{pv}})/N$, have the same mean for every $N$. Relative fluctuations of the aggregate shrink roughly as $1/\sqrt N$, so infeasible steps are expected to become rarer at large $N$. This is reported per $N$ as part of the C3 analysis, not treated as a confound.
@@ -428,31 +448,46 @@ The cost is that the critic cannot anticipate profile-specific future arrivals b
 - 6 sizes × 2 tightness levels × 3 profiles = **36 configurations**.
 - 100 replays each for $N\le50$, and **50 replays for $N\in\{100,200\}$** to bound compute. Paired comparisons on common replays keep the confidence intervals usable at 50.
 - The replays are generated once and shared by all methods.
-- In addition, the **literature configuration**: EV2Gym's original `V2GProfitMax.yaml` (25 chargers, 100 kW, workplace, multiplier 5, start 05:00, loads/PV off), 100 replays, for comparability with EV2Gym-based work.
+- In addition, the **literature configuration**: EV2Gym's original `V2GProfitMax.yaml` (25 chargers, 100 kW, workplace, multiplier 5, start 05:00, loads/PV off), 100 replays, for comparability with EV2Gym-based work. It uses our constant-efficiency spec file instead of EV2Gym's current-dependent tables, because Corollary 2 requires it. This is stated as a deviation.
+
+**Sensitivities (DD28).** These are run at $N=20$, $\rho_{\mathrm{tr}}=4$ kW, for all three profiles (6 extra configurations):
+- desired SoC 0.8 (DD2), re-using the main policies;
+- $\Delta t=5$ min with $T=336$, which needs a separately trained SA-Attn policy (5 seeds, $\gamma=0.99^{1/3}$; baselines are evaluated too).
+
+Configs: `test_grid_sensitivity.yaml`, `configs/ablations/train_attn_safe_dt5.yaml`. The main grid is unchanged.
 
 Total: $4\cdot2\cdot3\cdot100+2\cdot2\cdot3\cdot50+100=2400+600+100=$ **3100 test episodes per evaluated policy**.
 
 ### Alg. 7.4 Compute estimate
 
-**Measured.** EV2Gym step time (pinned commit, one CPU core, random actions) is 1.9 ms at $N=20$ and 6.6 ms at $N=200$. Reset takes 0.18-0.34 s. The safety layer (NumPy, per step) and the threshold tables add well under 1 ms at $N\le20$.
+**Measured.** EV2Gym step time (pinned commit, one CPU core, random actions) is 1.9 ms at $N=20$ and 6.6 ms at $N=200$; reset takes 0.18-0.34 s. Indicative wrapper and PPO timings come from the implementation (`code_repo/code/README.md` Sec. 4, `make bench`; 2 CPU cores, no GPU):
 
-**Training runs** (each $3\times10^6$ env steps; "methods" are learned methods):
+| $N$ | wrapper observe | wrapper step (layer + actuation + EV2Gym) | observe at arrival with admission LP (mean) | actor forward (1 thread) | PPO update, 2048 transitions |
+|---|---|---|---|---|---|
+| 10 | 0.36 ms | 0.59 ms | 0.70 ms | 1.3 ms | 16.6 s (10 epochs, minibatch 512) |
+| 50 | 1.08 ms | 1.37 ms | 5.5 ms | 2.1 ms | 9.4 s per epoch |
+| 200 | 3.34 ms | 3.73 ms | 66 ms | 5.3 ms | 38.6 s per epoch (minibatch 64; 512 exceeds 7 GB RAM) |
+
+On 2 cores, one training update (128 rollout steps of 16 envs + 10 epochs) takes about 18 s, i.e. **about 7 h per $3\times10^6$-step run**. With a GPU and at least 16 cores, about 0.5 h per run is expected. These timings are indicative, not results. At $N=200$, the admission LP dominates controller time at arrival steps.
+
+**Training runs** (each $3\times10^6$ env steps, own PPO code):
 
 | Item | Runs |
 |---|---|
-| Main: MLP+penalty, MLP+safety layer, Attention+penalty, SA-Attn, EV-GNN (if usable) — 5 methods × 5 seeds | 25 |
-| Conformal: SA-Attn-CP trained once at $\alpha=0.1$ (5 seeds). Evaluated at all $\alpha\in\{0.01,0.05,0.1,0.2\}$ without retraining; the guarantee of Proposition 2 holds for any policy | 5 |
+| Main: MLP+penalty, MLP+safety layer, Attention+penalty, SA-Attn, SA-Attn-CP ($\alpha=0.1$) — 5 × 5 seeds | 25 |
 | Ablations: $\beta=0$, curriculum, small network, penalty-dense — 4 × 5 seeds | 20 |
 | Penalty-weight sensitivity $w\in\{1,100\}$ — 2 × 3 seeds | 6 |
-| **Total** | **56 runs ≈ $1.7\times10^8$ env steps** |
+| **Total (own PPO)** | **51 runs ≈ $1.5\times10^8$ env steps** |
+| Tuning: methods 1-4 × 18 configurations × $0.5\times10^6$ | 72 short runs, $3.6\times10^7$ env steps |
+| Optional EV-GNN (DD27): 3 profiles × 5 seeds, with its own TD3 script | 15 runs, about $4.5\times10^7$ env steps, GPU recommended |
+| Optional sensitivity (DD28): $\Delta t=5$ min SA-Attn | 5 runs, $1.5\times10^7$ env steps |
 
-The "no admission control" ablation is evaluation-only. Tuning adds 5 methods × 18 configurations × $0.5\times10^6$ = $4.5\times10^7$ env steps (Alg. 6). Overall about $2.1\times10^8$ training env steps.
-
-**Wall-clock per run** (16 env processes): environment stepping is about 8-10 min. The PPO update ($\approx5.9\times10^4$ minibatch steps on a 1.3M-parameter transformer with ≤21 tokens) takes about 10-15 min on one GPU or about 1.5-3 h on CPU. So a run takes about 0.5 h (GPU) or 2-3 h (CPU). With tuning runs at 1/6 of the cost, the total is about 70 run-equivalents, i.e. about 35 GPU-hours or 150-200 CPU-hours.
+The "no admission control" ablation is evaluation-only. SA-Attn-CP is evaluated at all $\alpha\in\{0.01,0.05,0.1,0.2\}$ without retraining; Proposition 2 holds for any policy. Training needs about 30 GPU-hours plus about 6 GPU-hours of tuning, or about 120-180 CPU-hours on 16 cores; on 2 cores, about 7 h per run.
 
 **Evaluation.**
-- 3100 episodes × 112 steps per policy, about 0.5 CPU-hours per policy, dominated by $N=200$.
-- Policies: 56 learned runs, plus 4 heuristics × 2 variants, plus eMPC × 2 variants. The MPC at $N\ge50$ needs the HiGHS port, at several seconds per step, about 10-30 CPU-hours.
-- Plus 3100 oracle LPs at 1-10 s each (≤3 CPU-hours).
-- Conformal calibration: 37 configurations × 4 values of $\alpha$. Session generation only, under 1 CPU-hour.
-- Evaluation total: about 50-70 CPU-hours, parallel per configuration.
+- 3100 episodes × 112 steps per policy, about 0.5 CPU-hours per policy plus admission LPs.
+- About 93 evaluated policies (81 learned evaluations including ablation variants, and 12 baseline policies): **about 50-80 CPU-hours**, parallel per configuration.
+- eMPC-HiGHS at $N\ge50$ takes several seconds per step and is the most expensive baseline.
+- Oracle: 3100 lexicographic LPs at 0.01-10 s each, at most 3 CPU-hours.
+- **Conformal calibration: 10-15 CPU-hours** (measured, Alg. 4), parallelisable.
+- Sensitivities (DD28): a few CPU-hours.

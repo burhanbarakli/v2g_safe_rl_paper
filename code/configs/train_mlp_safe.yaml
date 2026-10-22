@@ -1,0 +1,4 @@
+# MLP + safety layer (Alg. 5 row 2).
+inherit: base.yaml
+method: mlp_safe
+model: {arch: mlp}

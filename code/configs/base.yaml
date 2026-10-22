@@ -1,0 +1,84 @@
+# Base configuration = algorithm.md Alg. 6 defaults (main method SA-Attn). Every training config inherits it.
+# Keys not listed in v2gsafe/config.py:DEFAULTS are rejected.
+method: attn_safe
+model:
+  arch: attention          # attention | mlp
+  d_model: 128             # d_m
+  n_layers: 3              # n_L (pre-LN)
+  n_heads: 4               # n_H
+  head_hidden: 64          # actor head 128->64->2, critic head 128->64->1
+  mlp_hidden: 256          # MLP baseline: 2 x 256, tanh
+  n_max: 200               # MLP baseline zero-padding slots
+ppo:
+  total_env_steps: 3000000 # transitions per run
+  rollout_len: 128         # steps per env per update (16 x 128 = 2048 transitions)
+  minibatch: 512           # B_mb (fixed normaliser of the masked actor loss, DD21)
+  epochs: 10
+  lr: 3.0e-4               # linear decay to 0
+  lr_decay: true
+  adam_eps: 1.0e-5
+  gamma: 0.99              # 0.99**(1/3) for the 5-min sensitivity
+  gae_lambda: 0.95
+  clip: 0.2
+  ent_coef: 0.0            # tuned in {0, 1e-3, 1e-2}
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  target_kl: 0.03
+  beta: 0.01               # drift regulariser (S 9); 0 for penalty baselines and the beta=0 ablation
+  norm_adv: true
+envs:
+  groups:                  # 16 parallel envs, mixed N in every batch
+    - {N: 10, count: 8}
+    - {N: 20, count: 8}
+  backend: subproc         # subproc (one process per env) | sync (in-process)
+  curriculum:              # ablation: N=10 only for the first 20 % of env steps
+    enabled: false
+    frac: 0.2
+    groups:
+      - {N: 10, count: 16}
+scenario:                  # training mixture (Alg. 7.3): profile and rho_tr drawn uniformly per episode
+  profiles: [workplace, public, private]
+  rho_tr: [4.0, 7.0]
+  dt_min: 15
+  T: null                  # null = 28 h (112 steps at 15 min)
+  desired_soc: 1.0
+  loads: true
+  pv: true
+  load_mult: 0.4
+  pv_mult: 0.4
+  min_time_of_stay: 180
+  hour: null               # null = per-profile start hour (05:00 / 12:00 / 12:00)
+  spawn_multiplier: null   # null = per-profile multiplier (5 / 4 / 2.5)
+  simulation_days: null    # null = per-profile days (weekdays / both / both)
+safety:
+  enabled: true            # projection + fallback; false = physical clip only (penalty baselines)
+  admission: true          # DD9/DD20
+  # DD25: 'lp_reachable' (default) = inside the admission LP only, each connected EV's target is
+  # min(E_req, Psi^LP(E_i) - 1e-6); admitted requests are never reduced. 'admitted' = literal S 7.4 LP, which is
+  # infeasible whenever an EV with a full-battery target is connected (IMPLEMENTATION_NOTES I-3).
+  admission_existing_targets: lp_reachable
+  eps_q: 0.008             # DD16
+reward:
+  type: profit             # profit (r) | penalty (r_pen, Alg. 5)
+  w_E: 10.0                # DD22
+  w_P: 10.0
+  dense: false             # penalty-dense ablation
+conformal:
+  enabled: false
+  alpha: 0.1
+  cache_dir: results/conformal
+  n_train: 2000
+  n_cal: 5000
+  predictor: gbr
+  uncalibrated: false      # SA-Attn-point ablation (Q_hat = 0)
+features:
+  forecast_rel_std: 0.1    # DD6
+train:
+  save_every: 50           # updates between checkpoint_last.pt saves
+  torch_threads: 0         # 0 = torch default
+  deterministic: false
+  keep_checkpoints: false
+eval:
+  test_grid: configs/test_grid.yaml
+  test_sets: results/test_sets
+  max_replays: null

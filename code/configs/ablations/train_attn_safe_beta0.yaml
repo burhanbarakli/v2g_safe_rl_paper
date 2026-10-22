@@ -1,0 +1,3 @@
+inherit: ../base.yaml
+method: attn_safe_beta0
+ppo: {beta: 0.0}

@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.safety.conformal --grid configs/test_grid.yaml --only workplace_N200_rho3 --alpha 0.01 0.05 0.1 0.2 --out /home/bob/v2g_safe_rl_paper/code/results/conformal
+workplace_N200_rho3 alpha=0.01: 292586 training sessions, n_cal=5000, Q=-0.000, data 747.8s, fit 41.0s
+workplace_N200_rho3 alpha=0.05: 292586 training sessions, n_cal=5000, Q=-0.000, data 747.8s, fit 44.5s
+workplace_N200_rho3 alpha=0.1: 292586 training sessions, n_cal=5000, Q=-0.000, data 747.8s, fit 42.8s
+workplace_N200_rho3 alpha=0.2: 292586 training sessions, n_cal=5000, Q=-0.000, data 747.8s, fit 46.6s

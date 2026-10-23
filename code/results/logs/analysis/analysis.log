@@ -1,0 +1,51 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python /home/bob/v2g_safe_rl_paper/analysis/scripts/make_all.py --raw /home/bob/v2g_safe_rl_paper/code/results/raw --out /home/bob/v2g_safe_rl_paper/analysis
+[load] gap_pct: 4694 episodes excluded because |oracle_pen_eur| < 1 EUR (M2)
+[load] gap_hard_pct: 4694 episodes excluded because |oracle_ceil_eur| < 1 EUR (M2)
+[load] gap_lp_pct: 3986 episodes excluded because |oracle_profit_eur| < 1 EUR (M2)
+[load] loaded 153100 episodes, 30 methods, 43 configurations, 3550 oracle episodes, 18 training logs
+[make_all] summaries ...
+[make_all] comparisons (DD38) ...
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/bob/v2g_safe_rl_paper/venv/lib/python3.13/site-packages/scipy/stats/_axis_nan_policy.py:601: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+[make_all] tables ...
+[make_all] figures ...
+[figures] wrote figS1_training_curves
+[figures] wrote fig3_zero_shot_scaling
+[figures] wrote fig4_constraint_satisfaction
+[figures] wrote figS6_constraints_pooled
+[figures] F5 skipped: no steps.parquet/steps.csv
+[figures] wrote figS2_ablation
+[figures] wrote fig6_cost_of_guarantee
+[figures] wrote figS3_conformal_alpha
+[figures] wrote figS4_inference_time
+[make_all] done in 345 s -> /home/bob/v2g_safe_rl_paper/analysis

@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.tuning validate --run /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_penalty/lr0.0001_mb512_ent0.01_w10
+{"method": "attn_penalty", "objective": "penalised_profit_w10", "val_return_profit": -36.462022323730075, "val_return_penalty": -53.817025128206446, "val_penalised_profit": -53.817025128206446, "n": 24, "score": -53.817025128206446}

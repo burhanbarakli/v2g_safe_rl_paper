@@ -1,0 +1,9 @@
+{
+ "method": "mlp_penalty",
+ "objective": "penalised_profit_w10",
+ "val_return_profit": -39.781534121492115,
+ "val_return_penalty": -60.45499650750569,
+ "val_penalised_profit": -60.45499650750569,
+ "n": 24,
+ "score": -60.45499650750569
+}

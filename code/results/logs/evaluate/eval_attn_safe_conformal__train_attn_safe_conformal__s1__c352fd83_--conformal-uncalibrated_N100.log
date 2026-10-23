@@ -1,0 +1,8 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N100_rho4 workplace_N100_rho7 public_N100_rho4 public_N100_rho7 private_N100_rho4 private_N100_rho7 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83/checkpoint_final.pt --conformal-uncalibrated
+[eval] attn_safe_conf_point workplace_N100_rho4: done (part exists)
+[eval] attn_safe_conf_point workplace_N100_rho7: done (part exists)
+[eval] attn_safe_conf_point public_N100_rho4: done (part exists)
+[eval] attn_safe_conf_point public_N100_rho7: done (part exists)
+[eval] attn_safe_conf_point private_N100_rho4: done (part exists)
+[eval] attn_safe_conf_point private_N100_rho7: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83/episodes.csv

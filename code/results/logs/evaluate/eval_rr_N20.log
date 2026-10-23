@@ -1,0 +1,11 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N20_rho4 workplace_N20_rho7 public_N20_rho4 public_N20_rho7 private_N20_rho4 private_N20_rho7 workplace_N20_rho3 public_N20_rho3 private_N20_rho3 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --method rr
+[eval] rr workplace_N20_rho4: done (part exists)
+[eval] rr workplace_N20_rho7: done (part exists)
+[eval] rr public_N20_rho4: done (part exists)
+[eval] rr public_N20_rho7: done (part exists)
+[eval] rr private_N20_rho4: done (part exists)
+[eval] rr private_N20_rho7: done (part exists)
+[eval] rr workplace_N20_rho3: done (part exists)
+[eval] rr public_N20_rho3: done (part exists)
+[eval] rr private_N20_rho3: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/rr__test_grid__s0__b251375c/episodes.csv

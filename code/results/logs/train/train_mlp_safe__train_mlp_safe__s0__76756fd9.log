@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_mlp_safe.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/raw/mlp_safe__train_mlp_safe__s0__76756fd9 --device cuda --overlay /home/bob/v2g_safe_rl_paper/code/results/tuning/mlp_safe/selected.yaml
+[train] mlp_safe__train_mlp_safe__s0__76756fd9: 1464 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/raw/mlp_safe__train_mlp_safe__s0__76756fd9
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[vec_env] env 10: EV2Gym cannot build episode seed 701906124 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/raw/mlp_safe__train_mlp_safe__s0__76756fd9/checkpoint_final.pt

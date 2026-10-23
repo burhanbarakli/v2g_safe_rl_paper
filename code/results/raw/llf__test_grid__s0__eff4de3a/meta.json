@@ -1,0 +1,129 @@
+{
+ "project_git_hash": "89979c6436b7766fc411406879acd28641a93f07-dirty",
+ "ev2gym_commit": "55ef368c25a58476a9eeaed5111f112a63a38ca8",
+ "ev2gym_commit_pinned": "55ef368c25a58476a9eeaed5111f112a63a38ca8",
+ "ev2gym_commit_matches": true,
+ "packages": {
+  "python": "3.13.15",
+  "numpy": "2.4.6",
+  "torch": "2.14.1+cu130",
+  "pandas": "2.3.3",
+  "scipy": "1.18.1",
+  "sklearn": "1.9.1",
+  "highspy": "1.15.1",
+  "gymnasium": "1.4.0",
+  "yaml": "6.0.3",
+  "ev2gym": "2.0.0"
+ },
+ "hostname": "bobpc",
+ "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+ "device": "cpu",
+ "start_time": "2026-10-23T17:40:18",
+ "end_time": "2026-10-23T17:40:18",
+ "wall_clock_s": 0.951899528503418,
+ "smoke": false,
+ "argv": [
+  "evaluate.py",
+  "--test-set",
+  "configs/test_grid.yaml",
+  "--only",
+  "workplace_N20_rho4",
+  "workplace_N20_rho7",
+  "public_N20_rho4",
+  "public_N20_rho7",
+  "private_N20_rho4",
+  "private_N20_rho7",
+  "workplace_N20_rho3",
+  "public_N20_rho3",
+  "private_N20_rho3",
+  "--device",
+  "cpu",
+  "--test-sets-dir",
+  "/home/bob/v2g_safe_rl_paper/code/results/test_sets",
+  "--conformal-cache",
+  "/home/bob/v2g_safe_rl_paper/code/results/conformal",
+  "--admission-cache",
+  "/home/bob/v2g_safe_rl_paper/code/results/admission",
+  "--out-root",
+  "/home/bob/v2g_safe_rl_paper/code/results/raw",
+  "--method",
+  "llf"
+ ],
+ "exp_id": "llf__test_grid__s0__eff4de3a",
+ "method": "llf",
+ "grid": "configs/test_grid.yaml",
+ "previous_segments": [
+  {
+   "start_time": "2026-10-23T11:39:14",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T11:39:20",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T11:39:23",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T11:39:28",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T11:40:50",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T11:40:57",
+   "end_time": "2026-10-23T11:47:10",
+   "wall_clock_s": 374.2528054714203,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": "2026-10-23T17:40:18",
+   "wall_clock_s": 0.926774263381958,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-10-23T17:40:18",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  }
+ ]
+}

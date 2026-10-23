@@ -1,0 +1,4 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_mlp_penalty.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/tuning/mlp_penalty/lr0.0001_mb1024_ent0.001_w10 --device cuda --set ppo.lr=0.0001 --set ppo.minibatch=1024 --set ppo.ent_coef=0.001 --set reward.w_E=10.0 --set reward.w_P=10.0 --set ppo.total_env_steps=500000
+[train] mlp_penalty__train_mlp_penalty__s0__15422459: 244 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/tuning/mlp_penalty/lr0.0001_mb1024_ent0.001_w10
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/tuning/mlp_penalty/lr0.0001_mb1024_ent0.001_w10/checkpoint_final.pt

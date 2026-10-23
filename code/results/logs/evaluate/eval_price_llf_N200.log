@@ -1,0 +1,11 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N200_rho4 workplace_N200_rho7 public_N200_rho4 public_N200_rho7 private_N200_rho4 private_N200_rho7 workplace_N200_rho3 public_N200_rho3 private_N200_rho3 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --method price_llf
+[eval] price_llf workplace_N200_rho4: done (part exists)
+[eval] price_llf workplace_N200_rho7: done (part exists)
+[eval] price_llf public_N200_rho4: done (part exists)
+[eval] price_llf public_N200_rho7: done (part exists)
+[eval] price_llf private_N200_rho4: done (part exists)
+[eval] price_llf private_N200_rho7: done (part exists)
+[eval] price_llf workplace_N200_rho3: done (part exists)
+[eval] price_llf public_N200_rho3: done (part exists)
+[eval] price_llf private_N200_rho3: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/price_llf__test_grid__s0__dd62ee1a/episodes.csv

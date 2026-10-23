@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_deepsets_safe.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/raw/deepsets_safe__train_deepsets_safe__s0__c31b29f8 --device cuda --overlay /home/bob/v2g_safe_rl_paper/code/results/tuning/deepsets_safe/selected.yaml
+[train] deepsets_safe__train_deepsets_safe__s0__c31b29f8: 1464 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/raw/deepsets_safe__train_deepsets_safe__s0__c31b29f8
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[vec_env] env 10: EV2Gym cannot build episode seed 701906124 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/raw/deepsets_safe__train_deepsets_safe__s0__c31b29f8/checkpoint_final.pt

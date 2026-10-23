@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.safety.conformal --scenario-json '{"profile": "workplace", "N": 10, "rho_tr": 4.0, "dt_min": 15, "T": null, "desired_soc": 1.0, "loads": true, "load_mult": 0.4, "pv": true, "pv_mult": 0.4, "hour": null, "spawn_multiplier": null, "simulation_days": null, "min_time_of_stay": 180, "transition_soc_multiplier": 5.0, "p_tr": null, "discharge_price_factor": 1.0, "throughput_cost": 0.0, "name": null}' --alpha 0.1 --out /home/bob/v2g_safe_rl_paper/code/results/conformal
+exists: workplace_N10_rho4 (all alphas)

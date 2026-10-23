@@ -1,0 +1,9 @@
+{
+ "method": "attn_proj_nolb",
+ "objective": "penalised_profit_w10",
+ "val_return_profit": -39.85979711703036,
+ "val_return_penalty": -39.85979711703036,
+ "val_penalised_profit": -39.85979711703036,
+ "n": 24,
+ "score": -39.85979711703036
+}

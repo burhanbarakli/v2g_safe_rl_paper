@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_proj_nolb.yaml --seed 1 --out /home/bob/v2g_safe_rl_paper/code/results/raw/attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06 --device cuda --overlay /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_proj_nolb/selected.yaml
+[train] attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06: 1464 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/raw/attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06
+[vec_env] env 11: EV2Gym cannot build episode seed 885571625 (private_N20_rho4): scale < 0; redrawing
+[vec_env] env 6: EV2Gym cannot build episode seed 201877896 (workplace_N10_rho4): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/raw/attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06/checkpoint_final.pt

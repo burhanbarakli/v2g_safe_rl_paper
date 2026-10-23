@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.safety.admission_prepass --grid configs/test_grid.yaml --only workplace_N5_rho7 --test-sets /home/bob/v2g_safe_rl_paper/code/results/test_sets --out /home/bob/v2g_safe_rl_paper/code/results/admission
+workplace_N5_rho7: 100 replays, {'n_evs': 369, 'n_reduced': 1, 'reduced_kwh': 0.14431431082063284, 'n_not_restored': 0} (19s)

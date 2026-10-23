@@ -91,7 +91,7 @@ def make_ctx(a) -> Ctx:
     res = ROOT / ("results/smoke" if smoke else "results")
     hp = Path(a.hparams).resolve() if a.hparams else None
     return Ctx(smoke=smoke, device=a.device, seeds=[0] if smoke else list(range(a.seeds)),
-               sens_seeds=[0] if smoke else list(range(3)), results=res,
+               sens_seeds=[0] if smoke else list(range(min(3, a.seeds))), results=res,
                grid="configs/test_grid_smoke.yaml" if smoke else "configs/test_grid.yaml",
                overlay=["configs/smoke.yaml"] if smoke else [], extended=a.extended, hparams=hp)
 
@@ -440,7 +440,8 @@ def main(argv=None):
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--jobs", type=int, default=1)
     ap.add_argument("--device", default="cpu")
-    ap.add_argument("--seeds", type=int, default=5)
+    ap.add_argument("--seeds", type=int, default=5, help="seeds per learned method; also caps the 3-seed runs "
+                    "(attn_safe_trainN50, w-sensitivity)")
     ap.add_argument("--extended", action="store_true", help="include the extended run set (ablations, w-sensitivity, "
                     "eMPC-24h, Gurobi eMPC on the literature configuration)")
     ap.add_argument("--hparams", default=None, help="YAML of per-method hyperparameter overlays used instead of the "

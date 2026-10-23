@@ -1,7 +1,8 @@
 # Deney çalıştırma notu (çekirdek set)
 
-Tarih: 23 Ekim 2026. Durum: çekirdek set (tuning dahil) tamamlandı, analiz çıktıları üretildi. Genişletilmiş set,
-EV-GNN ve örnek gün şekli (F5) çalıştırılmadı.
+Tarih: 23 Ekim 2026. Durum: çekirdek set (tuning dahil) tamamlandı, analiz çıktıları üretildi. Sonuçlar öğrenen
+yöntem başına 2 seed ile üretildi. Genişletilmiş set, EV-GNN ve örnek gün şekli (F5) yazar kararıyla
+çalıştırılmadı ve çalıştırılmayacak.
 
 ## 1. Ortam
 
@@ -66,14 +67,24 @@ Sonuç: 153.100 epizot, 30 yöntem, 43 test yapılandırması, 3.550 oracle epiz
   Smoke verisini engelleyen asıl kontrol çalışıyor (`SystemExit`). Testin güncellenmesi gerekiyor.
 - `python scripts/benchmark.py`: `benchmark.log`.
 
-## 5. Yapılmayanlar
+## 5. Kapsam dışında kalanlar (yazar kararı, 23 Ekim 2026)
 
-- Genişletilmiş set (ablasyonlar, w-duyarlılık, eMPC-24h, Gurobi eMPC), `--stage sensitivity`, EV-GNN.
-  Bu nedenle T4/S2 gibi tablo ve şekillerde ablasyon satırları boş olabilir.
-- Örnek gün şekli (F5). Bu şekil `--log-steps` ile ayrı bir değerlendirme gerektiriyor.
-- Kod değişiklikleri commit edilmedi.
+Sonuçlar 2 seed ile kalacak; aşağıdakiler çalıştırılmadı ve çalıştırılmayacak:
+
+- Genişletilmiş set: ablasyonlar (`beta0`, `curriculum`, `small`, `penalty_dense`), ceza ağırlığı duyarlılığı
+  (w = 1, w = 100), eMPC-24h, Gurobi eMPC. T4 ve Şekil S2'de ablasyon satırları yok.
+- `--stage sensitivity` (SoC 0,8, Δt = 5 dk, aşınma maliyeti, deşarj fiyat çarpanı). TS2'de yalnızca
+  ρ_tr = 3 kW satırları var.
+- EV-GNN baseline'ı.
+- Örnek gün şekli (F5, `fig5_example_day`). Bu şekil `--log-steps` ile ayrı bir değerlendirme gerektiriyor; ek
+  dosyada yer tutucu olarak kalıyor.
+
+Makale ve `code/README.md` hâlâ 5 seed ve bu deneyleri anlatıyor; metin buna göre güncellenmeli.
 
 ## 6. Paket içeriği
+
+Depoda: `code/results/` (README §9 içeriği) ve `code/results/run_reports/` (test, benchmark ve aşama logları,
+`run_core.sh`). Google Drive'da: checkpoint'ler, önbellekler ve aşağıdaki gönderim paketi (bağlantı `README.md`'de).
 
 `gonderim_paketi_2026-10-23.zip` (README §9):
 - `code/results/raw/**/{episodes.csv,train_log.csv,meta.json,config.yaml}`

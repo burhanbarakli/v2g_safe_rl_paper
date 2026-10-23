@@ -1,0 +1,7 @@
+[pipeline] stage analysis
+[pipeline] 1 jobs, 0 already done, 1 to run
+[pipeline] FAIL analysis (7s)
+[pipeline] 1 job(s) failed; see /home/bob/v2g_safe_rl_paper/code/results/logs
+[pipeline] stage analysis
+[pipeline] 1 jobs, 0 already done, 1 to run
+[pipeline] OK   analysis (346s)

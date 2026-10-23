@@ -1,0 +1,4 @@
+torch threads: 6, device cpu
+N=  10: env observe+bounds 0.17 ms, step (layer+EV2Gym) 0.24 ms; with admission control observe 0.18 ms; PPO update (2048 transitions, 10 epochs, minibatch 512) 6.2 s
+N=  50: env observe+bounds 0.48 ms, step (layer+EV2Gym) 0.53 ms; with admission control observe 0.48 ms; PPO update (2048 transitions, 10 epochs, minibatch 512) 30.0 s
+N= 200: env observe+bounds 1.48 ms, step (layer+EV2Gym) 1.43 ms; with admission control observe 1.53 ms; PPO update (2048 transitions, 10 epochs, minibatch 512) 162.9 s

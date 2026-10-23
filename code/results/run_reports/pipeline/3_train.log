@@ -1,0 +1,22 @@
+[pipeline] stage train
+[pipeline] 18 jobs, 0 already done, 18 to run
+[pipeline] OK   train_attn_safe__train_attn_safe__s0__8798c7d8 (4194s)
+[pipeline] OK   train_attn_safe__train_attn_safe__s1__8798c7d8 (4126s)
+[pipeline] OK   train_attn_penalty__train_attn_penalty__s0__b85f8cf2 (4227s)
+[pipeline] OK   train_attn_penalty__train_attn_penalty__s1__b85f8cf2 (4251s)
+[pipeline] OK   train_mlp_safe__train_mlp_safe__s0__76756fd9 (2920s)
+[pipeline] OK   train_mlp_safe__train_mlp_safe__s1__76756fd9 (2929s)
+[pipeline] OK   train_mlp_penalty__train_mlp_penalty__s0__2b3dcc22 (2872s)
+[pipeline] OK   train_mlp_penalty__train_mlp_penalty__s1__2b3dcc22 (2885s)
+[pipeline] OK   train_attn_safe_conformal__train_attn_safe_conformal__s0__c352fd83 (4195s)
+[pipeline] OK   train_attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83 (4206s)
+[pipeline] OK   train_attn_proj_nolb__train_attn_proj_nolb__s0__46a03c06 (4021s)
+[pipeline] OK   train_attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06 (4042s)
+[pipeline] OK   train_attn_lagrangian__train_attn_lagrangian__s0__444db89b (3636s)
+[pipeline] OK   train_attn_lagrangian__train_attn_lagrangian__s1__444db89b (3675s)
+[pipeline] OK   train_deepsets_safe__train_deepsets_safe__s0__c31b29f8 (3267s)
+[pipeline] OK   train_deepsets_safe__train_deepsets_safe__s1__c31b29f8 (3255s)
+[pipeline] OK   train_attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442 (7202s)
+[pipeline] OK   train_attn_safe_trainN50__train_attn_safe_trainN50__s1__01c49442 (7145s)
+[pipeline] stage train
+[pipeline] 18 jobs, 18 already done, 0 to run

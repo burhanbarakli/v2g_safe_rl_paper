@@ -1,0 +1,10 @@
+python -m pytest -q tests
+........................................................................ [ 72%]
+....................s......                                              [100%]
+=============================== warnings summary ===============================
+tests/test_admission_conformal.py::test_conformal_session_cache_reproduces_calibration
+  /home/bob/v2g_safe_rl_paper/ext/EV2Gym/ev2gym/utilities/loaders.py:9: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    import pkg_resources
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+98 passed, 1 skipped, 1 warning in 115.56s (0:01:55)

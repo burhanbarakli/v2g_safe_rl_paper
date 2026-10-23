@@ -1,0 +1,8 @@
+[pipeline] stage tune
+[pipeline] 84 jobs, 0 already done, 84 to run
+[pipeline] FAIL tune_attn_safe_lr0.0003_mb512_ent0 (668s)
+[pipeline] FAIL tune_attn_safe_lr0.0001_mb256_ent0.01 (924s)
+[pipeline] FAIL tune_attn_safe_lr0.0001_mb512_ent0 (792s)
+[pipeline] FAIL tune_attn_safe_lr0.0001_mb512_ent0.001 (792s)
+[pipeline] FAIL tune_attn_safe_lr0.0001_mb512_ent0.01 (808s)
+[pipeline] FAIL tune_attn_safe_lr0.0001_mb1024_ent0.001 (704s)

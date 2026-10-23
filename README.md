@@ -18,8 +18,16 @@ Devir notu: [`HANDOVER_TR.md`](HANDOVER_TR.md). Deney çalıştırma notu: [`RUN
 
 ## Sonuçlar (çekirdek set, 23 Ekim 2026)
 
-153.100 epizot, 30 yöntem, 43 test yapılandırması, 3.550 oracle epizodu, 18 eğitim (öğrenen yöntem başına
-2 seed). Ortam, süreler ve plandan sapmalar `RUN_NOTES_TR.md` içinde.
+153.100 epizot, 30 yöntem, 43 test yapılandırması, 3.550 oracle epizodu, 18 eğitim. Ortam, süreler ve plandan
+sapmalar `RUN_NOTES_TR.md` içinde.
+
+> **Kapsam (yazar kararı):** Tüm sonuçlar öğrenen yöntem başına **2 seed** (0, 1) ile üretildi; plandaki 5 seed
+> (ve `attn_safe_trainN50` için 3 seed) kullanılmadı. **Genişletilmiş set çalıştırılmadı ve çalıştırılmayacak**:
+> ablasyonlar (`beta0`, `curriculum`, `small`, `penalty_dense`), ceza ağırlığı duyarlılığı (w = 1, w = 100),
+> `--stage sensitivity` (SoC 0,8, Δt = 5 dk, aşınma maliyeti, deşarj fiyat çarpanı), eMPC-24h, Gurobi eMPC ve
+> EV-GNN. Bu nedenle T4/Şekil S2'de ablasyon satırları, TS2'de ρ_tr = 3 kW dışındaki duyarlılık satırları ve
+> örnek gün şekli (F5, `fig5_example_day`) yok. Makale ve `code/README.md` hâlâ 5 seed yazıyor; metin buna göre
+> güncellenmeli.
 
 **Depoda** (`code/results/`, README §9 gönderim içeriği):
 
@@ -28,6 +36,8 @@ Devir notu: [`HANDOVER_TR.md`](HANDOVER_TR.md). Deney çalıştırma notu: [`RUN
 - `tuning/<method>/selected*.yaml`, `tuning/<method>/<tag>/validation.json`
 - `test_sets/*.json` (replay seed'leri ve parmak izleri)
 - `logs/` (her işin stdout/stderr çıktısı)
+- `run_reports/`: `make test`, analiz testleri ve `scripts/benchmark.py` çıktıları; aşama logları
+  (`pipeline/progress.log` ve aşama başına bir log); çalıştırmada kullanılan `run_core.sh` ve systemd birimi
 
 **Google Drive'da** (git için fazla büyük ikili dosyalar):
 [v2g_safe_rl_paper klasörü](https://drive.google.com/drive/folders/1FiZAGMjlq2j399njQTPmIriW8_I5lzbW)

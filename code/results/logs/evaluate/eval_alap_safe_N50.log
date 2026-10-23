@@ -1,0 +1,8 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N50_rho4 workplace_N50_rho7 public_N50_rho4 public_N50_rho7 private_N50_rho4 private_N50_rho7 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --method alap_safe
+[eval] alap_safe workplace_N50_rho4: done (part exists)
+[eval] alap_safe workplace_N50_rho7: done (part exists)
+[eval] alap_safe public_N50_rho4: done (part exists)
+[eval] alap_safe public_N50_rho7: done (part exists)
+[eval] alap_safe private_N50_rho4: done (part exists)
+[eval] alap_safe private_N50_rho7: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/alap_safe__test_grid__s0__6b636193/episodes.csv

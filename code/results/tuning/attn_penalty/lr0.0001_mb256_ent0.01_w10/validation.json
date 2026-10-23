@@ -1,0 +1,9 @@
+{
+ "method": "attn_penalty",
+ "objective": "penalised_profit_w10",
+ "val_return_profit": -37.252760931709126,
+ "val_return_penalty": -45.283909404714,
+ "val_penalised_profit": -45.283909404714,
+ "n": 24,
+ "score": -45.283909404714
+}

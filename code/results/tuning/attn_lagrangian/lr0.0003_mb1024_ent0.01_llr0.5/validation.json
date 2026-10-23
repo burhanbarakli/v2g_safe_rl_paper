@@ -1,0 +1,9 @@
+{
+ "method": "attn_lagrangian",
+ "objective": "penalised_profit_w10",
+ "val_return_profit": -35.44177365549944,
+ "val_return_penalty": -70.11162461975799,
+ "val_penalised_profit": -70.11162461975798,
+ "n": 24,
+ "score": -70.11162461975798
+}

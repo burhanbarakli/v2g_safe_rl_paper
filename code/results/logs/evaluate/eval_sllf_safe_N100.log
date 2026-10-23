@@ -1,0 +1,8 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N100_rho4 workplace_N100_rho7 public_N100_rho4 public_N100_rho7 private_N100_rho4 private_N100_rho7 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --method sllf_safe
+[eval] sllf_safe workplace_N100_rho4: done (part exists)
+[eval] sllf_safe workplace_N100_rho7: done (part exists)
+[eval] sllf_safe public_N100_rho4: done (part exists)
+[eval] sllf_safe public_N100_rho7: done (part exists)
+[eval] sllf_safe private_N100_rho4: done (part exists)
+[eval] sllf_safe private_N100_rho7: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/sllf_safe__test_grid__s0__6e268fdb/episodes.csv

@@ -1,0 +1,9 @@
+{
+ "method": "deepsets_safe",
+ "objective": "penalised_profit_w10",
+ "val_return_profit": -35.9569336081065,
+ "val_return_penalty": -47.16516173091251,
+ "val_penalised_profit": -47.16516173091251,
+ "n": 24,
+ "score": -47.16516173091251
+}

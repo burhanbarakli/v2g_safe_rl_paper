@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.tuning validate --run /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_lagrangian/lr0.0001_mb256_ent0.001_llr8
+{"method": "attn_lagrangian", "objective": "penalised_profit_w10", "val_return_profit": -40.32799360377687, "val_return_penalty": -50.278951467481555, "val_penalised_profit": -50.278951467481555, "n": 24, "score": -50.278951467481555}

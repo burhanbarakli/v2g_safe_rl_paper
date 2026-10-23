@@ -1,0 +1,4 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_penalty.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_penalty/lr0.0003_mb256_ent0.01_w100 --device cuda --set ppo.lr=0.0003 --set ppo.minibatch=256 --set ppo.ent_coef=0.01 --set reward.w_E=100.0 --set reward.w_P=100.0 --set ppo.total_env_steps=500000
+[train] attn_penalty__train_attn_penalty__s0__0d85b0e3: 244 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_penalty/lr0.0003_mb256_ent0.01_w100
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_penalty/lr0.0003_mb256_ent0.01_w100/checkpoint_final.pt

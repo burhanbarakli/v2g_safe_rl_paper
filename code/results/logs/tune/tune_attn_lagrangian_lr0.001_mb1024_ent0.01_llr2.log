@@ -1,0 +1,4 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_lagrangian.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_lagrangian/lr0.001_mb1024_ent0.01_llr2 --device cuda --set ppo.lr=0.001 --set ppo.minibatch=1024 --set ppo.ent_coef=0.01 --set lagrangian.lr_lambda=2.0 --set ppo.total_env_steps=500000
+[train] attn_lagrangian__train_attn_lagrangian__s0__23271440: 244 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_lagrangian/lr0.001_mb1024_ent0.01_llr2
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_lagrangian/lr0.001_mb1024_ent0.01_llr2/checkpoint_final.pt

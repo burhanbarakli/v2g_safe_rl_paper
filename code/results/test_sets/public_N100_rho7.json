@@ -1,0 +1,377 @@
+{
+ "test_cfg_id": "public_N100_rho7",
+ "scenario": {
+  "profile": "public",
+  "N": 100,
+  "rho_tr": 7.0,
+  "dt_min": 15,
+  "T": null,
+  "desired_soc": 1.0,
+  "loads": true,
+  "load_mult": 0.4,
+  "pv": true,
+  "pv_mult": 0.4,
+  "hour": null,
+  "spawn_multiplier": null,
+  "simulation_days": null,
+  "min_time_of_stay": 180,
+  "transition_soc_multiplier": 5.0,
+  "p_tr": null,
+  "discharge_price_factor": 1.0,
+  "throughput_cost": 0.0,
+  "name": null
+ },
+ "n_replays": 50,
+ "replays": [
+  {
+   "replay_id": 0,
+   "seed": 1263320000,
+   "sim_date": "2022-05-20 12:00:00",
+   "n_evs": 69,
+   "fingerprint": "2790dddfef0c6e2d"
+  },
+  {
+   "replay_id": 1,
+   "seed": 1263320001,
+   "sim_date": "2022-11-17 12:00:00",
+   "n_evs": 76,
+   "fingerprint": "92bf011634eb6dfa"
+  },
+  {
+   "replay_id": 2,
+   "seed": 1263320002,
+   "sim_date": "2022-10-24 12:00:00",
+   "n_evs": 75,
+   "fingerprint": "4b44a712aa3018fd"
+  },
+  {
+   "replay_id": 3,
+   "seed": 1263320003,
+   "sim_date": "2022-10-26 12:00:00",
+   "n_evs": 73,
+   "fingerprint": "6949dd377a9013b5"
+  },
+  {
+   "replay_id": 4,
+   "seed": 1263320004,
+   "sim_date": "2023-05-29 12:00:00",
+   "n_evs": 81,
+   "fingerprint": "de891afab515a8da"
+  },
+  {
+   "replay_id": 5,
+   "seed": 1263320005,
+   "sim_date": "2023-04-11 12:00:00",
+   "n_evs": 76,
+   "fingerprint": "b189c6e8bdc2d097"
+  },
+  {
+   "replay_id": 6,
+   "seed": 1263320006,
+   "sim_date": "2022-07-05 12:00:00",
+   "n_evs": 68,
+   "fingerprint": "5bc9a2219c5b318c"
+  },
+  {
+   "replay_id": 7,
+   "seed": 1263320007,
+   "sim_date": "2022-03-22 12:00:00",
+   "n_evs": 72,
+   "fingerprint": "2a6e641d1e5ea2a1"
+  },
+  {
+   "replay_id": 8,
+   "seed": 1263320008,
+   "sim_date": "2023-06-23 12:00:00",
+   "n_evs": 80,
+   "fingerprint": "1cbc7955cc7ac067"
+  },
+  {
+   "replay_id": 9,
+   "seed": 1263320009,
+   "sim_date": "2022-04-20 12:00:00",
+   "n_evs": 74,
+   "fingerprint": "715eaee59830561f"
+  },
+  {
+   "replay_id": 10,
+   "seed": 1263320010,
+   "sim_date": "2022-06-19 12:00:00",
+   "n_evs": 88,
+   "fingerprint": "bfa16e89cbf1fe69"
+  },
+  {
+   "replay_id": 11,
+   "seed": 1263320011,
+   "sim_date": "2022-04-19 12:00:00",
+   "n_evs": 71,
+   "fingerprint": "dda4652125f8fd8e"
+  },
+  {
+   "replay_id": 12,
+   "seed": 1263320012,
+   "sim_date": "2022-11-28 12:00:00",
+   "n_evs": 76,
+   "fingerprint": "4072dfaa84f9998c"
+  },
+  {
+   "replay_id": 13,
+   "seed": 1263320013,
+   "sim_date": "2022-11-29 12:00:00",
+   "n_evs": 78,
+   "fingerprint": "f20a747c2ffcfe0f"
+  },
+  {
+   "replay_id": 14,
+   "seed": 1263320014,
+   "sim_date": "2022-05-04 12:00:00",
+   "n_evs": 89,
+   "fingerprint": "e83e80ac6dca7f58"
+  },
+  {
+   "replay_id": 15,
+   "seed": 1263320015,
+   "sim_date": "2022-12-01 12:00:00",
+   "n_evs": 82,
+   "fingerprint": "30cb2040e4a282a2"
+  },
+  {
+   "replay_id": 16,
+   "seed": 1263320016,
+   "sim_date": "2022-05-31 12:00:00",
+   "n_evs": 74,
+   "fingerprint": "291d056ab37df131"
+  },
+  {
+   "replay_id": 17,
+   "seed": 1263320017,
+   "sim_date": "2022-07-14 12:00:00",
+   "n_evs": 79,
+   "fingerprint": "eaa4b9430a698458"
+  },
+  {
+   "replay_id": 18,
+   "seed": 1263320018,
+   "sim_date": "2022-09-10 12:00:00",
+   "n_evs": 75,
+   "fingerprint": "5b8e9a7711a029f4"
+  },
+  {
+   "replay_id": 19,
+   "seed": 1263320019,
+   "sim_date": "2023-03-30 12:00:00",
+   "n_evs": 71,
+   "fingerprint": "cdec80b14b4396e3"
+  },
+  {
+   "replay_id": 20,
+   "seed": 1263320020,
+   "sim_date": "2023-05-27 12:00:00",
+   "n_evs": 63,
+   "fingerprint": "efc4492ae98a7597"
+  },
+  {
+   "replay_id": 21,
+   "seed": 1263320021,
+   "sim_date": "2022-12-03 12:00:00",
+   "n_evs": 75,
+   "fingerprint": "e7b4d2ff09b57d99"
+  },
+  {
+   "replay_id": 22,
+   "seed": 1263320022,
+   "sim_date": "2022-01-18 12:00:00",
+   "n_evs": 80,
+   "fingerprint": "f7ad9ef7c45a9b36"
+  },
+  {
+   "replay_id": 23,
+   "seed": 1263320023,
+   "sim_date": "2022-08-05 12:00:00",
+   "n_evs": 62,
+   "fingerprint": "d8f17deb4cf60b9a"
+  },
+  {
+   "replay_id": 24,
+   "seed": 1263320024,
+   "sim_date": "2022-07-17 12:00:00",
+   "n_evs": 74,
+   "fingerprint": "d6fcff5e9d119ab6"
+  },
+  {
+   "replay_id": 25,
+   "seed": 1263320025,
+   "sim_date": "2022-04-18 12:00:00",
+   "n_evs": 76,
+   "fingerprint": "202a33e932f77fd5"
+  },
+  {
+   "replay_id": 26,
+   "seed": 1263320026,
+   "sim_date": "2023-01-05 12:00:00",
+   "n_evs": 76,
+   "fingerprint": "be034fe219710bfe"
+  },
+  {
+   "replay_id": 27,
+   "seed": 1263320027,
+   "sim_date": "2022-12-23 12:00:00",
+   "n_evs": 66,
+   "fingerprint": "5a59d8cd42ebbbc9"
+  },
+  {
+   "replay_id": 28,
+   "seed": 1263320028,
+   "sim_date": "2023-06-05 12:00:00",
+   "n_evs": 70,
+   "fingerprint": "8e1be28e8c48ef53"
+  },
+  {
+   "replay_id": 29,
+   "seed": 1263320029,
+   "sim_date": "2023-03-13 12:00:00",
+   "n_evs": 79,
+   "fingerprint": "b804c0d824fcc714"
+  },
+  {
+   "replay_id": 30,
+   "seed": 1263320030,
+   "sim_date": "2023-02-23 12:00:00",
+   "n_evs": 70,
+   "fingerprint": "f68386fa5098ee37"
+  },
+  {
+   "replay_id": 31,
+   "seed": 1263320031,
+   "sim_date": "2023-03-19 12:00:00",
+   "n_evs": 81,
+   "fingerprint": "d9aca55a0c38f0d0"
+  },
+  {
+   "replay_id": 32,
+   "seed": 1263320032,
+   "sim_date": "2022-05-20 12:00:00",
+   "n_evs": 59,
+   "fingerprint": "bcf1b66bfaf6770b"
+  },
+  {
+   "replay_id": 33,
+   "seed": 1263320033,
+   "sim_date": "2022-03-19 12:00:00",
+   "n_evs": 89,
+   "fingerprint": "ec80f15747505a03"
+  },
+  {
+   "replay_id": 34,
+   "seed": 1263320034,
+   "sim_date": "2022-07-07 12:00:00",
+   "n_evs": 75,
+   "fingerprint": "26356111fd256f6f"
+  },
+  {
+   "replay_id": 35,
+   "seed": 1263320035,
+   "sim_date": "2022-03-12 12:00:00",
+   "n_evs": 65,
+   "fingerprint": "24ef28f1f07deb4c"
+  },
+  {
+   "replay_id": 36,
+   "seed": 1263320036,
+   "sim_date": "2023-01-18 12:00:00",
+   "n_evs": 81,
+   "fingerprint": "77f648acad8841e0"
+  },
+  {
+   "replay_id": 37,
+   "seed": 1263320037,
+   "sim_date": "2023-04-28 12:00:00",
+   "n_evs": 73,
+   "fingerprint": "cd96479d865dd8e3"
+  },
+  {
+   "replay_id": 38,
+   "seed": 1263320038,
+   "sim_date": "2022-11-28 12:00:00",
+   "n_evs": 71,
+   "fingerprint": "e3168d04610e8b2e"
+  },
+  {
+   "replay_id": 39,
+   "seed": 1263320039,
+   "sim_date": "2022-08-08 12:00:00",
+   "n_evs": 73,
+   "fingerprint": "aa7a060032701ca4"
+  },
+  {
+   "replay_id": 40,
+   "seed": 1263320040,
+   "sim_date": "2022-10-19 12:00:00",
+   "n_evs": 80,
+   "fingerprint": "21a399f5e2d542fe"
+  },
+  {
+   "replay_id": 41,
+   "seed": 1263320041,
+   "sim_date": "2023-03-24 12:00:00",
+   "n_evs": 68,
+   "fingerprint": "afdb047b3b71671e"
+  },
+  {
+   "replay_id": 42,
+   "seed": 1263320042,
+   "sim_date": "2023-05-31 12:00:00",
+   "n_evs": 74,
+   "fingerprint": "0ce086a8dae9240a"
+  },
+  {
+   "replay_id": 43,
+   "seed": 1263320043,
+   "sim_date": "2022-04-10 12:00:00",
+   "n_evs": 89,
+   "fingerprint": "9d3e0110c8e4b3f2"
+  },
+  {
+   "replay_id": 44,
+   "seed": 1263320044,
+   "sim_date": "2022-03-09 12:00:00",
+   "n_evs": 80,
+   "fingerprint": "c322738f2f482b1b"
+  },
+  {
+   "replay_id": 45,
+   "seed": 1263320045,
+   "sim_date": "2022-12-21 12:00:00",
+   "n_evs": 68,
+   "fingerprint": "342de08a389c5992"
+  },
+  {
+   "replay_id": 46,
+   "seed": 1263320046,
+   "sim_date": "2022-02-21 12:00:00",
+   "n_evs": 66,
+   "fingerprint": "dc70eff859a1792b"
+  },
+  {
+   "replay_id": 47,
+   "seed": 1263320047,
+   "sim_date": "2022-11-23 12:00:00",
+   "n_evs": 75,
+   "fingerprint": "9feb6c7cd2f5d1cc"
+  },
+  {
+   "replay_id": 48,
+   "seed": 1263320048,
+   "sim_date": "2022-08-11 12:00:00",
+   "n_evs": 78,
+   "fingerprint": "639f2a91c1c13f50"
+  },
+  {
+   "replay_id": 49,
+   "seed": 1263320049,
+   "sim_date": "2022-04-27 12:00:00",
+   "n_evs": 79,
+   "fingerprint": "d3f89f4336bd6b49"
+  }
+ ]
+}

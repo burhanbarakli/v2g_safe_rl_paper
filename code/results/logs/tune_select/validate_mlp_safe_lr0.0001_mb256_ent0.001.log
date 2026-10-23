@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.tuning validate --run /home/bob/v2g_safe_rl_paper/code/results/tuning/mlp_safe/lr0.0001_mb256_ent0.001
+{"method": "mlp_safe", "objective": "penalised_profit_w10", "val_return_profit": -37.18258019326125, "val_return_penalty": -37.21174644326125, "val_penalised_profit": -37.21174644326125, "n": 24, "score": -37.21174644326125}

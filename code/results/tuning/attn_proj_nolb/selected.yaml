@@ -1,0 +1,8 @@
+# selected by v2gsafe.tuning (lr0.0003_mb512_ent0_w10, validation J^pen -35.1219 EUR)
+ppo:
+  ent_coef: 0.0
+  lr: 0.0003
+  minibatch: 512
+reward:
+  w_E: 10.0
+  w_P: 10.0

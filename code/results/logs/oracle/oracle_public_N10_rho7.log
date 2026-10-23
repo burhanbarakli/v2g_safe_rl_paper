@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.baselines.oracle --grid configs/test_grid.yaml --only public_N10_rho7 --test-sets /home/bob/v2g_safe_rl_paper/code/results/test_sets --out /home/bob/v2g_safe_rl_paper/code/results/raw --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission
+public_N10_rho7: 100 oracle LPs, mean J_LP -17.08 EUR, mean solve 0.04s

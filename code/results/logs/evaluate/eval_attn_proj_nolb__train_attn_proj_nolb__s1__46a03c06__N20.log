@@ -1,0 +1,11 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N20_rho4 workplace_N20_rho7 public_N20_rho4 public_N20_rho7 private_N20_rho4 private_N20_rho7 workplace_N20_rho3 public_N20_rho3 private_N20_rho3 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06/checkpoint_final.pt
+[eval] attn_proj_nolb workplace_N20_rho4: done (part exists)
+[eval] attn_proj_nolb workplace_N20_rho7: done (part exists)
+[eval] attn_proj_nolb public_N20_rho4: done (part exists)
+[eval] attn_proj_nolb public_N20_rho7: done (part exists)
+[eval] attn_proj_nolb private_N20_rho4: done (part exists)
+[eval] attn_proj_nolb private_N20_rho7: done (part exists)
+[eval] attn_proj_nolb workplace_N20_rho3: done (part exists)
+[eval] attn_proj_nolb public_N20_rho3: done (part exists)
+[eval] attn_proj_nolb private_N20_rho3: done (part exists)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06/episodes.csv

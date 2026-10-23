@@ -1,0 +1,4 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_proj_nolb.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_proj_nolb/lr0.0001_mb512_ent0_w1 --device cuda --set ppo.lr=0.0001 --set ppo.minibatch=512 --set ppo.ent_coef=0.0 --set reward.w_E=1.0 --set reward.w_P=1.0 --set ppo.total_env_steps=500000
+[train] attn_proj_nolb__train_attn_proj_nolb__s0__8bd595ef: 244 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_proj_nolb/lr0.0001_mb512_ent0_w1
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_proj_nolb/lr0.0001_mb512_ent0_w1/checkpoint_final.pt

@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_safe_trainN50.yaml --seed 0 --out /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442 --device cuda --overlay /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_safe/selected.yaml
+[train] attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442: 1464 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N50_rho7): scale < 0; redrawing
+[vec_env] env 10: EV2Gym cannot build episode seed 701906124 (workplace_N50_rho7): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442/checkpoint_final.pt

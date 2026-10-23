@@ -1,0 +1,2 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python -m v2gsafe.tuning validate --run /home/bob/v2g_safe_rl_paper/code/results/tuning/deepsets_safe/lr0.001_mb512_ent0.001
+{"method": "deepsets_safe", "objective": "penalised_profit_w10", "val_return_profit": -36.1373644165871, "val_return_penalty": -46.441425039386765, "val_penalised_profit": -46.441425039386765, "n": 24, "score": -46.441425039386765}

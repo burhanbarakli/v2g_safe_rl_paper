@@ -1,0 +1,5 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python train.py --config configs/train_attn_safe_conformal.yaml --seed 1 --out /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83 --device cuda --overlay /home/bob/v2g_safe_rl_paper/code/results/tuning/attn_safe/selected.yaml
+[train] attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83: 1464 updates x 2048 transitions -> /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83
+[vec_env] env 11: EV2Gym cannot build episode seed 885571625 (private_N20_rho4): scale < 0; redrawing
+[vec_env] env 6: EV2Gym cannot build episode seed 201877896 (workplace_N10_rho4): scale < 0; redrawing
+[train] done: /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_conformal__train_attn_safe_conformal__s1__c352fd83/checkpoint_final.pt

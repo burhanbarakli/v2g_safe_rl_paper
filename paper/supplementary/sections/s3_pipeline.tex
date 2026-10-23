@@ -6,7 +6,7 @@
 
 The arrival cap and admission control belong to the request setting of the station operator and not to the controller.
 For every test replay they are computed once, before any controller runs, and the resulting admitted requests $\Ereq_i$ are shared by every compared method and by both optima.
-The wrapper writes the admitted requirement into EV2Gym's EV object at arrival, so external baselines such as EV-GNN and the Gurobi eMPC pursue the same target.
+The wrapper writes the admitted requirement into EV2Gym's EV object at arrival, so every controller that reads EV2Gym's EV objects pursues the same target.
 For arrivals inside its horizon, the HiGHS eMPC uses the shared entries.
 Conformal passes re-certify the shared requirement with their bound $\hat d_i^{\sm{lo}}$, so their requirement is never larger, and passes without admission control keep the arrival-capped request.
 In every pass, shortfall is measured against the shared admitted requirement.
@@ -51,7 +51,7 @@ With the rounding allowance $G_i^{\max}=0.01\,(d_i-t_i^{\sm{arr}}+1)$ kWh, the c
 \end{aligned}
 \end{equation}
 where the hard LP fixes $o^{\pm}=0$.
-The profit of a schedule is $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$, with the throughput cost $c^{\sm{thr}}$ equal to zero except in one sensitivity study.
+The profit of a schedule is $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$, with the throughput cost $c^{\sm{thr}}$ equal to zero in all reported runs.
 
 \begin{lemma}[Taper rows]\label{lem:taperrows}
 Let every EV satisfy the conditions of Lemma~\ref{lem:a3}, and let $\varrho_{\kappa,i}=(1-e^{-\kappa_i})/\Delta t$.
@@ -71,9 +71,7 @@ The gain is therefore at most $(1-\varsigma)(1-e^{-\kappa})$, and it is at most 
 The code uses $\varrho_i^{\sm{out}}=1.01\,\varrho_{\kappa,i}$, a valid outer row that is 1\% looser than exact.
 A check script released with the code confirms the inequality to $1.7\times10^{-13}$ kW and the equality off the band on 320 configurations.
 With these rows the LPs model EV2Gym's charging limit up to the step discretisation of the transition band and the 1\% margin.
-The remaining relaxations are the rounding allowance and simultaneous charging and discharging, and the latter is cost- and energy-neutral, and hence exact, when $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ and $c^{\sm{thr}}=0$, as in the main grid.
-In the sensitivities with a throughput cost or a discharge price factor of 0.9 at negative prices, the LPs remain valid upper bounds.
-They may then use simultaneous charging and discharging, and the number of such steps is reported.
+The remaining relaxations are the rounding allowance and simultaneous charging and discharging, and the latter is cost- and energy-neutral, and hence exact, when $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ and $c^{\sm{thr}}=0$, as in all reported runs.
 
 \subsection{Upper bounds}\label{app:bounds}
 
@@ -109,7 +107,8 @@ For the departure row, $E^{\sm{nom}}(d_i+1)+z_i\ge E^{\sm{real}}(d_i+1)-G_i^{\ma
 At this point the objective equals $J^{\sm{pen}}(\pi)$, with the same billed powers, shortfall and overload energy.
 \end{proof}
 
-The bound is a property of the measurement, not of the controller, so it covers controllers with shortfall or overload, the conformal and no-admission passes and the external baselines.
-Every pass in the wrapper applies the physical clip, and the Gurobi eMPC adapter clips its commands in the same way.
+The bound is a property of the measurement, not of the controller, so it covers controllers with shortfall or overload, the conformal and no-admission passes and the rule-based and model-predictive baselines.
+Every pass in the wrapper applies the physical clip.
+In the reported runs, none of the 153,100 episodes exceeded the soft-penalty optimum by more than $10^{-6}$\,\texteuro{} (analysis load report).
 A unit test released with the code checks $J^{\sm{pen}}\le J^{\sm{pen,LP}}$ for all rule-based methods on small replays, including random actions.
 Inside EV2Gym, a controller can exceed $J^{\sm{LP}}$ through the unbilled rounding gain, so the main text uses $J^{\sm{LP,ceil}}$ for the cost of the guarantee and reports $J^{\sm{LP}}$ only here.

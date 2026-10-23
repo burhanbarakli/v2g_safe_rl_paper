@@ -70,12 +70,11 @@ Two perfect-information LPs, solved with HiGHS \cite{huangfu2018parallelizing}, 
 Both model EV2Gym's taper with outer linear rows, exact except on a one-step transition band and a 1\% margin (Lemma~\ref{S-lem:taperrows}), and both allow for EV2Gym's unbilled 0.01 kWh rounding gain.
 The soft-penalty optimum $J^{\sm{pen,LP}}$ maximises \Eq{eq:jpen} with slack variables for shortfall and overload.
 For every simulated trajectory, with shortfall measured against the shared admitted requirement, $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$ (Proposition~\ref{S-prop:softoracle}), including trajectories with shortfall or overload.
-The main metric is therefore well defined for every compared method,
+The main metric is therefore well defined for every compared method, as the absolute gap in \texteuro{} per charger and episode,
 \begin{equation}\label{eq:gap}
-\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{|J^{\sm{pen,LP}}|}\ \ge0 ,
+\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{N}\ \ge0 .
 \end{equation}
-where the absolute value is needed because profits are usually negative.
-Episodes with $|J^{\sm{pen,LP}}|<1$\,\texteuro{} or a non-optimal solver status get no gap, and their number is reported.
+A relative gap is not used per episode, because $J^{\sm{pen,LP}}$ is often close to zero or negative, and the supplementary material reports relative gaps only as ratios of sums.
 The hard optimum $J^{\sm{LP,ceil}}$ enforces the departure requirements and the transformer limit as constraints, after a first stage that minimises the total shortfall.
 It bounds the profit of every controller that respects the transformer limit and leaves no more shortfall (Proposition~\ref{S-prop:oracle}), and it serves the analysis of the cost of the guarantee.
 

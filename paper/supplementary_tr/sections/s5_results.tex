@@ -1,124 +1,119 @@
 % ---------------------------------------------------------------------
 \section{Ek bulgular}\label{sec:results-supp}
 % ---------------------------------------------------------------------
-% İSKELET. Tablolar ve şekiller \analysisdir (varsayılan ../../analysis)
-% altından ya da tables/ ve figures/ içindeki yerel kopyalardan okunur ve
-% analysis/scripts/make_all.py gerçek sonuçlar üzerinde çalıştırıldığında
-% otomatik olarak görünür. Her yer tutucu yalnızca bu iş akışının yazdığı
-% değerleri ister.
+% Tablolar ve şekiller \analysisdir (varsayılan ../../analysis) altından ya da
+% tables/ ve figures/ içindeki yerel kopyalardan okunur. Metindeki her sayı
+% kaynak hücresiyle birlikte paper/results_number_sources.md dosyasında
+% listelenmiştir.
 
-\TODO{İskelet: sonuç yer tutucularını analiz çıktılarından doldurun, geçmiş zaman kullanın ve yorumu kendiniz yazın}.
+\TODO{Yazarlar raporlanan her değeri analiz çıktılarıyla karşılaştırarak denetler ve bu bölümün ifadelerini gözden geçirir}.
 
 Bu bölümdeki tablolar analiz iş akışı tarafından üretilmektedir.
-İş akışının T2, T3, T3b, T5, T4, T7, T6, TS1, TS2 ve TS3 dosyaları bu sırayla Tablo~\ref{tab:t2}--\ref{tab:ts3} olarak yer almaktadır.
+İş akışının T2, T3, T3b, T3c, T3d, T5, T4, T7, T6, TS1, TS2 ve TS3 dosyaları bu sırayla Tablo~\ref{tab:t2}--\ref{tab:ts3} olarak yer almaktadır.
+Değerler tohum ortalamalı politikaların ortalamalarıdır; parantez içinde iki eğitim tohumu üzerindeki aralık verilmiştir ve \dag{} tek bir çalıştırmaya sahip deterministik yöntemleri işaretler.
+Örnek gün şekli, planlanan ablasyonlar ve stres anma düzeyi dışındaki duyarlılık çalışmaları çalıştırılmamıştır.
 
-\subsection{Öğrenme eğrileri, aktarım, kısıtlar ve garantinin maliyeti}\label{app:res-tables}
+\subsection{Öğrenme eğrileri ve sıfır-atış aktarım}\label{app:res-tables}
 
-\Fig{fig:curves} öğrenen yöntemlerin eğitim eğrilerini göstermektedir.
-Tohumlar genelinde \method{} yönteminin eğitim eğrileri \RES{yakınsamanın ve tohumlar arası yayılımın betimlenmesi, Şekil S1}.
-\Tab{tab:t2}, her istasyon boyutu için \Fig{M-fig:zeroshot} şeklinin dayandığı sıfır-atış sonuçlarını, epizot başına yedek kural adımı sayısı ve $N=50$ için eğitilen referansa göre aktarım açığı dâhil olmak üzere listelemektedir.
+\Fig{fig:curves}, öğrenen yöntemlerin eğitim eğrilerini iki tohum üzerindeki bantlarla birlikte göstermektedir.
+\Tab{tab:t2}, her istasyon boyutu için \Fig{M-fig:zeroshot} şeklinin dayandığı sıfır-atış sonuçlarını, $N=50$ için eğitilen referansa göre aktarım açığı dâhil olmak üzere listelemektedir.
 Bu referans yalnızca $N=50$ için dağılım içidir; dolayısıyla $N=100$ ve $N=200$ için aktarım açığı iki dışdeğerlemeyi karşılaştırır.
-Test ızgarası üzerinden birleştirilmiş olarak \Tab{tab:t3}; E4'ü, karşılanmayan enerjiyi, aşırı yükü, \Eq{eq:deficit} ile verilen açık sınırına göre eksik enerjiyi ve sınırlandırılmış ve kabul kontrolüyle düşürülmüş talepleri vermektedir.
-Açık sınırı oranı yalnızca tam güvenlik katmanına sahip yöntemleri kapsar, çünkü ayrılış sınırı içermeyen varyantın böyle bir sınırı yoktur.
-
-İstasyon boyutu başına \Tab{tab:t3b}; E4'ü, yedek kural durumlarına göre olursuz adımları ve toplam limitlerin ve ayrılış alt sınırının bağlayıcılık oranlarını vermektedir.
-\Tab{tab:t5}, \Fig{M-fig:cost} şeklinin dayandığı garantinin maliyetini $J^{\sm{pen}}$ ve kâr cinsinden, her iki ikizin katı optimum açıklarıyla birlikte vermektedir.
-İhlal içeren bir yöntemin katı optimum açığı alttan sıfırla sınırlı değildir, çünkü Önerme~\ref{prop:oracle} bu yöntemi kapsamaz.
 
 \begin{figure}[t]
 \centering
-\resultfig{figS1_training_curves.pdf}{Öğrenen yöntemler için ortam adımlarına göre epizot kârı ve kısıt ölçütleri, tohumlar üzerinden ortalama ve yayılım.}
-\caption{Öğrenen yöntemlerin eğitim eğrileri.}
+\resultfig{figS1_training_curves.pdf}{Öğrenen yöntemlerin eğitim eğrileri.}
+\caption{Öğrenen yöntemlerin ortam adımlarına göre eğitim eğrileri; bantlar iki eğitim tohumu üzerindeki aralığı gösterir.}
 \label{fig:curves}
 \end{figure}
 
 \restable{T2}{\placeholdertable{tab:t2}{İstasyon boyutları $N$ arasında sıfır-atış aktarım}{T2.tex}}
-\restable{T3}{\placeholdertable{tab:t3}{E4 dâhil olmak üzere tüm test ızgarası yapılandırmaları üzerinden yöntem başına kısıtların sağlanması}{T3.tex}}
+
+\subsection{Kısıtların sağlanması}\label{app:res-constraints}
+
+Test ızgarası üzerinden birleştirilmiş olarak \Tab{tab:t3}; E4'ü, karşılanmayan enerjiyi, aşırı yükü, \Eq{eq:deficit} ile verilen açık sınırına göre eksik enerjiyi ve sınırlandırılmış ve kabul kontrolüyle düşürülmüş talepleri vermektedir.
+Açık sınırı oranı yalnızca tam güvenlik katmanına sahip yöntemleri kapsar, çünkü ayrılış sınırı içermeyen varyantın böyle bir sınırı yoktur.
+İstasyon boyutu başına \Tab{tab:t3b}; E4'ü, yedek kural durumlarına göre olursuz adımları ve toplam limitlerin ve ayrılış alt sınırının bağlayıcılık oranlarını vermektedir.
+\Tab{tab:t3c} ve \Tab{tab:t3d}, her iki tohumun tüm epizotları üzerinden toplanan olay sayılarını genel olarak ve istasyon boyutu başına vermektedir.
+Bu tabloların son sütunu, Teorem~\ref{M-thm:invariance}(b) için epizot düzeyindeki denetimdir: hiç olursuz adım içermeyen epizotlarda gereksinimi karşılanmayan EV'ler.
+Bu sütun, ayrılış sınırına sahip konformal olmayan her yöntem için sıfırdır; ayrılış sınırı içermeyen varyantta ise bu tür 1.551 EV bulunmuştur.
+Ancak tüm epizotlar üzerinden bu varyant, gereksinimi karşılanmayan daha az EV bırakmıştır: varyant için 1.551, \method{} için 6.158 (\Sec{M-sec:res-bound}).
+Konformal varyantlar için denetim, yeniden sertifikalanmış gereksinimi ortak gereksinimin altında kalan ya da öngörülen sınırdan önce ayrılan EV'leri de saymaktadır; teorem bu durumları kapsamaz.
+
+\restable{T3}{\placeholdertable{tab:t3}{Tüm test ızgarası yapılandırmaları üzerinden yöntem başına kısıtların sağlanması}{T3.tex}}
 \restable{T3b}{\placeholdertable{tab:t3b}{İstasyon boyutu $N$ başına E4, yedek kural durumlarına göre olursuz adımlar ve bağlayıcılık oranları}{T3b.tex}}
+\restable{T3c}{\placeholdertable{tab:t3c}{Değerlendirilen tüm epizotlar üzerinden yöntem başına olay sayıları}{T3c.tex}}
+\restable{T3d}{\placeholdertable{tab:t3d}{Yöntem ve istasyon boyutu $N$ başına olay sayıları}{T3d.tex}}
+
+\subsection{Garantinin maliyeti ve kısıt yönetimi}\label{app:res-ablation}
+
+\Tab{tab:t5}, \Fig{M-fig:cost} şeklinin dayandığı garantinin maliyetini dikkat tabanlı ve MLP çiftleri için $J^{\sm{pen}}$ ve kâr cinsinden vermektedir.
+\Fig{fig:ablation} ve \Tab{tab:t4}, mimarileri ve kısıt yönetimi varyantlarını eğitim boyutlarında ve sıfır-atış aktarımda karşılaştırmaktadır.
+$N\ge50$ için \method{} yönteminin açığı 0,901, Deep Sets+safety layer'ın 0,674 ve Attention+safety layer without departure bound'un 0,770 olmuştur.
+Katmanı kullanım aşamasında uygulayan ceza ile eğitilmiş politika 0,910'a, Attention+penalty 0,996'ya ve Attention+PPO-Lagrangian 1,138'e ulaşmıştır.
+
 \restable{T5}{\placeholdertable{tab:t5}{İstasyon boyutu $N$ başına garantinin maliyeti}{T5.tex}}
-
-\subsection{Ablasyon çalışması ve diğer karşılaştırma yöntemleri}\label{app:res-ablation}
-
-\Fig{fig:ablation} ve \Tab{tab:t4}, güvenlik katmanlı ve katmansız dikkat tabanlı ve MLP politikalarını, diğer karşılaştırma yöntemlerini ve \method{} ablasyonlarını karşılaştırmaktadır.
-Ayrılış sınırı içermeyen, güvenlik katmanını yalnızca kullanım aşamasında uygulayan ve kabul kontrolü içermeyen varyantlar \RES{\method{} yöntemine göre açıklar, \Tab{tab:t4}} sonucunu vermektedir.
-$\beta=0$ alınması, müfredatla eğitim ve küçük ağın kullanılması \RES{\method{} yöntemine göre açıklar, \Tab{tab:t4}} sonucunu; yoğun ceza ise \RES{yoğun ceza ile Attention+penalty açığı, \Tab{tab:t4}} sonucunu vermektedir.
 
 \begin{figure}[t]
 \centering
-\resultfig{figS2_ablation.pdf}{Ablasyon varyantlarının optimallik açığı ve kısıt ölçütleri.}
-\caption{Ablasyon çalışması.}
+\resultfig{figS2_ablation.pdf}{Mimari ve kısıt yönetimi varyantlarının açığı.}
+\caption{\Tab{tab:t4} içindeki mimari ve kısıt yönetimi varyantlarının eğitim boyutlarında ve sıfır-atış aktarımdaki açığı.}
 \label{fig:ablation}
 \end{figure}
 
-\restable{T4}{\placeholdertable{tab:t4}{Diğer karşılaştırma yöntemleriyle birlikte mimari, kısıt yönetimi ve eğitim tercihlerinin ablasyonu}{T4.tex}}
+\restable{T4}{\placeholdertable{tab:t4}{Mimari ve kısıt yönetimi}{T4.tex}}
 
 \subsection{Konformal ayrılış sınırı}\label{app:res-conformal}
 
-\Fig{fig:conformal} ve \Tab{tab:t7}, \method{}-CP yönteminin kapsamasını, hizmet düzeyini ve kârını kapsama dışı kalma düzeyi $\alpha$'ya göre göstermektedir.
-Konformal varyantlar paylaşılan gereksinimi kendi sınırlarıyla yeniden sertifikalar ve eksik enerjileri paylaşılan gereksinime göre ölçülür; dolayısıyla tablo bunların ana açığını da raporlar.
-Epizotlar üzerinden ortalama alındığında kapsama \RES{her $\alpha$ için nominal düzey $1-\alpha$'ya karşı kapsama, \Tab{tab:t7}} olarak bulunmuştur.
-Bilinen ayrılış adımlarına kıyasla kâr \RES{her $\alpha$ için kâr farkı, \Tab{tab:t7}} kadar değişmekte; kalibre edilmemiş nokta tahmini ise \RES{nokta tahmininin kapsaması ve karşılanmayan enerjisi, \Tab{tab:t7}} sonucunu vermektedir.
+\Fig{fig:conformal} ve \Tab{tab:t7}, \method{}-CP yönteminin kapsamasını, ortak gereksinime göre eksik enerjisini, açığını ve şarj edilen enerjisini kapsama dışı kalma düzeyi $\alpha$'ya göre göstermektedir.
+0,99, 0,95, 0,90 ve 0,80 hedefleri için elde edilen kapsama 0,992, 0,950, 0,902 ve 0,799 olmuştur.
+Tüm epizotlar üzerinden toplandığında eksik enerji $\alpha=0.01$ için 771.853 kWh, $\alpha=0.05$ için 12.507 kWh ve bilinen ayrılış adımlarıyla 2.568 kWh olmuştur.
+Karşılaştırma için kalibre edilmemiş nokta tahmini 0,899 kapsamaya ve 1,322 açığına ulaşmıştır.
 
 \begin{figure}[t]
 \centering
-\resultfig{figS3_conformal_alpha.pdf}{$\alpha$'ya göre kapsama, hizmet verilmeyen EV'lerin payı ve kâr değişimi.}
-\caption{Konformal ayrılış sınırının ödünleşimi.}
+\resultfig{figS3_conformal_alpha.pdf}{$\alpha$'ya göre kapsama, eksik enerji, açık ve şarj edilen enerji.}
+\caption{Konformal ayrılış sınırının ödünleşimi: kapsama dışı kalma düzeyi başına hedefine göre kapsama, ortak gereksinime göre eksik enerji, açık ve şarj edilen enerji.}
 \label{fig:conformal}
 \end{figure}
 
-\restable{T7}{\placeholdertable{tab:t7}{Konformal ayrılış sınırı: kapsama dışı kalma düzeyi $\alpha$'ya göre açık, kapsama, kâr ve karşılanmayan enerji}{T7.tex}}
+\restable{T7}{\placeholdertable{tab:t7}{Konformal ayrılış sınırı}{T7.tex}}
 
 \subsection{Hesaplama süresi}\label{app:res-time}
 
 \Fig{fig:inference} ve \Tab{tab:t6}, kontrol adımı başına çıkarım süresini ve çalıştırma başına eğitim süresini raporlamaktadır.
-$N=10$ ve $N=200$ için \method{} yönteminin bir kontrol adımı \RES{adım başına ms cinsinden ortalama çıkarım süresi, \Tab{tab:t6}}, bir eğitim çalıştırması ise \RES{saat cinsinden çalıştırma başına eğitim süresi, \Tab{tab:t6}} sürmektedir.
+\method{} yönteminin bir eğitim çalıştırması 1,15 saat sürmüş; bir kontrol adımı $N=10$ için 1,68 ms, $N=200$ için 7,76 ms almıştır.
+$N=200$ için Deep Sets+safety layer adım başına 5,99 ms, katmanlı kurallar en fazla 2,72 ms ve eMPC-HiGHS+safety layer 14,13 ms gerektirmiştir.
 
 \begin{figure}[t]
 \centering
 \resultfig{figS4_inference_time.pdf}{$N$'ye göre kontrol adımı başına çıkarım süresi.}
-\caption{Kontrol adımı başına çıkarım süresi.}
+\caption{Politika ve güvenlik katmanı dâhil, $N$'ye göre kontrol adımı başına çıkarım süresi.}
 \label{fig:inference}
 \end{figure}
 
-\restable{T6}{\placeholdertable{tab:t6}{Hesaplama: çalıştırma başına eğitim süresi ve kontrol adımı başına çıkarım süresi}{T6.tex}}
+\restable{T6}{\placeholdertable{tab:t6}{Hesaplama}{T6.tex}}
 
-\subsection{Katı optimumlar, duyarlılık çalışmaları ve literatür yapılandırması}\label{app:res-sensitivity}
+\subsection{Göreli açıklar, stres düzeyi ve literatür yapılandırması}\label{app:res-sensitivity}
 
-Her istasyon boyutu için \Tab{tab:ts1}, ana yöntemlerin $J^{\sm{LP,ceil}}$ ve $J^{\sm{LP}}$'ye göre kâr açığını raporlamaktadır.
-\method{} yönteminin iki açığı \RES{her $N$ için her iki açık, \Tab{tab:ts1}} olarak bulunmuştur.
-Ayrıca \Tab{tab:ts2}, $N=20$ ve $\rho_{\sm{tr}}=4$ kW'taki duyarlılık çalışmalarında, $\rho_{\sm{tr}}=3$ kW stres düzeyinde ve 1 ile 100\,\texteuro/kWh ceza ağırlıklarında ana yöntemleri kapsamaktadır.
-0.8'lik istenen şarj durumu \RES{açık ve karşılanmayan enerji, \Tab{tab:ts2}} sonucunu, 5 dakikalık adım ise \RES{açık ve karşılanmayan enerji, \Tab{tab:ts2}} sonucunu vermektedir.
-Enerji akışı maliyeti ve deşarj fiyatı çarpanıyla sonuçlar \RES{açık ve kâr, \Tab{tab:ts2}} şeklindedir.
-EV2Gym'in literatür yapılandırmasında, MLP karşılaştırma yöntemleri olmaksızın, \Tab{tab:ts3} \RES{yöntem başına açık, kâr ve karşılanmayan enerji, \Tab{tab:ts3}} değerlerini listelemektedir.
+\Tab{tab:ts1}, yumuşak cezalı optimum ve her iki katı optimum için göreli açıkları toplamların oranı olarak raporlamaktadır.
+$J^{\sm{pen,LP}}$ çoğu zaman sıfıra yakın ya da negatif olduğundan \method{} yönteminin göreli $J^{\sm{pen}}$ açığı $N=5$ ve $N=10$ için \%100'ü aşmıştır; bu nedenle ana metin mutlak açığı kullanmaktadır.
+\Tab{tab:ts2}, $N=20$ ve $N=200$ için $\rho_{\sm{tr}}=3$ kW stres düzeyini kapsamaktadır.
+Burada \method{} yönteminin E4 değeri \%55,30 ve \%65,91; Deep Sets+safety layer'ınki ise \%65,14 ve \%73,25 olmuştur.
+EV2Gym'in 25 şarj üniteli yapılandırmasında Attention+safety layer without departure bound'un açığı 0,363, katmanlı eMPC-HiGHS'nin 0,456 ve \method{} yönteminin 0,507 olmuştur (\Tab{tab:ts3}).
 
-\restable{TS1}{\placeholdertable{tab:ts1}{İstasyon boyutu $N$ başına $J^{\sm{LP,ceil}}$ ve $J^{\sm{LP}}$'ye göre kâr açığı}{TS1.tex}}
-\restable{TS2}{\placeholdertable{tab:ts2}{$N=20$ ve $\rho_{\sm{tr}}=4$ kW'taki duyarlılık çalışmaları, stres düzeyi ve ceza ağırlıkları}{TS2.tex}}
+\restable{TS1}{\placeholdertable{tab:ts1}{Toplamların oranı olarak göreli açıklar}{TS1.tex}}
+\restable{TS2}{\placeholdertable{tab:ts2}{$\rho_{\sm{tr}}=3$ kW stres düzeyi}{TS2.tex}}
 \restable{TS3}{\placeholdertable{tab:ts3}{EV2Gym'in 25 şarj üniteli literatür yapılandırmasındaki sonuçlar}{TS3.tex}}
 
-\subsection{İş akışı, birleştirilmiş kısıtlar ve örnek epizot}\label{app:res-example}
+\subsection{Birleştirilmiş kısıt ölçütleri}\label{app:res-example}
 
-\Fig{fig:pipeline} deneysel iş akışını özetlemektedir.
-İstasyon boyutları üzerinden birleştirilmiş olarak her yöntemin kısıt ölçütleri \Fig{fig:constraintspooled} üzerinde yer almaktadır.
-Son olarak \Fig{fig:exampleday}, \method{} yönteminin bir test epizodunu; toplam gücü ileri ve ters yön limitlerine, $\sum_il_i$ ile $\sum_iu_i$ arasındaki banda ve fiyata göre izlemektedir.
-Bu epizotta \method{} \RES{şarjın ve V2G deşarjının fiyatı ve limitleri nasıl izlediğinin betimlenmesi, Şekil S7}.
-
-\begin{figure}[t]
-\centering
-\figchain{0.9\linewidth}{\analysisdir/figures/figS5_pipeline.pdf}{\analysisdir/figures_conceptual/figS5_pipeline.pdf}{figures/figS5_pipeline.pdf}
-\caption{Deneysel iş akışı. Öğrenen yöntemler karışık istasyon boyutları, varış profilleri ve anma düzeyleri üzerinde eğitilir; tüm yöntemler aynı kabul edilen gereksinimlerle özdeş test tekrarları üzerinde çalışır. Ana açık yumuşak cezalı optimumu, garantinin maliyeti ise katı optimumu kullanır.}
-\label{fig:pipeline}
-\end{figure}
+\Fig{fig:constraintspooled}, her yöntem ve trafo anma düzeyi için test ızgarasının tüm istasyon boyutları üzerinden birleştirilmiş karşılanmayan enerjiyi ve aşırı yük enerjisini göstermektedir.
+Aşırı yük enerjisi, \Tab{tab:t3c} içinde katmanlı her yöntemin sıfır aşırı yük adımıyla uyumlu olarak yalnızca güvenlik katmanı içermeyen yöntemlerde görülmektedir.
+Konformal varyantlar gösterilmemiştir; bunların eksik enerjisini \Tab{tab:t7} vermektedir.
 
 \begin{figure}[t]
 \centering
-\resultfig{figS6_constraints_pooled.pdf}{İstasyon boyutları üzerinden birleştirilmiş olarak yöntem ve trafo anma gücü başına karşılanmayan enerji ve aşırı yük enerjisi.}
-\caption{İstasyon boyutları üzerinden birleştirilmiş, yöntem başına kısıt ölçütleri.}
+\resultfig{figS6_constraints_pooled.pdf}{İstasyon boyutları üzerinden birleştirilmiş, yöntem başına kısıt ölçütleri.}
+\caption{İstasyon boyutları üzerinden birleştirilmiş, yöntem ve trafo anma düzeyi başına kısıt ölçütleri.}
 \label{fig:constraintspooled}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\resultfig{fig5_example_day.pdf}{Bir epizot boyunca toplam güç, $C(t)$, $-\Crev(t)$, $\sum_il_i$ ile $\sum_iu_i$ arasındaki bant ve fiyat; yedek kural adımları işaretlenmiştir.}
-\caption{\method{} yönteminin örnek epizodu (işyeri profili, $N=20$, sıkı anma düzeyi).}
-\label{fig:exampleday}
 \end{figure}

@@ -6,7 +6,7 @@
 
 Tüm deneylerde, kaynak kodunda değişiklik yapılmadan \texttt{55ef368c} commit'indeki EV2Gym \cite{orfanoudakis2025ev2gym} kullanılmaktadır.
 Bir sarmalayıcı (wrapper) gözlemleri hesaplar; ortak kabul edilen gereksinimleri, güvenlik katmanını, yedek kuralı ve eyleyici davranışını uygular ve gelecekteki varışları okumadan tüm ölçütleri kaydeder.
-Her istasyonda tek bir trafonun arkasında $N$ şarj ünitesi bulunur; EV'ler simülatörün V2G destekli sekiz EV modelinden, her model için sabit bir verimle (bir model için 0.93, diğerleri için 0.90) çekilir.
+Her istasyonda tek bir trafonun arkasında $N$ şarj ünitesi bulunur; EV'ler simülatörün V2G destekli sekiz EV modelinden, her model için sabit bir verimle (bir model için 0,93, diğerleri için 0,90) çekilir.
 İstenen enerji bataryanın tam dolu hâlidir; fiyatlar EV2Gym ile birlikte sunulan Hollanda gün öncesi fiyatlarıdır ve deşarj fiyatı şarj fiyatına eşittir.
 Tablo~\ref{S-tab:scenarios} tüm senaryo parametrelerini listelemektedir.
 
@@ -14,66 +14,61 @@ Tablo~\ref{S-tab:scenarios} tüm senaryo parametrelerini listelemektedir.
 Özellikle trafo anma gücü $P_{\sm{tr}}=\rho_{\sm{tr}}N$'dir; burada EV2Gym'in 25 şarj üniteli V2G yapılandırmasındaki gibi şarj ünitesi başına $\rho_{\sm{tr}}=4$ kW'lık sıkı bir düzey ve 7 kW'lık orta bir düzey kullanılır.
 Esnek olmayan yük ve PV, ortalaması $0.4P_{\sm{tr}}$ olan çarpanlarla ölçeklenir ve gözlemdeki tahminler standart sapması \%10 olan Gauss gürültüsü içerir.
 EV2Gym'in işyeri, kamusal ve özel varış profilleri, gece boyu süren oturumların 15 dakikalık $T=112$ adımdan oluşan 28 saatlik ufka sığmasını sağlayan saatlerde başlar.
-Ortalama şarj ünitesi doluluğu her profil için yaklaşık 0.21'dir.
 
 Eğitim, her yığında (batch) $N\in\{10,20\}$ değerlerini, üç profili ve iki anma düzeyini karıştırır.
-Test ızgarası $N\in\{5,10,20,50,100,200\}$ değerlerini, her iki anma düzeyini ve tüm profilleri; buna ek olarak $N\in\{20,200\}$ için $\rho_{\sm{tr}}=3$ kW'lık bir stres düzeyini kapsar.
+Test ızgarası $N\in\{5,10,20,50,100,200\}$ değerlerini, her iki anma düzeyini ve tüm profilleri; buna ek olarak $N\in\{20,200\}$ için $\rho_{\sm{tr}}=3$ kW'lık bir stres düzeyini ve EV2Gym'in özgün 25 şarj üniteli yapılandırmasını, toplamda 43 yapılandırmayı kapsar.
 Dolayısıyla sıfır-atış ifadesi istasyon boyutunu ve stres düzeyini ifade eder; profiller ise eğitimde görülmüştür.
-Her yapılandırma, tüm yöntemlerce paylaşılan ve $N\le50$ için 100, $N\ge100$ için 50 sabit test epizoduna sahiptir; EV2Gym'in özgün 25 şarj üniteli yapılandırması 100 epizot daha ekler; böylece her politika 3550 test epizodunda çalıştırılır.
-Şarj ünitesi başına büyüklükler $N$ ile değişmediğinden toplam dalgalanmalar $N$ büyüdükçe küçülür; toplam limitlerin ne sıklıkta bağlayıcı olduğu her $N$ için raporlanmaktadır.
-$N=20$ ve $\rho_{\sm{tr}}=4$ kW için yapılan duyarlılık çalışmaları, 0.8'lik istenen şarj durumunu, 5 dakikalık adımı, 0.05\,\texteuro/kWh'lik enerji akışı (throughput) maliyetini ve 0.9'luk deşarj fiyatı çarpanını kapsar.
-Yalnızca 5 dakikalık çalışmada yeniden eğitim yapılır.
+Her yapılandırma, tüm yöntemlerce paylaşılan ve $N\le50$ için 100, $N\ge100$ için 50 sabit test epizoduna sahiptir; böylece her politika 3.550 test epizodunda çalıştırılır.
+Stres düzeyi, çalıştırılan tek duyarlılık çalışmasıdır.
 
 \subsection{Karşılaştırılan yöntemler}\label{sec:baselines}
 
 Her yöntem ve her değerlendirme geçişi aynı kabul edilen gereksinimleri alır ve eksik enerji her zaman bu gereksinimlere göre ölçülür.
-Katman içermeyen yöntemler, $l_i$ ya da trafo bağlantısı olmaksızın yalnızca fiziksel kırpma $\clip(x_i,\pmn_i,u_i)$ işlemini uygular; her yöntem ayrıca çıktısı güvenlik katmanından geçirilerek de çalıştırılabilir.
+Katman içermeyen yöntemler, $l_i$ ya da trafo bağlantısı olmaksızın yalnızca fiziksel kırpma $\clip(x_i,\pmn_i,u_i)$ işlemini uygular.
 
-Öğrenen yöntemler mümkün olduğunca dikkat kodlayıcısını paylaşır.
+Öğrenen yöntemler arasında \method{} ve Deep Sets+safety layer, güvenlik katmanına sahip iki boyuttan bağımsız küme politikasıdır.
 Attention+penalty, \method{} yönteminin cezaya dayalı ikizidir: güvenlik katmanı olmaksızın, kârdan eksik enerji ve aşırı yük enerjisinin $w$ ağırlığıyla çarpımı çıkarılarak elde edilen değerden öğrenir.
 Bunun kısıtlı karşılığı olan Attention+PPO-Lagrangian, sabit ağırlığın yerine maliyet limiti sıfır olan Lagrange çarpanlarını kullanır \cite{altman2021constrained,tessler2018reward}.
-$l_i=\pmn_i$ alındığında ``Attention+safety layer without departure bound'' (ayrılış sınırı olmayan dikkat+güvenlik katmanı) varyantı, katmanı \cite{wan2025logicinformed} çalışmasındaki gibi adım başına bir trafo izdüşümüne indirger, $\beta=0.01$ değerini korur ve ayrılış gereksinimini ceza içeren ödülden öğrenir.
-Deep Sets+safety layer, dikkat içermeyen, ortalama havuzlanmış bir bağlam kullanan, boyuttan bağımsız ve belirteç başına çalışan bir ağdır; parametre sayısı \method{} ile \%10 içinde eşleştirilmiştir.
+$l_i=\pmn_i$ alındığında ``Attention+safety layer without departure bound'' (ayrılış sınırı olmayan dikkat+güvenlik katmanı) varyantı, katmanı \cite{wan2025logicinformed} çalışmasındaki gibi adım başına bir trafo izdüşümüne indirger ve ayrılış gereksinimini ceza içeren ödülden öğrenir.
 Ceza ile eğitilmiş kontrol noktaları ayrıca güvenlik katmanı yalnızca kullanım aşamasında uygulanarak çalıştırılır; \method{} ve Attention+penalty ayrıca kabul kontrolü olmaksızın, varışta sınırlandırılmış talep korunarak çalıştırılır.
-Sıfırla doldurulmuş belirteçler üzerinde çalışan, katmanlı ve katmansız çok katmanlı algılayıcı (MLP), yalnızca $N\le20$ için değerlendirilen sabit boyutlu bir referanstır.
-Dağılım içi bir referans olarak \method{} ayrıca üç tohumla $N=50$ için eğitilir ve $N\in\{50,100,200\}$ için değerlendirilir.
+20 yuvaya kadar sıfırla doldurulmuş belirteçler üzerinde çalışan, katmanlı ve katmansız çok katmanlı algılayıcı (MLP), yalnızca $N\le20$ için değerlendirilen sabit boyutlu bir referanstır.
+Dağılım içi bir referans olarak \method{} ayrıca $N=50$ için eğitilir ve $N\in\{50,100,200\}$ için değerlendirilir.
 
-Karşılaştırmayı altı kural tamamlar: olabildiğince hızlı, olabildiğince geç, döngüsel sıralama (round robin), LLF, sLLF \cite{chen2022smoothed} ve bir fiyat eşiği kuralı.
-EV2Gym'in ekonomik MPC'sinin \cite{diazlondono2026open} HiGHS ile yaptığımız yeniden gerçeklemesi her $N$ için 10 adımlık bir ufukla (eMPC-HiGHS) ve 24 saatlik bir ufukla (eMPC-HiGHS-24h) çalışır.
-Her ikisi de ufukları içindeki kesin fiyatları ve varışları bilir, ki bu bir bilgi avantajıdır; Gurobi tabanlı özgün eMPC ise çapraz kontrol amacıyla literatür yapılandırmasında çalıştırılır.
-EV-GNN \cite{orfanoudakis2025scalable}, \texttt{01aa1b7a} commit'indeki açık kaynak kodundan, kendi TD3 eğitim betiği, ödülü ve hiperparametreleriyle; $N=20$ ve $\rho_{\sm{tr}}=4$ kW için her varış profiline bir model olmak üzere beş tohumla çalıştırılır.
-Bizim yöntemlerimizden farklı olarak kendi yapılandırmasında, çalıştırma başına tek bir yük ve PV çekilişiyle ve varsayılan $10^{7}$ yerine $3\times10^{6}$ adımla eğitilir.
-Hem bu yapılandırmada hem de sıfır-atış olarak raporlanır.
-GNN-DT'nin \cite{orfanoudakis2026graph} açık kaynak kodu (DT4EVs, commit \texttt{8b327d12}) mevcuttur; ancak bu yöntem her senaryo için bir optimizasyon çözücüsünün ürettiği veri kümeleri üzerinde çevrim dışı eğitilmektedir ve bu iş akışının uyarlanması bu çalışmanın kapsamı dışında kalmıştır.
-
-\method{} için ablasyonlar $\beta=0$ alır, müfredatlı (curriculum) eğitim kullanır ya da daha küçük bir ağ kullanır.
-Attention+penalty ayrıca adım başına yoğun bir açık cezası ile ve $w\in\{1,100\}$\,\texteuro/kWh ile (üç tohum) eğitilir.
-Konformal varyant \method{}-CP, $\alpha=0.1$ için bir kez eğitilir ve her $\alpha$ için yeniden kalibre edilmiş sınırlarla değerlendirilir; ablasyonu olarak kalibre edilmemiş bir nokta tahmini kullanılır.
+Karşılaştırmayı, her biri katmanlı ve katmansız olmak üzere altı kural tamamlar: olabildiğince hızlı (AFAP), olabildiğince geç (ALAP), döngüsel sıralama (round robin), LLF, sLLF \cite{chen2022smoothed} ve bir fiyat eşiği kuralı.
+EV2Gym'in ekonomik MPC'sinin \cite{diazlondono2026open} HiGHS ile yaptığımız yeniden gerçeklemesi eMPC-HiGHS, her $N$ için 10 adımlık bir ufukla çalışır ve bu ufuk içindeki kesin fiyatları ve varışları bilir.
+Konformal varyant \method{}-CP, $\alpha=0.1$ için bir kez eğitilir ve her $\alpha\in\{0.01,0.05,0.1,0.2\}$ için yeniden kalibre edilmiş sınırlarla değerlendirilir; ek bir geçiş olarak kalibre edilmemiş bir nokta tahmini de kullanılır.
+EV-GNN \cite{orfanoudakis2025scalable} harici bir karşılaştırma yöntemi olarak planlanmış ancak çalıştırılmamıştır; GNN-DT \cite{orfanoudakis2026graph} ise her senaryo için bir optimizasyon çözücüsünün ürettiği veri kümeleri üzerinde çevrim dışı eğitildiğinden uyarlanmamıştır.
+Planlanan ablasyonlar, ceza ağırlığı duyarlılıkları, diğer MPC varyantları ve diğer duyarlılık çalışmaları da çalıştırılmamıştır.
 
 \subsection{Ölçütler}\label{sec:metrics}
 
-Ana ölçüt, her yöntem için geçerli olan \Eq{eq:gap} ile tanımlı cezalı kâr açığıdır; kâr, karşılanmayan enerji ve trafo aşırı yük enerjisi ayrıca raporlanır.
-Güvenlik katmanı için kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin payı, yedek kural durumlarına göre olursuz adımlar ve Lemma~\ref{S-lem:deficit} ile verilen açık sınırıyla karşılaştırmalı olarak ölçülen eksik enerji raporlanır.
-Garantinin maliyeti, aynı epizotlar üzerinde Attention+penalty ile \method{} arasındaki farktır; birincil ölçü olarak $J^{\sm{pen}}$, ikincil ölçü olarak kâr kullanılır.
-Bu maliyet, eşleştirilmiş epizotlar üzerinden toplamların oranıdır ve hizmet verilen EV başına \texteuro{} ile $|J^{\sm{LP,ceil}}|$'nin yüzdesi olarak ifade edilir.
+Ana ölçüt, her yöntem için geçerli olan \Eq{eq:gap} ile tanımlı mutlak açıktır.
+Cezalı kârlar, her yöntem ve geçiş için ortak kabul edilen gereksinime göre karşılanmayan enerjiyi kullanır; kâr, karşılanmayan enerji ve trafo aşırı yük enerjisi ayrıca raporlanır.
+Güvenlik katmanı için kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin payı (E4), yedek kural durumlarına göre olursuz adımlar ve Lemma~\ref{S-lem:deficit} ile verilen açık sınırıyla karşılaştırmalı olarak ölçülen eksik enerji raporlanır.
+Kayıtlar Teorem~\ref{thm:invariance}(b) hipotezi için EV başına bir bayrak taşımadığından, teoremin ayrılışa ilişkin kısmı epizot düzeyinde denetlenmektedir.
+
+Garantinin maliyeti, aynı epizotlar üzerinde cezaya dayalı ikiz ile güvenlik katmanlı politika arasındaki farktır; birincil ölçü olarak $J^{\sm{pen}}$, ikincil ölçü olarak kâr kullanılır.
+Bu maliyet, eşleştirilmiş epizotlar üzerinden toplamların oranıdır ve kabul edilen EV başına \texteuro{} ile $|J^{\sm{LP,ceil}}|$'nin yüzdesi olarak ifade edilir.
 Pozitif bir değer, cezaya dayalı ikizin daha yüksek puan aldığı anlamına gelir.
 \method{} yönteminin $N=50$ için eğitilen referansa göre aktarım açığı, aktarım kaybını yöntem kaybından ayırır.
 
 \subsection{Ayarlama, istatistik ve hesaplama}\label{sec:hyper}
 
-Ayarlanan yedi öğrenen yöntemin her biri, öğrenme oranı, mini yığın boyutu ve entropi katsayısı üzerinde tanımlı bir ızgaradan 12 yapılandırma alır.
+Ayarlanan yedi öğrenen yöntemin her biri, öğrenme oranı, mini yığın boyutu ve entropi katsayısı üzerinde tanımlı bir ızgaradan 12 yapılandırma almıştır.
 Ceza içeren ödüller ızgaraya $w\in\{1,10,100\}$ ağırlığını, Lagrange yöntemi ise çarpan adım büyüklüğünü ekler.
-Her yapılandırma eğitim karışımı üzerinde $0.5\times10^{6}$ adım eğitilir ve test tekrarlarından ayrık 24 doğrulama epizodunda değerlendirilir.
-Seçim, her yöntem için $w=10$ ile hesaplanan doğrulama $J^{\sm{pen}}$ değerini kullanır; böylece cezaya dayalı bir yöntem kendi ağırlığını düşürerek üstünlük elde edemez.
-Seçilen yapılandırma beş tohumla $3\times10^{6}$ adım boyunca yeniden eğitilir; Tablo~\ref{S-tab:hyper} hiperparametreleri listelemektedir.
+Her yapılandırma eğitim karışımı üzerinde $0.5\times10^{6}$ adım eğitilmiş ve test tekrarlarından ayrık 24 doğrulama epizodunda değerlendirilmiştir; seçimde her yöntem için $w=10$ ile hesaplanan doğrulama $J^{\sm{pen}}$ değeri kullanılmıştır.
+Seçilen yapılandırma iki tohumla $3\times10^{6}$ adım boyunca yeniden eğitilmiştir; Tablo~\ref{S-tab:hyper} hiperparametreleri listelemektedir.
 
-Analiz birimi eğitim tohumudur, tohum sayısı önceden sabitlenmiştir ve tekrar düzeyindeki değerlerin ortalaması önce her tohum içinde alınır.
-Önceden bildirilen birincil sonlanım noktalarımız $N=200$ için açık (E1), her $N$ için garantinin maliyeti (E2), aşırı yük enerjisi (E3) ve olursuz adımla karşılaşmayan EV'lerin payıdır (E4).
-Birincil test olarak eşleştirilmiş bir $t$-testi aynı sabit tekrarlar üzerindeki tohum ortalamalarını karşılaştırır; tohum ortalamalı politikaların tekrar düzeyindeki farkları üzerinde uygulanan Wilcoxon işaretli sıralar testi \cite{wilcoxon1945individual} ise ikincildir.
-Holm düzeltmesi her sonuç tablosu üzerinde uygulanır; tabakalı bootstrap ile elde edilen \%95 güven aralıkları, çeyrekler arası ortalama (IQM) ve iyileşme olasılığı raporlanır \cite{agarwal2021deep}.
-Az sayıda tohuma dayanan sonuçlar yanıltıcı olabilir \cite{henderson2018deep} ve beş tohumla testlerin gücü düşüktür; bu nedenle güven aralıkları birincil kanıttır (Bölüm~\ref{S-app:stats}).
+İki tohumla tohumlar arası değişkenlik test edilemediğinden analiz, tohum ortalamalı politikaları ortak test tekrarları üzerinde karşılaştırmaktadır.
+Tablolar, tohum ortalamalı politikanın ortalamasını iki tohum üzerindeki aralıkla birlikte raporlamaktadır.
+Tekrar düzeyindeki farklar üzerinde eşleştirilmiş Wilcoxon işaretli sıralar testleri \cite{wilcoxon1945individual}, her istasyon boyutu için \method{} yöntemini diğer her yöntemle karşılaştırır.
+Holm düzeltmesi bir sonuç tablosunun tüm karşılaştırmaları üzerinden (aile başına en fazla 351) uygulanır ve sıra-çift serili korelasyonun (rank-biserial) işareti yönü verir.
+Ortalamanın güven aralıkları, test tekrarlarını her yapılandırma içinde yeniden örnekleyen bir bootstrap ile elde edilir ve açığın çeyrekler arası ortalaması (IQM) eğitim boyutlarında raporlanır \cite{agarwal2021deep}.
+Wilcoxon testi medyan kaymasıyla, güven aralığı ise ortalamayla ilgilidir; büyük cezalı birkaç epizot tek başına ortalamayı kaydırabilir.
+İkisinin uyuşmadığı durumlarda her ikisi de raporlanmakta ve karşılaştırma sonuçsuz (inconclusive) olarak nitelendirilmektedir.
+Az sayıda tohuma dayanan sonuçlar yanıltıcı olabilir \cite{henderson2018deep}; bu nedenle tohum sayısı bir sınırlılıktır (Bölüm~\ref{S-app:stats}).
 
 Gerçekleme PyTorch \cite{paszke2019pytorch}, CleanRL tarzında \cite{huang2022cleanrl} tek dosyalık bir PPO ve Adam optimize edicisini \cite{kingma2015adam} kullanmakta; güvenlik katmanı çift duyarlıkla çalışmaktadır.
-Genel olarak temel deneyler eğitim için yaklaşık 32 GPU-saati; değerlendirme, kabul tabloları, kalibrasyon ve optimumlar için ise 82--132 CPU-saati gerektirmektedir (Bölüm~\ref{S-app:compute}).
-Tüm deneyler yazarlar tarafından kendi donanımlarında yürütülmektedir \TODO{CPU, GPU, bellek, işletim sistemi, Python ve PyTorch sürümleri}.
+Tüm deneyler WSL2 Ubuntu 24.04 altında Python 3.13.15 ve PyTorch 2.14.1 ile bir AMD Ryzen 7 7700 işlemci ve bir NVIDIA GeForce RTX 5070 Ti (16 GB) üzerinde çalıştırılmıştır.
+Hazırlık 1,6 saat, ayarlama 7,9 saat, eğitim 10,2 saat ve değerlendirme 2,5 saat sürmüş; toplamda 153.100 epizot çalıştırılmıştır (Bölüm~\ref{S-app:compute}).
 Kod, yapılandırmalar ve analiz betikleri makaleyle birlikte yayımlanacaktır \TODO{depo bağlantısı}.

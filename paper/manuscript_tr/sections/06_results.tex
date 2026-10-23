@@ -1,84 +1,129 @@
 % ---------------------------------------------------------------------
 \section{Bulgular}\label{sec:results}
 % ---------------------------------------------------------------------
-% İSKELET. Henüz hiçbir deney çalıştırılmamıştır. Her nicel ifade, yalnızca
-% analysis/scripts/make_all.py tarafından üretilen değerleri isteyen bir
-% \RES{} yer tutucusudur (T1-T7, T3b, TS1-TS3 tabloları; fig3-fig6,
-% figS1-figS6 şekilleri; stats/tests_T*.csv). Üretilen tablolar ve şekiller,
-% \analysisdir altında (varsayılan ../../analysis) ya da tables/ ve figures/
-% içindeki yerel kopyalar olarak var olduklarında otomatik olarak görünür.
+% Her sayı analiz çıktılarından (tables/*.md, stats/tests_*.csv,
+% findings_numbers.md) alınmış ve kaynak hücresiyle birlikte
+% paper/results_number_sources.md dosyasında listelenmiştir. Açık = şarj
+% ünitesi ve epizot başına avro cinsinden mutlak cezalı kâr açığı (Denk. gap);
+% değerler tohum ortalamalı politikalara aittir.
 
-\TODO{İskelet: yazarlar aşağıdaki her cümle kalıbını kendi metinleriyle değiştirir, kırmızı yer tutucuları analiz çıktılarından doldurur ve tüm yorumları kendileri yazar}.
+\TODO{Yazarlar raporlanan her değeri analiz çıktılarıyla karşılaştırarak denetler ve bu bölümün ifadelerini gözden geçirir}.
 
 \subsection{Ana karşılaştırma}\label{sec:res-main}
 
 \Tab{tab:t1}, profiller ve anma düzeyleri birleştirilerek eğitim boyutları $N\in\{10,20\}$ için tüm yöntemleri karşılaştırmaktadır.
-Bu boyutlarda \method{} yönteminin açığı \RES{açık ve \%95 güven aralığıyla IQM, \Tab{tab:t1}} olarak bulunmuştur.
-Diğer öğrenen yöntemlere göre cezalı kârdaki fark \RES{farklar, güven aralıkları ve Holm düzeltmeli $p$-değerleri, stats/tests\_T1.csv} şeklindedir.
-Kurallar ve model öngörülü yöntemler arasında \RES{güvenlik katmanıyla en iyi kural ve eMPC-HiGHS açıkları, \Tab{tab:t1}}.
+\method{} yönteminin açığı $N=10$ ve $N=20$ için şarj ünitesi başına 1,290 ve 0,973\,\texteuro{} olmuştur; bu değerler Attention+penalty için 2,204 ve 1,569, Attention+PPO-Lagrangian için 1,792 ve 1,258'dir.
+Attention+penalty'ye göre farklar $-0.915$ $[-1.254,-0.601]$ ve $-0.595$ $[-0.797,-0.412]$ olmuş; Holm düzeltmeli Wilcoxon $p$-değerleri $1.3\times10^{-5}$ ve $0.0014$, sıra-çift serili korelasyonlar ise $-0.24$ ve $-0.19$ bulunmuştur.
+IQM değerleri birbirine yakındır (0,712'ye karşı 0,751 ve 0,719'a karşı 0,748); dolayısıyla \method{} yönteminin ortalamadaki üstünlüğü büyük ölçüde büyük cezalı az sayıdaki epizottan kaynaklanmıştır.
+Deep Sets+safety layer, \method{} yönteminden daha düşük bir açığa (0,984 ve 0,722) sahip olmuştur; farklar 0,306 $[0.218,0.397]$ ve 0,251 $[0.220,0.286]$'dır (Holm $p<10^{-65}$).
+Attention+safety layer without departure bound her iki boyutta 0,776'ya ulaşmış ve \method{} yönteminin 0,514 $[0.372,0.679]$ ve 0,198 $[0.145,0.259]$ altında kalmıştır (Holm $p<10^{-45}$).
+
+$N=10$ için güvenlik katmanlı her kural ve eMPC-HiGHS, \method{} yönteminden daha düşük ortalama açığa sahip olmuştur; bu değerler fiyat eşiği kuralı için 0,790'dan eMPC-HiGHS için 1,145'e kadar uzanmaktadır.
+Fiyat eşiği kuralı ve eMPC-HiGHS için 0,500 $[0.341,0.680]$ ve 0,144 $[0.072,0.219]$ farkları Wilcoxon testleriyle uyumludur (Holm $p=1.1\times10^{-9}$ ve $5.7\times10^{-59}$).
+Diğer kurallarla güven aralıkları sıfırı dışlamış, ancak $-0.39$ ile $-0.47$ arasındaki sıra-çift serili korelasyonlar tekrarların çoğunda \method{} yönteminin daha düşük olduğunu göstermiştir; dolayısıyla bu karşılaştırmalar sonuçsuzdur.
+MLP+safety layer de $N=10$ için 1,025 ile daha düşük bir ortalama açığa sahip olmuştur (Holm $p=0.014$).
+
+$N=20$ için \method{}, katmanlı LLF, sLLF, AFAP ve döngüsel sıralamadan daha düşük bir açığa sahip olmuştur (0,973'e karşı 1,099; Holm $p<10^{-24}$).
+Price-threshold+safety layer ve eMPC-HiGHS+safety layer 0,788 ve 0,846 ile daha düşük kalmış; farklar 0,185 $[0.137,0.238]$ ve 0,127 $[0.098,0.161]$ olmuştur (Holm $p\le9.8\times10^{-12}$).
+Güvenlik katmanı olmadan fiyat eşiği kuralının açıkları 156,370 ve 159,518, eMPC-HiGHS'nin açıkları ise 108,138 ve 103,765 olmuştur; bu açıklar büyük ölçüde karşılanmayan enerjiden kaynaklanmaktadır.
 
 \restable{T1}{%
 \begin{table}[t]
 \centering
-\caption{Eğitim istasyon boyutları $N\in\{10,20\}$ için ana karşılaştırma (üç varış profili ve her iki sıkılık düzeyi birleştirilmiştir; analiz betikleri çalıştırılana kadar yer tutucudur).}
+\caption{Eğitim istasyon boyutları $N\in\{10,20\}$ için ana karşılaştırma (analiz iş akışının T1.tex dosyası bulunamadı).}
 \label{tab:t1}
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-Yöntem & $J^{\sm{pen}}$ [\texteuro] & Açık [\%] & IQM açık [\%] & Kâr [\texteuro] & Karşılanmayan [kWh] & Aşırı yük [kWh] \\
-\midrule
-\method{} (önerilen) & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Attention+penalty & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Attention+PPO-Lagrangian & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Deep Sets+safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Kurallar ve eMPC-HiGHS & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-\bottomrule
-\end{tabular}
+\footnotesize \TODO{eksik analiz çıktısı T1.tex}
 \end{table}}
 
 \subsection{İstasyon boyutları arasında sıfır-atış aktarım}\label{sec:res-scaling}
 
-\Fig{fig:zeroshot}, $N\in\{10,20\}$ için eğitilmiş ağırlıklarla şarj ünitesi başına cezalı kârı ve açığı $N$'ye göre çizmektedir.
-$N=50$, $100$ ve $200$ için \method{} yönteminin açığı \RES{\%95 güven aralığıyla her $N$ için açık, \Tab{S-tab:t2}}, $N=50$ için eğitilen referansa göre aktarım açığı ise \RES{\Tab{S-tab:t2}} olarak bulunmuştur.
-EV-GNN \RES{kendi eğitim yapılandırmasında ve sıfır-atış durumunda açık, \Tab{S-tab:t2}} değerine ulaşmakta; $\rho_{\sm{tr}}=3$ kW stres düzeyinde \method{} yönteminin açığı ise \RES{\Tab{S-tab:ts2}} olmaktadır.
+\Fig{fig:zeroshot} ve \Tab{S-tab:t2}, $N\in\{10,20\}$ için eğitilmiş ağırlıklarla açığı $N$'ye göre göstermektedir.
+$N=50$, 100 ve 200 için \method{} yönteminin açıkları 0,921, 0,881 ve 0,902; $N=50$ için eğitilen aynı politikanın açıkları ise 0,884, 0,857 ve 0,869 olmuştur.
+\method{} yönteminin bu referansa göre aktarım açıkları 0,037 $[0.026,0.050]$, 0,023 $[0.012,0.033]$ ve 0,033 $[0.022,0.046]$'dır.
+Deep Sets+safety layer bu boyutlarda 0,698, 0,649 ve 0,675 açıklarına sahip olmuş ve referansın 0,186 ile 0,208 altında kalmıştır.
+Eğitim boyutlarının dışında kalan $N=5$ için \method{} yönteminin açığı 2,292'ye yükselmiştir; bu değer Deep Sets+safety layer için 1,663, Price-threshold+safety layer için 0,956'dır.
+
+\method{}, test ızgarasının her boyutunda Price-threshold+safety layer'dan daha yüksek bir ortalama açığa sahip olmuştur.
+Farklar $N=100$ için 0,107 $[0.065,0.151]$ ile $N=5$ için 1,335 $[0.919,1.840]$ arasında değişmiştir (Holm $p\le3.1\times10^{-4}$).
+Deep Sets+safety layer bu kuraldan yalnızca $N\ge20$ için daha düşük bir ortalama açığa (kuralın 0,774--0,793 değerlerine karşı 0,649--0,722) sahip olmuş; $N=5$ ve $N=10$ için ise daha yüksek bir açık göstermiştir.
+Bu iki yöntemi doğrudan karşılaştıran bir test yoktur.
+Attention+penalty, $N=200$ için 0,929 açığına sahip olmuştur; \method{} yöntemine göre fark $-0.027$ $[-0.060,0.016]$'dır.
+Bu farkın aralığı sıfırı içerirken Wilcoxon testi \method{} lehinedir (Holm $p=2.0\times10^{-5}$, sıra-çift serili $-0.35$); dolayısıyla bu karşılaştırma sonuçsuzdur.
+
+$\rho_{\sm{tr}}=3$ kW stres düzeyinde \method{} yönteminin açıkları $N=20$ için 2,979 ve $N=200$ için 1,586 olmuştur (\Tab{S-tab:ts2}).
+Burada Deep Sets+safety layer 2,400 ve 1,423, ayrılış sınırı içermeyen varyant ise 0,983 ve 0,829 değerlerine sahip olmuştur.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig3_zero_shot_scaling.pdf}{Yöntem başına $N$'ye göre şarj ünitesi başına cezalı kâr ve optimallik açığı, \%95 güven aralıkları; eğitim boyutları işaretlenmiştir.}
-\caption{5 ile 200 arasındaki $N$ değerleri için istasyon boyutları arasında sıfır-atış aktarım.}
+\resultfig{fig3_zero_shot_scaling.pdf}{$N$'ye göre şarj ünitesi başına açık ve cezalı kâr.}
+\caption{İstasyon boyutları arasında sıfır-atış aktarım: öğrenen yöntemler, $N=50$ için eğitilen referans ve güvenlik katmanlı üç kural için şarj ünitesi ve epizot başına açık ve cezalı kârın $N$'ye göre değişimi.}
 \label{fig:zeroshot}
 \end{figure}
 
 \subsection{Kısıtların sağlanması}\label{sec:res-constraints}
 
-\Fig{fig:constraints}, ana yöntemler için karşılanmayan enerjiyi, aşırı yük enerjisini ve olursuz adımla karşılaşmayan EV'lerin payını (E4) $N$'ye göre göstermektedir.
-Güvenlik katmanıyla aşırı yük enerjisi \RES{\Tab{S-tab:t3} içindeki değer; Teorem~\ref{thm:invariance}(a) sıfır öngörür} olmakta; katman olmadan ise yöntemler \RES{karşılanmayan enerji ve aşırı yük, \Tab{S-tab:t3}} bırakmaktadır.
-\method{} yönteminin E4 değeri \RES{her $N$ için, \Tab{S-tab:t3b}} olup toplam limitler \RES{her $N$ için bağlayıcılık oranları, \Tab{S-tab:t3b}} oranında bağlayıcı olmaktadır.
-Olursuz adımlar yedek kural durumlarına \RES{durum başına sayılar, \Tab{S-tab:t3b}} biçiminde dağılmakta ve eksik enerji \RES{açık sınırına oran, \Tab{S-tab:t3}} düzeyine ulaşmaktadır.
+\Fig{fig:constraints}, ana yöntemler için karşılanmayan enerjiyi, aşırı yük enerjisini ve E4'ü $N$'ye göre göstermektedir.
+Güvenlik katmanından geçirilerek çalıştırılan 102.750 test epizodunun hiçbirinde trafo aşırı yüklemesi oluşmamıştır (\Tab{S-tab:t3c}).
+Katman olmadan tüm yapılandırmalar üzerinde Attention+penalty 3.730, Attention+PPO-Lagrangian 3.274 ve MLP+penalty 3.648 aşırı yük adımına sahip olmuştur.
+36 test ızgarası yapılandırması üzerinden ortalama alındığında bu yöntemlerin epizotlarının sırasıyla \%6,7'sinde, \%7,9'unda ve \%17,0'ında aşırı yük görülmüştür (\Tab{S-tab:t3}).
+Ayrılış sınırına sahip konformal olmayan her yöntemde, olursuz adım içermeyen hiçbir epizotta eksik enerjiyle ayrılan EV olmamıştır; bu, Teorem~\ref{thm:invariance}(b) ile tutarlıdır.
+\Tab{S-tab:t3b} içinde her yedek kural etkinleşmesi gerekli güç fazlası durumuna ait olmuş; A6'nın dışladığı üç durum ise ortaya çıkmamıştır.
+
+Ayrılış sınırına sahip öğrenen politikalar olursuz adımlara yol açmıştır.
+Tüm epizotlar üzerinden \method{} 17.678 olursuz adıma ve kalış süresi bu tür bir adım içeren 39.771 EV'ye sahip olmuş; kabul edilen 233.016 EV'nin 6.158'ini gereksinimi karşılanmadan bırakmıştır.
+Deep Sets+safety layer 12.122 olursuz adım, etkilenen 27.949 EV ve gereksinimi karşılanmayan 5.038 EV ile sonuçlanmıştır.
+Güvenlik katmanlı LLF bir olursuz adıma, Price-threshold+safety layer ise 1.675 olursuz adıma sahip olmuştur.
+\method{} yönteminin E4 değeri $N=5$ için \%65,86'dan $N=200$ için \%92,58'e yükselmiş; epizot başına olursuz adım sayısı ise 4,64'ten 0,58'e düşmüştür.
+Deep Sets+safety layer için E4 her boyutta daha yüksek olmuş; $N=100$'e kadar Holm düzeltmeli $p\le0.0043$ bulunmuştur.
+$N=200$ için $[0.9,3.6]$ yüzde puanlık aralık sıfırı dışlamış, ancak Holm düzeltmeli $p$ 0,94 olmuştur; dolayısıyla bu boyut sonuçsuzdur.
+\method{} yönteminin ölçülen eksik enerjisi, pozitif açığa sahip epizotlar için epizot ortalamalarının yapılandırmalar üzerinden ortalaması olarak, önsel açık sınırının 0,009 katı olmuştur.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig4_constraint_satisfaction.pdf}{Ana yöntemler için $N$'ye göre karşılanmayan enerji, aşırı yük enerjisi ve E4.}
-\caption{Kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin payı (E4) dâhil olmak üzere istasyon boyutları arasında kısıtların sağlanması.}
+\resultfig{fig4_constraint_satisfaction.pdf}{$N$'ye göre karşılanmayan enerji, aşırı yük enerjisi ve E4.}
+\caption{Her iki trafo anma düzeyi için istasyon boyutları arasında kısıtların sağlanması: karşılanmayan enerji, trafo aşırı yük enerjisi ve kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin payı (E4), \%95 bootstrap aralıklarıyla.}
 \label{fig:constraints}
 \end{figure}
 
+\subsection{Ayrılış sınırının etkisi}\label{sec:res-bound}
+
+Ayrılış alt sınırı, öğrenen dikkat tabanlı politika için hizmeti iyileştirmemiştir.
+Attention+safety layer without departure bound her istasyon boyutunda \method{} yönteminden daha düşük bir ortalama açığa sahip olmuştur (\Tab{S-tab:t2}).
+Bu varyantın üstünlüğü $N=100$ için 0,117 $[0.094,0.143]$ ile $N=5$ için 1,266 $[0.927,1.652]$ arasında değişmiştir (Holm $p\le1.3\times10^{-30}$).
+Varyant, kabul edilen EV'lerin \%0,99'unu gereksinimi karşılanmadan bırakmıştır; bu oran \method{} için \%2,24'tür; epizot başına karşılanmayan enerji ise varyant için 0,09 kWh, \method{} için 0,43 kWh olmuştur (\Tab{S-tab:t3}).
+Tüm epizotlar üzerinden toplandığında bu paylar, gereksinimi karşılanmayan EV sayısı olarak varyant için 1.551'e, \method{} için 6.158'e karşılık gelmektedir (\Tab{S-tab:t3c}).
+Stres düzeyinde ve $N=20$ için varyant EV'lerin \%2,59'unu, \method{} ise \%12,04'ünü gereksinimi karşılanmadan bırakmıştır (\Tab{S-tab:ts2}).
+Bu karşılaştırma temiz bir ablasyon değildir; çünkü varyant kendi ayarlanmış ağırlığıyla ceza içeren ödülden, \method{} ise kâr ödülünden öğrenmiştir.
+
+\method{}, herhangi bir katman içermeyen cezaya dayalı ikizinden de daha fazla EV'yi gereksinimi karşılanmadan bırakmıştır (\method{} için \%2,24 ve 6.158 EV, ikiz için \%1,86 ve 1.451 EV).
+Bununla birlikte ortalama karşılanmayan enerjisi daha düşüktür (epizot başına \method{} için 0,43 kWh, ikiz için 0,63 kWh).
+Attention+PPO-Lagrangian kabul edilen EV'lerin \%0,20'sini, katmanı yalnızca kullanım aşamasında uygulayan ceza ile eğitilmiş politika \%0,46'sını ve Price-threshold+safety layer \%0,44'ünü gereksinimi karşılanmadan bırakmıştır.
+Katmanlı LLF, sLLF, AFAP ve döngüsel sıralama hiçbir EV'yi gereksinimi karşılanmadan bırakmamıştır.
+\method{}, $N$'ye bağlı olarak dolu şarj ünitesi adımlarının \%27,8 ile \%42,3'ünde tam olarak ayrılış alt sınırını komut etmiştir (\Tab{S-tab:t3b}).
+
 \subsection{Garantinin maliyeti}\label{sec:res-cost}
 
-\Fig{fig:cost}, \Sec{sec:metrics} içinde tanımlanan garantinin maliyetini $N$'ye göre çizmektedir.
-Cezalı kâr açısından Attention+penalty eksi \method{} farkı \RES{her $N$ için hizmet verilen EV başına \texteuro{} ve $|J^{\sm{LP,ceil}}|$'nin \%'si olarak $\Delta J^{\sm{pen}}$, \Tab{S-tab:t5}} olarak bulunmuştur.
-Ham kâr cinsinden ölçüldüğünde fark \RES{her $N$ için $\Delta$ kâr, \Tab{S-tab:t5}} olup testler \RES{stats/tests\_T5.csv} içinde verilmektedir.
+\Fig{fig:cost} ve \Tab{S-tab:t5}, \method{} yöntemini aynı epizotlar üzerinde ceza ile eğitilen ikiziyle karşılaştırmaktadır.
+$J^{\sm{pen}}$ cinsinden Attention+penalty eksi \method{} farkı, $N=5$ için kabul edilen EV başına $-3.462$ $[-4.639,-2.388]$\,\texteuro{} olmuş ve $N$ büyüdükçe sıfıra yaklaşarak $N=200$ için $-0.042$ $[-0.094,0.025]$ değerine inmiştir.
+Tekrar düzeyindeki $J^{\sm{pen}}$ farkları üzerindeki Wilcoxon testleri her boyutta Holm düzeltmeli $p\le2\times10^{-4}$ vermiştir.
+$N=200$ için ortalamanın aralığı sıfırı içerirken medyan kayması \method{} lehinedir (Holm $p=1.7\times10^{-6}$); dolayısıyla bu farkın büyüklüğü sonuçsuzdur.
+Ham kâr cinsinden fark $N\le20$ için pozitif olmuş; kabul edilen EV başına $N=5$ için 0,142 $[0.075,0.218]$\,\texteuro{} ile $N=20$ için 0,064 $[0.039,0.091]$ arasında değişmiştir.
+Fark $N\ge50$ için negatif olmuş ve $N=200$ için $-0.092$ $[-0.120,-0.065]$ değerine kadar inmiştir.
+MLP çifti için $J^{\sm{pen}}$ farkı kabul edilen EV başına $-6.958$ ile $-1.383$\,\texteuro{} arasında kalmıştır.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig6_cost_of_guarantee.pdf}{$N$'ye göre garantinin maliyeti ($\Delta J^{\sm{pen}}$ ve $\Delta$ kâr, hizmet verilen EV başına \texteuro{}).}
-\caption{İstasyon boyutları arasında garantinin maliyeti. Pozitif bir değer, aynı epizotlar üzerinde Attention+penalty'nin \method{} yönteminden daha yüksek puan aldığı anlamına gelir.}
+\resultfig{fig6_cost_of_guarantee.pdf}{$N$'ye göre garantinin maliyeti.}
+\caption{İstasyon boyutları arasında garantinin maliyeti. (a) Kabul edilen EV başına $J^{\sm{pen}}$ ve ham kâr cinsinden, cezaya dayalı politika eksi güvenlik katmanlı politika, \%95 bootstrap aralıklarıyla; pozitif bir değer cezaya dayalı politikanın daha yüksek puan aldığı anlamına gelir. (b) Cezaya dayalı politikaların epizot başına aşırı yük enerjisi ve karşılanmayan enerjisi.}
 \label{fig:cost}
 \end{figure}
 
 \subsection{Diğer bulgular}\label{sec:res-further}
 
-\Tab{S-tab:t4} içinde ayrılış sınırı olmayan, katmanı yalnızca kullanım aşamasında uygulayan ve kabul kontrolü içermeyen varyantlar \RES{\method{} yöntemine göre açıklar, \Tab{S-tab:t4}} sonucunu vermektedir.
-Konformal varyant için açık ve epizot ortalamalı kapsama \RES{her $\alpha$ için, \Tab{S-tab:t7}} olup $N=200$ için bir kontrol adımı \RES{çıkarım süresi, \Tab{S-tab:t6}} sürmektedir.
-Duyarlılık çalışmaları \RES{\Tab{S-tab:ts2}} sonucunu vermekte; Şekil~\ref{S-fig:exampleday} ise örnek bir epizodu göstermektedir.
+Konformal varyant 0,99, 0,95, 0,90 ve 0,80 hedefleri için 0,992, 0,950, 0,902 ve 0,799 kapsama değerlerine ulaşmıştır (\Tab{S-tab:t7}).
+Açığı $\alpha=0.01$ için 27,341, $\alpha=0.05$ için 1,292 ve $\alpha=0.2$ için 1,958 olmuştur; ayrılış adımları bilindiğinde bu değer 1,210'dur.
+$\alpha=0.01$ için yeniden sertifikalanan talepler, şarj edilen enerjiyi epizot başına 791,4 kWh'e düşürmüştür; bilinen ayrılışlarla bu değer 1.396,5 kWh'tir.
+Güvenlik katmanı yalnızca kullanım aşamasında eklendiğinde ceza ile eğitilen politika $N=200$ için 0,930 açığına sahip olmuştur (\Tab{S-tab:t2}).
+Bu politikanın \method{} yöntemine göre farkı da ($-0.028$ $[-0.061,0.014]$, Holm $p=9.9\times10^{-6}$) sonuçsuzdur.
+\method{} yönteminin bir kontrol adımı $N=200$ için 7,76 ms sürmüştür; bu süre Deep Sets+safety layer için 5,99 ms'dir (\Tab{S-tab:t6}).
+EV2Gym'in 25 şarj üniteli yapılandırmasında \method{} ve Price-threshold+safety layer'ın her ikisinin açığı da 0,507 olmuştur (\Tab{S-tab:ts3}).

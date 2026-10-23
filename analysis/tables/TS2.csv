@@ -1,30 +1,22 @@
-﻿group,Method,J^pen (€/charger),Optimality gap (%),Profit (€/charger),Unserved EVs (%),Overload (kWh)
-"ρ_tr = 3 kW (stress), N = 20",SA-Attn (ours),-4.25 ± 0.24,328.2 ± 46.0,-1.99 ± 0.02,12.04 ± 0.72,0 ± 0
-"ρ_tr = 3 kW (stress), N = 20",Attention+penalty,-4.46 ± 1.26,248.9 ± 82.5,-1.97 ± 0.04,2.67 ± 3.78,3.94 ± 3.93
-"ρ_tr = 3 kW (stress), N = 20",Attention+PPO-Lagrangian,-3.52 ± 1.44,286.8 ± 106.5,-2.21 ± 0.03,0.04 ± 0.05,2.62 ± 2.83
-"ρ_tr = 3 kW (stress), N = 20",Attention+safety layer without departure bound,-2.26 ± 0.06,125.3 ± 5.5,-1.91 ± 0.04,2.59 ± 0.09,0 ± 0
-"ρ_tr = 3 kW (stress), N = 20",Deep Sets+safety layer,-3.67 ± 0.16,232.3 ± 34.6,-1.87 ± 0.04,9.57 ± 0.59,0 ± 0
-"ρ_tr = 3 kW (stress), N = 20",MLP+safety layer,-2.26 ± 0.11,154.1 ± 5.1,-2.03 ± 0.01,1.92 ± 0.62,0 ± 0
-"ρ_tr = 3 kW (stress), N = 20",MLP+penalty,-5.36 ± 1.55,631.1 ± 329.5,-2.21 ± 0.01,1.62 ± 0.07,4.16 ± 2.18
-"ρ_tr = 3 kW (stress), N = 20",LLF+safety layer,-2.23†,186.8†,-2.23†,0†,0†
-"ρ_tr = 3 kW (stress), N = 20",sLLF+safety layer,-2.23†,186.8†,-2.23†,0†,0†
-"ρ_tr = 3 kW (stress), N = 20",Price-threshold+safety layer,-2.35†,158.6†,-1.95†,2.49†,0†
-"ρ_tr = 3 kW (stress), N = 20",AFAP+safety layer,-2.22†,186.7†,-2.22†,0†,0†
-"ρ_tr = 3 kW (stress), N = 20",ALAP+safety layer,-2.19†,166.0†,-2.16†,0.63†,0†
-"ρ_tr = 3 kW (stress), N = 20",Round Robin+safety layer,-2.22†,186.6†,-2.22†,0†,0†
-"ρ_tr = 3 kW (stress), N = 20",eMPC-HiGHS+safety layer,-3.65†,285.1†,-1.91†,10.14†,0†
-"ρ_tr = 3 kW (stress), N = 20",eMPC-HiGHS,-111.50†,16706.7†,0.16†,99.78†,5.4e-04†
-"ρ_tr = 3 kW (stress), N = 200",SA-Attn (ours),-2.99 ± 0.38,175.6 ± 30.4,-2.20 ± 0.03,7.21 ± 2.61,0 ± 0
-"ρ_tr = 3 kW (stress), N = 200",Attention+penalty,-2.42 ± 0.04,163.4 ± 23.3,-2.26 ± 0.06,0.08 ± 0.11,3.15 ± 0.22
-"ρ_tr = 3 kW (stress), N = 200",Attention+PPO-Lagrangian,-2.84 ± 0.56,229.2 ± 41.6,-2.41 ± 0.04,0.71 ± 1.00,8.20 ± 10.89
-"ρ_tr = 3 kW (stress), N = 200",Attention+safety layer without departure bound,-2.23 ± 0.10,114.1 ± 6.4,-2.12 ± 0.05,1.34 ± 1.37,0 ± 0
-"ρ_tr = 3 kW (stress), N = 200",Deep Sets+safety layer,-2.82 ± 0.10,132.9 ± 7.4,-2.05 ± 0.06,6.52 ± 0.32,0 ± 0
-"ρ_tr = 3 kW (stress), N = 200",SA-Attn trained at N = 50 (reference),-2.90 ± 0.75,161.3 ± 54.4,-2.17 ± 0.01,6.28 ± 6.29,0 ± 0
-"ρ_tr = 3 kW (stress), N = 200",LLF+safety layer,-2.44†,207.5†,-2.44†,0†,0†
-"ρ_tr = 3 kW (stress), N = 200",sLLF+safety layer,-2.44†,207.5†,-2.44†,0†,0†
-"ρ_tr = 3 kW (stress), N = 200",Price-threshold+safety layer,-2.18†,138.4†,-2.12†,0.64†,0†
-"ρ_tr = 3 kW (stress), N = 200",AFAP+safety layer,-2.44†,207.4†,-2.44†,0†,0†
-"ρ_tr = 3 kW (stress), N = 200",ALAP+safety layer,-2.36†,173.3†,-2.36†,0†,0†
-"ρ_tr = 3 kW (stress), N = 200",Round Robin+safety layer,-2.44†,207.5†,-2.44†,0†,0†
-"ρ_tr = 3 kW (stress), N = 200",eMPC-HiGHS+safety layer,-2.65†,139.7†,-2.11†,5.02†,0†
-"ρ_tr = 3 kW (stress), N = 200",eMPC-HiGHS,-111.94†,18665.9†,0.11†,99.86†,3.3e-03†
+﻿group,Method,Optimality gap (€ per charger and episode),J^pen (€/charger),Profit (€/charger),Unserved EVs (%),Overload (kWh),E4 (%)
+"ρ_tr = 3 kW, N = 20",SA-Attn (ours),2.979 (2.810–3.147),-4.25 (-4.42 to -4.08),-1.99 (-2.00 to -1.98),12.04 (11.53–12.55),0 (0–0),55.30 (54.82–55.78)
+"ρ_tr = 3 kW, N = 20",Deep Sets+safety layer,2.400 (2.288–2.512),-3.67 (-3.79 to -3.56),-1.87 (-1.90 to -1.84),9.57 (9.15–9.99),0 (0–0),65.14 (61.79–68.49)
+"ρ_tr = 3 kW, N = 20",Attention+safety layer without departure bound,0.983 (0.938–1.028),-2.26 (-2.30 to -2.21),-1.91 (-1.94 to -1.88),2.59 (2.52–2.66),0 (0–0),100.00 (100.00–100.00)
+"ρ_tr = 3 kW, N = 20","Attention+penalty, safety layer at deployment",1.186 (1.159–1.213),-2.46 (-2.49 to -2.43),-2.00 (-2.00 to -1.99),2.94 (2.81–3.06),0 (0–0),86.09 (83.37–88.81)
+"ρ_tr = 3 kW, N = 20",Attention+penalty,3.183 (2.289–4.078),-4.46 (-5.35 to -3.56),-1.97 (-1.99 to -1.94),2.67 (0–5.34),3.94 (1.16–6.72),90.08 (82.65–97.52)
+"ρ_tr = 3 kW, N = 20",Attention+PPO-Lagrangian,2.243 (1.221–3.264),-3.52 (-4.54 to -2.50),-2.21 (-2.23 to -2.18),0.04 (0–0.07),2.62 (0.62–4.63),100.00 (100.00–100.00)
+"ρ_tr = 3 kW, N = 20",MLP+safety layer,0.983 (0.907–1.058),-2.26 (-2.33 to -2.18),-2.03 (-2.04 to -2.02),1.92 (1.48–2.36),0 (0–0),88.47 (86.72–90.22)
+"ρ_tr = 3 kW, N = 20",MLP+penalty,4.081 (2.983–5.179),-5.36 (-6.45 to -4.26),-2.21 (-2.22 to -2.21),1.62 (1.57–1.67),4.16 (2.62–5.70),99.36 (98.72–100.00)
+"ρ_tr = 3 kW, N = 20",Price-threshold+safety layer,1.077†,-2.35†,-1.95†,2.49†,0†,88.70†
+"ρ_tr = 3 kW, N = 20",ALAP+safety layer,0.916†,-2.19†,-2.16†,0.63†,0†,92.60†
+"ρ_tr = 3 kW, N = 20",AFAP+safety layer,0.950†,-2.22†,-2.22†,0†,0†,100.00†
+"ρ_tr = 3 kW, N = 200",SA-Attn (ours),1.586 (1.319–1.852),-2.99 (-3.25 to -2.72),-2.20 (-2.22 to -2.18),7.21 (5.36–9.06),0 (0–0),65.91 (65.87–65.94)
+"ρ_tr = 3 kW, N = 200",Deep Sets+safety layer,1.423 (1.351–1.494),-2.82 (-2.89 to -2.75),-2.05 (-2.09 to -2.01),6.52 (6.30–6.75),0 (0–0),73.25 (72.06–74.45)
+"ρ_tr = 3 kW, N = 200",SA-Attn trained at N = 50 (reference),1.503 (0.971–2.035),-2.90 (-3.44 to -2.37),-2.17 (-2.17 to -2.16),6.28 (1.83–10.73),0 (0–0),72.10 (54.93–89.27)
+"ρ_tr = 3 kW, N = 200",Attention+safety layer without departure bound,0.829 (0.755–0.903),-2.23 (-2.30 to -2.16),-2.12 (-2.15 to -2.08),1.34 (0.37–2.30),0 (0–0),100.00 (100.00–100.00)
+"ρ_tr = 3 kW, N = 200","Attention+penalty, safety layer at deployment",0.868 (0.837–0.899),-2.27 (-2.30 to -2.24),-2.26 (-2.30 to -2.22),0.15 (0–0.30),0 (0–0),99.09 (98.19–100.00)
+"ρ_tr = 3 kW, N = 200",Attention+penalty,1.021 (0.994–1.048),-2.42 (-2.45 to -2.39),-2.26 (-2.30 to -2.21),0.08 (0–0.16),3.15 (2.99–3.31),99.11 (98.21–100.00)
+"ρ_tr = 3 kW, N = 200",Attention+PPO-Lagrangian,1.441 (1.046–1.836),-2.84 (-3.24 to -2.45),-2.41 (-2.44 to -2.38),0.71 (0–1.41),8.20 (0.50–15.90),100.00 (100.00–100.00)
+"ρ_tr = 3 kW, N = 200",Price-threshold+safety layer,0.778†,-2.18†,-2.12†,0.64†,0†,95.73†
+"ρ_tr = 3 kW, N = 200",ALAP+safety layer,0.963†,-2.36†,-2.36†,0†,0†,100.00†
+"ρ_tr = 3 kW, N = 200",AFAP+safety layer,1.040†,-2.44†,-2.44†,0†,0†,100.00†

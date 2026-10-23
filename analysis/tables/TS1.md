@@ -1,93 +1,69 @@
-**TS1.** Raw-profit optimality gap with respect to the hard perfect-information optimum J^LP,ceil and to J^LP (without EV2Gym's ceil gain), per station size N (profiles and tightness levels pooled).
+**TS1.** Relative optimality gaps as ratios of sums, per station size N (profiles and tightness levels pooled): 100 · Σ(J* − J) / Σ|J*| over all test episodes of the seed-averaged policy, for the soft-penalty optimum (J^pen) and for the hard optima J^LP,ceil and J^LP (raw profit).
 
-|  | Method | Gap vs J^LP,ceil (%) (hard optimum) | Gap vs J^LP (%) (no ceil gain) |
-|---|---|---:|---:|
-| N = 5 | SA-Attn (ours) | 89.79 ± 0.65 | 35.96 ± 0.70 |
-| N = 5 | Attention+penalty | 82.75 ± 7.24 | 32.73 ± 4.26 |
-| N = 5 | Attention+PPO-Lagrangian | 116.87 ± 1.54 | 64.23 ± 1.26 |
-| N = 5 | Attention+safety layer without departure bound | 77.08 ± 5.78 | 25.19 ± 4.80 |
-| N = 5 | Deep Sets+safety layer | 70.98 ± 3.72 | 21.40 ± 3.67 |
-| N = 5 | MLP+safety layer | 87.41 ± 0.37 | 33.92 ± 0.82 |
-| N = 5 | MLP+penalty | 118.38 ± 0.21 | 65.55 ± 0.26 |
-| N = 5 | LLF+safety layer | 118.12† | 65.39† |
-| N = 5 | sLLF+safety layer | 118.12† | 65.39† |
-| N = 5 | Price-threshold+safety layer | 83.59† | 33.74† |
-| N = 5 | AFAP+safety layer | 118.07† | 65.34† |
-| N = 5 | ALAP+safety layer | 108.50† | 55.11† |
-| N = 5 | Round Robin+safety layer | 118.07† | 65.34† |
-| N = 5 | eMPC-HiGHS+safety layer | 78.77† | 26.26† |
-| N = 5 | eMPC-HiGHS | -118.30† | -124.12† |
-| N = 10 | SA-Attn (ours) | 121.51 ± 0.47 | 45.45 ± 0.66 |
-| N = 10 | Attention+penalty | 119.99 ± 5.87 | 46.60 ± 2.74 |
-| N = 10 | Attention+PPO-Lagrangian | 168.79 ± 3.20 | 82.18 ± 2.26 |
-| N = 10 | Attention+safety layer without departure bound | 101.68 ± 6.47 | 31.35 ± 4.31 |
-| N = 10 | Deep Sets+safety layer | 96.14 ± 5.01 | 26.68 ± 3.29 |
-| N = 10 | MLP+safety layer | 121.31 ± 2.65 | 45.07 ± 1.72 |
-| N = 10 | MLP+penalty | 166.34 ± 4.33 | 78.80 ± 4.51 |
-| N = 10 | LLF+safety layer | 171.76† | 84.39† |
-| N = 10 | sLLF+safety layer | 171.76† | 84.39† |
-| N = 10 | Price-threshold+safety layer | 124.83† | 48.56† |
-| N = 10 | AFAP+safety layer | 171.72† | 84.37† |
-| N = 10 | ALAP+safety layer | 151.97† | 69.15† |
-| N = 10 | Round Robin+safety layer | 171.74† | 84.37† |
-| N = 10 | eMPC-HiGHS+safety layer | 107.12† | 34.07† |
-| N = 10 | eMPC-HiGHS | -130.93† | -127.38† |
-| N = 20 | SA-Attn (ours) | 118.97 ± 1.23 | 48.38 ± 1.59 |
-| N = 20 | Attention+penalty | 118.64 ± 1.58 | 50.99 ± 0.08 |
-| N = 20 | Attention+PPO-Lagrangian | 154.27 ± 3.90 | 79.03 ± 2.82 |
-| N = 20 | Attention+safety layer without departure bound | 98.94 ± 7.57 | 32.84 ± 6.39 |
-| N = 20 | Deep Sets+safety layer | 89.37 ± 7.78 | 25.85 ± 3.59 |
-| N = 20 | MLP+safety layer | 125.10 ± 4.63 | 55.07 ± 3.51 |
-| N = 20 | MLP+penalty | 155.98 ± 0.96 | 80.45 ± 1.17 |
-| N = 20 | LLF+safety layer | 157.85† | 81.86† |
-| N = 20 | sLLF+safety layer | 157.85† | 81.86† |
-| N = 20 | Price-threshold+safety layer | 111.84† | 50.85† |
-| N = 20 | AFAP+safety layer | 157.84† | 81.85† |
-| N = 20 | ALAP+safety layer | 143.38† | 70.10† |
-| N = 20 | Round Robin+safety layer | 157.84† | 81.85† |
-| N = 20 | eMPC-HiGHS+safety layer | 102.78† | 35.97† |
-| N = 20 | eMPC-HiGHS | -108.07† | -99.96† |
-| N = 50 | SA-Attn (ours) | 129.20 ± 5.27 | 51.35 ± 5.68 |
-| N = 50 | Attention+penalty | 139.35 ± 6.51 | 60.31 ± 1.10 |
-| N = 50 | Attention+PPO-Lagrangian | 180.65 ± 5.26 | 91.93 ± 4.44 |
-| N = 50 | Attention+safety layer without departure bound | 112.68 ± 5.84 | 37.64 ± 5.50 |
-| N = 50 | Deep Sets+safety layer | 98.99 ± 5.85 | 24.96 ± 3.86 |
-| N = 50 | SA-Attn trained at N = 50 (reference) | 124.28 ± 2.69 | 47.85 ± 2.49 |
-| N = 50 | LLF+safety layer | 185.35† | 96.10† |
-| N = 50 | sLLF+safety layer | 185.35† | 96.10† |
-| N = 50 | Price-threshold+safety layer | 131.81† | 60.76† |
-| N = 50 | AFAP+safety layer | 185.35† | 96.10† |
-| N = 50 | ALAP+safety layer | 162.33† | 79.31† |
-| N = 50 | Round Robin+safety layer | 185.35† | 96.10† |
-| N = 50 | eMPC-HiGHS+safety layer | 112.47† | 36.31† |
-| N = 50 | eMPC-HiGHS | -119.42† | -116.35† |
-| N = 100 | SA-Attn (ours) | 152.71 ± 8.41 | 55.38 ± 5.48 |
-| N = 100 | Attention+penalty | 168.05 ± 9.46 | 63.69 ± 9.20 |
-| N = 100 | Attention+PPO-Lagrangian | 205.82 ± 6.42 | 92.77 ± 4.75 |
-| N = 100 | Attention+safety layer without departure bound | 133.84 ± 11.20 | 37.61 ± 8.39 |
-| N = 100 | Deep Sets+safety layer | 113.46 ± 11.24 | 25.46 ± 6.37 |
-| N = 100 | SA-Attn trained at N = 50 (reference) | 148.08 ± 2.84 | 53.28 ± 0.14 |
-| N = 100 | LLF+safety layer | 211.67† | 96.72† |
-| N = 100 | sLLF+safety layer | 211.67† | 96.72† |
-| N = 100 | Price-threshold+safety layer | 147.25† | 48.41† |
-| N = 100 | AFAP+safety layer | 211.67† | 96.72† |
-| N = 100 | ALAP+safety layer | 188.20† | 81.18† |
-| N = 100 | Round Robin+safety layer | 211.67† | 96.72† |
-| N = 100 | eMPC-HiGHS+safety layer | 132.89† | 42.14† |
-| N = 100 | eMPC-HiGHS | -142.61† | -124.74† |
-| N = 200 | SA-Attn (ours) | 195.83 ± 10.82 | 85.34 ± 6.27 |
-| N = 200 | Attention+penalty | 225.32 ± 9.76 | 110.22 ± 9.27 |
-| N = 200 | Attention+PPO-Lagrangian | 257.98 ± 7.88 | 141.31 ± 6.30 |
-| N = 200 | Attention+safety layer without departure bound | 163.33 ± 27.50 | 70.31 ± 7.93 |
-| N = 200 | Deep Sets+safety layer | 140.02 ± 8.92 | 52.92 ± 1.80 |
-| N = 200 | SA-Attn trained at N = 50 (reference) | 190.77 ± 1.66 | 81.38 ± 2.35 |
-| N = 200 | LLF+safety layer | 264.35† | 146.32† |
-| N = 200 | sLLF+safety layer | 264.35† | 146.32† |
-| N = 200 | Price-threshold+safety layer | 184.58† | 74.59† |
-| N = 200 | AFAP+safety layer | 264.35† | 146.32† |
-| N = 200 | ALAP+safety layer | 240.77† | 119.63† |
-| N = 200 | Round Robin+safety layer | 264.35† | 146.32† |
-| N = 200 | eMPC-HiGHS+safety layer | 167.82† | 59.11† |
-| N = 200 | eMPC-HiGHS | -132.38† | -178.26† |
+|  | Method | J^pen gap vs soft optimum (%) [95 % CI] | Profit gap vs J^LP,ceil (%) [95 % CI] | Profit gap vs J^LP (%) [95 % CI] |
+|---|---|---:|---:|---:|
+| N = 5 | SA-Attn (ours) | 163.0 [130.4, 200.8] | 56.9 [51.7, 62.5] | 25.5 [22.7, 28.5] |
+| N = 5 | Deep Sets+safety layer | 118.3 [94.3, 146.4] | 45.8 [41.8, 50.2] | 16.1 [14.3, 18.0] |
+| N = 5 | Attention+safety layer without departure bound | 73.0 [59.3, 90.5] | 49.8 [45.6, 54.5] | 19.5 [17.6, 21.5] |
+| N = 5 | Attention+penalty, safety layer at deployment | 74.6 [65.1, 85.4] | 56.8 [51.9, 62.2] | 25.4 [22.9, 28.1] |
+| N = 5 | Attention+penalty | 324.5 [278.8, 374.0] | 50.3 [45.1, 55.9] | 19.9 [16.9, 23.0] |
+| N = 5 | Attention+PPO-Lagrangian | 266.2 [226.5, 310.3] | 73.1 [66.3, 80.6] | 39.2 [35.2, 43.7] |
+| N = 5 | MLP+safety layer | 134.8 [107.7, 168.3] | 55.1 [50.1, 60.5] | 24.0 [21.5, 26.8] |
+| N = 5 | MLP+penalty | 336.5 [289.2, 387.7] | 74.2 [67.2, 82.0] | 40.2 [36.0, 44.8] |
+| N = 5 | Price-threshold+safety layer | 68.0 [57.0, 81.9] | 51.8 [47.1, 56.8] | 21.2 [18.9, 23.8] |
+| N = 5 | ALAP+safety layer | 78.7 [71.2, 86.9] | 69.2 [63.3, 75.7] | 35.9 [32.6, 39.5] |
+| N = 5 | AFAP+safety layer | 73.8 [67.1, 81.5] | 73.8 [67.0, 81.3] | 39.8 [35.7, 44.4] |
+| N = 10 | SA-Attn (ours) | 102.5 [88.9, 118.1] | 65.7 [60.7, 71.2] | 27.7 [25.2, 30.3] |
+| N = 10 | Deep Sets+safety layer | 78.2 [65.9, 92.8] | 52.2 [48.1, 56.5] | 16.8 [15.3, 18.4] |
+| N = 10 | Attention+safety layer without departure bound | 61.7 [56.3, 67.9] | 56.0 [51.8, 60.5] | 19.9 [18.3, 21.6] |
+| N = 10 | Attention+penalty, safety layer at deployment | 72.1 [65.5, 79.7] | 65.7 [60.9, 71.2] | 27.7 [25.5, 30.1] |
+| N = 10 | Attention+penalty | 175.2 [148.7, 203.8] | 62.1 [57.3, 67.4] | 24.8 [22.4, 27.3] |
+| N = 10 | Attention+PPO-Lagrangian | 142.4 [125.9, 160.7] | 85.4 [79.0, 92.3] | 43.6 [40.3, 47.3] |
+| N = 10 | MLP+safety layer | 81.4 [72.0, 92.3] | 65.0 [60.1, 70.5] | 27.1 [24.8, 29.6] |
+| N = 10 | MLP+penalty | 440.7 [362.2, 529.3] | 84.6 [78.0, 91.7] | 42.9 [39.5, 46.6] |
+| N = 10 | Price-threshold+safety layer | 62.8 [57.8, 68.3] | 61.2 [56.5, 66.5] | 24.1 [21.8, 26.5] |
+| N = 10 | ALAP+safety layer | 80.0 [74.2, 86.4] | 79.8 [74.1, 86.1] | 39.0 [36.1, 42.2] |
+| N = 10 | AFAP+safety layer | 87.0 [80.4, 94.0] | 87.0 [80.3, 94.1] | 44.9 [41.4, 48.7] |
+| N = 20 | SA-Attn (ours) | 68.6 [63.1, 74.7] | 61.4 [57.2, 66.2] | 27.5 [25.5, 29.7] |
+| N = 20 | Deep Sets+safety layer | 50.9 [47.1, 55.2] | 47.3 [44.0, 50.8] | 15.9 [14.8, 17.2] |
+| N = 20 | Attention+safety layer without departure bound | 54.7 [51.0, 58.7] | 52.2 [48.6, 56.0] | 19.9 [18.6, 21.3] |
+| N = 20 | Attention+penalty, safety layer at deployment | 61.4 [57.3, 66.0] | 61.0 [56.7, 65.5] | 27.1 [25.3, 29.1] |
+| N = 20 | Attention+penalty | 110.6 [97.3, 125.2] | 58.5 [54.4, 62.9] | 25.1 [23.2, 27.1] |
+| N = 20 | Attention+PPO-Lagrangian | 88.7 [81.0, 97.3] | 75.7 [70.3, 81.4] | 39.2 [36.5, 42.1] |
+| N = 20 | MLP+safety layer | 63.0 [58.7, 67.8] | 63.0 [58.6, 67.7] | 28.8 [26.9, 30.9] |
+| N = 20 | MLP+penalty | 126.6 [111.3, 143.4] | 76.7 [71.2, 82.5] | 40.0 [37.2, 42.9] |
+| N = 20 | Price-threshold+safety layer | 55.6 [51.4, 60.0] | 54.2 [50.4, 58.3] | 21.5 [19.7, 23.5] |
+| N = 20 | ALAP+safety layer | 72.5 [67.6, 77.8] | 72.5 [67.7, 77.8] | 36.5 [34.2, 39.1] |
+| N = 20 | AFAP+safety layer | 77.5 [72.1, 83.4] | 77.5 [72.0, 83.3] | 40.6 [37.8, 43.6] |
+| N = 50 | SA-Attn (ours) | 68.8 [64.0, 74.4] | 64.6 [60.6, 68.8] | 27.4 [25.6, 29.2] |
+| N = 50 | Deep Sets+safety layer | 52.1 [48.4, 56.4] | 49.2 [46.2, 52.4] | 15.1 [14.1, 16.1] |
+| N = 50 | SA-Attn trained at N = 50 (reference) | 66.1 [61.6, 70.9] | 62.3 [58.5, 66.3] | 25.5 [23.9, 27.3] |
+| N = 50 | Attention+safety layer without departure bound | 58.0 [54.5, 61.7] | 56.7 [53.3, 60.3] | 21.1 [19.8, 22.3] |
+| N = 50 | Attention+penalty, safety layer at deployment | 67.0 [63.0, 71.4] | 67.0 [63.0, 71.4] | 29.3 [27.5, 31.1] |
+| N = 50 | Attention+penalty | 83.9 [77.2, 91.5] | 65.7 [61.7, 70.2] | 28.3 [26.5, 30.1] |
+| N = 50 | Attention+PPO-Lagrangian | 88.8 [82.5, 95.5] | 81.6 [76.4, 87.3] | 40.9 [38.4, 43.7] |
+| N = 50 | Price-threshold+safety layer | 59.3 [55.4, 63.5] | 59.0 [55.1, 63.2] | 22.9 [21.1, 24.8] |
+| N = 50 | ALAP+safety layer | 77.6 [73.0, 82.8] | 77.6 [73.0, 82.9] | 37.7 [35.7, 40.0] |
+| N = 50 | AFAP+safety layer | 83.8 [78.5, 89.7] | 83.8 [78.6, 89.7] | 42.7 [40.1, 45.7] |
+| N = 100 | SA-Attn (ours) | 63.8 [58.3, 69.6] | 62.4 [57.2, 68.3] | 27.6 [25.1, 30.2] |
+| N = 100 | Deep Sets+safety layer | 47.0 [43.1, 51.5] | 46.3 [42.4, 50.4] | 14.6 [13.3, 15.9] |
+| N = 100 | SA-Attn trained at N = 50 (reference) | 62.1 [56.7, 67.9] | 60.0 [55.0, 65.5] | 25.7 [23.4, 28.1] |
+| N = 100 | Attention+safety layer without departure bound | 55.3 [50.7, 60.3] | 54.7 [50.3, 59.5] | 21.4 [19.6, 23.2] |
+| N = 100 | Attention+penalty, safety layer at deployment | 65.5 [60.2, 71.6] | 65.5 [60.0, 71.6] | 30.1 [27.7, 32.8] |
+| N = 100 | Attention+penalty | 67.8 [62.0, 74.1] | 65.1 [59.6, 71.1] | 29.8 [27.4, 32.4] |
+| N = 100 | Attention+PPO-Lagrangian | 80.2 [72.9, 88.0] | 78.0 [71.2, 85.7] | 40.2 [36.8, 44.1] |
+| N = 100 | Price-threshold+safety layer | 56.0 [51.1, 61.6] | 56.0 [51.1, 61.4] | 22.4 [19.9, 25.2] |
+| N = 100 | ALAP+safety layer | 74.8 [68.4, 81.8] | 74.8 [68.6, 81.7] | 37.6 [34.6, 40.9] |
+| N = 100 | AFAP+safety layer | 80.2 [73.1, 88.0] | 80.2 [73.2, 88.0] | 42.0 [38.4, 46.2] |
+| N = 200 | SA-Attn (ours) | 68.4 [62.2, 75.5] | 65.8 [60.1, 72.1] | 28.7 [26.2, 31.4] |
+| N = 200 | Deep Sets+safety layer | 51.2 [46.4, 56.8] | 49.5 [45.4, 54.1] | 15.6 [14.3, 16.9] |
+| N = 200 | SA-Attn trained at N = 50 (reference) | 66.0 [60.0, 72.6] | 63.5 [58.2, 69.6] | 26.8 [24.4, 29.5] |
+| N = 200 | Attention+safety layer without departure bound | 58.4 [53.5, 63.8] | 58.1 [53.2, 63.4] | 22.5 [20.7, 24.4] |
+| N = 200 | Attention+penalty, safety layer at deployment | 70.6 [64.7, 77.2] | 70.6 [64.7, 77.2] | 32.5 [30.0, 35.3] |
+| N = 200 | Attention+penalty | 70.5 [64.7, 76.9] | 70.3 [64.4, 76.8] | 32.3 [29.8, 35.2] |
+| N = 200 | Attention+PPO-Lagrangian | 84.9 [77.3, 93.4] | 80.4 [73.7, 88.1] | 40.4 [37.1, 44.1] |
+| N = 200 | Price-threshold+safety layer | 59.8 [54.4, 65.8] | 59.8 [54.5, 65.9] | 23.9 [21.4, 26.6] |
+| N = 200 | ALAP+safety layer | 77.7 [71.2, 84.9] | 77.7 [71.2, 84.9] | 38.2 [35.3, 41.4] |
+| N = 200 | AFAP+safety layer | 82.6 [75.4, 90.6] | 82.6 [75.5, 90.4] | 42.1 [38.7, 46.1] |
 
-*Values: mean ± standard deviation over training seeds of the seed-level means (configurations pooled as strata; n per cell in the _values.csv files). † deterministic method, single run (no seed variability). 95 % confidence intervals (t-based and bootstrap) are in the _values.csv files; definitions in STAT_METHODS.md.*
+*CI: bootstrap over replays, stratified by configuration. Per-episode percentages are not reported because the optimum's J^pen is often close to zero or negative.*

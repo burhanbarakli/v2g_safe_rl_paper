@@ -1,84 +1,128 @@
 % ---------------------------------------------------------------------
 \section{Results}\label{sec:results}
 % ---------------------------------------------------------------------
-% SKELETON. No experiment has been run yet. Every quantitative statement
-% is a \RES{} placeholder that asks only for values produced by
-% analysis/scripts/make_all.py (tables T1-T7, T3b, TS1-TS3; figures fig3-fig6,
-% figS1-figS6; stats/tests_T*.csv). Generated tables and figures appear
-% automatically once they exist under \analysisdir (default ../../analysis)
-% or as local copies in tables/ and figures/.
+% Every number is taken from the analysis outputs (tables/*.md, stats/tests_*.csv,
+% findings_numbers.md) and listed with its source cell in
+% paper/results_number_sources.md. Gap = absolute penalised-profit gap in
+% euros per charger and episode (Eq. gap); values are seed-averaged policies.
 
-\TODO{Skeleton: the authors replace every sentence frame below with their own text, fill the red placeholders from the analysis outputs and write all interpretation themselves}.
+\TODO{The authors check every reported value against the analysis outputs and revise the wording of this section}.
 
 \subsection{Main comparison}\label{sec:res-main}
 
 \Tab{tab:t1} compares all methods at the training sizes $N\in\{10,20\}$, pooled over profiles and ratings.
-At these sizes, the gap of \method{} is \RES{gap and IQM with 95\% confidence interval, \Tab{tab:t1}}.
-Relative to the other learned methods, the difference in penalised profit is \RES{differences, confidence intervals and Holm-adjusted $p$-values, stats/tests\_T1.csv}.
-Among the rules and model-predictive methods, \RES{best rule with the safety layer and the gaps of eMPC-HiGHS, \Tab{tab:t1}}.
+\method{} had a gap of 1.290 and 0.973\,\texteuro{} per charger at $N=10$ and $N=20$, against 2.204 and 1.569 for Attention+penalty and 1.792 and 1.258 for Attention+PPO-Lagrangian.
+The differences to Attention+penalty were $-0.915$ $[-1.254,-0.601]$ and $-0.595$ $[-0.797,-0.412]$, with Holm-adjusted Wilcoxon $p$-values of $1.3\times10^{-5}$ and $0.0014$ and rank-biserial correlations of $-0.24$ and $-0.19$.
+Their IQMs were close, 0.712 against 0.751 and 0.719 against 0.748, so the mean advantage of \method{} came mostly from a minority of episodes with large penalties.
+Deep Sets+safety layer had a lower gap than \method{}, 0.984 and 0.722, with differences of 0.306 $[0.218,0.397]$ and 0.251 $[0.220,0.286]$ (Holm $p<10^{-65}$).
+Attention+safety layer without departure bound reached 0.776 at both sizes, below \method{} by 0.514 $[0.372,0.679]$ and 0.198 $[0.145,0.259]$ (Holm $p<10^{-45}$).
+
+At $N=10$, every rule and eMPC-HiGHS with the safety layer had a lower mean gap than \method{}, from 0.790 for the price-threshold rule to 1.145 for eMPC-HiGHS.
+For the price-threshold rule and eMPC-HiGHS, the differences of 0.500 $[0.341,0.680]$ and 0.144 $[0.072,0.219]$ agreed with the Wilcoxon tests (Holm $p=1.1\times10^{-9}$ and $5.7\times10^{-59}$).
+With the other rules, the intervals excluded zero, but rank-biserial correlations of $-0.39$ to $-0.47$ showed \method{} lower on most replays, so these comparisons are inconclusive.
+MLP+safety layer also had a lower mean gap at $N=10$, 1.025 (Holm $p=0.014$).
+
+At $N=20$, \method{} had a lower gap than LLF, sLLF, AFAP and round robin with the layer, 0.973 against 1.099 (Holm $p<10^{-24}$).
+Price-threshold+safety layer and eMPC-HiGHS+safety layer stayed lower, at 0.788 and 0.846, with differences of 0.185 $[0.137,0.238]$ and 0.127 $[0.098,0.161]$ (Holm $p\le9.8\times10^{-12}$).
+Without the safety layer, the price-threshold rule had gaps of 156.370 and 159.518 and eMPC-HiGHS 108.138 and 103.765, mostly from energy not served.
 
 \restable{T1}{%
 \begin{table}[t]
 \centering
-\caption{Main comparison at the training station sizes $N\in\{10,20\}$ (three arrival profiles and both tightness levels pooled; placeholder until the analysis scripts have run).}
+\caption{Main comparison at the training station sizes $N\in\{10,20\}$ (file T1.tex of the analysis pipeline not found).}
 \label{tab:t1}
-\footnotesize
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-Method & $J^{\sm{pen}}$ [\texteuro] & Gap [\%] & IQM gap [\%] & Profit [\texteuro] & Not served [kWh] & Overload [kWh] \\
-\midrule
-\method{} (ours) & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Attention+penalty & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Attention+PPO-Lagrangian & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Deep Sets+safety layer & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-Rules and eMPC-HiGHS & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} & \RES{} \\
-\bottomrule
-\end{tabular}
+\footnotesize \TODO{missing analysis output T1.tex}
 \end{table}}
 
 \subsection{Zero-shot transfer across station sizes}\label{sec:res-scaling}
 
-\Fig{fig:zeroshot} plots the penalised profit per charger and the gap against $N$ for weights trained at $N\in\{10,20\}$.
-At $N=50$, $100$ and $200$, the gap of \method{} is \RES{gap per $N$ with 95\% confidence interval, \Tab{S-tab:t2}}, and its transfer gap to the reference trained at $N=50$ is \RES{\Tab{S-tab:t2}}.
-EV-GNN reaches \RES{gap in its training configuration and zero-shot, \Tab{S-tab:t2}}, and at the stress level $\rho_{\sm{tr}}=3$ kW the gap of \method{} is \RES{\Tab{S-tab:ts2}}.
+\Fig{fig:zeroshot} and \Tab{S-tab:t2} show the gap against $N$ for weights trained at $N\in\{10,20\}$.
+At $N=50$, 100 and 200, \method{} had gaps of 0.921, 0.881 and 0.902, and the same policy trained at $N=50$ had 0.884, 0.857 and 0.869.
+The transfer gaps of \method{} to this reference were 0.037 $[0.026,0.050]$, 0.023 $[0.012,0.033]$ and 0.033 $[0.022,0.046]$.
+Deep Sets+safety layer had gaps of 0.698, 0.649 and 0.675 at these sizes, below the reference by 0.186 to 0.208.
+At $N=5$, outside the training sizes, the gap of \method{} rose to 2.292 against 1.663 for Deep Sets+safety layer and 0.956 for Price-threshold+safety layer.
+
+\method{} had a higher mean gap than Price-threshold+safety layer at every size of the test grid.
+The differences ranged from 0.107 $[0.065,0.151]$ at $N=100$ to 1.335 $[0.919,1.840]$ at $N=5$, with Holm $p\le3.1\times10^{-4}$.
+Deep Sets+safety layer had a lower mean gap than this rule only at $N\ge20$, with 0.649 to 0.722 against 0.774 to 0.793, and a higher one at $N=5$ and $N=10$.
+No test compares these two methods directly.
+Attention+penalty had a gap of 0.929 at $N=200$, a difference to \method{} of $-0.027$ $[-0.060,0.016]$.
+Its interval includes zero, whereas the Wilcoxon test favoured \method{} (Holm $p=2.0\times10^{-5}$, rank-biserial $-0.35$), so this comparison is inconclusive.
+
+At the stress level $\rho_{\sm{tr}}=3$ kW, \method{} had gaps of 2.979 at $N=20$ and 1.586 at $N=200$ (\Tab{S-tab:ts2}).
+Deep Sets+safety layer had 2.400 and 1.423 there, and the variant without departure bound 0.983 and 0.829.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig3_zero_shot_scaling.pdf}{Penalised profit per charger and optimality gap versus $N$ per method, 95\% confidence intervals; training sizes marked.}
-\caption{Zero-shot transfer across station sizes for $N$ from 5 to 200.}
+\resultfig{fig3_zero_shot_scaling.pdf}{Gap and penalised profit per charger versus $N$.}
+\caption{Zero-shot transfer across station sizes: gap and penalised profit per charger and episode versus $N$ for the learned methods, the reference trained at $N=50$ and three rules with the safety layer.}
 \label{fig:zeroshot}
 \end{figure}
 
 \subsection{Constraint satisfaction}\label{sec:res-constraints}
 
-\Fig{fig:constraints} shows energy not served, overload energy and the share of EVs without infeasible steps (E4) against $N$ for the main methods.
-With the safety layer, the overload energy is \RES{value from \Tab{S-tab:t3}; Theorem~\ref{thm:invariance}(a) predicts zero}, and without it the methods leave \RES{energy not served and overload, \Tab{S-tab:t3}}.
-E4 of \method{} is \RES{per $N$, \Tab{S-tab:t3b}}, and the aggregate limits bind on \RES{binding rates per $N$, \Tab{S-tab:t3b}}.
-Infeasible steps fall into the fallback cases as \RES{counts per case, \Tab{S-tab:t3b}}, and the shortfall reaches \RES{ratio to the deficit bound, \Tab{S-tab:t3}}.
+\Fig{fig:constraints} shows energy not served, overload energy and E4 against $N$ for the main methods.
+No transformer overload occurred in any of the 102,750 test episodes run through the safety layer (\Tab{S-tab:t3c}).
+Without the layer, Attention+penalty had 3,730 overload steps, Attention+PPO-Lagrangian 3,274 and MLP+penalty 3,648 over all configurations.
+Averaged over the 36 test-grid configurations, 6.7\%, 7.9\% and 17.0\% of their episodes had overload (\Tab{S-tab:t3}).
+For every non-conformal method with the departure bound, no EV was left short in an episode without infeasible steps, consistent with Theorem~\ref{thm:invariance}(b).
+In \Tab{S-tab:t3b}, every fallback activation belonged to the case of excess required power, and the three cases that A6 excludes did not occur.
+
+Learned policies with the departure bound caused infeasible steps.
+Over all episodes, \method{} had 17,678 infeasible steps and 39,771 EVs whose stay contained one, and it left 6,158 of 233,016 admitted EVs unserved.
+Deep Sets+safety layer had 12,122 infeasible steps, 27,949 affected EVs and 5,038 unserved EVs.
+LLF with the safety layer had one infeasible step and Price-threshold+safety layer 1,675.
+E4 of \method{} rose from 65.86\% at $N=5$ to 92.58\% at $N=200$, and infeasible steps per episode fell from 4.64 to 0.58.
+For Deep Sets+safety layer, E4 was higher at every size, with Holm-adjusted $p\le0.0043$ up to $N=100$.
+At $N=200$, its interval of $[0.9,3.6]$ percentage points excluded zero, but the Holm-adjusted $p$ was 0.94, so this size is inconclusive.
+The measured shortfall of \method{} was 0.009 times the a-priori deficit bound, as a mean over configurations of the episode means for episodes with a positive deficit.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig4_constraint_satisfaction.pdf}{Energy not served, overload energy and E4 versus $N$ for the main methods.}
-\caption{Constraint satisfaction across station sizes, including the share of EVs whose stay contains no infeasible step (E4).}
+\resultfig{fig4_constraint_satisfaction.pdf}{Energy not served, overload energy and E4 versus $N$.}
+\caption{Constraint satisfaction across station sizes for both transformer ratings: energy not served, transformer overload energy and the share of EVs whose stay contains no infeasible step (E4), with 95\% bootstrap intervals.}
 \label{fig:constraints}
 \end{figure}
 
+\subsection{Effect of the departure bound}\label{sec:res-bound}
+
+The departure lower bound did not improve service for the learned attention policy.
+Attention+safety layer without departure bound had a lower mean gap than \method{} at every station size (\Tab{S-tab:t2}).
+Its advantage ranged from 0.117 $[0.094,0.143]$ at $N=100$ to 1.266 $[0.927,1.652]$ at $N=5$, with Holm $p\le1.3\times10^{-30}$.
+The variant left 0.99\% of the admitted EVs unserved against 2.24\% for \method{}, with 0.09 against 0.43 kWh of energy not served per episode (\Tab{S-tab:t3}).
+Summed over all episodes, these shares correspond to 1,551 against 6,158 unserved EVs (\Tab{S-tab:t3c}).
+At the stress level and $N=20$, the variant left 2.59\% of the EVs unserved against 12.04\% (\Tab{S-tab:ts2}).
+The comparison is not a clean ablation, because the variant learned from the penalty reward with its own tuned weight, whereas \method{} learned from the profit reward.
+
+\method{} also left more EVs unserved than its penalty-trained twin without any layer, 2.24\% against 1.86\% and 6,158 against 1,451.
+Its mean energy not served was lower, however, with 0.43 against 0.63 kWh per episode.
+Attention+PPO-Lagrangian left 0.20\% of the admitted EVs unserved, the penalty-trained policy with the layer at deployment 0.46\% and Price-threshold+safety layer 0.44\%.
+LLF, sLLF, AFAP and round robin with the layer left no EV unserved.
+\method{} commanded exactly the departure lower bound on 27.8\% to 42.3\% of the occupied charger-steps, depending on $N$ (\Tab{S-tab:t3b}).
+
 \subsection{Cost of the guarantee}\label{sec:res-cost}
 
-\Fig{fig:cost} plots the cost of the guarantee of \Sec{sec:metrics} against $N$.
-In penalised profit, Attention+penalty minus \method{} is \RES{$\Delta J^{\sm{pen}}$ in \texteuro{} per EV served and in \% of $|J^{\sm{LP,ceil}}|$ per $N$, \Tab{S-tab:t5}}.
-Measured in raw profit, the difference is \RES{$\Delta$ profit per $N$, \Tab{S-tab:t5}}, with the tests in \RES{stats/tests\_T5.csv}.
+\Fig{fig:cost} and \Tab{S-tab:t5} compare \method{} with its penalty-trained twin on the same episodes.
+In $J^{\sm{pen}}$, Attention+penalty minus \method{} was $-3.462$ $[-4.639,-2.388]$\,\texteuro{} per admitted EV at $N=5$ and approached zero with growing $N$, to $-0.042$ $[-0.094,0.025]$ at $N=200$.
+The Wilcoxon tests on the replay-level $J^{\sm{pen}}$ differences gave Holm-adjusted $p\le2\times10^{-4}$ at every size.
+At $N=200$, the interval of the mean includes zero, whereas the median shift favours \method{} (Holm $p=1.7\times10^{-6}$), so the size of this difference is inconclusive.
+In raw profit, the difference was positive at $N\le20$, from 0.142 $[0.075,0.218]$\,\texteuro{} per admitted EV at $N=5$ to 0.064 $[0.039,0.091]$ at $N=20$.
+It was negative at $N\ge50$, down to $-0.092$ $[-0.120,-0.065]$ at $N=200$.
+For the MLP pair, the $J^{\sm{pen}}$ difference was between $-6.958$ and $-1.383$\,\texteuro{} per admitted EV.
 
 \begin{figure}[t]
 \centering
-\resultfig{fig6_cost_of_guarantee.pdf}{Cost of the guarantee ($\Delta J^{\sm{pen}}$ and $\Delta$ profit, \texteuro{} per EV served) versus $N$.}
-\caption{Cost of the guarantee across station sizes. A positive value means that Attention+penalty scored higher than \method{} on the same episodes.}
+\resultfig{fig6_cost_of_guarantee.pdf}{Cost of the guarantee versus $N$.}
+\caption{Cost of the guarantee across station sizes. (a) Penalty-based policy minus the policy with the safety layer, in $J^{\sm{pen}}$ and in raw profit per admitted EV, with 95\% bootstrap intervals; a positive value means that the penalty-based policy scored higher. (b) Overload energy and energy not served of the penalty-based policies per episode.}
 \label{fig:cost}
 \end{figure}
 
 \subsection{Further results}\label{sec:res-further}
 
-In \Tab{S-tab:t4}, the variants without departure bound, with the layer at deployment only and without admission control give \RES{gaps relative to \method{}, \Tab{S-tab:t4}}.
-For the conformal variant, the gap and the episode-averaged coverage are \RES{per $\alpha$, \Tab{S-tab:t7}}, and one control step at $N=200$ takes \RES{inference time, \Tab{S-tab:t6}}.
-The sensitivity studies give \RES{\Tab{S-tab:ts2}}, and Figure~\ref{S-fig:exampleday} shows an example episode.
+The conformal variant achieved coverages of 0.992, 0.950, 0.902 and 0.799 for targets of 0.99, 0.95, 0.90 and 0.80 (\Tab{S-tab:t7}).
+Its gap was 27.341 at $\alpha=0.01$, 1.292 at $\alpha=0.05$ and 1.958 at $\alpha=0.2$, against 1.210 with known departure steps.
+At $\alpha=0.01$, the re-certified requests reduced the charged energy to 791.4 kWh per episode against 1396.5 kWh with known departures.
+With the safety layer added at deployment only, the penalty-trained policy had a gap of 0.930 at $N=200$ (\Tab{S-tab:t2}).
+Its difference to \method{}, $-0.028$ $[-0.061,0.014]$ with Holm $p=9.9\times10^{-6}$, is also inconclusive.
+One control step of \method{} took 7.76 ms at $N=200$, against 5.99 ms for Deep Sets+safety layer (\Tab{S-tab:t6}).
+On EV2Gym's 25-charger configuration, \method{} and Price-threshold+safety layer both had a gap of 0.507 (\Tab{S-tab:ts3}).

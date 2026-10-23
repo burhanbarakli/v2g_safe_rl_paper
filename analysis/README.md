@@ -1,9 +1,11 @@
 # analysis/ — statistics, tables and figures
 
 Turns the raw result files of the experiments (`results/raw/`, schema in `code_spec.md` §2–§3) into
-the statistics, tables (T1–T7), publication figures (F2–F9) and a numbers-only summary, and holds the
-conceptual diagrams. No result in this folder is produced here: `figures/` and `tables/` stay empty
-until `make_all.py` is run on real raw results. Everything under `synthetic_test/` is fake test data.
+the statistics, tables (T1–T7, T3b–T3d, TS1–TS3), publication figures and a numbers-only summary, and holds
+the conceptual diagrams. `figures/`, `tables/`, `stats/` and `findings_numbers.md` are produced by
+`make_all.py` from the core runs in `code/results/raw` (2 training seeds per learned method; extended set,
+other sensitivities, EV-GNN and the example-day figure not run, DD45). Everything under `synthetic_test/` is
+fake test data.
 
 ## Requirements
 
@@ -14,18 +16,19 @@ The conceptual diagrams are rendered with `playwright` + Chromium (only needed t
 ## One command
 
 ```bash
-python analysis/scripts/make_all.py --raw results/raw --out analysis
+python analysis/scripts/make_all.py --raw code/results/raw --out analysis
 ```
 
 Options: `--B 10000` (bootstrap resamples, default), `--B-iqm 2000`, `--no-oracle` (run without oracle
-results; the optimality gap is then empty), `--include-smoke` (keep smoke rows; pipeline check only, see below). Expected run time: about 8 min for the synthetic grid at 30 % of the replays (B = 10,000); the full real grid takes longer (lower `--B` for quick checks)
-(about 2 min for a full synthetic grid with 30 % of the replays).
+results; the optimality gap is then empty), `--include-smoke` (keep smoke rows; pipeline check only, see below),
+`--allow-bound-violations` (continue although episodes exceed the soft-penalty optimum; default: stop, DD46).
+Run time on the core runs (153,100 episodes): about 9 min with `--B 200`, longer with the default B = 10,000.
 
 Pipeline test on synthetic data (writes only into `analysis/synthetic_test/`):
 
 ```bash
 python analysis/scripts/make_all.py --synthetic          # generates synthetic_test/raw, then runs everything
-python -m pytest analysis/scripts/tests -q                # 33 tests, ~6 min
+python -m pytest analysis/scripts/tests -q                # 42 tests, ~16 min
 ```
 
 Pipeline check on A3's smoke output (never into `analysis/`; refused there):
@@ -47,7 +50,8 @@ lack data are skipped with a message.
 | `<raw>/<exp_id>/meta.json` | optional; runs with `"smoke": true` are skipped |
 | `<raw>/<exp_id>/steps.parquet` or `steps.csv` | optional, example day (F5) (§3.2); a `test_cfg_id` column is used if present |
 | conformal columns `alpha`, `conformal_coverage` (alias `coverage_frac`), `n_evs_departed_before_bound`, `mean_d_minus_dlo` | T7, figS3 (SCHEMA_ADDITIONS.md §1) |
-| `penalised_profit_eur` (J^pen, DD32) | main comparison metric (computed as profit − 10·ENS − 10·overload if absent) |
+| `energy_not_served_shared_kwh`, `n_evs_unserved_shared` | shortfall against the shared admitted requirement, used for every method and pass (DD46) |
+| `penalised_profit_eur` | **not used**: J^pen is recomputed as profit − 10·(shared ENS + overload energy) (DD46) |
 | oracle columns `oracle_pen_profit_eur`, `oracle_profit_ceil_eur`, `profit_eur` | soft-penalty optimum (main gap), hard optimum J_LP,ceil (cost of the guarantee), J_LP (supplement) |
 | `in_distribution` | EV-GNN rows with `true` are relabelled `evgnn_id` / `evgnn_safe_id` (DD35) |
 | `fb1star_steps`, `fb2_steps`, `fb1_steps`, `fb0_steps`, `a5_deficit_kwh`, `n_evs_capped`, `n_evs_admission_reduced`, `energy_admission_reduced_kwh` | T3b (fallback cases (i)–(iv), Lemma 3 ratio, request pipeline) |
@@ -57,11 +61,13 @@ The loader fails loudly (`SchemaError`) on a missing column, a non-numeric value
 empty required values, duplicate `(exp_id, test_cfg_id, replay_id)` rows, the same
 `(method, seed, test_cfg_id, replay_id)` in two run directories, or missing oracle files. Smoke rows
 (`smoke = true`) are dropped unless `--include-smoke`. All three oracle values are joined per
-`(test_cfg_id, replay_id)`. Optimality gap per episode = `100·(J* − J^π)/|J*|`, **NaN if |J*| < 1 €**
-(number of excluded episodes in `load_report.txt` and `findings_numbers.md`, consistency M2):
-- `gap_pct` (**main**, DD32): penalised profit J^pen vs the soft-penalty optimum, for every method incl. the conformal variants (DD43(1));
-- `gap_hard_pct`: raw profit vs J_LP,ceil (cost of the guarantee, T5, TS1);
-- `gap_lp_pct`: raw profit vs J_LP (supplementary TS1 only, DD42-4).
+`(test_cfg_id, replay_id)`. After the join the loader counts the episodes with J^pen > J^pen of the soft-penalty
+optimum + 1e-6 € (`load_report.txt`, `findings_numbers.md`); `make_all.py` stops if the count is not 0 (DD46).
+Gaps per episode (DD47):
+- `gap_abs` (**primary**): (J^pen_oracle − J^pen) / N, € per charger and episode, every method and pass;
+- `gap_hard_abs`: (J^LP,ceil − profit) / N;
+- relative gaps only as ratios of sums 100·Σ(J* − J)/Σ|J*| in the supplementary table TS1 (soft optimum,
+  J^LP,ceil, J^LP). No per-episode percentage gap and no IQM of a percentage are reported.
 
 Configuration families: `grid` (`<profile>_N<N>_rho<4|7>`, optional smoke suffix `_T16`), `stress`
 (ρ_tr = 3 kW, DD36), `sensitivity` (`_soc`, `_dt`, `_thr`, `_dpf` tags), `literature`; T1–T7 use the grid.
@@ -74,14 +80,13 @@ analysed (generic style, warning).
 
 | Path | Content |
 |---|---|
-| `tables/T1..T7.{tex,md,csv}` | LaTeX (booktabs + adjustbox `max width`; caption above, as SAUCIS requires), Markdown and display CSV (UTF-8 with BOM, opens in Word/Excel) |
-| `tables/T*_values.csv` | every cell as numbers: value, std, 95 % CI bounds, CI type, unit (seed/replay), n episodes |
-| `tables/T2_full_per_configuration.csv` | all methods × all configurations incl. stress, sensitivity and literature (supplement) |
+| `tables/T*.{tex,md,csv}` | LaTeX (booktabs, array, adjustbox safety net, caption package for tables continued in a second float; caption above, as SAUCIS requires; sized for a 455 pt text width; LaTeX shows the seed range only for the primary column), Markdown and display CSV with all ranges (UTF-8 with BOM) |
+| `tables/T*_values.csv` | every cell as numbers: value, 95 % bootstrap CI (replays), min/max over seeds, per-seed values (`| seed k` columns), n episodes |
 | `tables/provenance.json` | `table|[group / ]row|column` → list of exp_ids whose episodes entered the cell (oracle runs included for gap cells) |
 | `tables/STAT_METHODS.md` | exact description of every statistic and test |
 | `figures/fig*.{pdf,eps,svg,png}` | vector PDF/EPS/SVG and 300 dpi PNG (names below); `figures/data/*.csv` = plotted numbers + exp_ids |
-| `stats/summary_by_config.csv`, `summary_by_N.csv`, `summary_by_N_rho.csv` | all summaries (mean, std, t and bootstrap CIs, IQM for the gap) |
-| `stats/tests_T1.csv`, `tests_T2.csv`, `tests_T3.csv`, `tests_T5.csv` | seed-level comparisons per table family (DD43(5)): paired t on seed means (primary), Wilcoxon on replays (secondary), Holm per file, bootstrap CI, PoI |
+| `stats/summary_by_config.csv`, `summary_by_N.csv`, `summary_by_N_rho.csv` | all summaries (mean, min–max over seeds, per-seed values, replay-bootstrap CI, IQM for the gap) |
+| `stats/tests_T1.csv`, `tests_T2.csv`, `tests_T3.csv`, `tests_T5.csv` | comparisons per table family (DD48): Wilcoxon signed-rank on replay-level differences of the seed-averaged policies, Holm per file, stratified replay-bootstrap CI, per-seed values |
 | `findings_numbers.md` | numbers-only listing of the key values with their table cell ids — no interpretation (SAUCIS AI policy) |
 | `load_report.txt` | what the loader dropped or warned about |
 
@@ -89,24 +94,24 @@ Tables (main text unless marked S):
 
 | Table | Content |
 |---|---|
-| T1 | main comparison at N ∈ {10, 20}: J^pen, optimality gap (+ IQM), profit, energy not served, overload |
-| T2 | zero-shot transfer vs N: J^pen and profit per charger, gap, unserved %, overload, fallback, transfer gap to the N = 50 reference (DD36) |
-| T3 | constraint satisfaction per method, pooled over the grid: **E4** (EVs without infeasible step, primary endpoint), unserved %, energy not served, overload, episodes with overload, shortfall / deficit bound (Lemma S4), capped and admission-reduced requests |
-| T3b | **per N**: E4, infeasible steps, fallback cases (i) FB-1*, (ii) FB-2, (iii) FB-1, (iv) FB-0, binding rates of the upper/lower aggregate limit (% of steps) and of the departure lower bound (% of token-steps) |
-| T4 | ablation: 2 × 2 (attention/MLP × safety layer/penalty), DD33 baselines, evaluation variants, ablations |
-| T5 | cost of the guarantee (DD43(7)): Δ J^pen (primary) and Δ raw profit (secondary), penalty − safety layer, ratio of sums, € per EV served and % of \|J^LP,ceil\| |
-| T6 | computation: training time, inference ms/step vs N |
-| T7 | conformal α trade-off (gap, profit per EV, J^pen, shortfall, coverage, EVs departed before the bound, d − d̂^lo, Δ profit vs known d) |
-| TS1 | (S) raw-profit gaps vs J_LP,ceil and J_LP |
-| TS2 | (S) sensitivities: reference, SoC 0.8, Δt 5 min, throughput cost 0.05, discharge factor 0.9, penalty weights 1/100, ρ_tr = 3 kW (M6) |
-| TS3 | (S) literature configuration (M6) |
+| T1 | main comparison at N ∈ {10, 20}: gap (€/charger, mean and IQM), J^pen, profit, energy not served, overload |
+| T2 | zero-shot transfer vs N (main grid ρ_tr ∈ {4, 7}): absolute gap per N for SA-Attn, Deep Sets + layer, the N = 50 reference, the layer without departure bound, the penalty/Lagrangian/MLP variants and the 3 safety-layer baselines with the lowest gap; transfer gap to the N = 50 reference in € per charger (SA-Attn and Deep Sets) |
+| T3 | constraint satisfaction per method, pooled over the grid: **E4**, unserved %, energy not served (shared requirement), overload, episodes with overload, shortfall / deficit bound, capped and admission-reduced requests |
+| T3b | per N: E4, infeasible steps, fallback cases (i) FB-1*, (ii) FB-2, (iii) FB-1, (iv) FB-0, binding rates |
+| T3c | counts per method over all episodes and both seeds: infeasible steps, fallback activations, EVs whose stay had an infeasible step, unserved EVs (shared), overload steps, check column "unserved EVs in episodes without infeasible steps" (Corollary 1, episode level) |
+| T3d | the T3c counts per method and N |
+| T4 | rows that were run: SA-Attn, Attention + penalty, Attention + PPO-Lagrangian, Attention + layer without departure bound, Attention + penalty with the layer at deployment, Deep Sets + layer, MLP + layer and MLP + penalty (N ≤ 20) |
+| T5 | cost of the guarantee: Δ J^pen (primary) and Δ raw profit, penalty − safety layer, ratio of sums, € per EV served and % of \|J^LP,ceil\| |
+| T6 | computation: training time (mean, min–max over seeds), inference ms/step vs N |
+| T7 | conformal α: coverage vs target, shortfall vs the shared requirement (per episode and total), gap (€/charger), energy charged, with the known-departure reference |
+| TS1 | (S) relative gaps as ratios of sums (soft optimum, J^LP,ceil, J^LP) |
+| TS2 | (S) stress level ρ_tr = 3 kW per N (the only sensitivity that was run) |
+| TS3 | (S) literature configuration |
 
-Statistics files (DD38, DD43(5)): `stats/tests_T1.csv` (J^pen, ENS, overload; N ∈ {10, 20}), `tests_T2.csv` (same,
-all N), `tests_T3.csv` (E4, E3 overload, ENS), `tests_T5.csv` (safety layer vs penalty twin: J^pen primary, raw profit
-secondary). Primary: paired t-test on seed means; secondary: Wilcoxon signed-rank on replay-level differences of
-seed-averaged policies; Holm per table family (one file = one family); stratified bootstrap CIs, probability of
-improvement; Welch on seed means as a robustness column. `stats/summary_*.csv` hold all summaries.
-The zero-padded MLP is reported only for N ≤ 20 (DD43(3)).
+Statistics (DD48, details in `tables/STAT_METHODS.md`): table cells = mean of the seed-averaged policy with
+(min–max over the 2 seeds); 95 % CI = stratified bootstrap resampling test replays within configurations;
+tests = Wilcoxon signed-rank on replay-level differences of seed-averaged policies, Holm per table family
+(one `stats/tests_*.csv` file); no seed-level t-tests. The zero-padded MLP is reported only for N ≤ 20.
 
 Figure plan (DD29; file names are exactly those referenced by the manuscript and supplementary `\resultfig` /
 `\figchain` paths; the paper number differs from the file stem for two files):
@@ -115,20 +120,21 @@ Figure plan (DD29; file names are exactly those referenced by the manuscript and
 |---|---|---|---|
 | Fig. 1 | `fig_architecture.pdf` (paper `manuscript/figures/`) | architecture | hand-drawn, not produced here |
 | Fig. 2 | `fig2_concepts.{pdf,eps,svg,png}` | (a) per-EV bounds, (b) projection geometry | `figures_conceptual/fig_concepts.*`, copied by make_all |
-| Fig. 3 | `fig3_zero_shot_scaling.*` | J^pen per charger and optimality gap vs N | figures.py |
+| Fig. 3 | `fig3_zero_shot_scaling.*` | gap (€/charger) and J^pen per charger vs N, same methods as T2 | figures.py |
 | Fig. 4 | `fig4_constraint_satisfaction.*` | energy not served, overload and E4 vs N | figures.py |
 | **Fig. 5** | **`fig6_cost_of_guarantee.*`** | cost of the guarantee (Δ J^pen primary, Δ profit secondary; € per EV served) vs N | figures.py |
 | Fig. S1 | `figS1_training_curves.*` | training curves | figures.py |
-| Fig. S2 | `figS2_ablation.*` | ablation bars | figures.py |
-| Fig. S3 | `figS3_conformal_alpha.*` | conformal α trade-off | figures.py |
+| Fig. S2 | `figS2_ablation.*` | gap bars for the T4 rows | figures.py |
+| Fig. S3 | `figS3_conformal_alpha.*` | per α: coverage vs target, shortfall vs shared requirement, gap, energy charged | figures.py |
 | Fig. S4 | `figS4_inference_time.*` | inference time vs N | figures.py |
 | Fig. S5 | `figS5_pipeline.{pdf,eps,svg,png}` | experimental pipeline | `figures_conceptual/figS5_pipeline.*`, copied by make_all and into `paper_repo/supplementary/figures/` |
 | Fig. S6 | `figS6_constraints_pooled.*` | constraint metrics per method, pooled over N | figures.py |
-| **Fig. S7** | **`fig5_example_day.*`** | example day (needs `--log-steps`) | figures.py |
+| **Fig. S7** | **`fig5_example_day.*`** | example day: **not produced** (needs `--log-steps` runs, not run, DD45) | figures.py |
 
 Figure style: Arial/Helvetica (Liberation Sans fallback), 8 pt, full width 6.5 in, TrueType embedded;
-Okabe–Ito colours plus markers and line styles (solid = safety layer, Okabe–Ito colours plus markers and line styles (solid = safety layer,
-dashed = penalty/raw) so all figures read in greyscale; CI bands are opaque (EPS-safe).
+Okabe–Ito colours plus markers and line styles (solid = safety layer,
+dashed = penalty/raw) so all figures read in greyscale; CI bands are opaque (EPS-safe). Fig. S1 bands show the
+min–max over seeds.
 
 ## Integrity safeguards
 
@@ -137,6 +143,9 @@ dashed = penalty/raw) so all figures read in greyscale; CI bands are opaque (EPS
   watermark, every table caption/CSV/Markdown and `findings_numbers.md` carry the same mark, and
   `make_all.py` refuses to write outside a `synthetic_test/` directory.
 - `findings_numbers.md` contains only measured values and their source cells.
+- Smoke outputs ("SMOKE TEST OUTPUT – NOT RESULTS") are refused inside `analysis/`; the test
+  `test_smoke_never_written_into_analysis` scans `analysis/` for that watermark.
+- The soft-penalty bound check (DD46) stops the pipeline if any episode exceeds the optimum.
 
 ## Conceptual figures (`figures_conceptual/`)
 

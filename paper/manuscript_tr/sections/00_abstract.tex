@@ -1,25 +1,29 @@
 % ---------------------------------------------------------------------
 % Öz (SAUCIS: <= 400 sözcük, atıf yok, şekil/tablo/bölüm göndermesi yok,
 % üçüncü şahıs) ve anahtar kelimeler (3-5, alfabetik).
+% Her sayı paper/results_number_sources.md dosyasında listelenmiştir.
 % ---------------------------------------------------------------------
 \begin{abstract}
-Araçtan şebekeye (V2G) hizmetleri sunan şarj noktası işletmecileri, istasyonu trafo limiti içinde tutmak ve her sürücüye üzerinde anlaşılan enerjiyi ayrılış anına kadar teslim etmek zorundadır.
+Araçtan şebekeye (V2G) hizmetleri sunan şarj noktası işletmecileri, istasyonu trafo limiti içinde tutmak ve her sürücünün üzerinde anlaşılan enerjisini ayrılış anına kadar teslim etmek zorundadır.
 Pekiştirmeli öğrenme (RL) tabanlı denetleyiciler bu iki gereksinimi genellikle ödüldeki cezalar olarak ele alır ve bu denetleyicilerin ağları tek bir istasyon boyutuna bağlıdır.
-Bu makale, boyuttan bağımsız dikkat tabanlı bir politikayı bir güvenlik katmanıyla birleştirmektedir; bu katman, araç başına güç sınırları ile iki yönlü trafo limitinin oluşturduğu kümeye kesin bir izdüşümdür (projeksiyon) ve $N$ şarj ünitesi için $O(N\log N)$ sürede hesaplanır.
-Her şarj ünitesi bir belirteç (token) olarak temsil edildiğinden tek bir ağırlık kümesi, herhangi sayıda şarj ünitesine hizmet edebilir.
+Bu makale, boyuttan bağımsız küme politikalarını bir güvenlik katmanıyla birleştirmektedir; bu katman, araç başına güç sınırları ile iki yönlü trafo limitinin oluşturduğu kümeye kesin bir izdüşümdür (projeksiyon).
+Her elektrikli aracın (EV) alt sınırı, kabul edilen gereksinimini tam güçte erişilebilir tutar.
+Herhangi bir ham eylem dizisi için trafo limitinin, simülatöre ve şebeke kapasite payına ilişkin koşullar altında her adımda sağlandığı ispatlanmıştır.
+Kalış süresi boyunca olursuz adımla (trafonun tüm alt sınırları karşılayamadığı adımla) karşılaşmayan her EV, kabul edilen gereksinimini karşılar.
 
-Her elektrikli aracın (EV) alt sınırı, ardından tam güçle şarj edildiğinde kabul edilen gereksinimine hâlâ ulaşılabilen en küçük güçtür ve şarj gücü azalmasını (taper) içerir.
-Kabul edilen bu gereksinim, sürücünün talebinin erişilebilir ve kabul edilebilir olanla sınırlandırılmış hâlidir.
+Dikkat tabanlı ve Deep Sets politikaları, EV2Gym'de 10 ve 20 şarj ünitesi üzerinde yakınsal politika optimizasyonu (PPO) ile eğitilmiş ve yeniden eğitim olmadan 200 şarj ünitesine kadar test edilmiştir.
+Öğrenen her yöntem için iki eğitim tohumuyla, güvenlik katmanından geçirilerek çalıştırılan 102.750 test epizodunda hiç trafo aşırı yüklemesi oluşmamıştır; buna karşılık ceza ile eğitilen ve Lagrange tabanlı dikkat politikalarında sırasıyla 3.730 ve 3.274 aşırı yük adımı görülmüştür.
+Ayrılışın bilindiği sınırı kullanan konformal olmayan her yöntemde, olursuz adım içermeyen hiçbir epizotta eksik enerjiyle ayrılan EV olmamıştır.
 
-Eğitim ve kullanım sırasında herhangi bir ham eylem dizisi için makale iki sonuç ispatlamaktadır.
-Simülatöre ve şebeke kapasite payına ilişkin koşullar altında trafo limiti her adımda sağlanır.
-Buna ek olarak, kalış süresi boyunca olursuz adımla karşılaşmayan her EV, kabul edilen gereksinimini karşılar; burada bir adım, trafo her EV'ye alt sınırını veremiyorsa olursuz sayılır.
-Geriye kalan adımları en az esneklik payı önce (LLF) ilkesine dayanan bir yedek kural ele alır.
+200 şarj ünitesinde dikkat tabanlı politikanın tam bilgili bir optimuma göre açığı şarj ünitesi ve epizot başına 0,90 avro olmuştur; 50 şarj ünitesinde eğitildiğinde bu değer 0,87 avrodur.
+Deep Sets politikası 0,68 avroya ulaşmıştır; dolayısıyla dikkat mimarisi bir üstünlük göstermemiştir.
+Aynı katmanla kullanılan bir fiyat eşiği kuralı, test ızgarasının her boyutunda dikkat tabanlı politikadan daha düşük ortalama açığa sahip olmuştur.
+Deep Sets politikası bu kuralı yalnızca 20 şarj ünitesi ve üzerinde geçmiştir.
 
-Önceden bildirilmeyen ayrılışlar için ayrılış zamanına ilişkin bölünmüş konformal (split-conformal) bir sınır, ikinci sonucu marjinal kapsamayla genişletir; bu kapsama, nominal düzey ile alt sınırından daha az güç alan EV'lerin oranı arasındaki farktan küçük değildir.
-Güvenli dikkat tabanlı denetleyici (\method{}), EV2Gym simülatöründe 10 ve 20 şarj üniteli istasyonlarda yakınsal politika optimizasyonu (PPO) ile eğitilmekte ve yeniden eğitim olmadan 200 şarj ünitesine kadar test edilmektedir.
-Denetleyici; öğrenen, kısıtlı RL, sezgisel ve model öngörülü karşılaştırma yöntemleriyle, cezalı kârın tam bilgili optimuma olan açığı ve olursuz adımla karşılaşmayan EV'lerin payı üzerinden karşılaştırılmaktadır.
-\RES{ana bulguları içeren bir veya iki cümle: $N=200$ için cezalı kâr açığı, kalış süresi boyunca olursuz adımla karşılaşmayan EV'lerin oranı, garantinin maliyeti}
+Öğrenen politikalar olursuz adımlara yol açmış; dikkat tabanlı politika için olursuz adımla karşılaşmayan EV'lerin payı 5 şarj ünitesinde \%65,9'dan 200 şarj ünitesinde \%92,6'ya yükselmiştir.
+Ayrılış sınırıyla bu politika kabul edilen EV'lerin \%2,24'ünü gereksinimi karşılanmadan bırakmıştır; bu oran ceza ile eğitilen ikizinde \%1,86, sınır içermeyen bir varyantta ise \%0,99'dur.
+Bu varyant her boyutta daha düşük bir açığa da sahip olmuştur.
+Cezalı kâr açısından dikkat tabanlı politika, kabul edilen EV başına ikizinden 0,04 ile 3,46 avro daha yüksek puan almış; güven aralığı yalnızca 200 şarj ünitesinde sıfırı içermiştir.
 \end{abstract}
 
 \noindent\textbf{Anahtar Kelimeler:} Araçtan şebekeye, Elektrikli araç şarjı, Güvenli pekiştirmeli öğrenme, Güvenlik katmanı, Sıfır-atış aktarım

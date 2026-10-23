@@ -1,9 +1,9 @@
 % =====================================================================
 % TÜRKÇE İNCELEME KOPYASI (gönderim sürümü değildir; SAUCIS yalnızca
 % İngilizce kabul eder). Kaynak: ../supplementary/supplementary.tex
-% "Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik
-%  Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme" için ek
-%  materyal (çalışma başlığı, DD30; nihai başlığı yazar belirler)
+% "Olurluluğu Koruyan Güvenlik Katmanıyla V2G Şarjı için Boyuttan Bağımsız
+%  Güvenli Pekiştirmeli Öğrenme" için ek materyal (çalışma başlığı, DD45;
+%  nihai başlığı yazar belirler)
 % Derleme: latexmk -pdf supplementary_tr.tex (ana metne yapılan çapraz
 % göndermelerin çözülmesi için önce ../manuscript_tr/main_tr.tex bir kez
 % derlenmelidir)
@@ -34,7 +34,7 @@
 \footnotesize \RES{\texttt{analysis/scripts/make\_all.py} tarafından üretilen tablo}
 \end{table}}
 
-\title{Ek Materyal\\[1mm]\large Boyuttan Bağımsız V2G Şarj Kontrolü için Olurluluğu Koruyan Güvenlik Katmanına Sahip Dikkat Tabanlı Güvenli Pekiştirmeli Öğrenme}
+\title{Ek Materyal\\[1mm]\large Olurluluğu Koruyan Güvenlik Katmanıyla V2G Şarjı için Boyuttan Bağımsız Güvenli Pekiştirmeli Öğrenme}
 \ifanonymous
   \author{Anonim yazar(lar)}
 \else
@@ -47,7 +47,7 @@
 
 \begin{center}
 \fbox{\parbox{0.92\linewidth}{\small\itshape
-Bu belge yazarın incelemesi için hazırlanmış Türkçe çeviridir; gönderim sürümü İngilizcedir. Şekillerin içindeki metinler İngilizce bırakılmıştır.}}
+Bu belge yazarın incelemesi için hazırlanmış Türkçe çeviridir; gönderim sürümü İngilizcedir. Şekillerin içindeki metinler ve analiz betiklerinin ürettiği sonuç tabloları (başlıkları dâhil) İngilizce bırakılmıştır; metindeki ondalık sayılar Türkçe yazımla (virgülle) verilmiş, matematik ifadelerindeki ve üretilen tablolardaki sayılar değiştirilmemiştir.}}
 \end{center}
 
 Bu belge ana metni tamamlamaktadır.
@@ -55,7 +55,7 @@ Bölüm~\ref{app:proofs} biçimsel sonuçları ispatlamakta, Bölüm~\ref{sec:ev
 Karşılaştırılan yöntemler, eğitim, ayarlama ve istatistikler Bölüm~\ref{sec:training-supp} içinde ele alınmakta; Bölüm~\ref{sec:results-supp} ise ek bulguları bir araya getirmektedir.
 Ana metnin denklemlerine, lemmalarına ve şekillerine ana metindeki numaralarıyla atıf yapılmakta; bu belgedeki ögeler ise S önekini taşımaktadır.
 Kısaltmalar ana metni izlemektedir: bir şarj noktası işletmecisi (CPO) istasyonunda araçtan şebekeye (V2G) hizmetleri ve fotovoltaik (PV) üretim içeren elektrikli araç (EV) şarjı.
-Yöntem, yakınsal politika optimizasyonu (PPO) ile eğitilen ve çok katmanlı algılayıcı (MLP), ekonomik model öngörülü kontrol (eMPC) ve heterojen çizge politikası (EV-GNN) ile karşılaştırılan güvenli dikkat tabanlı denetleyicidir (\method{}).
+Ana yöntem, yakınsal politika optimizasyonu (PPO) ile eğitilen ve bir Deep Sets politikası, çok katmanlı algılayıcı (MLP), kural tabanlı yöntemler ve ekonomik model öngörülü kontrol (eMPC) ile karşılaştırılan güvenli dikkat tabanlı denetleyicidir (\method{}).
 Diğer kısaltmalar doğrusal program (LP), Karush--Kuhn--Tucker (KKT) koşulları, en az esneklik payı önce (LLF) çizelgelemesi ve konformal tahmindir (CP).
 \Tab{tab:nomenclature} başlıca sembolleri listelemektedir.
 

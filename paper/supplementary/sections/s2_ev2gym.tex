@@ -158,13 +158,13 @@ Transformer rating & $P_{\sm{tr}}=\rho_{\sm{tr}}N$; $\rho_{\sm{tr}}\in\{4,7\}$ k
 Inflexible load & mean peak $0.4P_{\sm{tr}}$, clipped at $P_{\sm{tr}}$, redrawn per episode & linear \\
 PV generation & mean peak about $0.38P_{\sm{tr}}$, redrawn per episode & linear \\
 Demand response & off & -- \\
-Step, horizon & $\Delta t=15$ min, $T=112$ (28 h); sensitivity 5 min, $T=336$ & -- \\
+Step, horizon & $\Delta t=15$ min, $T=112$ (28 h) & -- \\
 Profiles (start, spawn multiplier, days) & workplace (05:00, 5, weekdays); public (12:00, 4, all days); private (12:00, 2.5, all days) & per charger \\
 Mean occupancy & about 0.21 for all profiles & -- \\
 EV models & 8 V2G-capable models; efficiency 0.90 (0.93 for one model); $E^{\min}=5$ kWh; minimum stay 180 min & -- \\
 Taper multiplier & 5 (EV2Gym default) & -- \\
-Desired energy & full battery; sensitivity 80\% state of charge & -- \\
-Prices & Dutch day-ahead prices; discharge price $=$ charging price; sensitivities with factor 0.9 and a throughput cost of 0.05 \texteuro/kWh & -- \\
+Desired energy & full battery & -- \\
+Prices & Dutch day-ahead prices; discharge price $=$ charging price & -- \\
 Forecast noise & Gaussian, standard deviation 10\% of the value & -- \\
 Test grid & 36 configurations ($N$, $\rho_{\sm{tr}}$, profile), 6 stress configurations and the literature configuration & -- \\
 Test episodes & 100 per configuration for $N\le50$ and the literature configuration, 50 for $N\ge100$; 3,550 per policy & -- \\

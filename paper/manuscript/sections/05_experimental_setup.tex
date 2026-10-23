@@ -14,66 +14,61 @@ The grid quantities and the arrival rate scale linearly with $N$.
 In particular, the transformer rating is $P_{\sm{tr}}=\rho_{\sm{tr}}N$, with a tight level of $\rho_{\sm{tr}}=4$ kW per charger as in EV2Gym's 25-charger V2G configuration and a moderate level of 7 kW.
 Inflexible load and PV are scaled with multipliers of mean $0.4P_{\sm{tr}}$, and forecasts in the observation carry Gaussian noise with a standard deviation of 10\%.
 The workplace, public and private arrival profiles of EV2Gym start at hours that let overnight sessions fit into the 28-h horizon of $T=112$ steps of 15 min.
-Their mean charger occupancy is about 0.21 for every profile.
 
 Training mixes $N\in\{10,20\}$, the three profiles and the two ratings within every batch.
-The test grid covers $N\in\{5,10,20,50,100,200\}$, both ratings and all profiles, plus a stress level of $\rho_{\sm{tr}}=3$ kW at $N\in\{20,200\}$.
+The test grid covers $N\in\{5,10,20,50,100,200\}$, both ratings and all profiles, plus a stress level of $\rho_{\sm{tr}}=3$ kW at $N\in\{20,200\}$ and EV2Gym's original 25-charger configuration, 43 configurations in total.
 Zero-shot therefore refers to the station size and to the stress level, whereas the profiles are seen in training.
-Each configuration has 100 fixed test episodes for $N\le50$ and 50 for $N\ge100$, shared by all methods, and EV2Gym's original 25-charger configuration adds 100 episodes, so each policy runs 3,550 test episodes.
-Per-charger quantities do not change with $N$, so aggregate fluctuations shrink with growing $N$, and we report per $N$ how often the aggregate limits bind.
-Sensitivity studies at $N=20$ and $\rho_{\sm{tr}}=4$ kW cover a desired state of charge of 0.8, a 5-min step, a throughput cost of 0.05\,\texteuro/kWh and a discharge price factor of 0.9.
-Only the 5-min study retrains.
+Each configuration has 100 fixed test episodes for $N\le50$ and 50 for $N\ge100$, shared by all methods, so each policy runs 3,550 test episodes.
+The stress level is the only sensitivity study that was run.
 
 \subsection{Compared methods}\label{sec:baselines}
 
 Every method and every evaluation pass receives the same admitted requirements, and shortfall is always measured against them.
-Methods without the layer execute only the physical clip $\clip(x_i,\pmn_i,u_i)$ without $l_i$ or the transformer coupling, and every method can also run with its output passed through the safety layer.
+Methods without the layer execute only the physical clip $\clip(x_i,\pmn_i,u_i)$ without $l_i$ or the transformer coupling.
 
-The learned methods share the attention encoder where possible.
+Among the learned methods, \method{} and Deep Sets+safety layer are the two size-agnostic set policies with the safety layer.
 Attention+penalty is the penalty-based twin of \method{}: it learns from the profit minus a weight $w$ times the shortfall and overload energy, without the safety layer.
 Its constrained counterpart, Attention+PPO-Lagrangian, replaces the fixed weight by Lagrange multipliers with a cost limit of zero \cite{altman2021constrained,tessler2018reward}.
-With $l_i=\pmn_i$, Attention+safety layer without departure bound reduces the layer to a per-step transformer projection as in \cite{wan2025logicinformed}, keeps $\beta=0.01$ and learns the departure requirement from the penalty reward.
-Deep Sets+safety layer is a size-agnostic per-token network with a mean-pooled context and no attention, matched to the parameter count of \method{} within 10\%.
+With $l_i=\pmn_i$, Attention+safety layer without departure bound reduces the layer to a per-step transformer projection as in \cite{wan2025logicinformed} and learns the departure requirement from the penalty reward.
 The penalty-trained checkpoints also run with the safety layer at deployment only, and \method{} and Attention+penalty also run without admission control, keeping the arrival-capped request.
-A multilayer perceptron (MLP) over zero-padded tokens, with and without the layer, is a fixed-size reference evaluated only at $N\le20$.
-As an in-distribution reference, \method{} is also trained at $N=50$ with three seeds and evaluated at $N\in\{50,100,200\}$.
+A multilayer perceptron (MLP) over tokens zero-padded to 20 slots, with and without the layer, is a fixed-size reference evaluated only at $N\le20$.
+As an in-distribution reference, \method{} is also trained at $N=50$ and evaluated at $N\in\{50,100,200\}$.
 
-Six rules complete the comparison: as fast as possible, as late as possible, round robin, LLF, sLLF \cite{chen2022smoothed} and a price-threshold rule.
-Our HiGHS re-implementation of the economic MPC of EV2Gym \cite{diazlondono2026open} runs at every $N$ with a 10-step horizon (eMPC-HiGHS) and a 24-h horizon (eMPC-HiGHS-24h).
-Both know the exact prices and arrivals inside their horizon, an information advantage, and the original Gurobi-based eMPC runs on the literature configuration as a cross-check.
-EV-GNN \cite{orfanoudakis2025scalable} runs from its public code at commit \texttt{01aa1b7a} with its own TD3 training script, reward and hyperparameters, one model per arrival profile at $N=20$ and $\rho_{\sm{tr}}=4$ kW with five seeds.
-Unlike our methods, it trains on its own configuration with one load and PV draw per run and with $3\times10^{6}$ steps instead of its default of $10^{7}$.
-It is reported both in that configuration and zero-shot.
-GNN-DT \cite{orfanoudakis2026graph} has public code (DT4EVs, commit \texttt{8b327d12}), but it trains offline on datasets that an optimiser generates for each scenario, and porting this pipeline was beyond the scope of this study.
-
-Ablations of \method{} set $\beta=0$, train with a curriculum or use a smaller network.
-Attention+penalty is further trained with a dense per-step deficit penalty and with $w\in\{1,100\}$\,\texteuro/kWh (three seeds).
-The conformal variant \method{}-CP is trained once at $\alpha=0.1$ and evaluated with bounds recalibrated for every $\alpha$, with an uncalibrated point prediction as its ablation.
+Six rules complete the comparison, each with and without the safety layer: as fast as possible (AFAP), as late as possible (ALAP), round robin, LLF, sLLF \cite{chen2022smoothed} and a price-threshold rule.
+Our HiGHS re-implementation of the economic MPC of EV2Gym \cite{diazlondono2026open}, eMPC-HiGHS, runs at every $N$ with a 10-step horizon and knows the exact prices and arrivals inside it.
+The conformal variant \method{}-CP is trained once at $\alpha=0.1$ and evaluated with bounds recalibrated for every $\alpha\in\{0.01,0.05,0.1,0.2\}$, with an uncalibrated point prediction as a further pass.
+EV-GNN \cite{orfanoudakis2025scalable} was planned as an external baseline but was not run, and GNN-DT \cite{orfanoudakis2026graph} was not ported, because it trains offline on datasets that an optimiser generates for each scenario.
+The planned ablations, penalty-weight sensitivities, further MPC variants and other sensitivity studies were not run either.
 
 \subsection{Metrics}\label{sec:metrics}
 
-The main metric is the penalised-profit gap of \Eq{eq:gap}, valid for every method, and profit, energy not served and transformer overload energy are reported separately.
-For the safety layer we report the share of EVs whose stay contains no infeasible step, the infeasible steps per fallback case and the measured shortfall against the deficit bound of Lemma~\ref{S-lem:deficit}.
-The cost of the guarantee is the difference between Attention+penalty and \method{} on the same episodes, in $J^{\sm{pen}}$ as the primary and in profit as the secondary measure.
-It is a ratio of sums over matched episodes, in \texteuro{} per EV served and in percent of $|J^{\sm{LP,ceil}}|$.
+The main metric is the absolute gap of \Eq{eq:gap}, valid for every method.
+Penalised profits use energy not served against the shared admitted requirement for every method and pass, and profit, energy not served and transformer overload energy are reported separately.
+For the safety layer we report the share of EVs whose stay contains no infeasible step (E4), the infeasible steps per fallback case and the measured shortfall against the deficit bound of Lemma~\ref{S-lem:deficit}.
+Because the logs carry no per-EV flag for the hypothesis of Theorem~\ref{thm:invariance}(b), its departure part is checked at episode level.
+
+The cost of the guarantee is the difference between the penalty-based twin and the policy with the safety layer on the same episodes, in $J^{\sm{pen}}$ as the primary and in profit as the secondary measure.
+It is a ratio of sums over matched episodes in \texteuro{} per admitted EV and in percent of $|J^{\sm{LP,ceil}}|$.
 A positive value means that the penalty-based twin scored higher.
 The transfer gap of \method{} to the reference trained at $N=50$ separates transfer loss from method loss.
 
 \subsection{Tuning, statistics and compute}\label{sec:hyper}
 
-Each of the seven tuned learned methods receives 12 configurations from a grid over learning rate, minibatch size and entropy coefficient.
+Each of the seven tuned learned methods received 12 configurations from a grid over learning rate, minibatch size and entropy coefficient.
 Penalty rewards add the weight $w\in\{1,10,100\}$ to the grid, and the Lagrangian method adds the multiplier step size.
-Every configuration trains on the training mixture for $0.5\times10^{6}$ steps and is evaluated on 24 validation episodes disjoint from the test replays.
-Selection uses the validation $J^{\sm{pen}}$ at $w=10$ for every method, so a penalty method cannot win by lowering its own weight.
-The selected configuration is retrained with five seeds for $3\times10^{6}$ steps, and Table~\ref{S-tab:hyper} lists the hyperparameters.
+Every configuration was trained on the training mixture for $0.5\times10^{6}$ steps and evaluated on 24 validation episodes disjoint from the test replays, and selection used the validation $J^{\sm{pen}}$ at $w=10$ for every method.
+The selected configuration was retrained with two seeds for $3\times10^{6}$ steps, and Table~\ref{S-tab:hyper} lists the hyperparameters.
 
-The training seed is the unit of analysis, the number of seeds is fixed in advance, and replay-level values are averaged within each seed first.
-Our pre-declared primary endpoints are the gap at $N=200$ (E1), the cost of the guarantee per $N$ (E2), the overload energy (E3) and the share of EVs without infeasible steps (E4).
-As the primary test, a paired $t$-test compares seed means on the same fixed replays, and a Wilcoxon signed-rank test \cite{wilcoxon1945individual} on replay-level differences of the seed-averaged policies is secondary.
-Holm's correction runs over each results table, and stratified-bootstrap 95\% confidence intervals, the interquartile mean (IQM) and the probability of improvement are reported \cite{agarwal2021deep}.
-Results over few seeds can mislead \cite{henderson2018deep}, and with five seeds the tests have low power, so the confidence intervals are the primary evidence (Section~\ref{S-app:stats}).
+With two seeds, between-seed variability cannot be tested, so the analysis compares seed-averaged policies on the shared test replays.
+Tables report the mean of the seed-averaged policy with the range over the two seeds.
+Paired Wilcoxon signed-rank tests \cite{wilcoxon1945individual} on replay-level differences compare \method{} with each other method per station size.
+Holm's correction runs over all comparisons of one results table, up to 351 per family, and the sign of the rank-biserial correlation gives the direction.
+Confidence intervals of the mean come from a bootstrap that resamples test replays within each configuration, and the interquartile mean (IQM) of the gap is reported at the training sizes \cite{agarwal2021deep}.
+The Wilcoxon test concerns the median shift, whereas the interval concerns the mean, and a few episodes with large penalties can move the mean alone.
+Where the two disagree, we report both and call the comparison inconclusive.
+Results over few seeds can mislead \cite{henderson2018deep}, so the seed count is a limitation (Section~\ref{S-app:stats}).
 
 The implementation uses PyTorch \cite{paszke2019pytorch}, a single-file PPO in the style of CleanRL \cite{huang2022cleanrl} and the Adam optimiser \cite{kingma2015adam}, with the safety layer in double precision.
-Overall, the core experiments need about 32 GPU-hours of training and 82--132 CPU-hours for evaluation, admission tables, calibration and optima (Section~\ref{S-app:compute}).
-All experiments are run by the authors on their own hardware \TODO{CPU, GPU, memory, operating system, Python and PyTorch versions}.
+All experiments ran on an AMD Ryzen 7 7700 with an NVIDIA GeForce RTX 5070 Ti (16 GB) under WSL2 Ubuntu 24.04 with Python 3.13.15 and PyTorch 2.14.1.
+Preparation took 1.6 h, tuning 7.9 h, training 10.2 h and evaluation 2.5 h, for 153,100 episodes in total (Section~\ref{S-app:compute}).
 Code, configurations and analysis scripts will be released with the paper \TODO{repository link}.

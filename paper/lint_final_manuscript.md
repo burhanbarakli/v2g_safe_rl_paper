@@ -1,6 +1,6 @@
 # Style lint report: `manuscript.md`
 
-Total words analysed: 9838
+Total words analysed: 9622
 
 ## Restricted phrases (whole manuscript)
 
@@ -10,7 +10,7 @@ Total words analysed: 9838
 
 ## Acronyms
 
-- Used but never defined: A1, A2, A3, A4, A5, S1, S2, S3, S4, S5, S6, S7, S8, SA
+- Used but never defined: A1, A2, A3, A4, A5, A6, AI, AMD, CI, DRAFT, E4, GB, NVIDIA, RTX, S1, S10, S12, S13, S15, S16, S2, S3, S4, S5, S6, S7, S8, SA, SAUCIS, WSL2
 - Used before first definition: V2G
 - Defined more than twice (abstract + main text allowed): none
 
@@ -18,48 +18,46 @@ Total words analysed: 9838
 
 | Section | Words | Sentences | Mean len | >35 words | Paras >180 words | Demo-opener paras | 'This'+verb | Consecutive same opener | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Attention-Based Safe Reinforcement Learn | 37 | 2 | 18.5 | 0 | 0 | 0 | 0 | 0 | OK |
-| Abstract | 339 | 15 | 22.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 1 Introduction | 813 | 37 | 22.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 2.1 Reinforcement learning for EV chargi | 193 | 9 | 21.4 | 0 | 0 | 0 | 0 | 0 | OK |
-| 2.2 Constraint handling and safe reinfor | 380 | 17 | 22.4 | 0 | 0 | 0 | 0 | 0 | OK |
-| 2.3 Size-agnostic architectures | 201 | 10 | 20.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 2.4 Laxity-based scheduling and departur | 154 | 7 | 22.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 2.5 Positioning | 187 | 10 | 18.7 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.1 Station, time and prices | 98 | 5 | 19.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.2 EV energy dynamics | 240 | 14 | 17.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.3 Departure energy requirement | 120 | 6 | 20.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.4 Transformer limit | 76 | 4 | 19.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.5 Online control problem | 72 | 4 | 18.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.6 Perfect-information optimum | 341 | 14 | 24.4 | 0 | 0 | 0 | 0 | 0 | OK |
-| 3.7 Markov decision process | 286 | 15 | 19.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4 Proposed Method | 123 | 6 | 20.5 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.1 Token representation and attention p | 485 | 19 | 25.5 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.2 Per-EV bounds from reachable energy | 551 | 30 | 18.4 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.3 Projection | 356 | 22 | 16.2 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.4 Feasibility invariance | 628 | 38 | 16.5 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.5 Fallback rule and admission control | 362 | 18 | 20.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.6 Conformal lower bound on the departu | 261 | 13 | 20.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 4.7 Training algorithm | 271 | 12 | 22.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 5.1 Simulator and scenarios | 342 | 17 | 20.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 5.2 Compared methods | 308 | 13 | 23.7 | 0 | 0 | 0 | 0 | 0 | OK |
-| 5.3 Metrics | 118 | 5 | 23.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 5.4 Training, tuning and statistics | 212 | 9 | 23.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6 Results | 20 | 1 | 20.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6.1 Main comparison | 162 | 7 | 23.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6.2 Zero-shot scaling | 151 | 7 | 21.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6.3 Constraint satisfaction | 137 | 7 | 19.6 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6.4 Cost of the guarantee | 128 | 7 | 18.3 | 0 | 0 | 0 | 0 | 0 | OK |
-| 6.5 Further results | 122 | 5 | 24.4 | 0 | 0 | 0 | 0 | 0 | OK |
-| 7.1 Interpretation | 127 | 7 | 18.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 7.2 Practical implications for charge po | 16 | 1 | 16.0 | 0 | 0 | 0 | 0 | 0 | OK |
-| 7.3 Limitations | 470 | 26 | 18.1 | 0 | 0 | 0 | 0 | 0 | OK |
-| 8 Conclusion | 270 | 12 | 22.5 | 0 | 0 | 0 | 0 | 0 | OK |
-| Article Information Form | 340 | 19 | 17.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| Size-Agnostic Safe Reinforcement Learnin | 37 | 2 | 18.5 | 0 | 0 | 0 | 0 | 0 | OK |
+| Abstract | 390 | 18 | 21.7 | 0 | 0 | 0 | 0 | 0 | OK |
+| 1 Introduction | 752 | 35 | 21.5 | 0 | 0 | 0 | 0 | 0 | OK |
+| 2.1 Reinforcement learning for EV chargi | 129 | 6 | 21.5 | 0 | 0 | 0 | 0 | 0 | OK |
+| 2.2 Constraint handling and safe reinfor | 361 | 17 | 21.2 | 0 | 0 | 0 | 0 | 0 | OK |
+| 2.3 Size-agnostic architectures | 199 | 9 | 22.1 | 0 | 0 | 0 | 0 | 0 | OK |
+| 2.4 Laxity-based scheduling and departur | 159 | 7 | 22.7 | 0 | 0 | 0 | 0 | 0 | OK |
+| 2.5 Positioning | 130 | 6 | 21.7 | 0 | 0 | 0 | 0 | 0 | OK |
+| 3.1 Station, EVs and energy dynamics | 248 | 13 | 19.1 | 0 | 0 | 0 | 0 | 0 | OK |
+| 3.2 Departure requirement and transforme | 206 | 12 | 17.2 | 0 | 0 | 0 | 0 | 0 | OK |
+| 3.3 Online control problem and optima | 244 | 12 | 20.3 | 0 | 0 | 0 | 0 | 0 | OK |
+| 3.4 Partially observable Markov decision | 155 | 6 | 25.8 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4 Proposed Method | 132 | 6 | 22.0 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.1 Token representation and set policie | 335 | 15 | 22.3 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.2 Per-EV bounds from reachable energy | 317 | 18 | 17.6 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.3 Projection | 265 | 13 | 20.4 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.4 Feasibility preservation | 409 | 20 | 20.4 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.5 Fallback rule | 143 | 7 | 20.4 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.6 Conformal lower bound on the departu | 167 | 9 | 18.6 | 0 | 0 | 0 | 0 | 0 | OK |
+| 4.7 Training algorithm | 188 | 9 | 20.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 5.1 Simulator and scenarios | 293 | 14 | 20.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 5.2 Compared methods | 323 | 14 | 23.1 | 0 | 0 | 0 | 0 | 0 | OK |
+| 5.3 Metrics | 178 | 8 | 22.2 | 0 | 0 | 0 | 0 | 0 | OK |
+| 5.4 Tuning, statistics and compute | 350 | 16 | 21.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6 Results | 18 | 1 | 18.0 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.1 Main comparison | 458 | 20 | 22.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.2 Zero-shot transfer across station si | 307 | 14 | 21.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.3 Constraint satisfaction | 319 | 15 | 21.3 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.4 Effect of the departure bound | 246 | 12 | 20.5 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.5 Cost of the guarantee | 182 | 10 | 18.2 | 0 | 0 | 0 | 0 | 0 | OK |
+| 6.6 Further results | 147 | 7 | 21.0 | 0 | 0 | 0 | 0 | 0 | OK |
+| 7 Discussion | 40 | 2 | 20.0 | 0 | 0 | 0 | 0 | 0 | OK |
+| 7.1 Interpretation | 662 | 32 | 20.7 | 0 | 0 | 0 | 0 | 0 | OK |
+| 7.2 Limitations | 275 | 12 | 22.9 | 0 | 0 | 0 | 0 | 0 | OK |
+| 8 Conclusion | 372 | 20 | 18.6 | 0 | 0 | 0 | 0 | 0 | OK |
+| Article Information Form | 219 | 14 | 15.6 | 0 | 0 | 0 | 0 | 0 | OK |
 
 ## Details
 
 No sentence-level issues.
 
 
-**Blocking flags: 14**
+**Blocking flags: 30**

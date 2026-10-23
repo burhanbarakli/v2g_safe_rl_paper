@@ -18,10 +18,13 @@ Processing
 5. join the three oracle values per (test_cfg_id, replay_id): `oracle_pen_eur` = soft-penalty oracle
    J^pen_LP,ceil (`oracle_pen_profit_eur`, DD32), `oracle_ceil_eur` = hard oracle J_LP,ceil
    (`oracle_profit_ceil_eur`), `oracle_profit_eur` = J_LP (oracle `profit_eur`, supplementary, DD42-4);
-6. optimality gaps % per episode = 100 * (oracle - method) / |oracle|, NaN if |oracle| < GAP_EPS = 1 EUR:
-   `gap_pct`      main (DD32): penalised profit J^pen vs soft oracle (all methods incl. conformal, DD43(1));
-   `gap_hard_pct` raw profit vs J_LP,ceil (cost-of-the-guarantee analysis);
-   `gap_lp_pct`   raw profit vs J_LP (supplementary table only).
+6. DD46: shortfall columns are replaced by the shared-requirement versions (`energy_not_served_shared_kwh`,
+   `n_evs_unserved_shared`; the pass's own values are kept as `*_own`), and J^pen = profit - 10*(energy not
+   served vs the shared requirement + overload energy) is recomputed for every method and pass (`jpen_eur`;
+   the file column `penalised_profit_eur` is not used);
+7. bound check: no episode may exceed the soft oracle J^pen_LP,ceil by more than 1e-6 EUR (count reported);
+8. DD47: primary optimality gap `gap_abs` = (J^pen_oracle - J^pen)/N in EUR per charger and episode;
+   relative gaps only as ratios of sums (tables.py, supplementary).
 Extra columns of SCHEMA_ADDITIONS.md are read when present (none of them is required).
 """
 from __future__ import annotations
@@ -55,11 +58,13 @@ EPISODE_INT = {"seed", "N", "dt_min", "replay_id", "n_evs", "n_evs_capped", "n_e
 ORACLE_EXTRA = ["solve_time_s", "solver_status", "shortfall_stage_kwh"]
 ORACLE_CEIL = "oracle_profit_ceil_eur"        # hard oracle J_LP,ceil (DD26); warned about if absent
 ORACLE_PEN = "oracle_pen_profit_eur"          # soft-penalty oracle J^pen_LP,ceil (DD32); main gap reference
-PEN_COL = "penalised_profit_eur"              # J^pen = profit - 10 ENS - 10 overload (DD32)
+PEN_COL = "jpen_eur"                          # J^pen recomputed by the loader (DD32, DD46)
+FILE_PEN_COL = "penalised_profit_eur"         # written by the code; NOT used (DD46)
+BOUND_TOL = 1e-6                              # EUR: tolerance of the soft-oracle bound check
 W_PEN = 10.0                                  # EUR/kWh, w_E = w_P (DD22, DD32)
 # optional numeric columns from SCHEMA_ADDITIONS.md used by T7/F-S3 (conformal)
 OPTIONAL_COLS = ["alpha", "conformal_coverage", "n_evs_departed_before_bound", "coverage_frac",
-                 "mean_d_minus_dlo", "shortfall_departed_before_bound_kwh", ORACLE_CEIL, ORACLE_PEN, PEN_COL,
+                 "mean_d_minus_dlo", "shortfall_departed_before_bound_kwh", ORACLE_CEIL, ORACLE_PEN, FILE_PEN_COL,
                  "penalised_profit_dd2_eur", "energy_admission_reduced_kwh", "energy_capped_kwh",
                  "energy_not_served_dd2_kwh", "n_evs_touched_infeasible", "n_steps",
                  # DD43
@@ -78,7 +83,7 @@ STEP_COLS = ["exp_id", "replay_id", "t", "price_ch", "price_dis", "P_tr", "P_inf
              "sum_p", "sum_l", "sum_u", "n_connected", "fallback_code"]
 # fallback_code: -1 none, 0 FB-0, 1 FB-1, 2 FB-2, 3 FB-1* (SCHEMA_ADDITIONS.md §2)
 
-GAP_EPS = 1.0           # EUR: |oracle| below this -> gap undefined (NaN), counted in the load report (M2)
+GAP_EPS = 1.0           # EUR: only for the relative (ratio-of-sums) gap denominators; the primary gap is absolute (DD47)
 SYNTH_SENTINEL = "SYNTHETIC_DATA"   # file in <raw> root written by synth.py
 
 
@@ -98,6 +103,8 @@ class Dataset:
     report: list = field(default_factory=list)
     gap_reference: str = "soft-penalty oracle J^pen_LP,ceil (DD32)"
     gap_excluded: dict = field(default_factory=dict)
+    bound_violations: int = -1        # episodes with J^pen > soft oracle + BOUND_TOL (must be 0)
+    bound_checked: int = 0
 
     def log(self, msg: str):
         self.report.append(msg)
@@ -316,22 +323,22 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
         cfgs = sorted(ep.loc[miss, "test_cfg_id"].unique())[:5]
         ds.log(f"WARNING: {int(miss.sum())} episodes without oracle profit (configs e.g. {cfgs}); gap = NaN")
 
+    _shared_shortfall(ep, ds)
     _ensure_pen(ep, ds)
-    ep["gap_pct"] = gap_pct(ep[PEN_COL], ep["oracle_pen_eur"])                # main (DD32); DD43(1): all methods
-    ep["gap_hard_pct"] = gap_pct(ep["profit_eur"], ep["oracle_ceil_eur"])     # cost of the guarantee
-    ep["gap_lp_pct"] = gap_pct(ep["profit_eur"], ep["oracle_profit_eur"])     # supplementary
-    for col, ref in [("gap_pct", "oracle_pen_eur"), ("gap_hard_pct", "oracle_ceil_eur"), ("gap_lp_pct", "oracle_profit_eur")]:
-        small = ep[ref].notna() & (ep[ref].abs() < GAP_EPS)
-        ds.gap_excluded[col] = int(small.sum())
-        if small.any():
-            ds.log(f"{col}: {int(small.sum())} episodes excluded because |{ref}| < {GAP_EPS:g} EUR (M2)")
+    ep["gap_abs"] = (ep["oracle_pen_eur"] - ep[PEN_COL]) / ep["N"]              # DD47, EUR per charger
+    chk = ep[ep["oracle_pen_eur"].notna()]
+    exceed = chk[PEN_COL] > chk["oracle_pen_eur"] + BOUND_TOL
+    ds.bound_checked, ds.bound_violations = int(len(chk)), int(exceed.sum())
+    ds.log(f"soft-oracle bound check: {ds.bound_violations} of {ds.bound_checked} episodes exceed J^pen_oracle "
+           f"by more than {BOUND_TOL:g} EUR" + ("" if ds.bound_violations == 0 else
+                                               f" (methods: {sorted(chk.loc[exceed, 'method'].unique())})"))
+    ep["gap_hard_abs"] = (ep["oracle_ceil_eur"] - ep["profit_eur"]) / ep["N"]   # raw profit vs J_LP,ceil
     add_derived(ep)
     if len(orc):
-        _ensure_pen(orc, ds)
+        _shared_shortfall(orc, None)
+        _ensure_pen(orc, None)
         add_derived(orc)
-        orc["gap_pct"] = gap_pct(orc[PEN_COL], orc[ORACLE_PEN])
-        orc["gap_hard_pct"] = gap_pct(orc["profit_eur"], orc[ORACLE_CEIL])
-        orc["gap_lp_pct"] = 0.0
+        orc["gap_abs"] = (orc[ORACLE_PEN] - orc[PEN_COL]) / orc["N"]
     ds.episodes, ds.oracle = ep.reset_index(drop=True), orc.reset_index(drop=True)
     ds.train = pd.concat(trs, ignore_index=True) if trs else pd.DataFrame(columns=TRAIN_COLS)
     ds.log(f"loaded {len(ep)} episodes, {ep['method'].nunique()} methods, "
@@ -341,7 +348,7 @@ def load_raw(raw: str | Path, require_oracle: bool = True, include_smoke: bool =
 
 
 def gap_pct(profit, oracle):
-    """Optimality gap in %: 100*(oracle - method)/|oracle|; NaN if |oracle| < GAP_EPS or missing."""
+    """Per-episode relative gap in % (kept for diagnostics only; not used in tables, DD47)."""
     profit = np.asarray(profit, dtype=float)
     oracle = np.asarray(oracle, dtype=float)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -350,12 +357,29 @@ def gap_pct(profit, oracle):
     return g
 
 
-def _ensure_pen(df: pd.DataFrame, ds=None):
-    """J^pen column; computed from its definition (DD32) if the file predates it."""
-    if PEN_COL not in df.columns or df[PEN_COL].isna().all():
-        df[PEN_COL] = df["profit_eur"] - W_PEN * df["energy_not_served_kwh"] - W_PEN * df["tr_violation_kwh"]
+def _shared_shortfall(df: pd.DataFrame, ds=None):
+    """DD46: shortfall against the replay's shared admitted requirement for every pass."""
+    if "energy_not_served_shared_kwh" in df.columns and df["energy_not_served_shared_kwh"].notna().any():
+        df["energy_not_served_own_kwh"] = df["energy_not_served_kwh"]
+        df["n_evs_unserved_own"] = df["n_evs_unserved"]
+        df["energy_not_served_kwh"] = df["energy_not_served_shared_kwh"].fillna(df["energy_not_served_kwh"])
+        if "n_evs_unserved_shared" in df.columns:
+            df["n_evs_unserved"] = df["n_evs_unserved_shared"].fillna(df["n_evs_unserved"])
+            df["frac_evs_unserved"] = np.where(df["n_evs"] > 0, df["n_evs_unserved"] / df["n_evs"].where(df["n_evs"] > 0), 0.0)
         if ds is not None:
-            ds.log(f"NOTE: {PEN_COL} missing; computed as profit - {W_PEN:g}*ENS - {W_PEN:g}*overload")
+            ds.log("DD46: energy not served and unserved EVs measured against the shared admitted requirement "
+                   "(own-requirement values kept as *_own)")
+    elif ds is not None:
+        ds.log("NOTE: no energy_not_served_shared_kwh column; shortfall uses energy_not_served_kwh")
+
+
+def _ensure_pen(df: pd.DataFrame, ds=None):
+    """J^pen = profit - w*(energy not served vs the shared requirement + overload energy), DD46.
+    Always recomputed; the file column penalised_profit_eur is ignored."""
+    df[PEN_COL] = df["profit_eur"] - W_PEN * (df["energy_not_served_kwh"] + df["tr_violation_kwh"])
+    if ds is not None:
+        ds.log(f"DD46: {PEN_COL} = profit - {W_PEN:g}*(energy not served, shared requirement + overload energy) "
+               f"for every method and pass; file column {FILE_PEN_COL} not used")
 
 
 def add_derived(df: pd.DataFrame):
@@ -364,6 +388,10 @@ def add_derived(df: pd.DataFrame):
     df["profit_per_charger"] = df["profit_eur"] / df["N"]
     if PEN_COL in df.columns:
         df["pen_per_charger"] = df[PEN_COL] / df["N"]
+    # DD43 counts used in T3c/T3d
+    df["unserved_no_infeasible"] = np.where(df["infeasible_steps"] == 0, df["n_evs_unserved"], 0)
+    if "n_evs_stay_infeasible" not in df.columns:
+        df["n_evs_stay_infeasible"] = np.nan
     df["profit_per_ev"] = np.where(df["n_evs"] > 0, df["profit_eur"] / df["n_evs"].where(df["n_evs"] > 0), np.nan)
     # DD43: primary endpoint E4 (share of EVs whose stay has no infeasible step) and binding rates
     if "share_evs_stay_feasible" in df.columns or "n_evs_stay_infeasible" in df.columns:

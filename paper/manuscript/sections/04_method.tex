@@ -14,7 +14,7 @@ During training, a policy-gradient method updates the policy from the realised p
 \end{figure}
 
 % ---------------------------------------------------------------------
-\subsection{Token representation and attention policy}\label{sec:policy}
+\subsection{Token representation and set policies}\label{sec:policy}
 
 The observation is a set of $N$ charger tokens $\xi_i(t)\in\R^{12}$ and one global token $\xi_0(t)\in\R^{38}$, and no feature encodes the index or the position of a charger.
 A charger token holds occupancy, energy and capacity data, the remaining required energy and steps, the laxity of \Sec{sec:bounds}, the power limits and the bounds $l_i$ and $u_i$.
@@ -31,6 +31,8 @@ A separate critic encoder with parameters $\omega$ pools all unmasked token outp
 The construction is permutation-equivariant, masked tokens do not influence the outputs of unmasked tokens, and the number of parameters does not depend on $N$ (Lemma~\ref{S-lem:equivariance}).
 Whatever the number of chargers, the actor has 610,370 parameters and the critic 676,481.
 Weights trained at $N\in\{10,20\}$ can therefore run at $N=200$, but performance there is not guaranteed, because attention over 200 tokens averages over more keys than seen in training.
+The Deep Sets alternative replaces the encoder by a shared per-token network with the masked mean of all token embeddings and the global token as context, so no token attends to another \cite{zaheer2017deep}.
+Its width is chosen to match the parameter count of \method{} within 10\%, and every other part of the method is unchanged.
 
 % ---------------------------------------------------------------------
 \subsection{Per-EV bounds from reachable energy}\label{sec:bounds}

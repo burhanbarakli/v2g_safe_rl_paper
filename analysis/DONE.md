@@ -1,8 +1,46 @@
 # DONE — A4 Analysis and Visualization Agent
 
-Date: 2026-10-22, revision 4 (DD43, internal review round 2 M3/M4/N-M1/N-M2, consistency round 2). Revision 3
-aligned the pipeline with DD30–DD42 and consistency items M2–M8. The folder becomes `analysis/`. **No real results exist; everything in `synthetic_test/` is fake.**
-`figures/` and `tables/` contain only `.gitkeep` and the data-independent `tables/STAT_METHODS.md`.
+Date: 2026-10-23, revision 5 (G4 report, DD45–DD49): first run on the real core results in `code/results/raw`
+(153,100 episodes, 30 methods, 43 configurations, 3,550 oracle episodes, 2 seeds per learned method; no extended set,
+no EV-GNN, no step logs). `figures/`, `tables/`, `stats/`, `findings_numbers.md` and `load_report.txt` are produced
+by `make_all.py --raw code/results/raw --out analysis`. Revisions 1–4 were built on synthetic data only.
+
+## Changes in revision 5 (DD45–DD49)
+
+| Item | Implementation |
+|---|---|
+| DD46 J^pen | `load._ensure_pen` recomputes J^pen = profit − 10·(`energy_not_served_shared_kwh` + `tr_violation_kwh`) for every method and pass; the file column `penalised_profit_eur` is not read. Energy not served and unserved EVs are the shared-requirement values (`*_own` kept). |
+| DD46 bound check | after the oracle join the loader counts episodes with J^pen > J^pen_oracle + 1e-6 €; `make_all.py` stops unless the count is 0 (`--allow-bound-violations` to override). Real data: **0 of 153,100**. |
+| DD47 gap | primary `gap_abs` = (J^pen_oracle − J^pen)/N, € per charger and episode; `gap_hard_abs` vs J^LP,ceil. Per-episode % gap, IQM-% and the 1 € exclusion are removed; TS1 holds relative gaps as ratios of sums (`stats.rel_gap_ratio`). |
+| DD48 statistics | `summarize`: mean of the seed-averaged policy, min–max over seeds, per-seed values, replay bootstrap stratified by configuration (no t intervals). `seed_comparisons`: Wilcoxon signed-rank on replay-level differences of seed-averaged policies, Holm per test file, replay-bootstrap CI, per-seed values. STAT_METHODS.md rewritten. |
+| DD45 scope | no rows/columns for runs that do not exist. T4/Fig. S2 rows = `names.T4_ROWS` (8 variants). TS2 = stress level only. Fig. S7 (`fig5_example_day`) not produced. |
+| T3c/T3d | new count tables (all episodes, both seeds; per method and per N): infeasible steps, fallback activations, EVs with an infeasible step, unserved EVs (shared), overload steps, check column "unserved EVs in episodes without infeasible steps". |
+| T7/Fig. S3 | per α: coverage vs target, shortfall vs shared requirement (per episode and total), gap, energy charged, known-d reference. |
+| T2/Fig. 3 | absolute gap per N for SA-Attn, Deep Sets + layer, N = 50 reference, layer without departure bound, penalty/Lagrangian/MLP and the 3 safety-layer baselines with the lowest grid gap; transfer gap (SA-Attn and Deep Sets − reference) in € per charger. Main grid ρ_tr ∈ {4, 7} only (G4 pooled ρ_tr = 3 at N = 20, 200). |
+| Tests | `test_smoke_never_written_into_analysis` now scans `analysis/` for the SMOKE watermark. Tests updated for J^pen/gap_abs, DD48 statistics (Wilcoxon against SciPy, Holm family), stress-only TS2; new tests for the file J^pen being ignored, the bound check, T3c check column, T4 rows, no % gap in main tables. `synth.py` keeps synthetic profits below the synthetic optimum. |
+
+Publication polish (revision 5b):
+- Captions ≤ 60 words; captions, headers, notes and row/group labels contain no design-decision ids, file names,
+  internal table ids or review labels (enforced by `test_publication_text_has_no_internal_labels`).
+- Terminology as in the manuscript: "Theorem 1(b)" for the per-EV departure statement (the manuscript's numbering;
+  no "Corollary 1"), "safety layer", "Optimality gap (€ per charger and episode)", display names from `names.py`;
+  fallback cases (i)–(iv) named as in the supplementary proof section.
+- LaTeX layout for the manuscript geometry (A4, 2.5 cm margins, 10 pt article, text width 455 pt): wrapped stub column,
+  narrower headers, the min–max range over seeds shown only for the primary column(s) (all ranges remain in the
+  `.md`/`.csv`/`_values.csv` files), long tables continue in a second float (`\ContinuedFloat`, caption package).
+  Natural widths are 0.71–0.99 of the text width, so `adjustbox` no longer scales; no overfull boxes, no float too large.
+- Figures: axis labels use "Optimality gap (€ per charger and episode)"; Fig. S6 axis labels no longer overlap;
+  "training sizes" label only in the top row of Figs. 3 and 4.
+
+Results of revision 5 (real core runs, B = 10,000):
+- Soft-oracle bound check: **0 of 153,100** episodes exceed J^pen_oracle + 1e-6 €.
+- Corollary 1 episode check (T3c): 0 unserved EVs in episodes without infeasible steps for every non-conformal method
+  with the safety layer and the departure bound; nonzero for the layer without departure bound (1,551), the conformal
+  variants (α = 0.01: 81,742) and methods without the layer.
+- `python -m pytest analysis/scripts/tests -q`: **41 passed** (≈ 16 min).
+- Tables T1, T2, T3, T3b, T3c, T3d, T4, T5, T6, T7, TS1, TS2, TS3 (+ `_values.csv`, provenance.json, STAT_METHODS.md)
+  compile with pdflatex (booktabs, adjustbox, eurosym) without errors or overfull boxes.
+- Fig. S7 (`fig5_example_day`) is not produced (no step logs).
 
 ## Changes in revision 4 (DD43)
 

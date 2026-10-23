@@ -14,7 +14,7 @@ Eğitim sırasında bir politika gradyanı yöntemi, güvenlik katmanını ortam
 \end{figure}
 
 % ---------------------------------------------------------------------
-\subsection{Belirteç gösterimi ve dikkat tabanlı politika}\label{sec:policy}
+\subsection{Belirteç gösterimi ve küme politikaları}\label{sec:policy}
 
 Gözlem, $N$ adet şarj ünitesi belirteci $\xi_i(t)\in\R^{12}$ ve bir küresel belirteç $\xi_0(t)\in\R^{38}$ içeren bir kümedir; hiçbir öznitelik bir şarj ünitesinin indisini ya da konumunu kodlamaz.
 Bir şarj ünitesi belirteci doluluk, enerji ve kapasite verilerini, kalan gerekli enerjiyi ve adım sayısını, \Sec{sec:bounds} içinde tanımlanan esneklik payını, güç limitlerini ve $l_i$ ile $u_i$ sınırlarını içerir.
@@ -29,8 +29,10 @@ Politika $\pi_\theta(a\mid s)=\prod_{i\in\mathcal N(t)}\mathrm{Normal}\big(a_i;\
 $\omega$ parametreli ayrı bir kritik kodlayıcısı, maskelenmemiş tüm belirteç çıktılarını öğrenilen tek bir dikkat sorgusuyla \cite{lee2019set} havuzlayarak $V_\omega(s)$ değerini üretir.
 
 Bu yapı permütasyona eşdeğişkendir (permutation-equivariant); maskelenmiş belirteçler maskelenmemiş belirteçlerin çıktılarını etkilemez ve parametre sayısı $N$'ye bağlı değildir (Lemma~\ref{S-lem:equivariance}).
-Şarj ünitesi sayısı ne olursa olsun aktörün 610\,370, kritiğin ise 676\,481 parametresi vardır.
+Şarj ünitesi sayısı ne olursa olsun aktörün 610.370, kritiğin ise 676.481 parametresi vardır.
 Dolayısıyla $N\in\{10,20\}$ ile eğitilen ağırlıklar $N=200$ için çalıştırılabilir; ancak bu boyutta performans garanti edilmez, çünkü 200 belirteç üzerindeki dikkat, eğitimde görülenden daha fazla anahtar üzerinden ortalama alır.
+Deep Sets alternatifi, kodlayıcının yerine belirteç başına çalışan ortak bir ağ koyar ve bağlam olarak tüm belirteç gömmelerinin maskeli ortalamasını ve küresel belirteci kullanır; dolayısıyla hiçbir belirteç diğerine dikkat etmez \cite{zaheer2017deep}.
+Genişliği, parametre sayısını \method{} ile \%10 içinde eşleştirecek şekilde seçilmiştir ve yöntemin diğer tüm parçaları değişmeden kalır.
 
 % ---------------------------------------------------------------------
 \subsection{Erişilebilir enerjiden türetilen araç başına sınırlar}\label{sec:bounds}

@@ -1,5 +1,78 @@
 # DONE: Writing Agent A5
 
+## Round 3, final audit (2026-10-24)
+
+**State.**
+- `main.pdf` 24 pages, `supplementary.pdf` 33 pages. Normal and anonymous builds: 0 errors, 0 undefined references. The anonymous PDF contains no names, e-mails or repository links.
+- Mirrors regenerated with the fixed `tools/tex2md.py`. Generated tables now come from `analysis/tables/*.md`. Captions keep `%`. The placeholder note appears only for missing figures. `\euro` is rendered. The supplementary title is no longer duplicated.
+- Lint: main 30 blocking flags, all on the acronym list (A1-A6, S-labels, hardware names, SA, E4, DRAFT, AI, CI), with 0 sentence- or paragraph-level flags. Supplementary 50 flags: the acronym list, plus long captions and notes of the generated tables (S5.1-S5.3, S5.6) and the short note sentences of Table S13 (S5.5 mean). `lint_final_*` = `lint_latest_*`.
+- Counts:
+  - Abstract: 391 words by the linter, including keywords.
+  - Sections 1-8: about 8,190 prose words (math and floats excluded). This is about 650 more than in the results round, because of the requested O1-O3 and C8 text. It is above the 7,500 guidance.
+  - Main floats: 7.
+
+**Changes.**
+- C1 (Abstract, Conclusion): the departure statement is limited to every non-conformal method with the known-departure bound.
+- C2 / C9: comparative wording ("scored … more than its penalty-trained twin") and "per learned method".
+- N2 / N4: "per admitted EV" everywhere: Abstract, 05, 06, the Fig. 5 caption, 07 and 08.
+- O1 / O2: new Results subsection "Effect of the departure bound" (6.4), stated briefly in the Abstract, Introduction, Discussion draft, Conclusion and cover letter. It notes the reward confound.
+- O3 and the price-threshold statement: in Results 6.1 / 6.2, checked against T1, T2, tests_T1 and tests_T2. No direct test exists for Deep Sets vs price.
+- C8: difference, CI, Holm p and rank-biserial reported together. Mean/median disagreements are called inconclusive: penalty N = 200, ΔJ^pen N = 200, E4 Deep Sets N = 200, deploy-only N = 200, and the LLF/AFAP/RR/ALAP comparisons at N = 10. Section 05 and s4 explain the median shift vs the mean and give the Holm family size.
+- Minor wording fixes:
+  - N1: 0.009 is a configuration mean.
+  - N3: overload share of episodes.
+  - N5: "additional solver fallbacks".
+  - N6: intervals up to 0.05.
+  - C3-C6.
+  - Fig. 3 caption: "three rules".
+  - Fig. 5 caption: panel (b) added.
+- s4: EV-GNN wording, redraw counts (DD49), IQM spelled out. s5: two sentences each in S5.2, S5.5 and S5.7.
+- Cover letter: "pre-declared primary endpoint" removed; the cost of the guarantee is now measured by the penalty-trained twin; the reframing is aligned.
+- `results_number_sources.md`: all new numbers added, plus the s2 rows (N7).
+
+**Open items for the Orchestrator.**
+1. `fig6_cost_of_guarantee`: the y-axis says "per EV served" (`analysis/scripts/figures.py` line 473). Regenerate it with "per admitted EV".
+2. `tables.py`, T3: the shortfall/deficit column marks the two-seed methods SA-Attn, Deep Sets and MLP+layer with † (N1).
+3. `style/terminology.md` still forbids "set policy".
+4. Length: about 8,190 prose words. Moving the rows without the layer out of T1 (except the penalty and Lagrangian rows) and trimming the Method section are options.
+5. The abstract no longer includes the conformal coverage sentence, to stay within 400 words.
+6. The AI statement, the Acknowledgments AI sentence and the Discussion rewrite remain author TODOs.
+
+
+## Results round (2026-10-23; G4 decision Option A, DD45-DD49)
+
+**State.**
+- `main.pdf` has 22 pages and `supplementary.pdf` has 26 pages (fallback article class). Both normal builds and both anonymous builds have 0 errors and 0 undefined references, and the bibliography uses `refs.bib`.
+- The generated tables and figures are read from `../analysis/`.
+- Lint: no flags in the main mirror. In the supplementary mirror, 5 flags remain; all come from long captions of the generated tables (analysis side).
+
+**Counts.**
+- Sections 1-8: 7,510 running words (8,421 including tables, captions and equations).
+- Abstract: 349 words (380 by the linter count).
+- Main floats: 7 (Figures 1-5, Tables 1-2).
+
+**Changes.**
+- New working title.
+- Reframed abstract, introduction and contributions: safety layer and Theorem 1′; two set policies; measured evaluation. The text states honestly that attention showed no advantage over Deep Sets and that rules with the layer are competitive.
+- Absolute gap metric (DD47) and J^pen against the shared requirement (DD46).
+- Statistics per DD48: 2 seeds, replay-level Wilcoxon on seed-averaged policies, Holm, stratified bootstrap.
+- Scope as run: EV-GNN, ablations, sensitivities and the example day are marked as not run. MLP per DD44.
+- Hardware and run times from RUN_NOTES_TR.md.
+- Limitations per DD49.
+- Results filled with measured values (number map in `results_number_sources.md`).
+- Discussion as a DRAFT under a visible TODO.
+- Conclusion updated.
+- Supplementary updated: statistics, compute, scope, results text. Example day and the stale pipeline figure removed.
+
+**Open items for the Orchestrator.**
+1. The generated tables carry internal labels ("DD47", "_values.csv", "Corollary 1" where the paper says Theorem 1(b), "Table T3c") and very long captions.
+2. The pipeline figure `figS5_pipeline` still shows the old plan.
+3. The Fig. 1 artwork still says "closed-form projection".
+4. The Turkish versions are stale.
+5. The G4 report numbers differ from the tables in some places (e.g. coverage 0.951 vs T7 0.950; total α = 0.01 shortfall 966,000 vs 771,853 kWh). The paper uses the tables.
+
+---
+
 ## Revision round 2 (2026-10-22; internal review round 2, consistency report round 2, DD43)
 
 **State now.**

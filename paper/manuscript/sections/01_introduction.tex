@@ -22,20 +22,24 @@ A per-step layer alone does not protect the departure energy requirement, becaus
 Per-EV latest-start bounds address this coupling in laxity-based scheduling \cite{chen2022smoothed} and in a recent hierarchical V2G scheduler \cite{yan2026hierarchical}.
 \Sec{sec:rw-position} positions the combination of these elements against the closest works.
 
-This paper proposes a safe attention-based controller (\method) for V2G charging control at a CPO station.
-An attention policy treats each charger as a token and outputs one raw power action per token with shared weights.
+This paper studies size-agnostic safe control for V2G charging at a CPO station.
+A set policy treats each charger as a token and outputs one raw power action per token with shared weights.
+The main instantiation, the safe attention-based controller (\method), uses self-attention, and a Deep Sets policy serves as the alternative set architecture.
 A safety layer, an exact projection onto the feasible set, maps the raw actions to commanded powers that respect per-EV bounds and the transformer limit.
 The projection onto a box intersected with a two-sided sum constraint is classical \cite{kiwiel2007breakpoint,wang2022efficient}, and the rate rule of smoothed least-laxity-first (sLLF) scheduling has a closely related form \cite{chen2022smoothed}.
 Our feasibility argument extends the laxity argument of Chen et al. to the charging taper, V2G discharging and a two-sided coupling.
 
-The paper makes four contributions.
+The paper makes three contributions.
 \begin{enumerate}
 \item We derive a safety layer whose per-EV lower bound includes the charging taper, and Theorem~\ref{thm:invariance} states its result in two layers. The transformer limit holds at every step for every sequence of raw actions under simulator and grid-headroom conditions, and the admitted departure requirement is met by every EV whose stay contains no infeasible step.
-\item We use a charger-token attention policy as the size-agnostic vehicle of the layer and train it with the layer in the loop. Variants without the departure bound, with the layer at deployment only and with a Deep Sets policy show what each part contributes.
-\item We evaluate the controller in EV2Gym with training on 10 and 20 chargers and zero-shot tests on up to 200 chargers and on a tighter transformer rating. The main metric is a penalised-profit gap to a perfect-information optimum that bounds every compared method. A primary endpoint is the share of EVs without infeasible steps, and a hard-constrained optimum supports the cost of the guarantee.
-\item As a secondary contribution, a split-conformal lower bound on the departure step replaces the known-departure assumption, and Proposition~\ref{prop:conformal} turns the departure result into a coverage statement.
+\item We train two size-agnostic set policies, an attention policy and a Deep Sets policy, with the layer in the loop on stations with 10 and 20 chargers. Both are tested without retraining on up to 200 chargers, against a reference policy trained at 50 chargers.
+\item We report a measured evaluation in EV2Gym of the transformer limit with and without the layer and of the conditional departure result at episode level. It also measures how often learned policies cause infeasible steps, the cost of the guarantee, simple rules with the same layer and a split-conformal departure bound.
 \end{enumerate}
-None of these ingredients is new in isolation, so the claim of the paper rests on their combination, on the two-layer result and on its measured cost.
+The results do not show an advantage of the attention policy over the Deep Sets policy.
+A price-threshold rule with the safety layer had a lower mean gap than the attention policy at every station size of the test grid.
+Only the Deep Sets policy beat this rule, and only from 20 chargers upward.
+For the attention policy, the departure bound also came with more unserved EVs than a variant without it.
+None of the ingredients is new in isolation, so the claim of the paper rests on their combination, on the two-layer result and on its measured behaviour.
 
 \Sec{sec:related} reviews related work, \Sec{sec:problem} states the model as a partially observable Markov decision process (POMDP), and \Sec{sec:method} presents the method.
 Sections~\ref{sec:setup} to \ref{sec:conclusion} cover the setup, results, discussion and conclusion, and the supplementary material holds all proofs and further details.

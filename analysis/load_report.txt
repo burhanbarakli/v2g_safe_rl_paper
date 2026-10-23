@@ -1,4 +1,4 @@
-gap_pct: 4694 episodes excluded because |oracle_pen_eur| < 1 EUR (M2)
-gap_hard_pct: 4694 episodes excluded because |oracle_ceil_eur| < 1 EUR (M2)
-gap_lp_pct: 3986 episodes excluded because |oracle_profit_eur| < 1 EUR (M2)
+DD46: energy not served and unserved EVs measured against the shared admitted requirement (own-requirement values kept as *_own)
+DD46: jpen_eur = profit - 10*(energy not served, shared requirement + overload energy) for every method and pass; file column penalised_profit_eur not used
+soft-oracle bound check: 0 of 153100 episodes exceed J^pen_oracle by more than 1e-06 EUR
 loaded 153100 episodes, 30 methods, 43 configurations, 3550 oracle episodes, 18 training logs

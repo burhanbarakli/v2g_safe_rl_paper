@@ -22,20 +22,24 @@ Yalnızca adım başına çalışan bir katman, ayrılış enerji gereksinimini 
 Araç başına en geç başlangıç sınırları bu bağlantıyı esneklik payına (laxity) dayalı çizelgelemede \cite{chen2022smoothed} ve yakın tarihli hiyerarşik bir V2G çizelgeleyicisinde \cite{yan2026hierarchical} ele almaktadır.
 \Sec{sec:rw-position}, bu unsurların birleşimini en yakın çalışmalarla karşılaştırarak konumlandırmaktadır.
 
-Bu makale, bir CPO istasyonunda V2G şarj kontrolü için güvenli dikkat tabanlı bir denetleyici (\method) önermektedir.
-Dikkat tabanlı politika her şarj ünitesini bir belirteç olarak ele alır ve ortak ağırlıklarla belirteç başına bir ham güç eylemi üretir.
+Bu makale, bir CPO istasyonunda V2G şarjı için boyuttan bağımsız güvenli kontrolü incelemektedir.
+Bir küme politikası her şarj ünitesini bir belirteç olarak ele alır ve ortak ağırlıklarla belirteç başına bir ham güç eylemi üretir.
+Ana gerçekleme olan güvenli dikkat tabanlı denetleyici (\method) öz-dikkat kullanır; bir Deep Sets politikası ise alternatif küme mimarisi işlevi görür.
 Olurlu kümeye kesin bir izdüşüm (projeksiyon) olan güvenlik katmanı, ham eylemleri araç başına sınırlara ve trafo limitine uyan komut güçlerine dönüştürür.
 Bir kutunun iki yönlü bir toplam kısıtıyla kesişimine izdüşüm klasik bir problemdir \cite{kiwiel2007breakpoint,wang2022efficient}; yumuşatılmış en az esneklik payı önce (sLLF) çizelgelemesinin hız kuralı da buna çok yakın bir biçime sahiptir \cite{chen2022smoothed}.
 Olurluluk argümanımız, Chen ve arkadaşlarının esneklik payı argümanını şarj gücü azalmasına (taper), V2G deşarjına ve iki yönlü bir bağlantıya genişletmektedir.
 
-Makalenin dört katkısı vardır.
+Makalenin üç katkısı vardır.
 \begin{enumerate}
 \item Araç başına alt sınırı şarj gücü azalmasını içeren bir güvenlik katmanı türetilmekte ve Teorem~\ref{thm:invariance} bu katmanın sonucunu iki katmanda ifade etmektedir. Simülatöre ve şebeke kapasite payına ilişkin koşullar altında trafo limiti, her ham eylem dizisi için her adımda sağlanır; kabul edilen ayrılış gereksinimi ise kalış süresi boyunca olursuz adımla karşılaşmayan her EV tarafından karşılanır.
-\item Katmanın boyuttan bağımsız taşıyıcısı olarak şarj ünitesi belirteçlerine dayalı bir dikkat tabanlı politika kullanılmakta ve bu politika, katman eğitim döngüsünün içindeyken eğitilmektedir. Ayrılış sınırı içermeyen, katmanı yalnızca kullanım aşamasında uygulayan ve Deep Sets politikası kullanan varyantlar her bir parçanın katkısını göstermektedir.
-\item Denetleyici, EV2Gym'de 10 ve 20 şarj ünitesiyle eğitilerek ve 200 şarj ünitesine kadar boyutlarda ve daha sıkı bir trafo anma değerinde sıfır-atış (yeniden eğitim olmadan) testlerle değerlendirilmektedir. Ana ölçüt, karşılaştırılan her yöntemi üstten sınırlayan tam bilgili bir optimuma göre cezalı kâr açığıdır. Birincil sonlanım noktalarından biri olursuz adımla karşılaşmayan EV'lerin payıdır; katı kısıtlı bir optimum ise garantinin maliyeti analizini desteklemektedir.
-\item İkincil bir katkı olarak, ayrılış adımına ilişkin bölünmüş konformal bir alt sınır, ayrılışın bilindiği varsayımının yerini almakta ve Önerme~\ref{prop:conformal} ayrılış sonucunu bir kapsama ifadesine dönüştürmektedir.
+\item Boyuttan bağımsız iki küme politikası, bir dikkat tabanlı politika ve bir Deep Sets politikası, katman eğitim döngüsünün içindeyken 10 ve 20 şarj üniteli istasyonlarda eğitilmektedir. Her ikisi de yeniden eğitim olmadan 200 şarj ünitesine kadar, 50 şarj ünitesinde eğitilen bir referans politikaya karşı test edilmektedir.
+\item EV2Gym'de trafo limitinin katmanlı ve katmansız durumda ve koşullu ayrılış sonucunun epizot düzeyinde ölçüme dayalı bir değerlendirmesi raporlanmaktadır. Değerlendirme ayrıca öğrenen politikaların ne sıklıkla olursuz adımlara yol açtığını, garantinin maliyetini, aynı katmanla kullanılan basit kuralları ve bölünmüş konformal bir ayrılış sınırını ölçmektedir.
 \end{enumerate}
-Bu bileşenlerin hiçbiri tek başına yeni değildir; dolayısıyla makalenin iddiası bunların birleşimine, iki katmanlı sonuca ve bu sonucun ölçülen maliyetine dayanmaktadır.
+Sonuçlar, dikkat tabanlı politikanın Deep Sets politikasına üstünlüğünü göstermemektedir.
+Güvenlik katmanıyla kullanılan bir fiyat eşiği kuralı, test ızgarasının her istasyon boyutunda dikkat tabanlı politikadan daha düşük ortalama açığa sahip olmuştur.
+Bu kuralı yalnızca Deep Sets politikası, o da yalnızca 20 şarj ünitesi ve üzerinde geçmiştir.
+Dikkat tabanlı politika için ayrılış sınırı, sınır içermeyen bir varyanta göre gereksinimi karşılanmayan daha fazla EV ile birlikte gelmiştir.
+Bileşenlerin hiçbiri tek başına yeni değildir; dolayısıyla makalenin iddiası bunların birleşimine, iki katmanlı sonuca ve bu sonucun ölçülen davranışına dayanmaktadır.
 
 \Sec{sec:related} ilgili çalışmaları gözden geçirmekte, \Sec{sec:problem} modeli kısmen gözlemlenebilir bir Markov karar süreci (POMDP) olarak ifade etmekte ve \Sec{sec:method} yöntemi sunmaktadır.
 Bölüm~\ref{sec:setup}--\ref{sec:conclusion} sırasıyla deney düzeneğini, bulguları, tartışmayı ve sonucu kapsamakta; tüm ispatlar ve ek ayrıntılar ise ek materyalde yer almaktadır.

@@ -40,9 +40,9 @@ Boyut aktarımı kendiliğinden gerçekleşmez; küçük çizgeler üzerinde eğ
 EV şarjında boyuttan bağımsız ilk durum gösterimleri toplulaştırmadan elde edilmiş; Sadeghianpourhamami ve arkadaşları ayrıca ölçeklenmiş varış hızları altında mükemmel bilgiye sahip bir optimuma olan açığı raporlamıştır \cite{sadeghianpourhamami2020definition}.
 Ancak toplulaştırılmış gösterimler araç başına ayrıntıyı gizler ya da bu ayrıntıyı ayrıştırma kurallarına taşır \cite{zhang2022transfer,salesortiz2024efficient}.
 
-Heterojen çizge politikasının (EV-GNN) ön baskı sürümü, her ölçek için ayrı bir model kullanarak ve yapısı gereği hiçbir kısıtı uygulamadan 1000'e kadar şarj noktasını koordine etmektedir \cite{orfanoudakis2025scalable}.
+Heterojen çizge politikasının (EV-GNN) ön baskı sürümü, her ölçek için ayrı bir model kullanarak ve yapısı gereği hiçbir kısıtı uygulamadan 1.000'e kadar şarj noktasını koordine etmektedir \cite{orfanoudakis2025scalable}.
 Buna karşılık, 25 şarj ünitesinde eğitilen çizge ile güçlendirilmiş karar Transformer'ı (GNN-DT), yeniden eğitim olmadan 5 ile 100 arasında şarj ünitesinde test edilmiş ve boyut büyüdükçe performansı düşmüştür \cite{orfanoudakis2026graph}.
-1236 araçla eğitilen bir HetGPS politikası, yeniden eğitim olmadan 2239 ve 3218 araçlı fiderlere aktarılabilmektedir \cite{wang2026hetgps}.
+1.236 araçla eğitilen bir HetGPS politikası, yeniden eğitim olmadan 2.239 ve 3.218 araçlı fiderlere aktarılabilmektedir \cite{wang2026hetgps}.
 Benzer şekilde, gerilim kontrolüne yönelik çizge tabanlı bir aktör, simülasyonda eğitimdekinden daha büyük bir fider üzerinde değerlendirilmiştir \cite{jin2026telemetry}.
 
 Boyuttan bağımsız bu denetleyicilerde kısıtlar ödül terimleri, taklit verisi ya da sezgisel filtreler aracılığıyla devreye girer.
@@ -79,14 +79,14 @@ Bildiğimiz kadarıyla, boyuttan bağımsız öğrenilmiş bir politikayı, adı
 EV2Gym ajanları \cite{orfanoudakis2025ev2gym} & hayır (düz) & ceza & ceza & yok & hayır & karşılaştırma yöntemi olarak optimum \\
 EV-GNN, ön baskı sürümü \cite{orfanoudakis2025scalable} & evet (çizge) & yapısı gereği değil & yapısı gereği değil & yok & her ölçek için ayrı model & her ölçek için optimizasyon tabanlı karşılaştırma \\
 GNN-DT \cite{orfanoudakis2026graph} & evet (çizge) & ceza & ceza & yok & 25'ten 5--100 şarj ünitesine & kâhin (oracle) düzeyine yakın ödül (dergi özeti) \\
-HetGPS, ön baskı \cite{wang2026hetgps} & evet (çizge dikkati) & ödül ve sezgisel yöntem & kısıtlanmamış & deneysel (gerilim filtresi) & 1236'dan 3218 araca & hayır \\
+HetGPS, ön baskı \cite{wang2026hetgps} & evet (çizge dikkati) & ödül ve sezgisel yöntem & kısıtlanmamış & deneysel (gerilim filtresi) & 1.236'dan 3.218 araca & hayır \\
 Yan vd., ön baskı \cite{yan2026hierarchical} & hayır & katı (araç başına kural) & modellenmemiş & birinci dereceden güç dengesi & hayır & MPC'ye göre açık \\
 Wan vd., ön baskı \cite{wan2025logicinformed} & hayır & modellenmemiş & katı (kuadratik program izdüşümü) & adım başına olurluluk & hayır & hayır \\
 sLLF \cite{chen2022smoothed} & kural, her boyut & esneklik payı kuralı & katı (ortak düzey) & olurluluk teoremleri & öğrenilmemiş & hayır \\
 Sadeghian\-pourhamami vd. \cite{sadeghianpourhamami2020definition} & evet (toplu durum) & ceza & modellenmemiş & yok & ölçeklenmiş varışlar & evet \\
 Orfanoudakis vd. \cite{orfanoudakis2026can} (özet) & çizge politikası & güvenlik katmanı (belirtilen amaç) & güvenlik katmanı (belirtilen amaç) & özette belirtilmemiş & özette belirtilmemiş & özette belirtilmemiş \\
 \midrule
-Bu çalışma & evet (şarj ünitesi belirteçleri) & araç başına sınır, koşullu (Teo.~1b) & katı (ortak kaydırma) & trafo: her adımda (A3, A6); ayrılış: araç başına, koşullu & 10/20'den 200 şarj ünitesine & yumuşak ve katı kısıtlı optimumlar \\
+Bu çalışma & evet (şarj ünitesi belirteçleri üzerinde dikkat ve Deep Sets) & araç başına sınır, koşullu (Teo.~1b) & katı (ortak kaydırma) & trafo: her adımda (A3, A6); ayrılış: araç başına, koşullu & 10/20'den 200 şarj ünitesine & yumuşak ve katı kısıtlı optimumlar \\
 \bottomrule
 \end{tabular}
 \end{table}

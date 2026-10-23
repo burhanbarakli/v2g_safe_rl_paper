@@ -117,7 +117,7 @@ def generate(out_raw: str | Path, seed: int = 0, replay_scale: float = 1.0, n_se
                 o = oracle[c["test_cfg_id"]]
                 g = (effect[m]["g0"] + seed_off + effect[m]["slope"] * np.log2(c["N"] / 10)
                      + rng.normal(0, effect[m]["sd_ep"], o.size))
-                prof = o - g / 100 * np.abs(o)
+                prof = o - np.abs(g) / 100 * np.abs(o)          # never above the synthetic optimum (DD46 bound)
                 parts.append(_episode_frame(c, m, s, "20" if learned else "", exp_id, prof, rng, safe=_safe(m)))
             if not parts:
                 continue

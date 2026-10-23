@@ -3,10 +3,10 @@
 **Project:** Attention-Based Safe RL for Scale-Agnostic and Constraint-Guaranteed V2G Charging Control
 **Target journal:** SAUCIS (Sakarya University Journal of Computer and Information Sciences)
 **Human author / decision maker:** Gakko (kucuker@sakarya.edu.tr)
-**Last update:** 2026-10-22 (evening)
+**Last update:** 2026-10-24
 
 ## Current phase
-Code infrastructure and manuscript (non-result parts) complete; two internal review rounds done. **Waiting for the author's experiment runs** (see `HANDOVER_TR.md`). G1 approved 2026-10-21, G2 approved 2026-10-22.
+Phase 5 complete with real results (G4 decision: Option A, DD45). Manuscript and supplementary filled with measured values (all numbers sourced, audited against raw data in review round 3). **Waiting for the author**: final title, rewrite of Results interpretation/Discussion and AI-drafted sections (SAUCIS AI policy), AI statement, author info, template files. Then G5/G6 (submission package).
 
 ## Deviations from orchestrator prompt (with justification)
 - Project root is `~/Documents/v2g Rl/v2g_safe_rl_paper/` (the folder the author connected) instead of `~/v2g_safe_rl_paper/`.
@@ -50,3 +50,9 @@ G3/G4 after the author's pilot and full runs; then fill \RES placeholders, autho
 ## Key open items
 - Novelty risk R1-R3 (orfanoudakis2026can, song2025longterm, eland2026safe full texts).
 - Author: final title, AI statement wording, revision of AI-drafted text, interpretation, template files (saucis.cls, IEEEtran.bst).
+
+## 2026-10-24 update
+- Core runs by the author (2 seeds; no extended set). G4 report: review/G4_report.md. Decisions DD45-DD49.
+- Analysis fixes: J^pen with shared requirement (DD46), absolute gap in € per charger (DD47), 2-seed statistics (DD48).
+- Review round 3: 0 numeric mismatches in ~140 audited numbers; framing issues fixed (review/response_to_round3.md).
+- Turkish review copies updated (paper/manuscript_tr, paper/supplementary_tr).

@@ -2,51 +2,62 @@
 \section{Discussion}\label{sec:discussion}
 % ---------------------------------------------------------------------
 
+\TODO{DRAFT. Under the SAUCIS AI policy, the interpretation of the results must be written by the authors. The authors rewrite this section in their own words and check every statement against the results; the draft below only proposes points to consider}.
+
 \subsection{Interpretation}\label{sec:interpretation}
 
-% The interpretation of results must be written by the authors (SAUCIS AI
-% policy). The prompts name the analysis output that each paragraph draws
-% on; no interpretation is pre-written here.
+The safety layer delivered its two-layer result in every test configuration.
+Without exception, the transformer limit held in all episodes run through the layer, whereas penalty-based and Lagrangian training did not remove violations, with 3,730 and 3,274 overload steps.
+For every non-conformal method with the departure bound, the departure part held in the episode-level check, so the remaining shortfall came only from episodes with infeasible steps.
+In contrast, the variant without the departure bound left EVs unserved in episodes without any infeasible step.
 
-\TODO{Paragraph 1, by the authors: state whether weights trained at 10 and 20 chargers transfer to 200 chargers and to the stress level. Use \Fig{fig:zeroshot}, the transfer gap and fallback columns of \Tab{S-tab:t2}, the binding rates of \Tab{S-tab:t3b} and \Tab{S-tab:ts2}}.
+The conditional part matters in practice, because the learned policies caused many infeasible steps.
+A plausible reading is that a profit-seeking policy keeps many EVs on their latest-start trajectory, so that the attention policy commanded exactly the lower bound on 28\% to 42\% of the occupied charger-steps.
+When the transformer then binds, these bounds cannot all be met at once.
+Rules that charge early rarely reached such states, and the penalty-trained policy with the layer at deployment had fewer infeasible steps.
+A lower bound that anticipates the aggregate capacity, rather than only each EV's own reachability, is a natural next step.
 
-\TODO{Paragraph 2, by the authors: relate the cost of the guarantee of \Fig{fig:cost} and \Tab{S-tab:t5} to the violations of Attention+penalty in \Tab{S-tab:t3}. Use $\Delta J^{\sm{pen}}$ as the primary measure and stats/tests\_T5.csv}.
+The conditional guarantee therefore had a price for the learned attention policy.
+With the bound, it left more EVs unserved than the variant without the bound, its penalty-trained twin and the Lagrangian policy.
+That variant also had a lower gap at every size.
+Part of this difference may come from training, because that variant learned from the penalty reward and not from the profit reward.
+Rules that charge early left no EV unserved with the same bound.
+The departure part is thus most useful with controllers that do not ride their lower bounds, and a profit-seeking learner can turn it into a source of infeasible steps.
 
-\TODO{Paragraph 3, by the authors: discuss E4 and the shortfall relative to the deficit bound in \Tab{S-tab:t3} and \Tab{S-tab:t3b}. Relate both to the closed-loop nature of A5}.
+Zero-shot transfer worked in the sense tested here.
+From 50 to 200 chargers, the gap of the attention policy stayed within 0.04\,\texteuro{} per charger of a policy trained at 50 chargers, with intervals up to 0.05.
+Only the smallest station was clearly harder.
 
-\TODO{Paragraph 4, by the authors: compare with published EV2Gym numbers only on the literature configuration (\Tab{S-tab:ts3}), never across different simulators or scenarios}.
+The architecture comparison does not support an advantage of attention.
+Instead, the Deep Sets policy had lower gaps and fewer infeasible steps than the attention policy at every station size of the test grid, at lower inference cost.
+One possible reason is that the safety layer already performs the coupling between chargers, so that a shared per-token policy with a pooled context suffices.
+Two seeds and the limited tuning budget, however, do not allow a firm ranking of the two architectures.
 
-\subsection{Practical implications for charge point operators}\label{sec:implications}
+The comparison with rules shows that the safety layer is a reusable component.
+A price-threshold rule with the layer had a lower mean gap than the attention policy at every station size of the test grid, and the Deep Sets policy beat it only from 20 chargers upward.
+At the training size of 10 chargers, every rule with the layer had a lower mean gap than the attention policy.
+The experiments therefore show no benefit of the attention policy over a simple price-aware rule with the same layer, under the stated tuning budget of 12 configurations per method.
 
-This subsection is to be written by the authors after the experiments, covering the following points.
-\begin{itemize}
-\item \TODO{What a CPO gains when the transformer limit holds for every raw action, and what the conditional departure result means for the service promise.}
-\item \TODO{The cost of the guarantee in euros per EV served for a station of given size, from \Tab{S-tab:t5}.}
-\item \TODO{Use of the conformal variant where drivers do not declare departure times, and acceptable coverage levels, from \Tab{S-tab:t7}.}
-\item \TODO{Inference time per control step from \Tab{S-tab:t6} relative to the 15-min control step.}
-\end{itemize}
+In penalised profit, the penalty-trained twin scored lower at every size, with an interval including zero only at 200 chargers, where the Wilcoxon test still favoured the policy with the layer.
+Measured in raw profit, the twin earned at most about 0.14\,\texteuro{} more per admitted EV at small stations and less at large ones.
+For the conformal bound, the achieved coverage stayed within 0.002 of each target and fell below it only at 0.80, but $\alpha=0.01$ cut the admitted requests so strongly that service collapsed.
+Levels of 0.05 and 0.1 stayed close to known departures in gap, but their shortfall was six to seven times as large.
+
+\TODO{Practical implications for charge point operators, to be written by the authors. Possible points: value of a transformer guarantee for every raw action, the conditional departure result, the conformal level and inference time}.
 
 \subsection{Limitations}\label{sec:limitations}
 
-The departure result of Theorem~\ref{thm:invariance} rests on declared departure times and requirements (A2).
-Our conformal extension relaxes only the departure step, its coverage is marginal, and strategic misreporting of deadlines \cite{ferragut2022scheduling} lies outside the model.
-Aggregate feasibility (A5) can fail in closed loop, as the two-EV example of \Sec{sec:invariance} shows.
-On such steps the departure requirement is guaranteed only for the EVs covered by Theorem~\ref{thm:invariance}(b), and Lemma~\ref{S-lem:deficit} bounds the remaining shortfall without removing it.
-A layer that certified joint feasibility over the future would need time-coupled constraints and would lose the single-sum projection.
+Each learned method was trained with two seeds, so between-seed variability is shown only as a range, and the tuning budget was the planned 12 configurations per method.
+The planned ablations, penalty-weight and other sensitivity studies, further MPC variants, the EV-GNN baseline and an example-day analysis were not run, and the only sensitivity is the stress rating.
+Our departure check is at episode level, because the logs do not record per EV whether it always received its lower bound.
 
-The transformer result needs the one-step model A3 and the exogenous headroom of A6, and the controller does not enforce A6.
-Lemma~\ref{S-lem:a3} proves A3 for the EV2Gym settings we use, whereas a real battery management system may draw less than commanded.
-Under-delivery lowers the energy of an EV below the value the bounds assume, so hardware would need a margin on the thresholds or feedback from measured energy, a remedy not analysed here.
-A1 holds for EV2Gym's exponential taper, but a much steeper taper would break it.
-The model covers one station behind one transformer without voltage limits or line flows, and further coupled sum constraints would fall outside Proposition~\ref{prop:projection}.
+The departure result rests on declared departure times and requirements (A2), and the conformal extension gives only marginal coverage.
+On the theory side, the transformer result needs the one-step model A3 and the headroom of A6, and a real battery management system may draw less than commanded.
+EV2Gym could not build some training days, because negative residential loads produced a negative noise scale.
+Training seeds were therefore redrawn, once per tuning job and twice per training job, whereas all test replays were built unchanged.
+The hard optimum was sensitive to the shortfall tolerance on a few replays, and 3 of 3,550 replays needed additional solver fallbacks, primal simplex or a tighter shortfall tolerance.
 
-The experiments use EV2Gym's lossless accounting, and the discharge price equals the charging price.
-V2G arbitrage therefore carries no round-trip loss and no degradation cost, so profits from discharging may be optimistic, and the sensitivities probe this effect only at one station size.
-All results come from simulation with synthetic arrivals from EV2Gym's statistics and Dutch day-ahead prices, some late evening sessions do not fit into the episode horizon, and forecast noise is synthetic.
-Grid quantities scale linearly with $N$, so the per-charger statistics of the test stations match training, and only the stress level changes them.
-
-Some comparisons are not fully like-for-like.
-EV-GNN trains per profile at one size with its own algorithm and reward, on one load and PV draw per run and with fewer steps than its default.
-Our eMPC-HiGHS re-implementation knows the exact prices and arrivals inside its horizon, the MLP is reported only at $N\le20$, and GNN-DT was not run.
-The optima use outer taper rows, exact except on a one-step transition band and a 1\% margin, together with the rounding allowance.
-They also ignore the information limits of an online controller, so part of every gap is the price of not knowing the future.
+The experiments use EV2Gym's lossless accounting with equal charging and discharge prices, so profits from V2G arbitrage may be optimistic.
+All results come from simulation with synthetic arrivals and Dutch day-ahead prices, and grid quantities scale linearly with $N$.
+Our eMPC-HiGHS uses exact prices and arrivals inside its horizon, and the MLP is reported only up to 20 chargers.
+The optima ignore the information limits of an online controller, so part of every gap is the price of not knowing the future.

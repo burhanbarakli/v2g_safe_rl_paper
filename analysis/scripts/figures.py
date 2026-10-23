@@ -132,7 +132,7 @@ class Figures:
             for n, g in sub.groupby("N"):
                 s = summarize(g, metric, self.sc, salt=(m, n, str(extra)))
                 recs.append(dict(method=m, label=C.label(m), N=n, metric=metric, mean=s["mean"], std=s["std"],
-                                 ci_lo=s["t_lo"], ci_hi=s["t_hi"], b_lo=s["b_lo"], b_hi=s["b_hi"], unit=s["unit"],
+                                 ci_lo=s["b_lo"], ci_hi=s["b_hi"], b_lo=s["b_lo"], b_hi=s["b_hi"], unit=s["unit"],
                                  n_seeds=s["n_seeds"], n_episodes=s["n_episodes"], **(extra or {}),
                                  exp_ids=";".join(s["exp_ids"])))
         return pd.DataFrame(recs)
@@ -166,19 +166,16 @@ class Figures:
                 Y = np.vstack([np.interp(grid, g["env_steps"].values, g[col].values)
                                for _, g in runs.sort_values("env_steps").groupby("exp_id")])
                 mu = Y.mean(0)
+                lo_, hi_ = Y.min(0), Y.max(0)                 # DD48: band = min-max over the training seeds
                 if Y.shape[0] > 1:
-                    from scipy import stats as sps
-                    h = sps.t.ppf(0.975, Y.shape[0] - 1) * Y.std(0, ddof=1) / np.sqrt(Y.shape[0])
                     st = _style(m)
-                    ax.fill_between(grid / 1e6, mu - h, mu + h, color=C.lighten(st["color"], 0.78), lw=0, zorder=1)
-                else:
-                    h = np.full_like(mu, np.nan)
+                    ax.fill_between(grid / 1e6, lo_, hi_, color=C.lighten(st["color"], 0.78), lw=0, zorder=1)
                 st = _style(m)
                 ax.plot(grid / 1e6, mu, color=st["color"], ls=st["linestyle"], label=st["label"], zorder=3)
                 idx = np.linspace(0, grid.size - 1, 7).astype(int)
                 ax.plot(grid[idx] / 1e6, mu[idx], ls="none", marker=st["marker"], color=st["color"],
                         markerfacecolor=st["markerfacecolor"], zorder=4)
-                recs.append(pd.DataFrame(dict(method=m, metric=col, env_steps=grid, mean=mu, ci_lo=mu - h, ci_hi=mu + h,
+                recs.append(pd.DataFrame(dict(method=m, metric=col, env_steps=grid, mean=mu, seed_min=lo_, seed_max=hi_,
                                               n_seeds=Y.shape[0], exp_ids=";".join(sorted(runs["exp_id"].unique())))))
             ax.set_xlabel("Environment steps (million)")
             ax.set_ylabel(ylab)
@@ -227,16 +224,25 @@ class Figures:
                 ax.set_title(f"({letters[i * len(rhos) + j]}) {C.tightness(rho)}, " + r"$\rho_{\mathrm{tr}}$"
                              + f" = {rho:g} kW per charger", fontweight="normal", loc="left", fontsize=8)
         if self.sizes and min(self.sizes) <= 10 and max(self.sizes) >= 20:
-            for ax in axes.ravel():
+            for ax in axes[0]:                      # top row only: avoids overlap with data in lower rows
                 ax.text(14.1, 0.985, "training\nsizes", transform=ax.get_xaxis_transform(), ha="center",
                         va="top", fontsize=6.3, color="#555555", zorder=2)
         _legend_below(fig, axes, ncol=4)
         self.fw.save(fig, name, pd.concat(recs, ignore_index=True) if recs else None)
 
+    def best_baselines(self, k=3):
+        """Rule-based / MPC methods with the safety layer with the lowest mean gap over the grid (as in T2)."""
+        cand = [m for m in C.method_order(self.ep["method"].unique())
+                if C.info(m).group in ("heuristic", "mpc") and C.info(m).safety_layer]
+        sc = {m: self.grid.loc[self.grid["method"] == m, "gap_abs"].mean() for m in cand}
+        sc = {m: v for m, v in sc.items() if np.isfinite(v)}
+        return sorted(sc, key=sc.get)[:k]
+
     def f3_scaling(self):
-        self._vs_n("fig3_zero_shot_scaling", F3_METHODS,
-                   [("pen_per_charger", "Penalised profit $J^{\\mathrm{pen}}$\n(\u20ac per charger and episode)", "linear"),
-                    ("gap_pct", "Optimality gap of $J^{\\mathrm{pen}}$ (%)", "linear")])
+        learned = self.present(["attn_safe", "deepsets_safe", "attn_safe_trainN50", "attn_proj_nolb", "attn_penalty"])
+        self._vs_n("fig3_zero_shot_scaling", learned + [m for m in self.best_baselines() if m not in learned],
+                   [("gap_abs", "Optimality gap\n(\u20ac per charger and episode)", "linear"),
+                    ("pen_per_charger", "Penalised profit $J^{\\mathrm{pen}}$\n(\u20ac per charger and episode)", "linear")])
 
     def f4_constraints_vs_n(self):
         """Consistency M3: constraint satisfaction versus N (main-text Fig. 4)."""
@@ -267,21 +273,21 @@ class Figures:
                         continue
                     s = summarize(g, metric, self.sc, salt=("F4", m, rho))
                     recs.append(dict(method=m, label=C.label(m), rho_tr=rho, metric=metric, mean=s["mean"], std=s["std"],
-                                     ci_lo=s["t_lo"], ci_hi=s["t_hi"], unit=s["unit"], exp_ids=";".join(s["exp_ids"])))
+                                     ci_lo=s["b_lo"], ci_hi=s["b_hi"], unit=s["unit"], exp_ids=";".join(s["exp_ids"])))
                     st = _style(m)
                     yy = y + (r - (len(rhos) - 1) / 2) * bh
                     face = st["color"] if r == 0 else C.lighten(st["color"], 0.55)
                     ax.barh(yy, s["mean"], height=bh * 0.92, color=face, edgecolor="#222222", lw=0.5,
                             hatch=None if r == 0 else "////", zorder=3)
-                    if np.isfinite(s["t_hi"]) and s["mean"] > 0:
-                        ax.errorbar(s["mean"], yy, xerr=[[max(0, s["mean"] - s["t_lo"])], [max(0, s["t_hi"] - s["mean"])]],
+                    if np.isfinite(s["b_hi"]) and s["mean"] > 0:
+                        ax.errorbar(s["mean"], yy, xerr=[[max(0, s["mean"] - s["b_lo"])], [max(0, s["b_hi"] - s["mean"])]],
                                     color="#222222", elinewidth=0.6, capsize=1.2, zorder=4, ls="none")
                     if s["mean"] == 0:
                         ax.text(0.0, yy, " 0", va="center", ha="left", fontsize=6.5, zorder=5)
-                    vmax = max(vmax, s["t_hi"] if np.isfinite(s["t_hi"]) else s["mean"])
+                    vmax = max(vmax, s["b_hi"] if np.isfinite(s["b_hi"]) else s["mean"])
             ax.set_xscale("symlog", linthresh=0.01, linscale=0.5)
             ax.set_xlim(0, max(1, vmax) * 2)
-            ax.set_xlabel(xl + ", symlog scale")
+            ax.set_xlabel(xl.replace(" (", "\n(", 1).rstrip(")") + ", symlog scale)")
             ax.grid(axis="y", visible=False)
             _panel(ax, let)
         axes[0].set_yticks(ypos)
@@ -375,14 +381,13 @@ class Figures:
 
     # ------------------------------------------------------------------ F6
     def f6_ablation(self):
-        variants = [(f"{a} + {c}", m) for (a, c), m in C.ABLATION_2X2.items() if m in set(self.ep["method"])]
-        variants += [(C.label(m), m) for m in self.present(C.EXTRA_ABLATIONS)]
+        variants = [(C.label(m), m) for m in self.present(C.T4_ROWS)]          # DD45: runs that exist
         if not variants:
             return
         tr_sizes = [n for n in self.sizes if n in C.TRAIN_SIZES]
         zs_sizes = [n for n in self.sizes if n >= 50]
         regimes = [(r"$N \in \{10, 20\}$ (training sizes)", tr_sizes), (r"$N \geq 50$ (zero-shot)", zs_sizes)]
-        metrics = [("gap_pct", "Optimality gap (%)", "linear"), ("unserved_pct", "Unserved EVs (%)", "symlog"),
+        metrics = [("gap_abs", "Optimality gap (\u20ac per\ncharger and episode)", "linear"), ("unserved_pct", "Unserved EVs (%)", "symlog"),
                    ("tr_violation_kwh", "Overload energy (kWh/episode)", "symlog")]
         fig, axes = plt.subplots(1, 3, figsize=(FULL_W, 0.3 * len(variants) + 1.3), sharey=True, constrained_layout=True)
         ypos = np.arange(len(variants))[::-1]
@@ -397,17 +402,17 @@ class Figures:
                         continue
                     s = summarize(g, metric, self.sc, salt=("F6", m, r))
                     recs.append(dict(variant=lab, method=m, regime=rl, metric=metric, mean=s["mean"], std=s["std"],
-                                     ci_lo=s["t_lo"], ci_hi=s["t_hi"], exp_ids=";".join(s["exp_ids"])))
+                                     ci_lo=s["b_lo"], ci_hi=s["b_hi"], exp_ids=";".join(s["exp_ids"])))
                     st = _style(m)
                     yy = y + (0.5 - r) * bh
                     ax.barh(yy, s["mean"], height=bh * 0.92, color=st["color"] if r == 0 else "white",
                             edgecolor=st["color"] if r else "#222222", hatch="////" if r else None, lw=0.7, zorder=3)
-                    if np.isfinite(s["t_lo"]) and s["mean"] != 0:
-                        ax.errorbar(s["mean"], yy, xerr=[[max(0, s["mean"] - s["t_lo"])], [max(0, s["t_hi"] - s["mean"])]],
+                    if np.isfinite(s["b_lo"]) and s["mean"] != 0:
+                        ax.errorbar(s["mean"], yy, xerr=[[max(0, s["mean"] - s["b_lo"])], [max(0, s["b_hi"] - s["mean"])]],
                                     color="#222222", elinewidth=0.6, capsize=1.2, ls="none", zorder=4)
                     if s["mean"] == 0:
                         ax.text(0, yy, " 0", va="center", fontsize=6.5)
-                    vmax = max(vmax, s["t_hi"] if np.isfinite(s["t_hi"]) else s["mean"])
+                    vmax = max(vmax, s["b_hi"] if np.isfinite(s["b_hi"]) else s["mean"])
             if scale == "symlog":
                 ax.set_xscale("symlog", linthresh=0.01, linscale=0.5)
                 ax.set_xlim(0, max(1, vmax) * 2)
@@ -437,7 +442,7 @@ class Figures:
                 sub = self.grid[self.grid["N"] == n]
                 if not ({ms, mp} <= set(sub["method"])):
                     continue
-                for num, tag in (("penalised_profit_eur", "J^pen"), ("profit_eur", "profit")):
+                for num, tag in (("jpen_eur", "J^pen"), ("profit_eur", "profit")):
                     r = ratio_diff(sub, mp, ms, num, "n_evs", self.sc, salt=("F7", n, num))
                     rows.append(dict(arch=arch, N=n, metric=f"delta_{tag}_per_EV(penalty - safety layer, ratio of sums)",
                                      quantity=tag, mean=r["diff"], ci_lo=r["b_lo"], ci_hi=r["b_hi"], ci="bootstrap",
@@ -449,7 +454,7 @@ class Figures:
             j = 1 + 0.03 * (k - 0.5)
             dj, dp = d[d["quantity"] == "J^pen"], d[d["quantity"] == "profit"]
             axes[0].errorbar(dj["N"] * j, dj["mean"], yerr=self._err(dj), color=st["color"], marker=st["marker"],
-                             mfc=st["color"], ls="-", label=f"{arch}: \u0394 " + r"$J^{\mathrm{pen}}$" + " (primary)",
+                             mfc=st["color"], ls="-", label=f"{arch}: \u0394 " + r"$J^{\mathrm{pen}}$",
                              elinewidth=0.7)
             axes[0].errorbar(dp["N"] * j * 1.01, dp["mean"], yerr=self._err(dp), color=st["color"], marker=st["marker"],
                              mfc="white", ls="--", label=f"{arch}: \u0394 raw profit", elinewidth=0.7)
@@ -465,7 +470,7 @@ class Figures:
             _train_span(ax, self.sizes)
             _logN(ax, self.sizes)
         axes[0].axhline(0, color="#000000", lw=0.6)
-        axes[0].set_ylabel("Cost of the guarantee, penalty \u2212\nsafety layer (\u20ac per EV served)")
+        axes[0].set_ylabel("Cost of the guarantee, penalty \u2212\nsafety layer (\u20ac per admitted EV)")
         axes[1].set_yscale("symlog", linthresh=0.01, linscale=0.5)
         axes[1].set_ylim(bottom=0)
         axes[1].set_ylabel("Penalty-based policy (kWh/episode)")
@@ -476,61 +481,52 @@ class Figures:
 
     # ------------------------------------------------------------------ F8
     def f8_conformal(self):
+        """Fig. S3: per alpha - coverage vs target, shortfall vs the shared requirement, gap, energy charged."""
         conf = sorted([m for m in self.ep["method"].unique() if C.conf_alpha(m) is not None], key=C.conf_alpha)
         if not conf:
             return
         alphas = np.array([C.conf_alpha(m) for m in conf])
-        has_cov = "coverage_frac" in self.ep and self.ep["coverage_frac"].notna().any()
-        npan = 3 if has_cov else 2
-        fig, axes = plt.subplots(1, npan, figsize=(FULL_W, 2.2), constrained_layout=True)
-        recs = []
+        panels = [("coverage_frac", "Coverage of the\ndeparture bound"),
+                  ("energy_not_served_kwh", "Shortfall vs shared\nrequirement (kWh/episode)"),
+                  ("gap_abs", "Optimality gap (\u20ac per\ncharger and episode)"), ("energy_charged_kwh", "Energy charged\n(kWh/episode)")]
+        panels = [p for p in panels if p[0] in self.ep.columns and self.ep[p[0]].notna().any()]
+        fig, axes = plt.subplots(2, 2, figsize=(FULL_W, 4.2), constrained_layout=True)
+        axes = axes.ravel()
         st = _style("attn_safe")
-        dp = [diff_summary(self.grid, m, "attn_safe", "profit_per_ev", self.sc, salt=("F8",)) for m in conf]
-        d = pd.DataFrame(dict(alpha=alphas, mean=[r["diff"] for r in dp], ci_lo=[r["b_lo"] for r in dp],
-                              ci_hi=[r["b_hi"] for r in dp], metric="delta_profit_per_ev(CP - known d)",
-                              exp_ids=[";".join(r["exp_ids"]) for r in dp]))
-        recs.append(d)
-        axes[0].errorbar(d["alpha"], d["mean"], yerr=self._err(d), color=st["color"], marker="o", elinewidth=0.7)
-        axes[0].axhline(0, color="#000000", lw=0.6)
-        axes[0].set_ylabel("Δ profit vs known departure\n(€ per EV)")
-        rows = []
-        for m, a in zip(conf, alphas):
-            s = summarize(self.grid[self.grid["method"] == m], "unserved_pct", self.sc, salt=("F8u", m))
-            rows.append(dict(alpha=a, mean=s["mean"], ci_lo=s["t_lo"], ci_hi=s["t_hi"], metric="unserved_pct",
-                             exp_ids=";".join(s["exp_ids"])))
-        u = pd.DataFrame(rows)
-        recs.append(u)
-        axes[1].errorbar(u["alpha"], u["mean"], yerr=self._err(u), color=st["color"], marker="o",
-                         label="SA-Attn-CP(α)", elinewidth=0.7)
-        ref = summarize(self.grid[self.grid["method"] == "attn_safe"], "unserved_pct", self.sc, salt=("F8ref",))
-        if np.isfinite(ref["mean"]):
-            axes[1].axhline(ref["mean"], color="#000000", ls="--", lw=0.9, label="SA-Attn, known departure step")
-            recs.append(pd.DataFrame([dict(alpha=np.nan, mean=ref["mean"], ci_lo=ref["t_lo"], ci_hi=ref["t_hi"],
-                                           metric="unserved_pct (known d)", exp_ids=";".join(ref["exp_ids"]))]))
-        axes[1].set_ylabel("Unserved EVs (%)")
-
-        if has_cov:
+        recs = []
+        for ax, (metric, ylab), let in zip(axes, panels, "abcd"):
             rows = []
             for m, a in zip(conf, alphas):
-                s = summarize(self.grid[self.grid["method"] == m], "coverage_frac", self.sc, salt=("F8c", m))
-                rows.append(dict(alpha=a, mean=s["mean"], ci_lo=s["t_lo"], ci_hi=s["t_hi"], metric="coverage_frac",
+                s = summarize(self.grid[self.grid["method"] == m], metric, self.sc, salt=("F8", m, metric))
+                rows.append(dict(alpha=a, method=m, mean=s["mean"], ci_lo=s["b_lo"], ci_hi=s["b_hi"], metric=metric,
                                  exp_ids=";".join(s["exp_ids"])))
-            c = pd.DataFrame(rows)
-            recs.append(c)
-            aa = np.linspace(alphas.min() * 0.8, alphas.max() * 1.2, 50)
-            axes[2].plot(aa, 1 - aa, color="#000000", ls="--", lw=0.9, label="nominal 1 − α")
-            axes[2].errorbar(c["alpha"], c["mean"], yerr=self._err(c), color=st["color"], marker="o",
-                             label="empirical (episode mean)", elinewidth=0.7)
-            axes[2].set_ylabel("Coverage of departure bound")
-
-        for ax, let in zip(axes, "abc"):
+            d = pd.DataFrame(rows)
+            recs.append(d)
+            ax.errorbar(d["alpha"], d["mean"], yerr=self._err(d), color=st["color"], marker="o",
+                        label="SA-Attn-CP(\u03b1)", elinewidth=0.7)
+            if metric == "coverage_frac":
+                aa = np.linspace(alphas.min() * 0.8, alphas.max() * 1.2, 50)
+                ax.plot(aa, 1 - aa, color="#000000", ls="--", lw=0.9, label="target 1 \u2212 \u03b1")
+            else:
+                ref = summarize(self.grid[self.grid["method"] == "attn_safe"], metric, self.sc, salt=("F8ref", metric))
+                if np.isfinite(ref["mean"]):
+                    ax.axhline(ref["mean"], color="#000000", ls=":", lw=0.9, label="SA-Attn, known departure step")
+                    recs.append(pd.DataFrame([dict(alpha=np.nan, method="attn_safe", mean=ref["mean"], ci_lo=ref["b_lo"],
+                                                   ci_hi=ref["b_hi"], metric=metric + " (known d)",
+                                                   exp_ids=";".join(ref["exp_ids"]))]))
+                if metric == "energy_not_served_kwh":
+                    ax.set_yscale("symlog", linthresh=0.1, linscale=0.5)
+                    ax.set_ylim(bottom=0)
+            ax.set_ylabel(ylab)
             ax.set_xscale("log")
             ax.xaxis.set_major_locator(FixedLocator(alphas))
             ax.xaxis.set_minor_locator(NullLocator())
             ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
-            ax.set_xlabel("Miscoverage level α")
+            ax.set_xlabel("Miscoverage level \u03b1")
             _panel(ax, let)
-        _legend_below(fig, axes, ncol=4)
+        for ax in axes[len(panels):]:
+            ax.set_visible(False)
+        _legend_below(fig, axes[:len(panels)], ncol=3)
         self.fw.save(fig, "figS3_conformal_alpha", pd.concat(recs, ignore_index=True))
 
     # ------------------------------------------------------------------ F9

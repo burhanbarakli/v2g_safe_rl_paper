@@ -2,19 +2,26 @@
 \section{Sonuç}\label{sec:conclusion}
 % ---------------------------------------------------------------------
 
-Bu makale, bir CPO istasyonunda V2G şarj kontrolü için boyuttan bağımsız bir dikkat tabanlı politikayı olurluluğu koruyan bir güvenlik katmanıyla birleştirmiştir.
+Bu makale, bir CPO istasyonunda V2G şarj kontrolü için boyuttan bağımsız küme politikalarını olurluluğu koruyan bir güvenlik katmanıyla birleştirmiştir.
 Katman, eğitim ve kullanım sırasında ham eylemleri şarj gücü azalmasını dikkate alan araç başına sınırlara ve iki yönlü trafo limitine $O(N\log N)$ sürede izdüşürmektedir.
 Teorem~\ref{thm:invariance} iki katmanlı bir sonuç vermektedir.
-Tek adım modeli ve şebeke kapasite payı koşulu altında trafo limiti, her ham eylem dizisi için her adımda sağlanır.
-Kalış süresi boyunca olursuz adımla karşılaşmayan her EV kabul edilen ayrılış gereksinimini karşılar; diğerlerinin eksik enerjisini ise bir açık sınırı sınırlar.
+Tek adım modeli ve şebeke kapasite payı koşulu altında trafo limiti her ham eylem dizisi için her adımda sağlanır ve kalış süresi boyunca olursuz adımla karşılaşmayan her EV kabul edilen ayrılış gereksinimini karşılar.
 
-Sıfır-atış değerlendirmede \RES{$N=200$'e kadar cezalı kâr açığına ilişkin bir veya iki cümle, \Tab{S-tab:t2}}.
-Kısıtların sağlanması açısından \RES{aşırı yük enerjisi, eksik enerji ve E4 hakkında bir cümle, Tablo~\ref{S-tab:t3} ve~\ref{S-tab:t3b}}.
-Garantinin maliyeti \RES{hizmet verilen EV başına $\Delta J^{\sm{pen}}$ ve $\Delta$ kâr hakkında bir cümle, \Tab{S-tab:t5}} olarak bulunmuştur.
+EV2Gym'de güvenlik katmanından geçirilerek çalıştırılan hiçbir epizotta trafo aşırı yüklemesi oluşmamıştır.
+Ayrılışın bilindiği sınırı kullanan konformal olmayan her yöntemde, olursuz adım içermeyen hiçbir epizotta eksik enerjiyle ayrılan EV olmamıştır.
+10 ve 20 şarj ünitesinde eğitilen dikkat tabanlı ve Deep Sets politikaları 200 şarj ünitesine aktarılabilmiştir.
+Nokta kestirimlerinde dikkat tabanlı politika, 50 şarj ünitesinde eğitilmiş bir politikanın şarj ünitesi ve epizot başına 0,04\,\texteuro{} yakınında kalmıştır.
+Bir mimari olarak dikkat, Deep Sets'e göre bir üstünlük göstermemiştir.
+Aynı katmanla kullanılan bir fiyat eşiği kuralı, test ızgarasının her istasyon boyutunda dikkat tabanlı politikadan, 20 şarj ünitesinin altında ise Deep Sets politikasından daha düşük ortalama açığa sahip olmuştur.
+
+Öğrenen politikalar olursuz adımlara yol açmış; istasyon boyutuna bağlı olarak dikkat tabanlı politikanın kabul edilen EV'lerinin \%7,4 ile \%34,1'i kalış süreleri boyunca bu tür bir adımla karşılaşmıştır.
+Ayrılış sınırıyla dikkat tabanlı politika, sınır içermeyen bir varyanta ve ceza ile eğitilen ikizine göre daha fazla EV'yi gereksinimi karşılanmadan bırakmıştır.
+Cezalı kâr açısından bu ikizden daha yüksek puan almış; 200 şarj ünitesindeki fark ise sonuçsuz kalmıştır.
+\TODO{Yazarlar Tartışma bölümünü yeniden yazdıktan sonra bu sonuçları doğrular ya da yeniden yazar}.
 
 Bir CPO açısından üç sınırlılık en çok önem taşımaktadır.
 Birincisi, ayrılış sonucu bildirilmiş gereksinimler ve ayrılış zamanları ya da yalnızca marjinal kapsamaya sahip kalibre edilmiş bir ayrılış sınırı gerektirir.
 İkincisi, trafoya ilişkin sonuç her EV'nin komut edilen gücü çektiğini varsayar; gerçek batarya yönetim sistemleri ise daha az güç çekebilir.
-Üçüncüsü, ekonomik değerlendirme gidiş-dönüş kayıplarını ve batarya yıpranmasını dışarıda bırakmaktadır.
-Gelecekteki çalışmalar sınırlara ölçülen enerjiden geri besleme ekleyebilir, olurlu kümeyi birden fazla trafoyu ve doğrusallaştırılmış gerilim limitlerini kapsayacak şekilde genişletebilir ve gelecek boyunca ortak olurluluğu sertifikalayabilir.
+Üçüncüsü, kanıtlar öğrenen yöntem başına iki eğitim tohumuyla ve kayıpsız ekonomik modelle yapılan simülasyonlardan gelmektedir.
+Gelecekteki çalışmalar olursuz adımları azaltan kapasiteyi dikkate alan bir alt sınır, donanım için ölçülen enerjiden geri besleme ve doğrusallaştırılmış gerilim limitleriyle birden fazla trafo ekleyebilir.
 Kaydedilmiş şarj oturumlarıyla yapılacak testler, model ile uygulama arasında kalan farkı daraltabilecektir.

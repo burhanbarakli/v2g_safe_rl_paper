@@ -27,7 +27,6 @@ The safety layer is permutation-equivariant as well, because its problem is inva
 \end{proof}
 
 The parameter counts are 610,370 for the actor and 676,481 for the critic, 1,286,851 in total for every $N$.
-For the small ablation network ($d_m=64$, $n_L=2$, feed-forward width 256, head width 32), actor and critic have 228,067 parameters in total.
 Deep Sets applies a per-token network to each charger token together with the masked mean of all token embeddings and the global token, so the same argument covers it.
 Its width matches the parameter count of \method{} within 10\%. The actor of the MLP baseline with 20 slots and two hidden layers of 640 units has 614,440 parameters, a number that grows linearly with the number of slots.
 

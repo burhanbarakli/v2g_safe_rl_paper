@@ -1,0 +1,78 @@
+**T3d.** Event counts per method and station size N (all test configurations of that N, both training seeds); columns as in the table of event counts over all episodes.
+
+|  | Method | Episodes | Admitted EVs | Infeasible steps | Fallback activations | EVs with an infeasible step | Unserved EVs | Overload steps | Unserved EVs in episodes without infea- sible step |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| N = 5 | SA-Attn (ours) | 1,200 | 3,934 | 5,571 | 5,571 | 1,566 | 382 | 0 | 0 |
+| N = 5 | Deep Sets+safety layer | 1,200 | 3,934 | 3,691 | 3,691 | 1,100 | 260 | 0 | 0 |
+| N = 5 | Attention+safety layer without departure bound | 1,200 | 3,934 | 0 | 0 | 0 | 130 | 0 | 130 |
+| N = 5 | Attention+penalty, safety layer at deployment | 1,200 | 3,934 | 1,972 | 1,972 | 669 | 107 | 0 | 0 |
+| N = 5 | Attention+penalty | 1,200 | 3,934 | 1,891 | 0 | 566 | 225 | 1,746 | 50 |
+| N = 5 | Attention+PPO-Lagrangian | 1,200 | 3,934 | 0 | 0 | 0 | 0 | 1,442 | 0 |
+| N = 5 | MLP+safety layer | 1,200 | 3,934 | 4,346 | 4,346 | 1,236 | 291 | 0 | 0 |
+| N = 5 | MLP+penalty | 1,200 | 3,934 | 8 | 0 | 4 | 5 | 1,748 | 3 |
+| N = 5 | Price-threshold+safety layer | 600 | 1,967 | 750 | 750 | 305 | 50 | 0 | 0 |
+| N = 5 | ALAP+safety layer | 600 | 1,967 | 628 | 628 | 430 | 46 | 0 | 0 |
+| N = 5 | AFAP+safety layer | 600 | 1,967 | 2 | 2 | 7 | 0 | 0 | 0 |
+| N = 10 | SA-Attn (ours) | 1,200 | 7,798 | 2,998 | 2,998 | 1,879 | 305 | 0 | 0 |
+| N = 10 | Deep Sets+safety layer | 1,200 | 7,798 | 1,881 | 1,881 | 1,213 | 195 | 0 | 0 |
+| N = 10 | Attention+safety layer without departure bound | 1,200 | 7,798 | 0 | 0 | 0 | 104 | 0 | 104 |
+| N = 10 | Attention+penalty, safety layer at deployment | 1,200 | 7,798 | 786 | 786 | 573 | 63 | 0 | 0 |
+| N = 10 | Attention+penalty | 1,200 | 7,798 | 662 | 0 | 448 | 204 | 648 | 106 |
+| N = 10 | Attention+PPO-Lagrangian | 1,200 | 7,798 | 0 | 0 | 0 | 0 | 551 | 0 |
+| N = 10 | MLP+safety layer | 1,200 | 7,798 | 1,664 | 1,664 | 1,111 | 168 | 0 | 0 |
+| N = 10 | MLP+penalty | 1,200 | 7,798 | 60 | 0 | 56 | 254 | 609 | 222 |
+| N = 10 | Price-threshold+safety layer | 600 | 3,899 | 210 | 210 | 206 | 14 | 0 | 0 |
+| N = 10 | ALAP+safety layer | 600 | 3,899 | 172 | 172 | 250 | 10 | 0 | 0 |
+| N = 10 | AFAP+safety layer | 600 | 3,899 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 20 | SA-Attn (ours) | 1,800 | 23,222 | 5,526 | 5,526 | 5,930 | 1,274 | 0 | 0 |
+| N = 20 | Deep Sets+safety layer | 1,800 | 23,222 | 4,065 | 4,065 | 4,302 | 977 | 0 | 0 |
+| N = 20 | Attention+safety layer without departure bound | 1,800 | 23,222 | 0 | 0 | 0 | 356 | 0 | 356 |
+| N = 20 | Attention+penalty, safety layer at deployment | 1,800 | 23,222 | 1,183 | 1,183 | 1,583 | 275 | 0 | 0 |
+| N = 20 | Attention+penalty | 1,800 | 23,222 | 779 | 0 | 1,142 | 508 | 1,121 | 306 |
+| N = 20 | Attention+PPO-Lagrangian | 1,800 | 23,222 | 0 | 0 | 0 | 11 | 931 | 11 |
+| N = 20 | MLP+safety layer | 1,800 | 23,222 | 757 | 757 | 1,242 | 170 | 0 | 0 |
+| N = 20 | MLP+penalty | 1,800 | 23,222 | 32 | 0 | 49 | 276 | 1,291 | 253 |
+| N = 20 | Price-threshold+safety layer | 900 | 11,611 | 542 | 542 | 670 | 134 | 0 | 0 |
+| N = 20 | ALAP+safety layer | 900 | 11,611 | 136 | 136 | 406 | 28 | 0 | 0 |
+| N = 20 | AFAP+safety layer | 900 | 11,611 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 25 | SA-Attn (ours) | 200 | 3,596 | 646 | 646 | 1,871 | 59 | 0 | 0 |
+| N = 25 | Deep Sets+safety layer | 200 | 3,596 | 389 | 389 | 1,002 | 60 | 0 | 0 |
+| N = 25 | Attention+safety layer without departure bound | 200 | 3,596 | 0 | 0 | 0 | 6 | 0 | 6 |
+| N = 25 | Attention+penalty, safety layer at deployment | 200 | 3,596 | 21 | 21 | 146 | 0 | 0 | 0 |
+| N = 25 | Attention+penalty | 200 | 3,596 | 10 | 0 | 100 | 6 | 53 | 4 |
+| N = 25 | Attention+PPO-Lagrangian | 200 | 3,596 | 0 | 0 | 0 | 4 | 50 | 4 |
+| N = 25 | Price-threshold+safety layer | 100 | 1,798 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 25 | ALAP+safety layer | 100 | 1,798 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 25 | AFAP+safety layer | 100 | 1,798 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 50 | SA-Attn (ours) | 1,200 | 39,014 | 859 | 859 | 4,093 | 303 | 0 | 0 |
+| N = 50 | Deep Sets+safety layer | 1,200 | 39,014 | 541 | 541 | 2,437 | 225 | 0 | 0 |
+| N = 50 | SA-Attn trained at N = 50 (reference) | 1,200 | 39,014 | 772 | 772 | 3,225 | 269 | 0 | 0 |
+| N = 50 | Attention+safety layer without departure bound | 1,200 | 39,014 | 0 | 0 | 0 | 159 | 0 | 159 |
+| N = 50 | Attention+penalty, safety layer at deployment | 1,200 | 39,014 | 22 | 22 | 196 | 3 | 0 | 0 |
+| N = 50 | Attention+penalty | 1,200 | 39,014 | 19 | 0 | 128 | 303 | 90 | 301 |
+| N = 50 | Attention+PPO-Lagrangian | 1,200 | 39,014 | 0 | 0 | 0 | 75 | 97 | 75 |
+| N = 50 | Price-threshold+safety layer | 600 | 19,507 | 69 | 69 | 314 | 28 | 0 | 0 |
+| N = 50 | ALAP+safety layer | 600 | 19,507 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 50 | AFAP+safety layer | 600 | 19,507 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 100 | SA-Attn (ours) | 600 | 39,036 | 382 | 382 | 3,711 | 186 | 0 | 0 |
+| N = 100 | Deep Sets+safety layer | 600 | 39,036 | 214 | 214 | 1,998 | 118 | 0 | 0 |
+| N = 100 | SA-Attn trained at N = 50 (reference) | 600 | 39,036 | 399 | 399 | 3,295 | 203 | 0 | 0 |
+| N = 100 | Attention+safety layer without departure bound | 600 | 39,036 | 0 | 0 | 0 | 96 | 0 | 96 |
+| N = 100 | Attention+penalty, safety layer at deployment | 600 | 39,036 | 2 | 2 | 69 | 0 | 0 | 0 |
+| N = 100 | Attention+penalty | 600 | 39,036 | 2 | 0 | 69 | 111 | 12 | 111 |
+| N = 100 | Attention+PPO-Lagrangian | 600 | 39,036 | 0 | 0 | 0 | 131 | 19 | 131 |
+| N = 100 | Price-threshold+safety layer | 300 | 19,518 | 39 | 39 | 462 | 5 | 0 | 0 |
+| N = 100 | ALAP+safety layer | 300 | 19,518 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 100 | AFAP+safety layer | 300 | 19,518 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 200 | SA-Attn (ours) | 900 | 116,416 | 1,696 | 1,696 | 20,721 | 3,649 | 0 | 0 |
+| N = 200 | Deep Sets+safety layer | 900 | 116,416 | 1,341 | 1,341 | 15,897 | 3,203 | 0 | 0 |
+| N = 200 | SA-Attn trained at N = 50 (reference) | 900 | 116,416 | 1,518 | 1,518 | 16,063 | 3,171 | 0 | 0 |
+| N = 200 | Attention+safety layer without departure bound | 900 | 116,416 | 0 | 0 | 0 | 700 | 0 | 700 |
+| N = 200 | Attention+penalty, safety layer at deployment | 900 | 116,416 | 34 | 34 | 370 | 68 | 0 | 0 |
+| N = 200 | Attention+penalty | 900 | 116,416 | 19 | 0 | 365 | 94 | 60 | 88 |
+| N = 200 | Attention+PPO-Lagrangian | 900 | 116,416 | 0 | 0 | 0 | 792 | 184 | 792 |
+| N = 200 | Price-threshold+safety layer | 450 | 58,208 | 65 | 65 | 1,068 | 137 | 0 | 0 |
+| N = 200 | ALAP+safety layer | 450 | 58,208 | 0 | 0 | 0 | 0 | 0 | 0 |
+| N = 200 | AFAP+safety layer | 450 | 58,208 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+*Sums over episodes. The stress configurations (ρ_tr = 3 kW; N = 20, 200) and the literature configuration (N = 25) are included at their N.*

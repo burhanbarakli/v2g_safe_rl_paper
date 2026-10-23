@@ -6,7 +6,7 @@
 
 Varış sınırlaması ve kabul kontrolü denetleyiciye değil, istasyon işletmecisinin talep ayarına aittir.
 Her test tekrarı için bunlar herhangi bir denetleyici çalışmadan önce bir kez hesaplanır ve ortaya çıkan kabul edilen talepler $\Ereq_i$, karşılaştırılan her yöntem ve her iki optimum tarafından paylaşılır.
-Sarmalayıcı, kabul edilen gereksinimi varışta EV2Gym'in EV nesnesine yazar; böylece EV-GNN ve Gurobi eMPC gibi harici karşılaştırma yöntemleri de aynı hedefi izler.
+Sarmalayıcı, kabul edilen gereksinimi varışta EV2Gym'in EV nesnesine yazar; böylece EV2Gym'in EV nesnelerini okuyan her denetleyici aynı hedefi izler.
 HiGHS eMPC, ufku içindeki varışlar için paylaşılan girdileri kullanır.
 Konformal geçişler, paylaşılan gereksinimi kendi $\hat d_i^{\sm{lo}}$ sınırlarıyla yeniden sertifikalar; dolayısıyla bu geçişlerin gereksinimi hiçbir zaman daha büyük değildir; kabul kontrolü içermeyen geçişler ise varışta sınırlandırılmış talebi korur.
 Her geçişte eksik enerji, paylaşılan kabul edilen gereksinime göre ölçülür.
@@ -51,7 +51,7 @@ $G_i^{\max}=0.01\,(d_i-t_i^{\sm{arr}}+1)$ kWh yuvarlama payıyla kısıtlar şun
 \end{aligned}
 \end{equation}
 burada katı LP $o^{\pm}=0$ olarak sabitler.
-Bir çizelgenin kârı $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$'dir; enerji akışı maliyeti $c^{\sm{thr}}$ tek bir duyarlılık çalışması dışında sıfırdır.
+Bir çizelgenin kârı $\mathrm{Pr}(p)=\sum_t\Delta t\sum_i\big(c^{\sm{dis}}p_i^{-}-c^{\sm{ch}}p_i^{+}-c^{\sm{thr}}(p_i^{+}+p_i^{-})\big)$'dir; enerji akışı maliyeti $c^{\sm{thr}}$ raporlanan tüm çalıştırmalarda sıfırdır.
 
 \begin{lemma}[Şarj gücü azalması satırları]\label{lem:taperrows}
 Her EV, Lemma~\ref{lem:a3} koşullarını sağlasın ve $\varrho_{\kappa,i}=(1-e^{-\kappa_i})/\Delta t$ olsun.
@@ -71,9 +71,7 @@ Dolayısıyla kazanç en fazla $(1-\varsigma)(1-e^{-\kappa})$'dır ve zaten en f
 Kod, kesin değerden \%1 daha gevşek, geçerli bir dış satır olan $\varrho_i^{\sm{out}}=1.01\,\varrho_{\kappa,i}$'yi kullanır.
 Kodla birlikte yayımlanan bir denetim betiği, 320 yapılandırmada eşitsizliği $1.7\times10^{-13}$ kW duyarlılığında ve bant dışındaki eşitliği doğrulamaktadır.
 Bu satırlarla LP'ler, EV2Gym'in şarj limitini geçiş bandının adım ayrıklaştırması ve \%1'lik pay dışında modeller.
-Kalan gevşetmeler yuvarlama payı ve eşzamanlı şarj ile deşarjdır; ikincisi, ana ızgaradaki gibi $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ ve $c^{\sm{thr}}=0$ olduğunda maliyet ve enerji açısından nötrdür ve dolayısıyla kesindir.
-Enerji akışı maliyeti içeren ya da negatif fiyatlarda 0.9 deşarj fiyatı çarpanı kullanan duyarlılık çalışmalarında LP'ler geçerli üst sınırlar olarak kalır.
-Bu durumda eşzamanlı şarj ve deşarj kullanabilirler ve bu tür adımların sayısı raporlanır.
+Kalan gevşetmeler yuvarlama payı ve eşzamanlı şarj ile deşarjdır; ikincisi, raporlanan tüm çalıştırmalardaki gibi $\eta=1$, $c^{\sm{dis}}=c^{\sm{ch}}$ ve $c^{\sm{thr}}=0$ olduğunda maliyet ve enerji açısından nötrdür ve dolayısıyla kesindir.
 
 \subsection{Üst sınırlar}\label{app:bounds}
 
@@ -90,7 +88,7 @@ Bu durumda $J^{\pi}\le J^{\sm{LP,ceil}}$'dir.
 \begin{proof}
 $\tilde p_i(t)$ raporlanan güçler ve $E_i^{\sm{nom}}(t)=E_i^{\sm{arr}}+\Delta t\sum_{s<t}\tilde p_i(s)$ yalnızca faturalandırılan güçlerin üreteceği enerji olsun.
 EV2Gym tam olarak $\tilde p$'yi faturalandırır; dolayısıyla $J^{\pi}$, $p^{\pm}=\tilde p^{\pm}$ noktasındaki $\mathrm{Pr}$'ye eşittir.
-Yuvarlama etkin adım başına 0.01 kWh'ten daha az ekler; dolayısıyla yörünge boyunca $E_i^{\sm{real}}(t)-G_i^{\max}\le E_i^{\sm{nom}}(t)\le E_i^{\sm{real}}(t)\le E_i^{\sm{cap}}$'dir.
+Yuvarlama etkin adım başına 0,01 kWh'ten daha az ekler; dolayısıyla yörünge boyunca $E_i^{\sm{real}}(t)-G_i^{\max}\le E_i^{\sm{nom}}(t)\le E_i^{\sm{real}}(t)\le E_i^{\sm{cap}}$'dir.
 Bu nedenle düşürülmüş enerji tabanı ve düşürülmüş ayrılış satırı, $z_i=(\Ereq_i-E_i^{\sm{real}}(d_i+1))^{+}$ ile $E^{\sm{nom}}$ için sağlanır; güç satırları da $\tilde p_i\le\bar P_i(E_i^{\sm{real}})\le\Pnom_i$ ve $\tilde p_i\ge-\Pdis_i$ olduğundan sağlanır.
 Ayrıca $E^{\sm{nom}}(t_i^{\sm{arr}})=E_i^{\sm{arr}}$ olduğundan ilk adım satırı sağlanır.
 Şarj gücü azalması satırları için EV2Gym hiçbir zaman $\varphi(E)-E$'den fazlasını teslim etmez; dolayısıyla Lemma~\ref{lem:taperrows} $\tilde p_i(t)\le\varrho_{\kappa,i}(E^{\sm{cap}}-E_i^{\sm{real}}(t))\le\varrho_i^{\sm{out}}(E^{\sm{cap}}-E_i^{\sm{nom}}(t))$ sonucunu verir.
@@ -109,7 +107,8 @@ Ayrılış satırı için $E^{\sm{nom}}(d_i+1)+z_i\ge E^{\sm{real}}(d_i+1)-G_i^{
 Bu noktada amaç değeri, aynı faturalandırılan güçler, eksik enerji ve aşırı yük enerjisiyle $J^{\sm{pen}}(\pi)$'ye eşittir.
 \end{proof}
 
-Sınır denetleyicinin değil ölçümün bir özelliğidir; dolayısıyla eksik enerji ya da aşırı yük içeren denetleyicileri, konformal ve kabul kontrolsüz geçişleri ve harici karşılaştırma yöntemlerini kapsar.
-Sarmalayıcıdaki her geçiş fiziksel kırpmayı uygular ve Gurobi eMPC bağdaştırıcısı da komutlarını aynı şekilde kırpar.
+Sınır denetleyicinin değil ölçümün bir özelliğidir; dolayısıyla eksik enerji ya da aşırı yük içeren denetleyicileri, konformal ve kabul kontrolsüz geçişleri ve kural tabanlı ve model öngörülü karşılaştırma yöntemlerini kapsar.
+Sarmalayıcıdaki her geçiş fiziksel kırpmayı uygular.
+Raporlanan çalıştırmalarda 153.100 epizodun hiçbiri yumuşak cezalı optimumu $10^{-6}$\,\texteuro{}'dan fazla aşmamıştır (analiz yükleme raporu).
 Kodla birlikte yayımlanan bir birim testi, rastgele eylemler de dâhil olmak üzere küçük tekrarlarda tüm kural tabanlı yöntemler için $J^{\sm{pen}}\le J^{\sm{pen,LP}}$ koşulunu denetler.
 EV2Gym içinde bir denetleyici faturalandırılmayan yuvarlama kazancı yoluyla $J^{\sm{LP}}$'yi aşabilir; bu nedenle ana metin garantinin maliyeti için $J^{\sm{LP,ceil}}$'i kullanır ve $J^{\sm{LP}}$'yi yalnızca burada raporlar.

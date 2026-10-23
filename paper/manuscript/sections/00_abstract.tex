@@ -1,25 +1,29 @@
 % ---------------------------------------------------------------------
 % Abstract (SAUCIS: <= 400 words, no citations, no figure/table/section
 % references, third person) and keywords (3-5, alphabetical).
+% Every number is listed in paper/results_number_sources.md.
 % ---------------------------------------------------------------------
 \begin{abstract}
-Charge point operators that offer vehicle-to-grid (V2G) services must keep a station within its transformer limit and deliver the agreed energy to each driver by departure.
+Charge point operators offering vehicle-to-grid (V2G) services must keep a station within its transformer limit and deliver each driver's agreed energy by departure.
 Reinforcement learning (RL) controllers usually treat both requirements as reward penalties, and their networks are tied to one station size.
-This paper combines a size-agnostic attention policy with a safety layer, an exact projection onto per-vehicle power bounds and the two-sided transformer limit, computed in $O(N\log N)$ time for $N$ chargers.
-Each charger is a token, so one set of weights serves any number of chargers.
+This paper combines size-agnostic set policies with a safety layer, an exact projection onto per-vehicle power bounds and the two-sided transformer limit.
+The lower bound of each electric vehicle (EV) keeps its admitted requirement reachable at full power.
+For any sequence of raw actions, the transformer limit provably holds at every step under simulator and grid-headroom conditions.
+Every EV whose stay contains no infeasible step, where the transformer cannot cover all lower bounds, meets its admitted requirement.
 
-The lower bound of each electric vehicle (EV) is the least power after which full-power charging still reaches its admitted requirement, and it includes the charging taper.
-This admitted requirement is the driver's request capped to what is reachable and admissible.
+Attention and Deep Sets policies were trained with proximal policy optimization (PPO) on 10 and 20 chargers in EV2Gym and tested without retraining on up to 200 chargers.
+With two training seeds per learned method, no transformer overload occurred in 102,750 test episodes run through the safety layer, against 3,730 and 3,274 overload steps for penalty-trained and Lagrangian attention policies.
+For every non-conformal method with the known-departure bound, no EV was left short in an episode without infeasible steps.
 
-For any sequence of raw actions, during training and deployment, the paper proves two results.
-Under simulator and grid-headroom conditions, the transformer limit holds at every step.
-In addition, every EV whose stay contains no infeasible step meets its admitted requirement, where a step is infeasible if the transformer cannot give every EV its lower bound.
-A least-laxity-first fallback rule handles the remaining steps.
+At 200 chargers, the attention policy had a gap of 0.90 euros per charger and episode to a perfect-information optimum, against 0.87 euros when trained at 50 chargers.
+The Deep Sets policy reached 0.68 euros, so the attention architecture showed no advantage.
+A price-threshold rule with the same layer had a lower mean gap than the attention policy at every size of the test grid.
+The Deep Sets policy beat this rule only from 20 chargers upward.
 
-For undeclared departures, a split-conformal bound on the departure time extends the second result with marginal coverage of at least the nominal level minus the rate of EVs that receive less than their bound.
-The safe attention-based controller (\method{}) is trained with proximal policy optimization (PPO) on stations with 10 and 20 chargers in the EV2Gym simulator and tested without retraining on up to 200 chargers.
-It is compared with learned, constrained-RL, heuristic and model-predictive baselines through the gap of a penalised profit to a perfect-information optimum and through the share of EVs without infeasible steps.
-\RES{one or two sentences with the main findings: penalised-profit gap at $N=200$, fraction of EVs whose stay contains no infeasible step, cost of the guarantee}
+Learned policies caused infeasible steps, and for the attention policy the share of EVs without one rose from 65.9\% at 5 chargers to 92.6\% at 200.
+With the departure bound, this policy left 2.24\% of admitted EVs unserved, against 1.86\% for its penalty-trained twin and 0.99\% for a variant without the bound.
+That variant also had a lower gap at every size.
+In penalised profit, the attention policy scored 0.04 to 3.46 euros per admitted EV more than the twin, with an interval including zero only at 200 chargers.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Electric vehicle charging, Safe reinforcement learning, Safety layer, Vehicle-to-grid, Zero-shot transfer

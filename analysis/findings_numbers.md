@@ -1,559 +1,642 @@
 # Measured values (numbers only)
 
 Factual listing of measured values with their source. It contains no interpretation, ranking statement or conclusion (SAUCIS AI policy: results are reported and interpreted by the authors).
-Generated 2026-10-23T17:47:20 from `/home/bob/v2g_safe_rl_paper/code/results/raw`: 153100 episodes, 30 methods, 43 configurations, 3550 oracle episodes. Optimality-gap reference: soft-penalty oracle J^pen_LP,ceil (DD32).
-Cell ids: `table|[group / ]row|column` as in tables/provenance.json. Values: mean ± std over seeds († = deterministic single run); [a, b] = 95 % CI as stated in the column header or STAT_METHODS.md.
+Generated 2026-10-24T00:46:52 from `code/results/raw`: 153100 episodes, 30 methods, 43 configurations, 3550 oracle episodes. Optimality-gap reference: soft-penalty oracle J^pen_LP,ceil (DD32).
+Cell ids: `table|[group / ]row|column` as in tables/provenance.json. Values: mean of the seed-averaged policy (min–max over seeds; † = deterministic single run); [a, b] = 95 % CI as stated in the column header or STAT_METHODS.md.
 
 ## T1
-Caption: Main comparison at the training station sizes N ∈ {10, 20} (three arrival profiles and both tightness levels pooled). J^pen: penalised profit (10 €/kWh for energy not served and transformer overload); optimality gap of J^pen w.r.t. the soft-penalty perfect-information optimum.
+Caption: Main comparison at the training station sizes N ∈ {10, 20} (three arrival profiles and both tightness levels pooled; per episode). J^pen: penalised profit with 10 €/kWh for energy not served against the shared requirement and for transformer overload energy.
+- **Optimality gap (€ per charger and episode)**
+  - `T1|N = 10 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 1.290 (1.255–1.325)
+  - `T1|N = 20 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.973 (0.971–0.976)
+  - minimum over rows: `T1|N = 20 / Deep Sets+safety layer|Optimality gap (€ per charger and episode)`: 0.722 (0.687–0.758)
+  - maximum over rows: `T1|N = 20 / Price-threshold|Optimality gap (€ per charger and episode)`: 159.518†
+- **Optimality gap, IQM [95 % CI]**
+  - `T1|N = 10 / SA-Attn (ours)|Optimality gap, IQM [95 % CI]`: 0.712 [0.664, 0.769]
+  - `T1|N = 20 / SA-Attn (ours)|Optimality gap, IQM [95 % CI]`: 0.719 [0.676, 0.766]
+  - minimum over rows: `T1|N = 20 / Deep Sets+safety layer|Optimality gap, IQM [95 % CI]`: 0.527 [0.497, 0.559]
+  - maximum over rows: `T1|N = 20 / Price-threshold|Optimality gap, IQM [95 % CI]`: 153.133 [147.107, 159.274]
 - **J^pen (€/episode)**
-  - `T1|N = 10 / SA-Attn (ours)|J^pen (€/episode)`: -24.05 ± 0.50 (95 % t CI [-28.511, -19.579])
-  - `T1|N = 20 / SA-Attn (ours)|J^pen (€/episode)`: -45.25 ± 0.07 (95 % t CI [-45.866, -44.634])
+  - `T1|N = 10 / SA-Attn (ours)|J^pen (€/episode)`: -24.05 (-24.40 to -23.69)
+  - `T1|N = 20 / SA-Attn (ours)|J^pen (€/episode)`: -45.25 (-45.30 to -45.20)
   - minimum over rows: `T1|N = 20 / Price-threshold|J^pen (€/episode)`: -3216.13†
-  - maximum over rows: `T1|N = 10 / Attention+safety layer without departure bound|J^pen (€/episode)`: -18.91 ± 0.61
-- **Optimality gap (%)**
-  - `T1|N = 10 / SA-Attn (ours)|Optimality gap (%)`: 165.1 ± 12.1 (95 % t CI [56.348, 273.873])
-  - `T1|N = 20 / SA-Attn (ours)|Optimality gap (%)`: 125.9 ± 0.7 (95 % t CI [119.413, 132.437])
-  - minimum over rows: `T1|N = 20 / Deep Sets+safety layer|Optimality gap (%)`: 92.2 ± 6.2
-  - maximum over rows: `T1|N = 10 / Price-threshold|Optimality gap (%)`: 22015.7†
-- **Gap IQM (%) [95 % CI]**
-  - `T1|N = 10 / SA-Attn (ours)|Gap IQM (%) [95 % CI]`: 72.3 [71.2, 73.4]
-  - `T1|N = 20 / SA-Attn (ours)|Gap IQM (%) [95 % CI]`: 69.9 [69.0, 70.9]
-  - minimum over rows: `T1|N = 20 / Deep Sets+safety layer|Gap IQM (%) [95 % CI]`: 50.5 [47.1, 54.2]
-  - maximum over rows: `T1|N = 10 / Price-threshold|Gap IQM (%) [95 % CI]`: 14135.6 [13070.1, 15295.0]
+  - maximum over rows: `T1|N = 10 / Attention+safety layer without departure bound|J^pen (€/episode)`: -18.91 (-19.34 to -18.48)
 - **Profit (€/episode)**
-  - `T1|N = 10 / SA-Attn (ours)|Profit (€/episode)`: -19.42 ± 0.01 (95 % t CI [-19.480, -19.356])
-  - `T1|N = 20 / SA-Attn (ours)|Profit (€/episode)`: -43.21 ± 0.08 (95 % t CI [-43.924, -42.495])
+  - `T1|N = 10 / SA-Attn (ours)|Profit (€/episode)`: -19.42 (-19.42 to -19.41)
+  - `T1|N = 20 / SA-Attn (ours)|Profit (€/episode)`: -43.21 (-43.27 to -43.15)
   - minimum over rows: `T1|N = 20 / AFAP|Profit (€/episode)`: -47.77†
   - maximum over rows: `T1|N = 20 / Price-threshold|Profit (€/episode)`: 43.35†
 - **Energy not served (kWh)**
-  - `T1|N = 10 / SA-Attn (ours)|Energy not served (kWh)`: 0.46 ± 0.05 (95 % t CI [0.022, 0.903])
-  - `T1|N = 20 / SA-Attn (ours)|Energy not served (kWh)`: 0.20 ± 1.1e-03 (95 % t CI [0.194, 0.214])
+  - `T1|N = 10 / SA-Attn (ours)|Energy not served (kWh)`: 0.46 (0.43–0.50)
+  - `T1|N = 20 / SA-Attn (ours)|Energy not served (kWh)`: 0.20 (0.20–0.20)
   - minimum over rows: `T1|N = 10 / LLF+safety layer|Energy not served (kWh)`: 0†
   - maximum over rows: `T1|N = 20 / Price-threshold|Energy not served (kWh)`: 317.44†
 - **Overload (kWh)**
-  - `T1|N = 10 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T1|N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `T1|N = 10 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0
+  - `T1|N = 10 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T1|N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - minimum over rows: `T1|N = 10 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
   - maximum over rows: `T1|N = 20 / Price-threshold|Overload (kWh)`: 8.51†
 
 ## T2
-Caption: Zero-shot transfer across station sizes N (policies trained at N ∈ {10, 20}; profiles and tightness levels ρ_tr ∈ {4, 7} kW pooled; per episode). Transfer gap: optimality gap of SA-Attn minus that of SA-Attn trained at N = 50 (in-distribution reference, DD36).
+Caption: Zero-shot transfer across station sizes N for policies trained at N ∈ {10, 20} (profiles and ρ_tr ∈ {4, 7} kW pooled; per episode): learned methods, SA-Attn trained at N = 50 (reference) and the three baselines with the safety layer that have the lowest mean optimality gap.
+- **Optimality gap (€ per charger and episode)**
+  - `T2|N = 5 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 2.292 (2.080–2.503)
+  - `T2|N = 10 (training size) / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 1.290 (1.255–1.325)
+  - `T2|N = 20 (training size) / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.973 (0.971–0.976)
+  - `T2|N = 50 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.921 (0.886–0.956)
+  - `T2|N = 100 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.881 (0.849–0.913)
+  - `T2|N = 200 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.902 (0.862–0.942)
+  - minimum over rows: `T2|N = 100 / Deep Sets+safety layer|Optimality gap (€ per charger and episode)`: 0.649 (0.597–0.702)
+  - maximum over rows: `T2|N = 10 (training size) / MLP+penalty|Optimality gap (€ per charger and episode)`: 5.547 (2.529–8.564)
 - **J^pen (€/charger)**
-  - `T2|N = 5 / SA-Attn (ours)|J^pen (€/charger)`: -3.49 ± 0.30 (95 % t CI [-6.182, -0.802])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|J^pen (€/charger)`: -2.40 ± 0.05 (95 % t CI [-2.851, -1.958])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|J^pen (€/charger)`: -2.26 ± 3.4e-03 (95 % t CI [-2.293, -2.232])
-  - `T2|N = 50 / SA-Attn (ours)|J^pen (€/charger)`: -2.15 ± 0.05 (95 % t CI [-2.600, -1.709])
-  - `T2|N = 100 / SA-Attn (ours)|J^pen (€/charger)`: -2.16 ± 0.05 (95 % t CI [-2.564, -1.747])
-  - `T2|N = 200 / SA-Attn (ours)|J^pen (€/charger)`: -2.08 ± 0.06 (95 % t CI [-2.583, -1.570])
-  - minimum over rows: `T2|N = 5 / eMPC-HiGHS|J^pen (€/charger)`: -113.16†
-  - maximum over rows: `T2|N = 200 / Deep Sets+safety layer|J^pen (€/charger)`: -1.85 ± 0.05
-- **Optimality gap (%)**
-  - `T2|N = 5 / SA-Attn (ours)|Optimality gap (%)`: 200.3 ± 41.7 (95 % t CI [-174.544, 575.227])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|Optimality gap (%)`: 165.1 ± 12.1 (95 % t CI [56.348, 273.873])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|Optimality gap (%)`: 125.9 ± 0.7 (95 % t CI [119.413, 132.437])
-  - `T2|N = 50 / SA-Attn (ours)|Optimality gap (%)`: 132.4 ± 6.8 (95 % t CI [71.477, 193.251])
-  - `T2|N = 100 / SA-Attn (ours)|Optimality gap (%)`: 154.4 ± 10.0 (95 % t CI [64.420, 244.360])
-  - `T2|N = 200 / SA-Attn (ours)|Optimality gap (%)`: 198.6 ± 12.6 (95 % t CI [85.625, 311.629])
-  - minimum over rows: `T2|N = 20 (training size) / Deep Sets+safety layer|Optimality gap (%)`: 92.2 ± 6.2
-  - maximum over rows: `T2|N = 200 / eMPC-HiGHS|Optimality gap (%)`: 24554.9†
+  - `T2|N = 5 / SA-Attn (ours)|J^pen (€/charger)`: -3.49 (-3.70 to -3.28)
+  - `T2|N = 10 (training size) / SA-Attn (ours)|J^pen (€/charger)`: -2.40 (-2.44 to -2.37)
+  - `T2|N = 20 (training size) / SA-Attn (ours)|J^pen (€/charger)`: -2.26 (-2.26 to -2.26)
+  - `T2|N = 50 / SA-Attn (ours)|J^pen (€/charger)`: -2.15 (-2.19 to -2.12)
+  - `T2|N = 100 / SA-Attn (ours)|J^pen (€/charger)`: -2.16 (-2.19 to -2.12)
+  - `T2|N = 200 / SA-Attn (ours)|J^pen (€/charger)`: -2.08 (-2.12 to -2.04)
+  - minimum over rows: `T2|N = 10 (training size) / MLP+penalty|J^pen (€/charger)`: -6.66 (-9.68 to -3.64)
+  - maximum over rows: `T2|N = 200 / Deep Sets+safety layer|J^pen (€/charger)`: -1.85 (-1.88 to -1.82)
 - **Profit (€/charger)**
-  - `T2|N = 5 / SA-Attn (ours)|Profit (€/charger)`: -2.00 ± 0.01 (95 % t CI [-2.089, -1.911])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|Profit (€/charger)`: -1.94 ± 6.9e-04 (95 % t CI [-1.948, -1.936])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|Profit (€/charger)`: -2.16 ± 4.0e-03 (95 % t CI [-2.196, -2.125])
-  - `T2|N = 50 / SA-Attn (ours)|Profit (€/charger)`: -2.10 ± 0.02 (95 % t CI [-2.297, -1.898])
-  - `T2|N = 100 / SA-Attn (ours)|Profit (€/charger)`: -2.14 ± 0.03 (95 % t CI [-2.390, -1.883])
-  - `T2|N = 200 / SA-Attn (ours)|Profit (€/charger)`: -2.04 ± 0.02 (95 % t CI [-2.265, -1.818])
-  - minimum over rows: `T2|N = 20 (training size) / LLF+safety layer|Profit (€/charger)`: -2.39†
-  - maximum over rows: `T2|N = 5 / eMPC-HiGHS|Profit (€/charger)`: 0.25†
+  - `T2|N = 5 / SA-Attn (ours)|Profit (€/charger)`: -2.00 (-2.01 to -1.99)
+  - `T2|N = 10 (training size) / SA-Attn (ours)|Profit (€/charger)`: -1.94 (-1.94 to -1.94)
+  - `T2|N = 20 (training size) / SA-Attn (ours)|Profit (€/charger)`: -2.16 (-2.16 to -2.16)
+  - `T2|N = 50 / SA-Attn (ours)|Profit (€/charger)`: -2.10 (-2.11 to -2.08)
+  - `T2|N = 100 / SA-Attn (ours)|Profit (€/charger)`: -2.14 (-2.16 to -2.12)
+  - `T2|N = 200 / SA-Attn (ours)|Profit (€/charger)`: -2.04 (-2.06 to -2.02)
+  - minimum over rows: `T2|N = 20 (training size) / AFAP+safety layer|Profit (€/charger)`: -2.39†
+  - maximum over rows: `T2|N = 10 (training size) / Deep Sets+safety layer|Profit (€/charger)`: -1.77 (-1.81 to -1.74)
 - **Unserved EVs (%)**
-  - `T2|N = 5 / SA-Attn (ours)|Unserved EVs (%)`: 7.50 ± 0.70 (95 % t CI [1.173, 13.831])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|Unserved EVs (%)`: 3.15 ± 0.29 (95 % t CI [0.553, 5.753])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|Unserved EVs (%)`: 1.17 ± 0.04 (95 % t CI [0.769, 1.566])
-  - `T2|N = 50 / SA-Attn (ours)|Unserved EVs (%)`: 0.64 ± 0.23 (95 % t CI [-1.406, 2.689])
-  - `T2|N = 100 / SA-Attn (ours)|Unserved EVs (%)`: 0.41 ± 0.23 (95 % t CI [-1.698, 2.516])
-  - `T2|N = 200 / SA-Attn (ours)|Unserved EVs (%)`: 0.55 ± 0.41 (95 % t CI [-3.138, 4.238])
-  - minimum over rows: `T2|N = 5 / Attention+PPO-Lagrangian|Unserved EVs (%)`: 0 ± 0
-  - maximum over rows: `T2|N = 5 / eMPC-HiGHS|Unserved EVs (%)`: 99.89†
+  - `T2|N = 5 / SA-Attn (ours)|Unserved EVs (%)`: 7.50 (7.00–8.00)
+  - `T2|N = 10 (training size) / SA-Attn (ours)|Unserved EVs (%)`: 3.15 (2.95–3.36)
+  - `T2|N = 20 (training size) / SA-Attn (ours)|Unserved EVs (%)`: 1.17 (1.14–1.20)
+  - `T2|N = 50 / SA-Attn (ours)|Unserved EVs (%)`: 0.64 (0.48–0.80)
+  - `T2|N = 100 / SA-Attn (ours)|Unserved EVs (%)`: 0.41 (0.24–0.57)
+  - `T2|N = 200 / SA-Attn (ours)|Unserved EVs (%)`: 0.55 (0.26–0.84)
+  - minimum over rows: `T2|N = 5 / Attention+PPO-Lagrangian|Unserved EVs (%)`: 0 (0–0)
+  - maximum over rows: `T2|N = 5 / SA-Attn (ours)|Unserved EVs (%)`: 7.50 (7.00–8.00)
 - **Overload (kWh)**
-  - `T2|N = 5 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T2|N = 50 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T2|N = 100 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T2|N = 200 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `T2|N = 5 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0
-  - maximum over rows: `T2|N = 5 / MLP+penalty|Overload (kWh)`: 1.80 ± 0.04
-- **Fallback activations**
-  - `T2|N = 5 / SA-Attn (ours)|Fallback activations`: 4.6 ± 0.4 (95 % t CI [0.651, 8.634])
-  - `T2|N = 10 (training size) / SA-Attn (ours)|Fallback activations`: 2.5 ± 0.3 (95 % t CI [0.169, 4.828])
-  - `T2|N = 20 (training size) / SA-Attn (ours)|Fallback activations`: 1.2 ± 0.1 (95 % t CI [0.490, 1.909])
-  - `T2|N = 50 / SA-Attn (ours)|Fallback activations`: 0.7 ± 0.1 (95 % t CI [-0.417, 1.849])
-  - `T2|N = 100 / SA-Attn (ours)|Fallback activations`: 0.6 ± 0.2 (95 % t CI [-1.185, 2.458])
-  - `T2|N = 200 / SA-Attn (ours)|Fallback activations`: 0.6 ± 0.3 (95 % t CI [-2.030, 3.180])
-  - minimum over rows: `T2|N = 5 / Attention+penalty|Fallback activations`: 0 ± 0
-  - maximum over rows: `T2|N = 5 / SA-Attn (ours)|Fallback activations`: 4.6 ± 0.4
-- **Transfer gap to N = 50 ref. (pp)**
-  - `T2|N = 50 / SA-Attn (ours)|Transfer gap to N = 50 ref. (pp)`: 5.3 [0.0, 10.6]
-  - `T2|N = 100 / SA-Attn (ours)|Transfer gap to N = 50 ref. (pp)`: 4.0 [-2.3, 10.0]
-  - `T2|N = 200 / SA-Attn (ours)|Transfer gap to N = 50 ref. (pp)`: 5.8 [-1.6, 13.2]
-  - minimum over rows: `T2|N = 100 / SA-Attn (ours)|Transfer gap to N = 50 ref. (pp)`: 4.0 [-2.3, 10.0]
-  - maximum over rows: `T2|N = 200 / SA-Attn (ours)|Transfer gap to N = 50 ref. (pp)`: 5.8 [-1.6, 13.2]
+  - `T2|N = 5 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T2|N = 10 (training size) / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T2|N = 20 (training size) / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T2|N = 50 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T2|N = 100 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `T2|N = 200 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - minimum over rows: `T2|N = 5 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - maximum over rows: `T2|N = 5 / MLP+penalty|Overload (kWh)`: 1.80 (1.77–1.83)
+- **Transfer gap to the N = 50 reference (€/charger) [95 % CI]**
+  - `T2|N = 50 / SA-Attn (ours)|Transfer gap to the N = 50 reference (€/charger) [95 % CI]`: 0.037 [0.026, 0.050]
+  - `T2|N = 100 / SA-Attn (ours)|Transfer gap to the N = 50 reference (€/charger) [95 % CI]`: 0.023 [0.012, 0.033]
+  - `T2|N = 200 / SA-Attn (ours)|Transfer gap to the N = 50 reference (€/charger) [95 % CI]`: 0.033 [0.022, 0.046]
+  - minimum over rows: `T2|N = 100 / Deep Sets+safety layer|Transfer gap to the N = 50 reference (€/charger) [95 % CI]`: -0.208 [-0.235, -0.182]
+  - maximum over rows: `T2|N = 50 / SA-Attn (ours)|Transfer gap to the N = 50 reference (€/charger) [95 % CI]`: 0.037 [0.026, 0.050]
 
 ## T3
-Caption: Constraint satisfaction per method over all 36 test-grid configurations (per episode): share of EVs whose stay contains no infeasible step (E4), departure energy requirement, transformer limit and request pipeline.
+Caption: Constraint satisfaction per method over all 36 test-grid configurations (per episode): share of EVs whose stay contains no infeasible step (E4), energy not served against the shared admitted requirement, transformer limit and request pipeline.
 - **EVs without infeasible step, E4 (%)**
-  - `T3|with safety layer / SA-Attn (ours)|EVs without infeasible step, E4 (%)`: 84.38 ± 0.82 (95 % t CI [77.018, 91.741])
+  - `T3|with safety layer / SA-Attn (ours)|EVs without infeasible step, E4 (%)`: 84.38 (83.80–84.96)
   - minimum over rows: `T3|without safety layer / eMPC-HiGHS|EVs without infeasible step, E4 (%)`: 61.63†
-  - maximum over rows: `T3|with safety layer / Attention+safety layer without departure bound|EVs without infeasible step, E4 (%)`: 100.00 ± 0
+  - maximum over rows: `T3|with safety layer / Attention+safety layer without departure bound|EVs without infeasible step, E4 (%)`: 100.00 (100.00–100.00)
 - **Unserved EVs (%)**
-  - `T3|with safety layer / SA-Attn (ours)|Unserved EVs (%)`: 2.24 ± 0.01 (95 % t CI [2.123, 2.352])
+  - `T3|with safety layer / SA-Attn (ours)|Unserved EVs (%)`: 2.24 (2.23–2.25)
   - minimum over rows: `T3|with safety layer / LLF+safety layer|Unserved EVs (%)`: 0†
   - maximum over rows: `T3|without safety layer / eMPC-HiGHS|Unserved EVs (%)`: 99.73†
 - **Energy not served (kWh)**
-  - `T3|with safety layer / SA-Attn (ours)|Energy not served (kWh)`: 0.43 ± 0.12 (95 % t CI [-0.684, 1.545])
+  - `T3|with safety layer / SA-Attn (ours)|Energy not served (kWh)`: 0.43 (0.34–0.52)
   - minimum over rows: `T3|with safety layer / LLF+safety layer|Energy not served (kWh)`: 0†
   - maximum over rows: `T3|without safety layer / Price-threshold|Energy not served (kWh)`: 1007.75†
 - **Overload energy (kWh)**
-  - `T3|with safety layer / SA-Attn (ours)|Overload energy (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `T3|with safety layer / SA-Attn (ours)|Overload energy (kWh)`: 0 ± 0
+  - `T3|with safety layer / SA-Attn (ours)|Overload energy (kWh)`: 0 (0–0)
+  - minimum over rows: `T3|with safety layer / SA-Attn (ours)|Overload energy (kWh)`: 0 (0–0)
   - maximum over rows: `T3|without safety layer / Price-threshold|Overload energy (kWh)`: 25.06†
 - **Episodes with overload (%)**
-  - `T3|with safety layer / SA-Attn (ours)|Episodes with overload (%)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `T3|with safety layer / SA-Attn (ours)|Episodes with overload (%)`: 0 ± 0
+  - `T3|with safety layer / SA-Attn (ours)|Episodes with overload (%)`: 0 (0–0)
+  - minimum over rows: `T3|with safety layer / SA-Attn (ours)|Episodes with overload (%)`: 0 (0–0)
   - maximum over rows: `T3|without safety layer / eMPC-HiGHS|Episodes with overload (%)`: 40.5†
 - **Shortfall / deficit bound**
-  - `T3|with safety layer / SA-Attn (ours)|Shortfall / deficit bound`: 0.009 ± 3.1e-04 (95 % t CI [0.007, 0.012])
+  - `T3|with safety layer / SA-Attn (ours)|Shortfall / deficit bound`: 0.009
   - minimum over rows: `T3|with safety layer / LLF+safety layer|Shortfall / deficit bound`: 0†
-  - maximum over rows: `T3|with safety layer / Deep Sets+safety layer|Shortfall / deficit bound`: 0.011 ± 0.001
+  - maximum over rows: `T3|with safety layer / Deep Sets+safety layer|Shortfall / deficit bound`: 0.011
 - **Capped requests**
-  - `T3|with safety layer / SA-Attn (ours)|Capped requests`: 0.52 ± 0 (95 % t CI [0.520, 0.520])
-  - minimum over rows: `T3|with safety layer / MLP+safety layer|Capped requests`: 0.09 ± 0
-  - maximum over rows: `T3|with safety layer / SA-Attn trained at N = 50 (reference)|Capped requests`: 0.95 ± 0
-- **Admission- reduced**
-  - `T3|with safety layer / SA-Attn (ours)|Admission- reduced`: 0.13 ± 0 (95 % t CI [0.129, 0.129])
-  - minimum over rows: `T3|with safety layer / MLP+safety layer|Admission- reduced`: 0.02 ± 0
-  - maximum over rows: `T3|with safety layer / SA-Attn trained at N = 50 (reference)|Admission- reduced`: 0.24 ± 0
+  - `T3|with safety layer / SA-Attn (ours)|Capped requests`: 0.52 (0.52–0.52)
+  - minimum over rows: `T3|with safety layer / MLP+safety layer|Capped requests`: 0.09 (0.09–0.09)
+  - maximum over rows: `T3|with safety layer / SA-Attn trained at N = 50 (reference)|Capped requests`: 0.95 (0.95–0.95)
+- **Admission- reduced requests**
+  - `T3|with safety layer / SA-Attn (ours)|Admission- reduced requests`: 0.13 (0.13–0.13)
+  - minimum over rows: `T3|with safety layer / SA-Attn, no admission control|Admission- reduced requests`: 0 (0–0)
+  - maximum over rows: `T3|with safety layer / SA-Attn trained at N = 50 (reference)|Admission- reduced requests`: 0.24 (0.24–0.24)
 
 ## T3b
-Caption: Primary endpoint E4 (share of EVs whose stay contains no infeasible step), infeasible steps, fallback activations per case and binding rates of the aggregate limits and of the departure lower bound, per station size N (profiles and tightness levels pooled; per episode).
-- **E4: EVs without infeasible step (%)**
-  - `T3b|N = 5 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 65.86 (95 % t CI [63.288, 68.431])
-  - `T3b|N = 10 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 78.64 (95 % t CI [72.153, 85.130])
-  - `T3b|N = 20 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 86.95 (95 % t CI [80.397, 93.496])
-  - `T3b|N = 50 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 90.64 (95 % t CI [78.293, 102.980])
-  - `T3b|N = 100 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 91.61 (95 % t CI [76.187, 107.034])
-  - `T3b|N = 200 / SA-Attn (ours)|E4: EVs without infeasible step (%)`: 92.58 (95 % t CI [78.690, 106.473])
-  - minimum over rows: `T3b|N = 5 / eMPC-HiGHS|E4: EVs without infeasible step (%)`: 43.60†
-  - maximum over rows: `T3b|N = 5 / Attention+PPO-Lagrangian|E4: EVs without infeasible step (%)`: 100.00
+Caption: E4 (share of EVs whose stay contains no infeasible step), infeasible steps, fallback activations per case and binding rates of the aggregate limits and of the departure lower bound per station size N (profiles and tightness levels pooled; mean per episode).
+- **E4 (%)**
+  - `T3b|N = 5 / SA-Attn (ours)|E4 (%)`: 65.86
+  - `T3b|N = 10 / SA-Attn (ours)|E4 (%)`: 78.64
+  - `T3b|N = 20 / SA-Attn (ours)|E4 (%)`: 86.95
+  - `T3b|N = 50 / SA-Attn (ours)|E4 (%)`: 90.64
+  - `T3b|N = 100 / SA-Attn (ours)|E4 (%)`: 91.61
+  - `T3b|N = 200 / SA-Attn (ours)|E4 (%)`: 92.58
+  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|E4 (%)`: 65.86
+  - maximum over rows: `T3b|N = 5 / Attention+safety layer without departure bound|E4 (%)`: 100.00
 - **Infeasible steps**
-  - `T3b|N = 5 / SA-Attn (ours)|Infeasible steps`: 4.64 (95 % t CI [0.651, 8.634])
-  - `T3b|N = 10 / SA-Attn (ours)|Infeasible steps`: 2.50 (95 % t CI [0.169, 4.828])
-  - `T3b|N = 20 / SA-Attn (ours)|Infeasible steps`: 1.20 (95 % t CI [0.490, 1.909])
-  - `T3b|N = 50 / SA-Attn (ours)|Infeasible steps`: 0.72 (95 % t CI [-0.417, 1.849])
-  - `T3b|N = 100 / SA-Attn (ours)|Infeasible steps`: 0.64 (95 % t CI [-1.185, 2.458])
-  - `T3b|N = 200 / SA-Attn (ours)|Infeasible steps`: 0.58 (95 % t CI [-2.030, 3.180])
-  - minimum over rows: `T3b|N = 5 / Attention+PPO-Lagrangian|Infeasible steps`: 0
-  - maximum over rows: `T3b|N = 5 / eMPC-HiGHS|Infeasible steps`: 10.42†
-- **(i) FB-1* (steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 10 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 20 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 50 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 100 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 200 / SA-Attn (ours)|(i) FB-1* (steps)`: 0 (95 % t CI [0, 0])
-  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|(i) FB-1* (steps)`: 0
-  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|(i) FB-1* (steps)`: 0
-- **(ii) FB-2 (steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 10 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 20 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 50 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 100 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 200 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0 (95 % t CI [0, 0])
-  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0
-  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|(ii) FB-2 (steps)`: 0
-- **(iii) FB-1 (steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|(iii) FB-1 (steps)`: 4.64 (95 % t CI [0.651, 8.634])
-  - `T3b|N = 10 / SA-Attn (ours)|(iii) FB-1 (steps)`: 2.50 (95 % t CI [0.169, 4.828])
-  - `T3b|N = 20 / SA-Attn (ours)|(iii) FB-1 (steps)`: 1.20 (95 % t CI [0.490, 1.909])
-  - `T3b|N = 50 / SA-Attn (ours)|(iii) FB-1 (steps)`: 0.72 (95 % t CI [-0.417, 1.849])
-  - `T3b|N = 100 / SA-Attn (ours)|(iii) FB-1 (steps)`: 0.64 (95 % t CI [-1.185, 2.458])
-  - `T3b|N = 200 / SA-Attn (ours)|(iii) FB-1 (steps)`: 0.58 (95 % t CI [-2.030, 3.180])
-  - minimum over rows: `T3b|N = 5 / Attention+penalty|(iii) FB-1 (steps)`: 0
-  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|(iii) FB-1 (steps)`: 4.64
-- **(iv) FB-0 (steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 10 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 20 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 50 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 100 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - `T3b|N = 200 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0 (95 % t CI [0, 0])
-  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0
-  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|(iv) FB-0 (steps)`: 0
+  - `T3b|N = 5 / SA-Attn (ours)|Infeasible steps`: 4.64
+  - `T3b|N = 10 / SA-Attn (ours)|Infeasible steps`: 2.50
+  - `T3b|N = 20 / SA-Attn (ours)|Infeasible steps`: 1.20
+  - `T3b|N = 50 / SA-Attn (ours)|Infeasible steps`: 0.72
+  - `T3b|N = 100 / SA-Attn (ours)|Infeasible steps`: 0.64
+  - `T3b|N = 200 / SA-Attn (ours)|Infeasible steps`: 0.58
+  - minimum over rows: `T3b|N = 5 / Attention+safety layer without departure bound|Infeasible steps`: 0
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Infeasible steps`: 4.64
+- **Case (i) (steps)**
+  - `T3b|N = 5 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - `T3b|N = 10 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - `T3b|N = 20 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - `T3b|N = 50 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - `T3b|N = 100 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - `T3b|N = 200 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (i) (steps)`: 0
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (i) (steps)`: 0
+- **Case (ii) (steps)**
+  - `T3b|N = 5 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - `T3b|N = 10 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - `T3b|N = 20 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - `T3b|N = 50 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - `T3b|N = 100 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - `T3b|N = 200 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (ii) (steps)`: 0
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (ii) (steps)`: 0
+- **Case (iii) (steps)**
+  - `T3b|N = 5 / SA-Attn (ours)|Case (iii) (steps)`: 4.64
+  - `T3b|N = 10 / SA-Attn (ours)|Case (iii) (steps)`: 2.50
+  - `T3b|N = 20 / SA-Attn (ours)|Case (iii) (steps)`: 1.20
+  - `T3b|N = 50 / SA-Attn (ours)|Case (iii) (steps)`: 0.72
+  - `T3b|N = 100 / SA-Attn (ours)|Case (iii) (steps)`: 0.64
+  - `T3b|N = 200 / SA-Attn (ours)|Case (iii) (steps)`: 0.58
+  - minimum over rows: `T3b|N = 5 / Attention+safety layer without departure bound|Case (iii) (steps)`: 0
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (iii) (steps)`: 4.64
+- **Case (iv) (steps)**
+  - `T3b|N = 5 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - `T3b|N = 10 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - `T3b|N = 20 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - `T3b|N = 50 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - `T3b|N = 100 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - `T3b|N = 200 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - minimum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (iv) (steps)`: 0
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Case (iv) (steps)`: 0
 - **Upper limit binding (% steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|Upper limit binding (% steps)`: 4.8 (95 % t CI [-0.741, 10.245])
-  - `T3b|N = 10 / SA-Attn (ours)|Upper limit binding (% steps)`: 2.7 (95 % t CI [-1.150, 6.641])
-  - `T3b|N = 20 / SA-Attn (ours)|Upper limit binding (% steps)`: 1.6 (95 % t CI [-0.907, 4.028])
-  - `T3b|N = 50 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.9 (95 % t CI [0.821, 1.029])
-  - `T3b|N = 100 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.8 (95 % t CI [-1.677, 3.314])
-  - `T3b|N = 200 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.7 (95 % t CI [-2.427, 3.927])
+  - `T3b|N = 5 / SA-Attn (ours)|Upper limit binding (% steps)`: 4.8
+  - `T3b|N = 10 / SA-Attn (ours)|Upper limit binding (% steps)`: 2.7
+  - `T3b|N = 20 / SA-Attn (ours)|Upper limit binding (% steps)`: 1.6
+  - `T3b|N = 50 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.9
+  - `T3b|N = 100 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.8
+  - `T3b|N = 200 / SA-Attn (ours)|Upper limit binding (% steps)`: 0.8
   - minimum over rows: `T3b|N = 200 / Attention+penalty|Upper limit binding (% steps)`: 0
-  - maximum over rows: `T3b|N = 5 / eMPC-HiGHS|Upper limit binding (% steps)`: 5.8†
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Upper limit binding (% steps)`: 4.8
 - **Lower limit binding (% steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.6 (95 % t CI [-1.200, 2.336])
-  - `T3b|N = 10 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.2 (95 % t CI [-0.496, 0.923])
-  - `T3b|N = 20 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.1 (95 % t CI [-0.135, 0.300])
-  - `T3b|N = 50 / SA-Attn (ours)|Lower limit binding (% steps)`: 9.7e-03 (95 % t CI [2.2e-04, 0.019])
-  - `T3b|N = 100 / SA-Attn (ours)|Lower limit binding (% steps)`: 1.6e-02 (95 % t CI [-0.116, 0.149])
-  - `T3b|N = 200 / SA-Attn (ours)|Lower limit binding (% steps)`: 1.2e-02 (95 % t CI [-0.139, 0.163])
+  - `T3b|N = 5 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.6
+  - `T3b|N = 10 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.2
+  - `T3b|N = 20 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.1
+  - `T3b|N = 50 / SA-Attn (ours)|Lower limit binding (% steps)`: 9.7e-03
+  - `T3b|N = 100 / SA-Attn (ours)|Lower limit binding (% steps)`: 1.6e-02
+  - `T3b|N = 200 / SA-Attn (ours)|Lower limit binding (% steps)`: 1.2e-02
   - minimum over rows: `T3b|N = 5 / Attention+PPO-Lagrangian|Lower limit binding (% steps)`: 0
-  - maximum over rows: `T3b|N = 5 / eMPC-HiGHS|Lower limit binding (% steps)`: 2.7†
-- **p_i = l_i (% token-steps)**
-  - `T3b|N = 5 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 42.3 (95 % t CI [1.172, 83.391])
-  - `T3b|N = 10 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 37.1 (95 % t CI [0.334, 73.864])
-  - `T3b|N = 20 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 33.3 (95 % t CI [-7.298, 73.938])
-  - `T3b|N = 50 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 30.4 (95 % t CI [10.425, 50.360])
-  - `T3b|N = 100 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 28.9 (95 % t CI [24.679, 33.156])
-  - `T3b|N = 200 / SA-Attn (ours)|p_i = l_i (% token-steps)`: 27.8 (95 % t CI [-1.827, 57.509])
-  - minimum over rows: `T3b|N = 10 / LLF+safety layer|p_i = l_i (% token-steps)`: 0†
-  - maximum over rows: `T3b|N = 10 / eMPC-HiGHS+safety layer|p_i = l_i (% token-steps)`: 58.5†
+  - maximum over rows: `T3b|N = 5 / SA-Attn (ours)|Lower limit binding (% steps)`: 0.6
+- **p_i = l_i (% charger- steps)**
+  - `T3b|N = 5 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 42.3
+  - `T3b|N = 10 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 37.1
+  - `T3b|N = 20 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 33.3
+  - `T3b|N = 50 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 30.4
+  - `T3b|N = 100 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 28.9
+  - `T3b|N = 200 / SA-Attn (ours)|p_i = l_i (% charger- steps)`: 27.8
+  - minimum over rows: `T3b|N = 100 / AFAP+safety layer|p_i = l_i (% charger- steps)`: 2.2e-03†
+  - maximum over rows: `T3b|N = 5 / MLP+safety layer|p_i = l_i (% charger- steps)`: 43.8
+
+## T3c
+Caption: Event counts per method over all evaluated episodes (all test configurations, both training seeds).
+- **Episodes**
+  - `T3c|with safety layer / SA-Attn (ours)|Episodes`: 7,100
+  - minimum over rows: `T3c|with safety layer / SA-Attn trained at N = 50 (reference)|Episodes`: 2,700
+  - maximum over rows: `T3c|with safety layer / SA-Attn (ours)|Episodes`: 7,100
+- **Admitted EVs**
+  - `T3c|with safety layer / SA-Attn (ours)|Admitted EVs`: 233,016
+  - minimum over rows: `T3c|with safety layer / MLP+safety layer|Admitted EVs`: 34,954
+  - maximum over rows: `T3c|with safety layer / SA-Attn (ours)|Admitted EVs`: 233,016
+- **Infeasible steps**
+  - `T3c|with safety layer / SA-Attn (ours)|Infeasible steps`: 17,678
+  - minimum over rows: `T3c|safety layer without departure bound / Attention+safety layer without departure bound|Infeasible steps`: 0
+  - maximum over rows: `T3c|without safety layer / eMPC-HiGHS|Infeasible steps`: 28,719
+- **Fallback activations**
+  - `T3c|with safety layer / SA-Attn (ours)|Fallback activations`: 17,678
+  - minimum over rows: `T3c|safety layer without departure bound / Attention+safety layer without departure bound|Fallback activations`: 0
+  - maximum over rows: `T3c|conformal departure bound / SA-Attn-CP (α = 0.2)|Fallback activations`: 21,259
+- **EVs with an infeasible step**
+  - `T3c|with safety layer / SA-Attn (ours)|EVs with an infeasible step`: 39,771
+  - minimum over rows: `T3c|safety layer without departure bound / Attention+safety layer without departure bound|EVs with an infeasible step`: 0
+  - maximum over rows: `T3c|conformal departure bound / SA-Attn-CP (α = 0.2)|EVs with an infeasible step`: 51,105
+- **Unserved EVs**
+  - `T3c|with safety layer / SA-Attn (ours)|Unserved EVs`: 6,158
+  - minimum over rows: `T3c|with safety layer / LLF+safety layer|Unserved EVs`: 0
+  - maximum over rows: `T3c|without safety layer / eMPC-HiGHS|Unserved EVs`: 116,107
+- **Overload steps**
+  - `T3c|with safety layer / SA-Attn (ours)|Overload steps`: 0
+  - minimum over rows: `T3c|with safety layer / SA-Attn (ours)|Overload steps`: 0
+  - maximum over rows: `T3c|without safety layer / eMPC-HiGHS|Overload steps`: 16,224
+- **Unserved EVs in episodes without infea- sible step**
+  - `T3c|with safety layer / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - minimum over rows: `T3c|with safety layer / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - maximum over rows: `T3c|conformal departure bound / SA-Attn-CP (α = 0.01)|Unserved EVs in episodes without infea- sible step`: 81,742
+
+## T3d
+Caption: Event counts per method and station size N (all test configurations of that N, both training seeds); columns as in the table of event counts over all episodes.
+- **Episodes**
+  - `T3d|N = 5 / SA-Attn (ours)|Episodes`: 1,200
+  - `T3d|N = 10 / SA-Attn (ours)|Episodes`: 1,200
+  - `T3d|N = 20 / SA-Attn (ours)|Episodes`: 1,800
+  - `T3d|N = 25 / SA-Attn (ours)|Episodes`: 200
+  - `T3d|N = 50 / SA-Attn (ours)|Episodes`: 1,200
+  - `T3d|N = 100 / SA-Attn (ours)|Episodes`: 600
+  - `T3d|N = 200 / SA-Attn (ours)|Episodes`: 900
+  - minimum over rows: `T3d|N = 25 / Price-threshold+safety layer|Episodes`: 100
+  - maximum over rows: `T3d|N = 20 / SA-Attn (ours)|Episodes`: 1,800
+- **Admitted EVs**
+  - `T3d|N = 5 / SA-Attn (ours)|Admitted EVs`: 3,934
+  - `T3d|N = 10 / SA-Attn (ours)|Admitted EVs`: 7,798
+  - `T3d|N = 20 / SA-Attn (ours)|Admitted EVs`: 23,222
+  - `T3d|N = 25 / SA-Attn (ours)|Admitted EVs`: 3,596
+  - `T3d|N = 50 / SA-Attn (ours)|Admitted EVs`: 39,014
+  - `T3d|N = 100 / SA-Attn (ours)|Admitted EVs`: 39,036
+  - `T3d|N = 200 / SA-Attn (ours)|Admitted EVs`: 116,416
+  - minimum over rows: `T3d|N = 25 / Price-threshold+safety layer|Admitted EVs`: 1,798
+  - maximum over rows: `T3d|N = 200 / SA-Attn (ours)|Admitted EVs`: 116,416
+- **Infeasible steps**
+  - `T3d|N = 5 / SA-Attn (ours)|Infeasible steps`: 5,571
+  - `T3d|N = 10 / SA-Attn (ours)|Infeasible steps`: 2,998
+  - `T3d|N = 20 / SA-Attn (ours)|Infeasible steps`: 5,526
+  - `T3d|N = 25 / SA-Attn (ours)|Infeasible steps`: 646
+  - `T3d|N = 50 / SA-Attn (ours)|Infeasible steps`: 859
+  - `T3d|N = 100 / SA-Attn (ours)|Infeasible steps`: 382
+  - `T3d|N = 200 / SA-Attn (ours)|Infeasible steps`: 1,696
+  - minimum over rows: `T3d|N = 5 / Attention+safety layer without departure bound|Infeasible steps`: 0
+  - maximum over rows: `T3d|N = 5 / SA-Attn (ours)|Infeasible steps`: 5,571
+- **Fallback activations**
+  - `T3d|N = 5 / SA-Attn (ours)|Fallback activations`: 5,571
+  - `T3d|N = 10 / SA-Attn (ours)|Fallback activations`: 2,998
+  - `T3d|N = 20 / SA-Attn (ours)|Fallback activations`: 5,526
+  - `T3d|N = 25 / SA-Attn (ours)|Fallback activations`: 646
+  - `T3d|N = 50 / SA-Attn (ours)|Fallback activations`: 859
+  - `T3d|N = 100 / SA-Attn (ours)|Fallback activations`: 382
+  - `T3d|N = 200 / SA-Attn (ours)|Fallback activations`: 1,696
+  - minimum over rows: `T3d|N = 5 / Attention+safety layer without departure bound|Fallback activations`: 0
+  - maximum over rows: `T3d|N = 5 / SA-Attn (ours)|Fallback activations`: 5,571
+- **EVs with an infeasible step**
+  - `T3d|N = 5 / SA-Attn (ours)|EVs with an infeasible step`: 1,566
+  - `T3d|N = 10 / SA-Attn (ours)|EVs with an infeasible step`: 1,879
+  - `T3d|N = 20 / SA-Attn (ours)|EVs with an infeasible step`: 5,930
+  - `T3d|N = 25 / SA-Attn (ours)|EVs with an infeasible step`: 1,871
+  - `T3d|N = 50 / SA-Attn (ours)|EVs with an infeasible step`: 4,093
+  - `T3d|N = 100 / SA-Attn (ours)|EVs with an infeasible step`: 3,711
+  - `T3d|N = 200 / SA-Attn (ours)|EVs with an infeasible step`: 20,721
+  - minimum over rows: `T3d|N = 5 / Attention+safety layer without departure bound|EVs with an infeasible step`: 0
+  - maximum over rows: `T3d|N = 200 / SA-Attn (ours)|EVs with an infeasible step`: 20,721
+- **Unserved EVs**
+  - `T3d|N = 5 / SA-Attn (ours)|Unserved EVs`: 382
+  - `T3d|N = 10 / SA-Attn (ours)|Unserved EVs`: 305
+  - `T3d|N = 20 / SA-Attn (ours)|Unserved EVs`: 1,274
+  - `T3d|N = 25 / SA-Attn (ours)|Unserved EVs`: 59
+  - `T3d|N = 50 / SA-Attn (ours)|Unserved EVs`: 303
+  - `T3d|N = 100 / SA-Attn (ours)|Unserved EVs`: 186
+  - `T3d|N = 200 / SA-Attn (ours)|Unserved EVs`: 3,649
+  - minimum over rows: `T3d|N = 5 / Attention+PPO-Lagrangian|Unserved EVs`: 0
+  - maximum over rows: `T3d|N = 200 / SA-Attn (ours)|Unserved EVs`: 3,649
+- **Overload steps**
+  - `T3d|N = 5 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 10 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 20 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 25 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 50 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 100 / SA-Attn (ours)|Overload steps`: 0
+  - `T3d|N = 200 / SA-Attn (ours)|Overload steps`: 0
+  - minimum over rows: `T3d|N = 5 / SA-Attn (ours)|Overload steps`: 0
+  - maximum over rows: `T3d|N = 5 / MLP+penalty|Overload steps`: 1,748
+- **Unserved EVs in episodes without infea- sible step**
+  - `T3d|N = 5 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 10 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 20 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 25 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 50 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 100 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - `T3d|N = 200 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - minimum over rows: `T3d|N = 5 / SA-Attn (ours)|Unserved EVs in episodes without infea- sible step`: 0
+  - maximum over rows: `T3d|N = 200 / Attention+PPO-Lagrangian|Unserved EVs in episodes without infea- sible step`: 792
 
 ## T4
-Caption: Ablation: architecture (attention vs MLP) × constraint handling (safety layer vs penalty), further baselines that isolate one component, evaluation variants and ablations of SA-Attn, at training sizes and in zero-shot transfer (N ≥ 50). Gap: optimality gap of J^pen.
-- **Gap (%) N ∈ {10, 20}**
-  - `T4|2 × 2 design / Attention + safety layer|Gap (%) N ∈ {10, 20}`: 145.5 ± 5.7 (95 % t CI [94.393, 196.643])
-  - `T4|2 × 2 design / Attention + penalty|Gap (%) N ∈ {10, 20}`: 180.9 ± 12.8 (95 % t CI [65.644, 296.150])
-  - `T4|2 × 2 design / MLP + safety layer|Gap (%) N ∈ {10, 20}`: 129.9 ± 1.4 (95 % t CI [117.205, 142.587])
-  - `T4|2 × 2 design / MLP + penalty|Gap (%) N ∈ {10, 20}`: 704.9 ± 561.1 (95 % t CI [-4336.641, 5746.398])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Gap (%) N ∈ {10, 20}`: 104.8 ± 12.0 (95 % t CI [-3.301, 212.923])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Gap (%) N ∈ {10, 20}`: 104.8 ± 4.0 (95 % t CI [68.632, 140.976])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Gap (%) N ∈ {10, 20}`: 205.9 ± 29.3 (95 % t CI [-57.629, 469.408])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Gap (%) N ∈ {10, 20}`: 123.4 ± 0.4 (95 % t CI [119.551, 127.242])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Gap (%) N ∈ {10, 20}`: 144.0 ± 5.7 (95 % t CI [92.755, 195.329])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Gap (%) N ∈ {10, 20}`: 175.6 ± 17.7 (95 % t CI [16.156, 335.098])
+Caption: Architecture and constraint handling at the training sizes N ∈ {10, 20} and in zero-shot transfer (N ≥ 50): attention, Deep Sets and zero-padded MLP policies with the safety layer, with a penalty or PPO-Lagrangian, with the layer but without the departure lower bound, and the penalty-trained policy with the layer added at deployment.
+- **Optimality gap N ∈ {10, 20}**
+  - `T4|SA-Attn (ours)|Optimality gap N ∈ {10, 20}`: 1.132 (1.115–1.148)
+  - `T4|Attention+penalty|Optimality gap N ∈ {10, 20}`: 1.887 (1.743–2.030)
+  - `T4|Attention+PPO-Lagrangian|Optimality gap N ∈ {10, 20}`: 1.525 (1.203–1.848)
+  - `T4|Attention+safety layer without departure bound|Optimality gap N ∈ {10, 20}`: 0.776 (0.721–0.831)
+  - `T4|Attention+penalty, safety layer at deployment|Optimality gap N ∈ {10, 20}`: 0.889 (0.879–0.899)
+  - `T4|Deep Sets+safety layer|Optimality gap N ∈ {10, 20}`: 0.853 (0.813–0.893)
+  - `T4|MLP+safety layer|Optimality gap N ∈ {10, 20}`: 0.959 (0.944–0.975)
+  - `T4|MLP+penalty|Optimality gap N ∈ {10, 20}`: 3.671 (2.162–5.180)
 - **Unserved (%) N ∈ {10, 20}**
-  - `T4|2 × 2 design / Attention + safety layer|Unserved (%) N ∈ {10, 20}`: 2.16 ± 0.12 (95 % t CI [1.059, 3.261])
-  - `T4|2 × 2 design / Attention + penalty|Unserved (%) N ∈ {10, 20}`: 2.34 ± 3.29 (95 % t CI [-27.221, 31.898])
-  - `T4|2 × 2 design / MLP + safety layer|Unserved (%) N ∈ {10, 20}`: 0.85 ± 0.05 (95 % t CI [0.444, 1.262])
-  - `T4|2 × 2 design / MLP + penalty|Unserved (%) N ∈ {10, 20}`: 1.92 ± 0.93 (95 % t CI [-6.399, 10.230])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Unserved (%) N ∈ {10, 20}`: 1.14 ± 0.94 (95 % t CI [-7.339, 9.615])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Unserved (%) N ∈ {10, 20}`: 1.31 ± 0.02 (95 % t CI [1.132, 1.489])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Unserved (%) N ∈ {10, 20}`: 0.02 ± 0.03 (95 % t CI [-0.242, 0.283])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Unserved (%) N ∈ {10, 20}`: 0.37 ± 0.05 (95 % t CI [-0.034, 0.779])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Unserved (%) N ∈ {10, 20}`: 2.09 ± 0.18 (95 % t CI [0.480, 3.692])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Unserved (%) N ∈ {10, 20}`: 1.94 ± 2.74 (95 % t CI [-22.711, 26.591])
+  - `T4|SA-Attn (ours)|Unserved (%) N ∈ {10, 20}`: 2.16 (2.07–2.25)
+  - `T4|Attention+penalty|Unserved (%) N ∈ {10, 20}`: 2.34 (0.01–4.66)
+  - `T4|Attention+PPO-Lagrangian|Unserved (%) N ∈ {10, 20}`: 0.02 (0–0.04)
+  - `T4|Attention+safety layer without departure bound|Unserved (%) N ∈ {10, 20}`: 1.14 (0.47–1.81)
+  - `T4|Attention+penalty, safety layer at deployment|Unserved (%) N ∈ {10, 20}`: 0.37 (0.34–0.40)
+  - `T4|Deep Sets+safety layer|Unserved (%) N ∈ {10, 20}`: 1.31 (1.30–1.32)
+  - `T4|MLP+safety layer|Unserved (%) N ∈ {10, 20}`: 0.85 (0.82–0.88)
+  - `T4|MLP+penalty|Unserved (%) N ∈ {10, 20}`: 1.92 (1.26–2.57)
 - **Overload (kWh) N ∈ {10, 20}**
-  - `T4|2 × 2 design / Attention + safety layer|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|2 × 2 design / Attention + penalty|Overload (kWh) N ∈ {10, 20}`: 0.61 ± 0.72 (95 % t CI [-5.820, 7.039])
-  - `T4|2 × 2 design / MLP + safety layer|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|2 × 2 design / MLP + penalty|Overload (kWh) N ∈ {10, 20}`: 0.59 ± 0.25 (95 % t CI [-1.628, 2.817])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Overload (kWh) N ∈ {10, 20}`: 0.54 ± 0.54 (95 % t CI [-4.308, 5.394])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Overload (kWh) N ∈ {10, 20}`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Overload (kWh) N ∈ {10, 20}`: 0.58 ± 0.69 (95 % t CI [-5.595, 6.754])
-- **Gap (%) N ≥ 50**
-  - `T4|2 × 2 design / Attention + safety layer|Gap (%) N ≥ 50`: 161.8 ± 9.8 (95 % t CI [73.841, 249.747])
-  - `T4|2 × 2 design / Attention + penalty|Gap (%) N ≥ 50`: 181.4 ± 6.8 (95 % t CI [119.977, 242.782])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Gap (%) N ≥ 50`: 137.2 ± 15.4 (95 % t CI [-1.104, 275.568])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Gap (%) N ≥ 50`: 118.8 ± 7.7 (95 % t CI [49.285, 188.359])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Gap (%) N ≥ 50`: 219.2 ± 9.0 (95 % t CI [138.813, 299.656])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Gap (%) N ≥ 50`: 178.2 ± 7.7 (95 % t CI [109.133, 247.285])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Gap (%) N ≥ 50`: 158.8 ± 9.5 (95 % t CI [73.080, 244.428])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Gap (%) N ≥ 50`: 179.5 ± 8.0 (95 % t CI [107.364, 251.578])
+  - `T4|SA-Attn (ours)|Overload (kWh) N ∈ {10, 20}`: 0 (0–0)
+  - `T4|Attention+penalty|Overload (kWh) N ∈ {10, 20}`: 0.61 (0.10–1.12)
+  - `T4|Attention+PPO-Lagrangian|Overload (kWh) N ∈ {10, 20}`: 0.54 (0.16–0.93)
+  - `T4|Attention+safety layer without departure bound|Overload (kWh) N ∈ {10, 20}`: 0 (0–0)
+  - `T4|Attention+penalty, safety layer at deployment|Overload (kWh) N ∈ {10, 20}`: 0 (0–0)
+  - `T4|Deep Sets+safety layer|Overload (kWh) N ∈ {10, 20}`: 0 (0–0)
+  - `T4|MLP+safety layer|Overload (kWh) N ∈ {10, 20}`: 0 (0–0)
+  - `T4|MLP+penalty|Overload (kWh) N ∈ {10, 20}`: 0.59 (0.42–0.77)
+- **Optimality gap N ≥ 50**
+  - `T4|SA-Attn (ours)|Optimality gap N ≥ 50`: 0.901 (0.865–0.937)
+  - `T4|Attention+penalty|Optimality gap N ≥ 50`: 0.996 (0.985–1.007)
+  - `T4|Attention+PPO-Lagrangian|Optimality gap N ≥ 50`: 1.138 (1.072–1.203)
+  - `T4|Attention+safety layer without departure bound|Optimality gap N ≥ 50`: 0.770 (0.728–0.811)
+  - `T4|Attention+penalty, safety layer at deployment|Optimality gap N ≥ 50`: 0.910 (0.880–0.940)
+  - `T4|Deep Sets+safety layer|Optimality gap N ≥ 50`: 0.674 (0.638–0.710)
 - **Unserved (%) N ≥ 50**
-  - `T4|2 × 2 design / Attention + safety layer|Unserved (%) N ≥ 50`: 0.53 ± 0.29 (95 % t CI [-2.081, 3.148])
-  - `T4|2 × 2 design / Attention + penalty|Unserved (%) N ≥ 50`: 0.40 ± 0.56 (95 % t CI [-4.643, 5.436])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Unserved (%) N ≥ 50`: 0.28 ± 0.17 (95 % t CI [-1.262, 1.831])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Unserved (%) N ≥ 50`: 0.37 ± 0.16 (95 % t CI [-1.085, 1.821])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Unserved (%) N ≥ 50`: 0.38 ± 0.54 (95 % t CI [-4.461, 5.223])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Unserved (%) N ≥ 50`: 2.1e-03 ± 1.0e-03 (95 % t CI [-0.007, 0.011])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Unserved (%) N ≥ 50`: 0.42 ± 0.25 (95 % t CI [-1.835, 2.674])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Unserved (%) N ≥ 50`: 0.23 ± 0.32 (95 % t CI [-2.667, 3.123])
+  - `T4|SA-Attn (ours)|Unserved (%) N ≥ 50`: 0.53 (0.33–0.74)
+  - `T4|Attention+penalty|Unserved (%) N ≥ 50`: 0.40 (0–0.79)
+  - `T4|Attention+PPO-Lagrangian|Unserved (%) N ≥ 50`: 0.38 (0–0.76)
+  - `T4|Attention+safety layer without departure bound|Unserved (%) N ≥ 50`: 0.28 (0.16–0.41)
+  - `T4|Attention+penalty, safety layer at deployment|Unserved (%) N ≥ 50`: 2.1e-03 (1.3e-03–2.8e-03)
+  - `T4|Deep Sets+safety layer|Unserved (%) N ≥ 50`: 0.37 (0.25–0.48)
 - **Overload (kWh) N ≥ 50**
-  - `T4|2 × 2 design / Attention + safety layer|Overload (kWh) N ≥ 50`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|2 × 2 design / Attention + penalty|Overload (kWh) N ≥ 50`: 0.14 ± 0.16 (95 % t CI [-1.312, 1.593])
-  - `T4|further baselines, variants and ablations / Attention+safety layer without departure bound|Overload (kWh) N ≥ 50`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Deep Sets+safety layer|Overload (kWh) N ≥ 50`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Attention+PPO-Lagrangian|Overload (kWh) N ≥ 50`: 0.49 ± 0.65 (95 % t CI [-5.375, 6.351])
-  - `T4|further baselines, variants and ablations / Attention+penalty, safety layer at deployment|Overload (kWh) N ≥ 50`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / SA-Attn, no admission control|Overload (kWh) N ≥ 50`: 0 ± 0 (95 % t CI [0, 0])
-  - `T4|further baselines, variants and ablations / Attention+penalty, no admission control|Overload (kWh) N ≥ 50`: 0.11 ± 0.13 (95 % t CI [-1.039, 1.268])
+  - `T4|SA-Attn (ours)|Overload (kWh) N ≥ 50`: 0 (0–0)
+  - `T4|Attention+penalty|Overload (kWh) N ≥ 50`: 0.14 (0.03–0.25)
+  - `T4|Attention+PPO-Lagrangian|Overload (kWh) N ≥ 50`: 0.49 (0.03–0.95)
+  - `T4|Attention+safety layer without departure bound|Overload (kWh) N ≥ 50`: 0 (0–0)
+  - `T4|Attention+penalty, safety layer at deployment|Overload (kWh) N ≥ 50`: 0 (0–0)
+  - `T4|Deep Sets+safety layer|Overload (kWh) N ≥ 50`: 0 (0–0)
 
 ## T5
-Caption: Cost of the guarantee per station size N (profiles and tightness levels pooled): penalty-based policy minus the same architecture with the safety layer, in penalised profit J^pen (primary) and in raw profit (secondary), as ratios of sums over all matched episodes, per EV served and in % of the hard perfect-information optimum |J^LP,ceil|, together with the violations of the penalty-based policy.
+Caption: Cost of the guarantee per station size N (profiles and tightness levels pooled): penalty-based policy minus the same architecture with the safety layer, in J^pen and in raw profit, as ratios of sums over matched episodes, per admitted EV and in % of |J^LP,ceil|, with the violations of the penalty-based policy.
 - **Δ J^pen (€ per EV) [95 % CI]**
-  - `T5|Attention / 5|Δ J^pen (€ per EV) [95 % CI]`: -3.462 [-5.411, -1.873]
-  - `T5|Attention / 10|Δ J^pen (€ per EV) [95 % CI]`: -1.407 [-2.292, -0.625]
-  - `T5|Attention / 20|Δ J^pen (€ per EV) [95 % CI]`: -0.914 [-1.545, -0.384]
-  - `T5|Attention / 50|Δ J^pen (€ per EV) [95 % CI]`: -0.311 [-0.615, -0.070]
-  - `T5|Attention / 100|Δ J^pen (€ per EV) [95 % CI]`: -0.086 [-0.168, -0.006]
-  - `T5|Attention / 200|Δ J^pen (€ per EV) [95 % CI]`: -0.042 [-0.127, 0.064]
-  - `T5|MLP / 5|Δ J^pen (€ per EV) [95 % CI]`: -4.324 [-5.456, -3.215]
-  - `T5|MLP / 10|Δ J^pen (€ per EV) [95 % CI]`: -6.958 [-10.770, -3.668]
-  - `T5|MLP / 20|Δ J^pen (€ per EV) [95 % CI]`: -1.383 [-1.839, -1.001]
+  - `T5|Attention / 5|Δ J^pen (€ per EV) [95 % CI]`: -3.462 [-4.639, -2.388]
+  - `T5|Attention / 10|Δ J^pen (€ per EV) [95 % CI]`: -1.407 [-1.943, -0.933]
+  - `T5|Attention / 20|Δ J^pen (€ per EV) [95 % CI]`: -0.914 [-1.224, -0.630]
+  - `T5|Attention / 50|Δ J^pen (€ per EV) [95 % CI]`: -0.311 [-0.452, -0.186]
+  - `T5|Attention / 100|Δ J^pen (€ per EV) [95 % CI]`: -0.086 [-0.132, -0.043]
+  - `T5|Attention / 200|Δ J^pen (€ per EV) [95 % CI]`: -0.042 [-0.094, 0.025]
+  - `T5|MLP / 5|Δ J^pen (€ per EV) [95 % CI]`: -4.324 [-5.353, -3.283]
+  - `T5|MLP / 10|Δ J^pen (€ per EV) [95 % CI]`: -6.958 [-8.442, -5.558]
+  - `T5|MLP / 20|Δ J^pen (€ per EV) [95 % CI]`: -1.383 [-1.690, -1.104]
 - **Δ J^pen (% of |J^LP,ceil|) [95 % CI]**
-  - `T5|Attention / 5|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -161.47 [-244.16, -90.35]
-  - `T5|Attention / 10|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -72.67 [-118.78, -32.85]
-  - `T5|Attention / 20|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -41.99 [-69.39, -17.96]
-  - `T5|Attention / 50|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -15.11 [-29.28, -3.70]
-  - `T5|Attention / 100|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -4.04 [-7.93, -0.34]
-  - `T5|Attention / 200|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -2.07 [-6.30, 3.16]
-  - `T5|MLP / 5|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -201.69 [-256.87, -148.79]
-  - `T5|MLP / 10|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -359.30 [-563.89, -189.33]
-  - `T5|MLP / 20|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -63.52 [-84.95, -45.69]
+  - `T5|Attention / 5|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -161.5 [-211.2, -113.2]
+  - `T5|Attention / 10|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -72.7 [-97.7, -48.7]
+  - `T5|Attention / 20|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -42.0 [-55.0, -29.6]
+  - `T5|Attention / 50|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -15.1 [-21.7, -9.3]
+  - `T5|Attention / 100|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -4.0 [-6.2, -2.1]
+  - `T5|Attention / 200|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -2.1 [-4.6, 1.2]
+  - `T5|MLP / 5|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -201.7 [-251.6, -153.3]
+  - `T5|MLP / 10|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -359.3 [-449.0, -282.4]
+  - `T5|MLP / 20|Δ J^pen (% of |J^LP,ceil|) [95 % CI]`: -63.5 [-78.6, -49.9]
 - **Δ profit (€ per EV) [95 % CI]**
-  - `T5|Attention / 5|Δ profit (€ per EV) [95 % CI]`: 0.142 [0.027, 0.288]
-  - `T5|Attention / 10|Δ profit (€ per EV) [95 % CI]`: 0.070 [-0.002, 0.158]
-  - `T5|Attention / 20|Δ profit (€ per EV) [95 % CI]`: 0.064 [0.010, 0.124]
-  - `T5|Attention / 50|Δ profit (€ per EV) [95 % CI]`: -0.024 [-0.089, 0.043]
-  - `T5|Attention / 100|Δ profit (€ per EV) [95 % CI]`: -0.057 [-0.132, 0.017]
-  - `T5|Attention / 200|Δ profit (€ per EV) [95 % CI]`: -0.092 [-0.156, -0.029]
-  - `T5|MLP / 5|Δ profit (€ per EV) [95 % CI]`: -0.410 [-0.496, -0.326]
-  - `T5|MLP / 10|Δ profit (€ per EV) [95 % CI]`: -0.379 [-0.444, -0.314]
-  - `T5|MLP / 20|Δ profit (€ per EV) [95 % CI]`: -0.297 [-0.343, -0.253]
+  - `T5|Attention / 5|Δ profit (€ per EV) [95 % CI]`: 0.142 [0.075, 0.218]
+  - `T5|Attention / 10|Δ profit (€ per EV) [95 % CI]`: 0.070 [0.036, 0.108]
+  - `T5|Attention / 20|Δ profit (€ per EV) [95 % CI]`: 0.064 [0.039, 0.091]
+  - `T5|Attention / 50|Δ profit (€ per EV) [95 % CI]`: -0.024 [-0.042, -0.004]
+  - `T5|Attention / 100|Δ profit (€ per EV) [95 % CI]`: -0.057 [-0.081, -0.033]
+  - `T5|Attention / 200|Δ profit (€ per EV) [95 % CI]`: -0.092 [-0.120, -0.065]
+  - `T5|MLP / 5|Δ profit (€ per EV) [95 % CI]`: -0.410 [-0.493, -0.327]
+  - `T5|MLP / 10|Δ profit (€ per EV) [95 % CI]`: -0.379 [-0.440, -0.318]
+  - `T5|MLP / 20|Δ profit (€ per EV) [95 % CI]`: -0.297 [-0.337, -0.258]
 - **Δ profit (% of |J^LP,ceil|) [95 % CI]**
-  - `T5|Attention / 5|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 6.60 [1.30, 13.31]
-  - `T5|Attention / 10|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 3.61 [-0.15, 7.88]
-  - `T5|Attention / 20|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 2.96 [0.37, 5.73]
-  - `T5|Attention / 50|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -1.14 [-4.44, 2.07]
-  - `T5|Attention / 100|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -2.67 [-6.21, 0.90]
-  - `T5|Attention / 200|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -4.53 [-7.90, -1.37]
-  - `T5|MLP / 5|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -19.10 [-23.56, -14.85]
-  - `T5|MLP / 10|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -19.55 [-23.17, -16.12]
-  - `T5|MLP / 20|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -13.65 [-15.91, -11.49]
-- **Unserved EVs, penalty (%)**
-  - `T5|Attention / 5|Unserved EVs, penalty (%)`: 5.28 ± 7.47 (95 % t CI [-61.836, 72.401])
-  - `T5|Attention / 10|Unserved EVs, penalty (%)`: 2.75 ± 3.86 (95 % t CI [-31.937, 37.445])
-  - `T5|Attention / 20|Unserved EVs, penalty (%)`: 1.92 ± 2.72 (95 % t CI [-22.505, 26.350])
-  - `T5|Attention / 50|Unserved EVs, penalty (%)`: 0.80 ± 1.12 (95 % t CI [-9.307, 10.897])
-  - `T5|Attention / 100|Unserved EVs, penalty (%)`: 0.31 ± 0.44 (95 % t CI [-3.639, 4.261])
-  - `T5|Attention / 200|Unserved EVs, penalty (%)`: 0.08 ± 0.12 (95 % t CI [-0.983, 1.151])
-  - `T5|MLP / 5|Unserved EVs, penalty (%)`: 0.09 ± 0.12 (95 % t CI [-1.017, 1.191])
-  - `T5|MLP / 10|Unserved EVs, penalty (%)`: 2.84 ± 2.03 (95 % t CI [-15.354, 21.043])
-  - `T5|MLP / 20|Unserved EVs, penalty (%)`: 0.99 ± 0.17 (95 % t CI [-0.584, 2.555])
+  - `T5|Attention / 5|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 6.6 [3.6, 9.9]
+  - `T5|Attention / 10|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 3.6 [1.9, 5.4]
+  - `T5|Attention / 20|Δ profit (% of |J^LP,ceil|) [95 % CI]`: 3.0 [1.8, 4.1]
+  - `T5|Attention / 50|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -1.1 [-2.1, -0.2]
+  - `T5|Attention / 100|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -2.7 [-3.9, -1.5]
+  - `T5|Attention / 200|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -4.5 [-6.1, -3.1]
+  - `T5|MLP / 5|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -19.1 [-23.5, -15.0]
+  - `T5|MLP / 10|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -19.5 [-23.0, -16.4]
+  - `T5|MLP / 20|Δ profit (% of |J^LP,ceil|) [95 % CI]`: -13.7 [-15.7, -11.8]
+- **Unserved EVs, pen- alty (%)**
+  - `T5|Attention / 5|Unserved EVs, pen- alty (%)`: 5.28 (0–10.56)
+  - `T5|Attention / 10|Unserved EVs, pen- alty (%)`: 2.75 (0.02–5.48)
+  - `T5|Attention / 20|Unserved EVs, pen- alty (%)`: 1.92 (0–3.85)
+  - `T5|Attention / 50|Unserved EVs, pen- alty (%)`: 0.80 (0–1.59)
+  - `T5|Attention / 100|Unserved EVs, pen- alty (%)`: 0.31 (0–0.62)
+  - `T5|Attention / 200|Unserved EVs, pen- alty (%)`: 0.08 (0–0.17)
+  - `T5|MLP / 5|Unserved EVs, pen- alty (%)`: 0.09 (0–0.17)
+  - `T5|MLP / 10|Unserved EVs, pen- alty (%)`: 2.84 (1.41–4.28)
+  - `T5|MLP / 20|Unserved EVs, pen- alty (%)`: 0.99 (0.86–1.11)
 - **Overload, penalty (kWh)**
-  - `T5|Attention / 5|Overload, penalty (kWh)`: 1.04 ± 0.80 (95 % t CI [-6.157, 8.241])
-  - `T5|Attention / 10|Overload, penalty (kWh)`: 0.74 ± 0.85 (95 % t CI [-6.853, 8.340])
-  - `T5|Attention / 20|Overload, penalty (kWh)`: 0.48 ± 0.59 (95 % t CI [-4.786, 5.739])
-  - `T5|Attention / 50|Overload, penalty (kWh)`: 0.30 ± 0.40 (95 % t CI [-3.320, 3.929])
-  - `T5|Attention / 100|Overload, penalty (kWh)`: 0.12 ± 0.08 (95 % t CI [-0.617, 0.848])
-  - `T5|Attention / 200|Overload, penalty (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `T5|MLP / 5|Overload, penalty (kWh)`: 1.80 ± 0.04 (95 % t CI [1.417, 2.191])
-  - `T5|MLP / 10|Overload, penalty (kWh)`: 0.75 ± 0.33 (95 % t CI [-2.209, 3.706])
-  - `T5|MLP / 20|Overload, penalty (kWh)`: 0.44 ± 0.17 (95 % t CI [-1.048, 1.929])
+  - `T5|Attention / 5|Overload, penalty (kWh)`: 1.04 (0.48–1.61)
+  - `T5|Attention / 10|Overload, penalty (kWh)`: 0.74 (0.15–1.34)
+  - `T5|Attention / 20|Overload, penalty (kWh)`: 0.48 (0.06–0.89)
+  - `T5|Attention / 50|Overload, penalty (kWh)`: 0.30 (0.02–0.59)
+  - `T5|Attention / 100|Overload, penalty (kWh)`: 0.12 (0.06–0.17)
+  - `T5|Attention / 200|Overload, penalty (kWh)`: 0 (0–0)
+  - `T5|MLP / 5|Overload, penalty (kWh)`: 1.80 (1.77–1.83)
+  - `T5|MLP / 10|Overload, penalty (kWh)`: 0.75 (0.52–0.98)
+  - `T5|MLP / 20|Overload, penalty (kWh)`: 0.44 (0.32–0.56)
 
 ## T6
-Caption: Computation: wall-clock training time per run and inference time per control step (policy + safety layer, mean over episodes) versus station size N.
+Caption: Computation: training time per run and inference time per control step (policy and safety layer) versus station size N.
 - **Training time (h)**
-  - `T6|SA-Attn (ours)|Training time (h)`: 1.15 ± 0.01
-  - minimum over rows: `T6|MLP+penalty|Training time (h)`: 0.79 ± 2.7e-03
-  - maximum over rows: `T6|SA-Attn trained at N = 50 (reference)|Training time (h)`: 1.99 ± 0.01
+  - `T6|SA-Attn (ours)|Training time (h)`: 1.15 (1.14–1.16)
+  - minimum over rows: `T6|MLP+penalty|Training time (h)`: 0.79 (0.79–0.80)
+  - maximum over rows: `T6|SA-Attn trained at N = 50 (reference)|Training time (h)`: 1.99 (1.98–1.99)
 - **N = 5 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 5 (ms/step)`: 1.45 (95 % t CI [1.204, 1.704])
+  - `T6|SA-Attn (ours)|N = 5 (ms/step)`: 1.45
   - minimum over rows: `T6|AFAP|N = 5 (ms/step)`: 0.20†
   - maximum over rows: `T6|Attention+penalty, safety layer at deployment|N = 5 (ms/step)`: 1.46
 - **N = 10 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 10 (ms/step)`: 1.68 (95 % t CI [1.313, 2.041])
+  - `T6|SA-Attn (ours)|N = 10 (ms/step)`: 1.68
   - minimum over rows: `T6|AFAP|N = 10 (ms/step)`: 0.27†
   - maximum over rows: `T6|Attention+penalty, safety layer at deployment|N = 10 (ms/step)`: 1.72
 - **N = 20 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 20 (ms/step)`: 2.00 (95 % t CI [1.718, 2.283])
+  - `T6|SA-Attn (ours)|N = 20 (ms/step)`: 2.00
   - minimum over rows: `T6|AFAP|N = 20 (ms/step)`: 0.39†
   - maximum over rows: `T6|eMPC-HiGHS+safety layer|N = 20 (ms/step)`: 2.08†
 - **N = 50 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 50 (ms/step)`: 2.94 (95 % t CI [2.590, 3.291])
+  - `T6|SA-Attn (ours)|N = 50 (ms/step)`: 2.94
   - minimum over rows: `T6|ALAP|N = 50 (ms/step)`: 0.74†
   - maximum over rows: `T6|eMPC-HiGHS+safety layer|N = 50 (ms/step)`: 4.15†
 - **N = 100 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 100 (ms/step)`: 4.52 (95 % t CI [4.268, 4.780])
+  - `T6|SA-Attn (ours)|N = 100 (ms/step)`: 4.52
   - minimum over rows: `T6|ALAP|N = 100 (ms/step)`: 1.30†
   - maximum over rows: `T6|eMPC-HiGHS|N = 100 (ms/step)`: 7.48†
 - **N = 200 (ms/step)**
-  - `T6|SA-Attn (ours)|N = 200 (ms/step)`: 7.76 (95 % t CI [6.285, 9.230])
+  - `T6|SA-Attn (ours)|N = 200 (ms/step)`: 7.76
   - minimum over rows: `T6|ALAP|N = 200 (ms/step)`: 2.40†
   - maximum over rows: `T6|eMPC-HiGHS|N = 200 (ms/step)`: 14.67†
 
 ## T7
-Caption: Conformal departure bound: miscoverage level α versus profit, departure shortfall and coverage (all 36 test-grid configurations pooled). The conformal variants use the shared requirement re-certified with their departure bound (DD43); the optimality gap is w.r.t. the soft-penalty optimum, as for the other methods.
-- **Optimality gap (%)**
-  - `T7|SA-Attn, known departure step|Optimality gap (%)`: 162.8 ± 4.0 (95 % t CI [127.247, 198.339])
-  - `T7|SA-Attn-CP (α = 0.01)|Optimality gap (%)`: 97.5 ± 0.2 (95 % t CI [95.368, 99.592])
-  - `T7|SA-Attn-CP (α = 0.05)|Optimality gap (%)`: 168.3 ± 1.4 (95 % t CI [155.340, 181.192])
-  - `T7|SA-Attn-CP (α = 0.1)|Optimality gap (%)`: 203.6 ± 3.4 (95 % t CI [173.179, 233.994])
-  - `T7|SA-Attn-CP (α = 0.2)|Optimality gap (%)`: 316.0 ± 18.0 (95 % t CI [154.564, 477.465])
-  - `T7|SA-Attn-point (uncalibrated)|Optimality gap (%)`: 203.8 ± 3.4 (95 % t CI [173.181, 234.329])
-- **Profit (€ per EV)**
-  - `T7|SA-Attn, known departure step|Profit (€ per EV)`: -3.301 ± 0.021 (95 % t CI [-3.493, -3.109])
-  - `T7|SA-Attn-CP (α = 0.01)|Profit (€ per EV)`: -2.706 ± 0.012 (95 % t CI [-2.813, -2.599])
-  - `T7|SA-Attn-CP (α = 0.05)|Profit (€ per EV)`: -3.161 ± 0.002 (95 % t CI [-3.175, -3.147])
-  - `T7|SA-Attn-CP (α = 0.1)|Profit (€ per EV)`: -3.066 ± 0.008 (95 % t CI [-3.134, -2.998])
-  - `T7|SA-Attn-CP (α = 0.2)|Profit (€ per EV)`: -2.999 ± 0.012 (95 % t CI [-3.106, -2.892])
-  - `T7|SA-Attn-point (uncalibrated)|Profit (€ per EV)`: -3.066 ± 0.007 (95 % t CI [-3.130, -3.001])
-- **J^pen (€/episode)**
-  - `T7|SA-Attn, known departure step|J^pen (€/episode)`: -137.55 ± 2.73 (95 % t CI [-162.069, -113.039])
-  - `T7|SA-Attn-CP (α = 0.01)|J^pen (€/episode)`: -105.17 ± 1.37 (95 % t CI [-117.435, -92.899])
-  - `T7|SA-Attn-CP (α = 0.05)|J^pen (€/episode)`: -140.95 ± 0.95 (95 % t CI [-149.457, -132.434])
-  - `T7|SA-Attn-CP (α = 0.1)|J^pen (€/episode)`: -150.99 ± 1.15 (95 % t CI [-161.281, -140.697])
-  - `T7|SA-Attn-CP (α = 0.2)|J^pen (€/episode)`: -188.25 ± 2.36 (95 % t CI [-209.486, -167.022])
-  - `T7|SA-Attn-point (uncalibrated)|J^pen (€/episode)`: -151.02 ± 1.20 (95 % t CI [-161.771, -140.274])
-- **Unserved EVs (%)**
-  - `T7|SA-Attn, known departure step|Unserved EVs (%)`: 2.24 ± 0.01 (95 % t CI [2.123, 2.352])
-  - `T7|SA-Attn-CP (α = 0.01)|Unserved EVs (%)`: 0.30 ± 3.9e-03 (95 % t CI [0.263, 0.333])
-  - `T7|SA-Attn-CP (α = 0.05)|Unserved EVs (%)`: 1.43 ± 0.02 (95 % t CI [1.218, 1.644])
-  - `T7|SA-Attn-CP (α = 0.1)|Unserved EVs (%)`: 2.67 ± 0.05 (95 % t CI [2.203, 3.144])
-  - `T7|SA-Attn-CP (α = 0.2)|Unserved EVs (%)`: 5.20 ± 0.09 (95 % t CI [4.426, 5.981])
-  - `T7|SA-Attn-point (uncalibrated)|Unserved EVs (%)`: 2.71 ± 0.05 (95 % t CI [2.247, 3.165])
-- **Energy not served (kWh)**
-  - `T7|SA-Attn, known departure step|Energy not served (kWh)`: 0.43 ± 0.12 (95 % t CI [-0.684, 1.545])
-  - `T7|SA-Attn-CP (α = 0.01)|Energy not served (kWh)`: 0.18 ± 1.3e-03 (95 % t CI [0.171, 0.194])
-  - `T7|SA-Attn-CP (α = 0.05)|Energy not served (kWh)`: 1.22 ± 0.02 (95 % t CI [1.057, 1.389])
-  - `T7|SA-Attn-CP (α = 0.1)|Energy not served (kWh)`: 2.57 ± 0.04 (95 % t CI [2.215, 2.917])
-  - `T7|SA-Attn-CP (α = 0.2)|Energy not served (kWh)`: 6.55 ± 0.15 (95 % t CI [5.172, 7.931])
-  - `T7|SA-Attn-point (uncalibrated)|Energy not served (kWh)`: 2.57 ± 0.04 (95 % t CI [2.215, 2.922])
+Caption: Conformal departure bound per miscoverage level α: target and achieved coverage, shortfall against the shared admitted requirement, optimality gap and charged energy (all 36 test-grid configurations pooled; per episode unless stated).
+- **Target coverage 1 − α**
+  - `T7|SA-Attn-CP (α = 0.01)|Target coverage 1 − α`: 0.99
+  - `T7|SA-Attn-CP (α = 0.05)|Target coverage 1 − α`: 0.95
+  - `T7|SA-Attn-CP (α = 0.1)|Target coverage 1 − α`: 0.90
+  - `T7|SA-Attn-CP (α = 0.2)|Target coverage 1 − α`: 0.80
 - **Coverage (episode mean)**
-  - `T7|SA-Attn-CP (α = 0.01)|Coverage (episode mean)`: 0.992 ± 0 (95 % t CI [0.992, 0.992])
-  - `T7|SA-Attn-CP (α = 0.05)|Coverage (episode mean)`: 0.950 ± 0 (95 % t CI [0.950, 0.950])
-  - `T7|SA-Attn-CP (α = 0.1)|Coverage (episode mean)`: 0.902 ± 0 (95 % t CI [0.902, 0.902])
-  - `T7|SA-Attn-CP (α = 0.2)|Coverage (episode mean)`: 0.799 ± 0 (95 % t CI [0.799, 0.799])
-  - `T7|SA-Attn-point (uncalibrated)|Coverage (episode mean)`: 0.899 ± 0 (95 % t CI [0.899, 0.899])
-- **EVs departed before bound**
-  - `T7|SA-Attn-CP (α = 0.01)|EVs departed before bound`: 0.26 ± 0 (95 % t CI [0.255, 0.255])
-  - `T7|SA-Attn-CP (α = 0.05)|EVs departed before bound`: 2.02 ± 0 (95 % t CI [2.018, 2.018])
-  - `T7|SA-Attn-CP (α = 0.1)|EVs departed before bound`: 4.18 ± 0 (95 % t CI [4.176, 4.176])
-  - `T7|SA-Attn-CP (α = 0.2)|EVs departed before bound`: 8.29 ± 0 (95 % t CI [8.290, 8.290])
-  - `T7|SA-Attn-point (uncalibrated)|EVs departed before bound`: 4.16 ± 0 (95 % t CI [4.155, 4.155])
-- **Mean d − d^lo (steps)**
-  - `T7|SA-Attn-CP (α = 0.01)|Mean d − d^lo (steps)`: 20.62 ± 0 (95 % t CI [20.615, 20.615])
-  - `T7|SA-Attn-CP (α = 0.05)|Mean d − d^lo (steps)`: 10.43 ± 0 (95 % t CI [10.429, 10.429])
-  - `T7|SA-Attn-CP (α = 0.1)|Mean d − d^lo (steps)`: 8.03 ± 0 (95 % t CI [8.035, 8.035])
-  - `T7|SA-Attn-CP (α = 0.2)|Mean d − d^lo (steps)`: 5.09 ± 0 (95 % t CI [5.088, 5.088])
-  - `T7|SA-Attn-point (uncalibrated)|Mean d − d^lo (steps)`: 8.01 ± 0 (95 % t CI [8.014, 8.014])
-- **Δ profit vs known d (€ per EV) [95 % CI]**
-  - `T7|SA-Attn-CP (α = 0.01)|Δ profit vs known d (€ per EV) [95 % CI]`: 0.595 [0.581, 0.608]
-  - `T7|SA-Attn-CP (α = 0.05)|Δ profit vs known d (€ per EV) [95 % CI]`: 0.140 [0.127, 0.154]
-  - `T7|SA-Attn-CP (α = 0.1)|Δ profit vs known d (€ per EV) [95 % CI]`: 0.235 [0.221, 0.250]
-  - `T7|SA-Attn-CP (α = 0.2)|Δ profit vs known d (€ per EV) [95 % CI]`: 0.302 [0.287, 0.317]
-  - `T7|SA-Attn-point (uncalibrated)|Δ profit vs known d (€ per EV) [95 % CI]`: 0.235 [0.221, 0.249]
+  - `T7|SA-Attn-CP (α = 0.01)|Coverage (episode mean)`: 0.992 (0.992–0.992)
+  - `T7|SA-Attn-CP (α = 0.05)|Coverage (episode mean)`: 0.950 (0.950–0.950)
+  - `T7|SA-Attn-CP (α = 0.1)|Coverage (episode mean)`: 0.902 (0.902–0.902)
+  - `T7|SA-Attn-CP (α = 0.2)|Coverage (episode mean)`: 0.799 (0.799–0.799)
+  - `T7|SA-Attn-point (uncalibrated)|Coverage (episode mean)`: 0.899 (0.899–0.899)
+- **Shortfall vs shared requi- rement (kWh)**
+  - `T7|SA-Attn, known departure step|Shortfall vs shared requi- rement (kWh)`: 0.43 (0.34–0.52)
+  - `T7|SA-Attn-CP (α = 0.01)|Shortfall vs shared requi- rement (kWh)`: 175.51 (172.55–178.46)
+  - `T7|SA-Attn-CP (α = 0.05)|Shortfall vs shared requi- rement (kWh)`: 2.75 (2.71–2.78)
+  - `T7|SA-Attn-CP (α = 0.1)|Shortfall vs shared requi- rement (kWh)`: 3.09 (3.09–3.10)
+  - `T7|SA-Attn-CP (α = 0.2)|Shortfall vs shared requi- rement (kWh)`: 6.60 (6.50–6.70)
+  - `T7|SA-Attn-point (uncalibrated)|Shortfall vs shared requi- rement (kWh)`: 3.10 (3.09–3.10)
+- **Total shortfall (kWh, all episodes)**
+  - `T7|SA-Attn, known departure step|Total shortfall (kWh, all episodes)`: 2,568
+  - `T7|SA-Attn-CP (α = 0.01)|Total shortfall (kWh, all episodes)`: 771,853
+  - `T7|SA-Attn-CP (α = 0.05)|Total shortfall (kWh, all episodes)`: 12,507
+  - `T7|SA-Attn-CP (α = 0.1)|Total shortfall (kWh, all episodes)`: 13,904
+  - `T7|SA-Attn-CP (α = 0.2)|Total shortfall (kWh, all episodes)`: 29,723
+  - `T7|SA-Attn-point (uncalibrated)|Total shortfall (kWh, all episodes)`: 13,944
+- **Optimality gap (€ per charger and episode)**
+  - `T7|SA-Attn, known departure step|Optimality gap (€ per charger and episode)`: 1.210 (1.187–1.233)
+  - `T7|SA-Attn-CP (α = 0.01)|Optimality gap (€ per charger and episode)`: 27.341 (27.064–27.617)
+  - `T7|SA-Attn-CP (α = 0.05)|Optimality gap (€ per charger and episode)`: 1.292 (1.290–1.294)
+  - `T7|SA-Attn-CP (α = 0.1)|Optimality gap (€ per charger and episode)`: 1.319 (1.300–1.338)
+  - `T7|SA-Attn-CP (α = 0.2)|Optimality gap (€ per charger and episode)`: 1.958 (1.886–2.029)
+  - `T7|SA-Attn-point (uncalibrated)|Optimality gap (€ per charger and episode)`: 1.322 (1.303–1.341)
+- **Energy charged (kWh)**
+  - `T7|SA-Attn, known departure step|Energy charged (kWh)`: 1396.5 (1393.8–1399.3)
+  - `T7|SA-Attn-CP (α = 0.01)|Energy charged (kWh)`: 791.4 (771.1–811.8)
+  - `T7|SA-Attn-CP (α = 0.05)|Energy charged (kWh)`: 1011.7 (1008.2–1015.3)
+  - `T7|SA-Attn-CP (α = 0.1)|Energy charged (kWh)`: 1089.4 (1086.5–1092.3)
+  - `T7|SA-Attn-CP (α = 0.2)|Energy charged (kWh)`: 1193.4 (1182.6–1204.2)
+  - `T7|SA-Attn-point (uncalibrated)|Energy charged (kWh)`: 1089.1 (1086.6–1091.7)
 
 ## TS1
-Caption: Raw-profit optimality gap with respect to the hard perfect-information optimum J^LP,ceil and to J^LP (without EV2Gym's ceil gain), per station size N (profiles and tightness levels pooled).
-- **Gap vs J^LP,ceil (%) (hard optimum)**
-  - `TS1|N = 5 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 89.79 ± 0.65 (95 % t CI [83.962, 95.614])
-  - `TS1|N = 10 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 121.51 ± 0.47 (95 % t CI [117.270, 125.751])
-  - `TS1|N = 20 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 118.97 ± 1.23 (95 % t CI [107.937, 129.994])
-  - `TS1|N = 50 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 129.20 ± 5.27 (95 % t CI [81.806, 176.586])
-  - `TS1|N = 100 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 152.71 ± 8.41 (95 % t CI [77.126, 228.296])
-  - `TS1|N = 200 / SA-Attn (ours)|Gap vs J^LP,ceil (%) (hard optimum)`: 195.83 ± 10.82 (95 % t CI [98.585, 293.076])
-  - minimum over rows: `TS1|N = 100 / eMPC-HiGHS|Gap vs J^LP,ceil (%) (hard optimum)`: -142.61†
-  - maximum over rows: `TS1|N = 200 / LLF+safety layer|Gap vs J^LP,ceil (%) (hard optimum)`: 264.35†
-- **Gap vs J^LP (%) (no ceil gain)**
-  - `TS1|N = 5 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 35.96 ± 0.70 (95 % t CI [29.678, 42.246])
-  - `TS1|N = 10 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 45.45 ± 0.66 (95 % t CI [39.474, 51.421])
-  - `TS1|N = 20 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 48.38 ± 1.59 (95 % t CI [34.113, 62.650])
-  - `TS1|N = 50 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 51.35 ± 5.68 (95 % t CI [0.358, 102.336])
-  - `TS1|N = 100 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 55.38 ± 5.48 (95 % t CI [6.124, 104.642])
-  - `TS1|N = 200 / SA-Attn (ours)|Gap vs J^LP (%) (no ceil gain)`: 85.34 ± 6.27 (95 % t CI [29.020, 141.658])
-  - minimum over rows: `TS1|N = 200 / eMPC-HiGHS|Gap vs J^LP (%) (no ceil gain)`: -178.26†
-  - maximum over rows: `TS1|N = 200 / LLF+safety layer|Gap vs J^LP (%) (no ceil gain)`: 146.32†
+Caption: Relative optimality gaps as ratios of sums, per station size N (profiles and tightness levels pooled): 100 · Σ(J* − J) / Σ|J*| over all test episodes of the seed-averaged policy, for the soft-penalty optimum (J^pen) and for the hard optima J^LP,ceil and J^LP (raw profit).
+- **J^pen gap vs soft optimum (%) [95 % CI]**
+  - `TS1|N = 5 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 163.0 [130.4, 200.8]
+  - `TS1|N = 10 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 102.5 [88.9, 118.1]
+  - `TS1|N = 20 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 68.6 [63.1, 74.7]
+  - `TS1|N = 50 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 68.8 [64.0, 74.4]
+  - `TS1|N = 100 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 63.8 [58.3, 69.6]
+  - `TS1|N = 200 / SA-Attn (ours)|J^pen gap vs soft optimum (%) [95 % CI]`: 68.4 [62.2, 75.5]
+  - minimum over rows: `TS1|N = 100 / Deep Sets+safety layer|J^pen gap vs soft optimum (%) [95 % CI]`: 47.0 [43.1, 51.5]
+  - maximum over rows: `TS1|N = 10 / MLP+penalty|J^pen gap vs soft optimum (%) [95 % CI]`: 440.7 [362.2, 529.3]
+- **Profit gap vs J^LP,ceil (%) [95 % CI]**
+  - `TS1|N = 5 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 56.9 [51.7, 62.5]
+  - `TS1|N = 10 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 65.7 [60.7, 71.2]
+  - `TS1|N = 20 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 61.4 [57.2, 66.2]
+  - `TS1|N = 50 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 64.6 [60.6, 68.8]
+  - `TS1|N = 100 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 62.4 [57.2, 68.3]
+  - `TS1|N = 200 / SA-Attn (ours)|Profit gap vs J^LP,ceil (%) [95 % CI]`: 65.8 [60.1, 72.1]
+  - minimum over rows: `TS1|N = 5 / Deep Sets+safety layer|Profit gap vs J^LP,ceil (%) [95 % CI]`: 45.8 [41.8, 50.2]
+  - maximum over rows: `TS1|N = 10 / AFAP+safety layer|Profit gap vs J^LP,ceil (%) [95 % CI]`: 87.0 [80.3, 94.1]
+- **Profit gap vs J^LP (%) [95 % CI]**
+  - `TS1|N = 5 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 25.5 [22.7, 28.5]
+  - `TS1|N = 10 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 27.7 [25.2, 30.3]
+  - `TS1|N = 20 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 27.5 [25.5, 29.7]
+  - `TS1|N = 50 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 27.4 [25.6, 29.2]
+  - `TS1|N = 100 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 27.6 [25.1, 30.2]
+  - `TS1|N = 200 / SA-Attn (ours)|Profit gap vs J^LP (%) [95 % CI]`: 28.7 [26.2, 31.4]
+  - minimum over rows: `TS1|N = 100 / Deep Sets+safety layer|Profit gap vs J^LP (%) [95 % CI]`: 14.6 [13.3, 15.9]
+  - maximum over rows: `TS1|N = 10 / AFAP+safety layer|Profit gap vs J^LP (%) [95 % CI]`: 44.9 [41.4, 48.7]
 
 ## TS2
-Caption: Sensitivity analyses (per episode; profiles pooled): reference configuration, desired SoC 0.8, Δt = 5 min (separately trained policy), battery throughput cost, discharge price factor, penalty weights of the penalty-based policy, and the out-of-training tightness ρ_tr = 3 kW.
+Caption: Out-of-training transformer rating ρ_tr = 3 kW per charger (stress level), per station size N (profiles pooled; per episode).
+- **Optimality gap (€ per charger and episode)**
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 2.979 (2.810–3.147)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 1.586 (1.319–1.852)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 200 / Price-threshold+safety layer|Optimality gap (€ per charger and episode)`: 0.778†
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 20 / MLP+penalty|Optimality gap (€ per charger and episode)`: 4.081 (2.983–5.179)
 - **J^pen (€/charger)**
-  - `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|J^pen (€/charger)`: -4.25 ± 0.24 (95 % t CI [-6.397, -2.110])
-  - `TS2|ρ_tr = 3 kW (stress), N = 200 / SA-Attn (ours)|J^pen (€/charger)`: -2.99 ± 0.38 (95 % t CI [-6.376, 0.405])
-  - minimum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / eMPC-HiGHS|J^pen (€/charger)`: -111.94†
-  - maximum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / Price-threshold+safety layer|J^pen (€/charger)`: -2.18†
-- **Optimality gap (%)**
-  - `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|Optimality gap (%)`: 328.2 ± 46.0 (95 % t CI [-85.079, 741.380])
-  - `TS2|ρ_tr = 3 kW (stress), N = 200 / SA-Attn (ours)|Optimality gap (%)`: 175.6 ± 30.4 (95 % t CI [-97.388, 448.528])
-  - minimum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / Attention+safety layer without departure bound|Optimality gap (%)`: 114.1 ± 6.4
-  - maximum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / eMPC-HiGHS|Optimality gap (%)`: 18665.9†
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|J^pen (€/charger)`: -4.25 (-4.42 to -4.08)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|J^pen (€/charger)`: -2.99 (-3.25 to -2.72)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 20 / MLP+penalty|J^pen (€/charger)`: -5.36 (-6.45 to -4.26)
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 200 / Price-threshold+safety layer|J^pen (€/charger)`: -2.18†
 - **Profit (€/charger)**
-  - `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|Profit (€/charger)`: -1.99 ± 0.02 (95 % t CI [-2.141, -1.843])
-  - `TS2|ρ_tr = 3 kW (stress), N = 200 / SA-Attn (ours)|Profit (€/charger)`: -2.20 ± 0.03 (95 % t CI [-2.464, -1.942])
-  - minimum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / LLF+safety layer|Profit (€/charger)`: -2.44†
-  - maximum over rows: `TS2|ρ_tr = 3 kW (stress), N = 20 / eMPC-HiGHS|Profit (€/charger)`: 0.16†
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Profit (€/charger)`: -1.99 (-2.00 to -1.98)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|Profit (€/charger)`: -2.20 (-2.22 to -2.18)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 200 / AFAP+safety layer|Profit (€/charger)`: -2.44†
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 20 / Deep Sets+safety layer|Profit (€/charger)`: -1.87 (-1.90 to -1.84)
 - **Unserved EVs (%)**
-  - `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|Unserved EVs (%)`: 12.04 ± 0.72 (95 % t CI [5.593, 18.483])
-  - `TS2|ρ_tr = 3 kW (stress), N = 200 / SA-Attn (ours)|Unserved EVs (%)`: 7.21 ± 2.61 (95 % t CI [-16.261, 30.681])
-  - minimum over rows: `TS2|ρ_tr = 3 kW (stress), N = 20 / LLF+safety layer|Unserved EVs (%)`: 0†
-  - maximum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / eMPC-HiGHS|Unserved EVs (%)`: 99.86†
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Unserved EVs (%)`: 12.04 (11.53–12.55)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|Unserved EVs (%)`: 7.21 (5.36–9.06)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 20 / AFAP+safety layer|Unserved EVs (%)`: 0†
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Unserved EVs (%)`: 12.04 (11.53–12.55)
 - **Overload (kWh)**
-  - `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - `TS2|ρ_tr = 3 kW (stress), N = 200 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `TS2|ρ_tr = 3 kW (stress), N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 ± 0
-  - maximum over rows: `TS2|ρ_tr = 3 kW (stress), N = 200 / Attention+PPO-Lagrangian|Overload (kWh)`: 8.20 ± 10.89
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 200 / Attention+PPO-Lagrangian|Overload (kWh)`: 8.20 (0.50–15.90)
+- **E4 (%)**
+  - `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|E4 (%)`: 55.30 (54.82–55.78)
+  - `TS2|ρ_tr = 3 kW, N = 200 / SA-Attn (ours)|E4 (%)`: 65.91 (65.87–65.94)
+  - minimum over rows: `TS2|ρ_tr = 3 kW, N = 20 / SA-Attn (ours)|E4 (%)`: 55.30 (54.82–55.78)
+  - maximum over rows: `TS2|ρ_tr = 3 kW, N = 20 / Attention+safety layer without departure bound|E4 (%)`: 100.00 (100.00–100.00)
 
 ## TS3
-Caption: Literature configuration (literature_N25: EV2Gym V2GProfitMax, 25 chargers, 100 kW, workplace profile), for comparison with published EV2Gym results.
+Caption: Literature configuration (EV2Gym V2GProfitMax layout, 25 chargers, workplace profile), for comparison with published EV2Gym results.
+- **Optimality gap (€ per charger and episode)**
+  - `TS3|SA-Attn (ours)|Optimality gap (€ per charger and episode)`: 0.507 (0.474–0.540)
+  - minimum over rows: `TS3|Attention+safety layer without departure bound|Optimality gap (€ per charger and episode)`: 0.363 (0.358–0.368)
+  - maximum over rows: `TS3|Price-threshold|Optimality gap (€ per charger and episode)`: 195.993†
 - **J^pen (€/episode)**
-  - `TS3|SA-Attn (ours)|J^pen (€/episode)`: -49.01 ± 1.17 (95 % t CI [-59.567, -38.461])
+  - `TS3|SA-Attn (ours)|J^pen (€/episode)`: -49.01 (-49.84 to -48.18)
   - minimum over rows: `TS3|Price-threshold|J^pen (€/episode)`: -4936.17†
-  - maximum over rows: `TS3|Attention+safety layer without departure bound|J^pen (€/episode)`: -45.42 ± 0.18
-- **Optimality gap (%)**
-  - `TS3|SA-Attn (ours)|Optimality gap (%)`: 54.6 ± 1.4 (95 % t CI [41.768, 67.347])
-  - minimum over rows: `TS3|Attention+safety layer without departure bound|Optimality gap (%)`: 38.4 ± 6.0
-  - maximum over rows: `TS3|Price-threshold|Optimality gap (%)`: 20670.1†
+  - maximum over rows: `TS3|Attention+safety layer without departure bound|J^pen (€/episode)`: -45.42 (-45.55 to -45.29)
 - **Profit (€/episode)**
-  - `TS3|SA-Attn (ours)|Profit (€/episode)`: -47.12 ± 0.26 (95 % t CI [-49.482, -44.753])
+  - `TS3|SA-Attn (ours)|Profit (€/episode)`: -47.12 (-47.30 to -46.93)
   - minimum over rows: `TS3|AFAP|Profit (€/episode)`: -51.03†
   - maximum over rows: `TS3|Price-threshold|Profit (€/episode)`: 58.80†
 - **Energy not served (kWh)**
-  - `TS3|SA-Attn (ours)|Energy not served (kWh)`: 0.19 ± 0.14 (95 % t CI [-1.102, 1.481])
+  - `TS3|SA-Attn (ours)|Energy not served (kWh)`: 0.19 (0.09–0.29)
   - minimum over rows: `TS3|LLF+safety layer|Energy not served (kWh)`: 0†
   - maximum over rows: `TS3|Price-threshold|Energy not served (kWh)`: 418.76†
 - **Overload (kWh)**
-  - `TS3|SA-Attn (ours)|Overload (kWh)`: 0 ± 0 (95 % t CI [0, 0])
-  - minimum over rows: `TS3|SA-Attn (ours)|Overload (kWh)`: 0 ± 0
+  - `TS3|SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
+  - minimum over rows: `TS3|SA-Attn (ours)|Overload (kWh)`: 0 (0–0)
   - maximum over rows: `TS3|Price-threshold|Overload (kWh)`: 80.74†
 - **Inference (ms/step)**
-  - `TS3|SA-Attn (ours)|Inference (ms/step)`: 2.11 ± 0.01 (95 % t CI [2.004, 2.212])
+  - `TS3|SA-Attn (ours)|Inference (ms/step)`: 2.11 (2.10–2.12)
   - minimum over rows: `TS3|ALAP|Inference (ms/step)`: 0.43†
-  - maximum over rows: `TS3|Attention+safety layer without departure bound|Inference (ms/step)`: 2.13 ± 0.03
+  - maximum over rows: `TS3|Attention+safety layer without departure bound|Inference (ms/step)`: 2.13 (2.11–2.15)
 
 ## Figures (values from figures/data/*.csv)
 ### fig3_zero_shot_scaling
-- Attention+PPO-Lagrangian, gap_pct, rho_tr = 4: N = 5: 490.2; N = 200: 219.3
-- Attention+PPO-Lagrangian, gap_pct, rho_tr = 7: N = 5: 138.2; N = 200: 305.9
-- Attention+PPO-Lagrangian, pen_per_charger, rho_tr = 4: N = 5: -7.494; N = 200: -2.291
-- Attention+PPO-Lagrangian, pen_per_charger, rho_tr = 7: N = 5: -2.39; N = 200: -2.296
-- Attention+penalty, gap_pct, rho_tr = 4: N = 5: 506.2; N = 200: 183.4
-- Attention+penalty, gap_pct, rho_tr = 7: N = 5: 132; N = 200: 267.3
+- AFAP+safety layer, gap_abs, rho_tr = 4: N = 5: 1.023; N = 200: 1.011
+- AFAP+safety layer, gap_abs, rho_tr = 7: N = 5: 1.053; N = 200: 1.165
+- AFAP+safety layer, pen_per_charger, rho_tr = 4: N = 5: -2.289; N = 200: -2.222
+- AFAP+safety layer, pen_per_charger, rho_tr = 7: N = 5: -2.188; N = 200: -2.305
+- ALAP+safety layer, gap_abs, rho_tr = 4: N = 5: 1.209; N = 200: 0.952
+- ALAP+safety layer, gap_abs, rho_tr = 7: N = 5: 1.004; N = 200: 1.095
+- ALAP+safety layer, pen_per_charger, rho_tr = 4: N = 5: -2.475; N = 200: -2.162
+- ALAP+safety layer, pen_per_charger, rho_tr = 7: N = 5: -2.139; N = 200: -2.234
+- Attention+penalty, gap_abs, rho_tr = 4: N = 5: 6.745; N = 200: 0.8668
+- Attention+penalty, gap_abs, rho_tr = 7: N = 5: 2.377; N = 200: 0.9913
 - Attention+penalty, pen_per_charger, rho_tr = 4: N = 5: -8.011; N = 200: -2.077
 - Attention+penalty, pen_per_charger, rho_tr = 7: N = 5: -3.512; N = 200: -2.131
-- SA-Attn (ours), gap_pct, rho_tr = 4: N = 5: 303.5; N = 200: 160.1
-- SA-Attn (ours), gap_pct, rho_tr = 7: N = 5: 97.22; N = 200: 237.2
+- Attention+safety layer without departure bound, gap_abs, rho_tr = 4: N = 5: 1.299; N = 200: 0.7196
+- Attention+safety layer without departure bound, gap_abs, rho_tr = 7: N = 5: 0.7527; N = 200: 0.8194
+- Attention+safety layer without departure bound, pen_per_charger, rho_tr = 4: N = 5: -2.565; N = 200: -1.93
+- Attention+safety layer without departure bound, pen_per_charger, rho_tr = 7: N = 5: -1.888; N = 200: -1.959
+- SA-Attn (ours), gap_abs, rho_tr = 4: N = 5: 3.731; N = 200: 0.8819
+- SA-Attn (ours), gap_abs, rho_tr = 7: N = 5: 0.8519; N = 200: 0.9216
 - SA-Attn (ours), pen_per_charger, rho_tr = 4: N = 5: -4.997; N = 200: -2.092
 - SA-Attn (ours), pen_per_charger, rho_tr = 7: N = 5: -1.987; N = 200: -2.061
-- SA-Attn trained at N = 50 (reference), gap_pct, rho_tr = 4: N = 50: 125.7; N = 200: 156.4
-- SA-Attn trained at N = 50 (reference), gap_pct, rho_tr = 7: N = 50: 128.4; N = 200: 229.3
+- SA-Attn trained at N = 50 (reference), gap_abs, rho_tr = 4: N = 50: 0.8851; N = 200: 0.8483
+- SA-Attn trained at N = 50 (reference), gap_abs, rho_tr = 7: N = 50: 0.8828; N = 200: 0.89
 - SA-Attn trained at N = 50 (reference), pen_per_charger, rho_tr = 4: N = 50: -2.166; N = 200: -2.058
 - SA-Attn trained at N = 50 (reference), pen_per_charger, rho_tr = 7: N = 50: -2.069; N = 200: -2.029
-- Deep Sets+safety layer, gap_pct, rho_tr = 4: N = 5: 207.9; N = 200: 116.5
-- Deep Sets+safety layer, gap_pct, rho_tr = 7: N = 5: 75.84; N = 200: 166.7
+- Deep Sets+safety layer, gap_abs, rho_tr = 4: N = 5: 2.649; N = 200: 0.6718
+- Deep Sets+safety layer, gap_abs, rho_tr = 7: N = 5: 0.6765; N = 200: 0.6782
 - Deep Sets+safety layer, pen_per_charger, rho_tr = 4: N = 5: -3.915; N = 200: -1.882
 - Deep Sets+safety layer, pen_per_charger, rho_tr = 7: N = 5: -1.811; N = 200: -1.817
-- eMPC-HiGHS+safety layer, gap_pct, rho_tr = 4: N = 5: 288.3; N = 200: 139
-- eMPC-HiGHS+safety layer, gap_pct, rho_tr = 7: N = 5: 86.41; N = 200: 202.5
-- eMPC-HiGHS+safety layer, pen_per_charger, rho_tr = 4: N = 5: -4.859; N = 200: -2.007
-- eMPC-HiGHS+safety layer, pen_per_charger, rho_tr = 7: N = 5: -1.908; N = 200: -1.94
-- LLF+safety layer, gap_pct, rho_tr = 4: N = 5: 111.4; N = 200: 219
-- LLF+safety layer, gap_pct, rho_tr = 7: N = 5: 124.8; N = 200: 309.7
-- LLF+safety layer, pen_per_charger, rho_tr = 4: N = 5: -2.29; N = 200: -2.222
-- LLF+safety layer, pen_per_charger, rho_tr = 7: N = 5: -2.188; N = 200: -2.305
-- MLP+penalty, gap_pct, rho_tr = 4: N = 5: 655.2; N = 20: 278.7
-- MLP+penalty, gap_pct, rho_tr = 7: N = 5: 153.5; N = 20: 245.1
-- MLP+penalty, pen_per_charger, rho_tr = 4: N = 5: -9.258; N = 20: -3.347
-- MLP+penalty, pen_per_charger, rho_tr = 7: N = 5: -2.603; N = 20: -2.821
-- MLP+safety layer, gap_pct, rho_tr = 4: N = 5: 233.3; N = 20: 113.6
-- MLP+safety layer, gap_pct, rho_tr = 7: N = 5: 94.04; N = 20: 136.6
-- MLP+safety layer, pen_per_charger, rho_tr = 4: N = 5: -4.232; N = 20: -2.187
-- MLP+safety layer, pen_per_charger, rho_tr = 7: N = 5: -1.96; N = 20: -2.18
-- Price-threshold+safety layer, gap_pct, rho_tr = 4: N = 5: 100.7; N = 200: 152
-- Price-threshold+safety layer, gap_pct, rho_tr = 7: N = 5: 89.83; N = 200: 217.2
+- Price-threshold+safety layer, gap_abs, rho_tr = 4: N = 5: 1.132; N = 200: 0.7504
+- Price-threshold+safety layer, gap_abs, rho_tr = 7: N = 5: 0.7809; N = 200: 0.8266
 - Price-threshold+safety layer, pen_per_charger, rho_tr = 4: N = 5: -2.398; N = 200: -1.961
 - Price-threshold+safety layer, pen_per_charger, rho_tr = 7: N = 5: -1.916; N = 200: -1.966
 
@@ -614,77 +697,89 @@ Caption: Literature configuration (literature_N25: EV2Gym V2GProfitMax, 25 charg
 - MLP+penalty, tr_violation_kwh: N = 5: 1.804; N = 20: 0.4406
 
 ### figS1_training_curves
+- Attention+PPO-Lagrangian, episode_return_eur_mean at 2.998e+06 env steps: -34.81 (min-max over seeds [-36.13, -33.49], 2 seeds)
+- Attention+PPO-Lagrangian, frac_unserved_mean at 2.998e+06 env steps: 0.001116 (min-max over seeds [0, 0.002232], 2 seeds)
+- Attention+PPO-Lagrangian, tr_violation_kwh_mean at 2.998e+06 env steps: 0.6647 (min-max over seeds [0.3771, 0.9524], 2 seeds)
+- Attention+penalty, episode_return_eur_mean at 2.998e+06 env steps: -32.88 (min-max over seeds [-34.7, -31.06], 2 seeds)
+- Attention+penalty, frac_unserved_mean at 2.998e+06 env steps: 0.02328 (min-max over seeds [0.01402, 0.03255], 2 seeds)
+- Attention+penalty, tr_violation_kwh_mean at 2.998e+06 env steps: 0.092 (min-max over seeds [0.08118, 0.1028], 2 seeds)
+- SA-Attn (ours), episode_return_eur_mean at 2.998e+06 env steps: -33.65 (min-max over seeds [-35.74, -31.57], 2 seeds)
+- SA-Attn (ours), frac_unserved_mean at 2.998e+06 env steps: 0.01857 (min-max over seeds [0.01419, 0.02296], 2 seeds)
+- SA-Attn (ours), tr_violation_kwh_mean at 2.998e+06 env steps: 0 (min-max over seeds [0, 0], 2 seeds)
+- Deep Sets+safety layer, episode_return_eur_mean at 2.998e+06 env steps: -30.1 (min-max over seeds [-30.49, -29.7], 2 seeds)
+- Deep Sets+safety layer, frac_unserved_mean at 2.998e+06 env steps: 0.00744 (min-max over seeds [0.004464, 0.01042], 2 seeds)
+- Deep Sets+safety layer, tr_violation_kwh_mean at 2.998e+06 env steps: 0 (min-max over seeds [0, 0], 2 seeds)
+- MLP+penalty, episode_return_eur_mean at 2.998e+06 env steps: -35.14 (min-max over seeds [-36.16, -34.12], 2 seeds)
+- MLP+penalty, frac_unserved_mean at 2.998e+06 env steps: 0.04522 (min-max over seeds [0.03368, 0.05676], 2 seeds)
+- MLP+penalty, tr_violation_kwh_mean at 2.998e+06 env steps: 0.4874 (min-max over seeds [0.2451, 0.7297], 2 seeds)
+- MLP+safety layer, episode_return_eur_mean at 2.998e+06 env steps: -33.66 (min-max over seeds [-35.95, -31.37], 2 seeds)
+- MLP+safety layer, frac_unserved_mean at 2.998e+06 env steps: 0.007986 (min-max over seeds [0.00625, 0.009722], 2 seeds)
+- MLP+safety layer, tr_violation_kwh_mean at 2.998e+06 env steps: 0 (min-max over seeds [0, 0], 2 seeds)
 
 ### figS2_ablation
-- Attention + safety layer, $N \in \{10, 20\}$ (training sizes), gap_pct: 145.5
-- Attention + penalty, $N \in \{10, 20\}$ (training sizes), gap_pct: 180.9
-- MLP + safety layer, $N \in \{10, 20\}$ (training sizes), gap_pct: 129.9
-- MLP + penalty, $N \in \{10, 20\}$ (training sizes), gap_pct: 704.9
-- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), gap_pct: 104.8
-- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), gap_pct: 104.8
-- Attention+PPO-Lagrangian, $N \in \{10, 20\}$ (training sizes), gap_pct: 205.9
-- Attention+penalty, safety layer at deployment, $N \in \{10, 20\}$ (training sizes), gap_pct: 123.4
-- SA-Attn, no admission control, $N \in \{10, 20\}$ (training sizes), gap_pct: 144
-- Attention+penalty, no admission control, $N \in \{10, 20\}$ (training sizes), gap_pct: 175.6
-- Attention + safety layer, $N \geq 50$ (zero-shot), gap_pct: 161.8
-- Attention + penalty, $N \geq 50$ (zero-shot), gap_pct: 181.4
-- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), gap_pct: 137.2
-- Deep Sets+safety layer, $N \geq 50$ (zero-shot), gap_pct: 118.8
-- Attention+PPO-Lagrangian, $N \geq 50$ (zero-shot), gap_pct: 219.2
-- Attention+penalty, safety layer at deployment, $N \geq 50$ (zero-shot), gap_pct: 178.2
-- SA-Attn, no admission control, $N \geq 50$ (zero-shot), gap_pct: 158.8
-- Attention+penalty, no admission control, $N \geq 50$ (zero-shot), gap_pct: 179.5
-- Attention + safety layer, $N \in \{10, 20\}$ (training sizes), unserved_pct: 2.16
-- Attention + penalty, $N \in \{10, 20\}$ (training sizes), unserved_pct: 2.338
-- MLP + safety layer, $N \in \{10, 20\}$ (training sizes), unserved_pct: 0.8527
-- MLP + penalty, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.915
-- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.138
-- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.31
+- SA-Attn (ours), $N \in \{10, 20\}$ (training sizes), gap_abs: 1.132
+- Attention+penalty, $N \in \{10, 20\}$ (training sizes), gap_abs: 1.887
+- Attention+PPO-Lagrangian, $N \in \{10, 20\}$ (training sizes), gap_abs: 1.525
+- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), gap_abs: 0.7758
+- Attention+penalty, safety layer at deployment, $N \in \{10, 20\}$ (training sizes), gap_abs: 0.8891
+- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), gap_abs: 0.853
+- MLP+safety layer, $N \in \{10, 20\}$ (training sizes), gap_abs: 0.9595
+- MLP+penalty, $N \in \{10, 20\}$ (training sizes), gap_abs: 3.671
+- SA-Attn (ours), $N \geq 50$ (zero-shot), gap_abs: 0.9012
+- Attention+penalty, $N \geq 50$ (zero-shot), gap_abs: 0.9962
+- Attention+PPO-Lagrangian, $N \geq 50$ (zero-shot), gap_abs: 1.138
+- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), gap_abs: 0.7698
+- Attention+penalty, safety layer at deployment, $N \geq 50$ (zero-shot), gap_abs: 0.9104
+- Deep Sets+safety layer, $N \geq 50$ (zero-shot), gap_abs: 0.674
+- SA-Attn (ours), $N \in \{10, 20\}$ (training sizes), unserved_pct: 2.16
+- Attention+penalty, $N \in \{10, 20\}$ (training sizes), unserved_pct: 2.338
 - Attention+PPO-Lagrangian, $N \in \{10, 20\}$ (training sizes), unserved_pct: 0.02067
+- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.138
 - Attention+penalty, safety layer at deployment, $N \in \{10, 20\}$ (training sizes), unserved_pct: 0.3725
-- SA-Attn, no admission control, $N \in \{10, 20\}$ (training sizes), unserved_pct: 2.086
-- Attention+penalty, no admission control, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.94
-- Attention + safety layer, $N \geq 50$ (zero-shot), unserved_pct: 0.5337
-- Attention + penalty, $N \geq 50$ (zero-shot), unserved_pct: 0.3966
-- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), unserved_pct: 0.2844
-- Deep Sets+safety layer, $N \geq 50$ (zero-shot), unserved_pct: 0.3681
+- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.31
+- MLP+safety layer, $N \in \{10, 20\}$ (training sizes), unserved_pct: 0.8527
+- MLP+penalty, $N \in \{10, 20\}$ (training sizes), unserved_pct: 1.915
+- SA-Attn (ours), $N \geq 50$ (zero-shot), unserved_pct: 0.5337
+- Attention+penalty, $N \geq 50$ (zero-shot), unserved_pct: 0.3966
 - Attention+PPO-Lagrangian, $N \geq 50$ (zero-shot), unserved_pct: 0.3811
+- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), unserved_pct: 0.2844
 - Attention+penalty, safety layer at deployment, $N \geq 50$ (zero-shot), unserved_pct: 0.00205
-- SA-Attn, no admission control, $N \geq 50$ (zero-shot), unserved_pct: 0.4193
-- Attention+penalty, no admission control, $N \geq 50$ (zero-shot), unserved_pct: 0.2278
-- Attention + safety layer, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
-- Attention + penalty, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.6099
-- MLP + safety layer, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
-- MLP + penalty, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.5945
-- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
-- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
+- Deep Sets+safety layer, $N \geq 50$ (zero-shot), unserved_pct: 0.3681
+- SA-Attn (ours), $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
+- Attention+penalty, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.6099
 - Attention+PPO-Lagrangian, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.5432
+- Attention+safety layer without departure bound, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
 - Attention+penalty, safety layer at deployment, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
-- SA-Attn, no admission control, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
-- Attention+penalty, no admission control, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.5796
-- Attention + safety layer, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
-- Attention + penalty, $N \geq 50$ (zero-shot), tr_violation_kwh: 0.1401
-- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
-- Deep Sets+safety layer, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
+- Deep Sets+safety layer, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
+- MLP+safety layer, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0
+- MLP+penalty, $N \in \{10, 20\}$ (training sizes), tr_violation_kwh: 0.5945
+- SA-Attn (ours), $N \geq 50$ (zero-shot), tr_violation_kwh: 0
+- Attention+penalty, $N \geq 50$ (zero-shot), tr_violation_kwh: 0.1401
 - Attention+PPO-Lagrangian, $N \geq 50$ (zero-shot), tr_violation_kwh: 0.488
+- Attention+safety layer without departure bound, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
 - Attention+penalty, safety layer at deployment, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
-- SA-Attn, no admission control, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
-- Attention+penalty, no admission control, $N \geq 50$ (zero-shot), tr_violation_kwh: 0.1148
+- Deep Sets+safety layer, $N \geq 50$ (zero-shot), tr_violation_kwh: 0
 
 ### figS3_conformal_alpha
-- delta_profit_per_ev(CP - known d), alpha = 0.01: 0.5948 [0.5814, 0.6084]
-- delta_profit_per_ev(CP - known d), alpha = 0.05: 0.1402 [0.1269, 0.1536]
-- delta_profit_per_ev(CP - known d), alpha = 0.1: 0.2351 [0.221, 0.2493]
-- delta_profit_per_ev(CP - known d), alpha = 0.2: 0.3018 [0.2862, 0.317]
-- unserved_pct, alpha = 0.01: 0.2982 [0.2634, 0.3331]
-- unserved_pct, alpha = 0.05: 1.431 [1.218, 1.644]
-- unserved_pct, alpha = 0.1: 2.674 [2.203, 3.144]
-- unserved_pct, alpha = 0.2: 5.203 [4.426, 5.981]
-- unserved_pct (known d), alpha = nan: 2.237 [2.123, 2.352]
-- coverage_frac, alpha = 0.01: 0.9921 [0.9921, 0.9921]
-- coverage_frac, alpha = 0.05: 0.9503 [0.9503, 0.9503]
-- coverage_frac, alpha = 0.1: 0.9015 [0.9015, 0.9015]
-- coverage_frac, alpha = 0.2: 0.7988 [0.7988, 0.7988]
+- coverage_frac, alpha = 0.01: 0.9921 [0.9908, 0.9932]
+- coverage_frac, alpha = 0.05: 0.9503 [0.9476, 0.9528]
+- coverage_frac, alpha = 0.1: 0.9015 [0.898, 0.9049]
+- coverage_frac, alpha = 0.2: 0.7988 [0.7941, 0.8035]
+- energy_not_served_kwh, alpha = 0.01: 175.5 [173.3, 177.7]
+- energy_not_served_kwh, alpha = 0.05: 2.748 [2.506, 3]
+- energy_not_served_kwh, alpha = 0.1: 3.093 [2.808, 3.393]
+- energy_not_served_kwh, alpha = 0.2: 6.599 [6.159, 7.055]
+- energy_not_served_kwh (known d), alpha = nan: 0.4305 [0.3146, 0.5812]
+- gap_abs, alpha = 0.01: 27.34 [26.88, 27.81]
+- gap_abs, alpha = 0.05: 1.292 [1.227, 1.362]
+- gap_abs, alpha = 0.1: 1.319 [1.231, 1.412]
+- gap_abs, alpha = 0.2: 1.958 [1.825, 2.101]
+- gap_abs (known d), alpha = nan: 1.21 [1.123, 1.307]
+- energy_charged_kwh, alpha = 0.01: 791.4 [785.1, 797.7]
+- energy_charged_kwh, alpha = 0.05: 1012 [1006, 1018]
+- energy_charged_kwh, alpha = 0.1: 1089 [1083, 1096]
+- energy_charged_kwh, alpha = 0.2: 1193 [1186, 1201]
+- energy_charged_kwh (known d), alpha = nan: 1397 [1388, 1405]
 
 ### figS4_inference_time
 - SA-Attn (ours), inference_ms_per_step_mean: N = 5: 1.454; N = 200: 7.757
@@ -790,981 +885,703 @@ Caption: Literature configuration (literature_N25: EV2Gym V2GProfitMax, 25 charg
 - eMPC-HiGHS+safety layer, rho_tr = 7, tr_violation_kwh: 0
 - eMPC-HiGHS, rho_tr = 7, tr_violation_kwh: 4.497e-05
 
-## Episodes excluded from the gap (|oracle| < 1 EUR)
-- gap_pct: 4694
-- gap_hard_pct: 4694
-- gap_lp_pct: 3986
+## Checks
+- Soft-oracle bound (DD46): episodes with J^pen > J^pen_oracle + 1e-06 EUR: 0 of 153100
+- SA-Attn (ours): unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 5374 of 7100
+- Attention+penalty: unserved EVs (shared requirement) in episodes without infeasible steps: 966; episodes without infeasible steps: 6733 of 7100
+- Attention+PPO-Lagrangian: unserved EVs (shared requirement) in episodes without infeasible steps: 1013; episodes without infeasible steps: 7100 of 7100
+- Attention+safety layer without departure bound: unserved EVs (shared requirement) in episodes without infeasible steps: 1551; episodes without infeasible steps: 7100 of 7100
+- Deep Sets+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 5949 of 7100
+- MLP+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3548 of 4200
+- MLP+penalty: unserved EVs (shared requirement) in episodes without infeasible steps: 478; episodes without infeasible steps: 4187 of 4200
+- SA-Attn trained at N = 50 (reference): unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 2413 of 2700
+- LLF+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3549 of 3550
+- LLF: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3550 of 3550
+- sLLF+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3549 of 3550
+- sLLF: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3549 of 3550
+- Price-threshold+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3334 of 3550
+- Price-threshold: unserved EVs (shared requirement) in episodes without infeasible steps: 58852; episodes without infeasible steps: 2115 of 3550
+- AFAP+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3548 of 3550
+- AFAP: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3550 of 3550
+- ALAP+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3343 of 3550
+- ALAP: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3365 of 3550
+- Round Robin+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 3549 of 3550
+- Round Robin: unserved EVs (shared requirement) in episodes without infeasible steps: 13; episodes without infeasible steps: 3550 of 3550
+- eMPC-HiGHS+safety layer: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 2703 of 3550
+- eMPC-HiGHS: unserved EVs (shared requirement) in episodes without infeasible steps: 60858; episodes without infeasible steps: 1738 of 3550
+- SA-Attn-CP (α = 0.01): unserved EVs (shared requirement) in episodes without infeasible steps: 81742; episodes without infeasible steps: 5732 of 7100
+- SA-Attn-CP (α = 0.05): unserved EVs (shared requirement) in episodes without infeasible steps: 4916; episodes without infeasible steps: 5251 of 7100
+- SA-Attn-CP (α = 0.1): unserved EVs (shared requirement) in episodes without infeasible steps: 5491; episodes without infeasible steps: 5134 of 7100
+- SA-Attn-CP (α = 0.2): unserved EVs (shared requirement) in episodes without infeasible steps: 8126; episodes without infeasible steps: 4967 of 7100
+- Attention+penalty, safety layer at deployment: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 6646 of 7100
+- SA-Attn, no admission control: unserved EVs (shared requirement) in episodes without infeasible steps: 0; episodes without infeasible steps: 5381 of 7100
+- Attention+penalty, no admission control: unserved EVs (shared requirement) in episodes without infeasible steps: 603; episodes without infeasible steps: 6704 of 7100
+- SA-Attn-point (uncalibrated): unserved EVs (shared requirement) in episodes without infeasible steps: 5469; episodes without infeasible steps: 5129 of 7100
 
-## Comparisons T1 (stats/tests_T1.csv; paired t over seeds, Holm per table)
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 10: difference 9.145 [4.075, 14.95]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.65e-05; PoI = 0.792 [0.583, 1]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.8527, 0.2907]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-1.345, -0.2132]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.37e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 20: difference 11.91 [5.065, 20.07]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00185; PoI = 0.708 [0.458, 0.917]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.662, -0.09363]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.86e-05; PoI = 0.604 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-1.162, -0.01643]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.97e-07; PoI = 0.75 [0.667, 0.833]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 10: difference 5.024 [0.09956, 10.58]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.57e-27; PoI = 0.875 [0.75, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.2952, 0.6537]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.09e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-1.277, -0.2648]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.89e-17; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 20: difference 5.694 [2.086, 10]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.17e-31; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.1026, 0.3269]; paired t (seed label): p_holm = 0.4; Wilcoxon (replay level) p_holm = 4.64e-07; PoI = 0.312 [0.167, 0.458]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.8222, -0.0466]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.28e-09; PoI = 0.667 [0.583, 0.75]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 10: difference -5.138 [-7.01, -3.474]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.45e-47; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.2308, 0.58]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00877; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 20: difference -3.956 [-5.496, -2.476]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.47e-46; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.01795, 0.2648]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.666; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 10: difference -3.06 [-4.496, -1.752]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.14e-66; PoI = 0.125 [0, 0.25]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.01484, 0.2634]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00104; PoI = 0.417 [0.25, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 20: difference -5.025 [-6.474, -3.769]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.61e-83; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.02023, 0.2069]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0144; PoI = 0.25 [0.167, 0.375]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, penalised_profit_eur, N = 10: difference -2.649 [-3.902, -1.534]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0188; PoI = 0.208 [0.0833, 0.333]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.1454, 0.3817]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.35e-08; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, penalised_profit_eur, N = 20: difference -1.588 [-2.831, -0.4978]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.1051, 0.3235]; paired t (seed label): p_holm = 0.4; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+penalty, penalised_profit_eur, N = 10: difference 42.57 [20.82, 67.79]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.94e-51; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-5.545, -1.294]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.31e-11; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-1.149, -0.4301]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.91e-17; PoI = 0.833 [0.75, 0.917]
-- SA-Attn (ours) vs MLP+penalty, penalised_profit_eur, N = 20: difference 16.43 [11.49, 22.33]; paired t (seed label): p_holm = 0.208; Wilcoxon (replay level) p_holm = 7.69e-44; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.294, -0.3379]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.79e-05; PoI = 0.875 [0.833, 1]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.7216, -0.2039]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.19e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 10: difference -1.946 [-3.884, -0.2357]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2945, 0.6512]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 20: difference 2.505 [1.113, 3.725]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.75e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1045, 0.3249]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 10: difference -1.946 [-3.832, -0.2911]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2923, 0.6576]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 20: difference 2.505 [1.175, 3.753]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.75e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1035, 0.3246]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 10: difference -1.946 [-3.846, -0.2172]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2956, 0.6559]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 20: difference 2.505 [1.191, 3.746]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.75e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1041, 0.3262]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 10: difference -1.946 [-3.888, -0.2397]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2952, 0.6511]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 20: difference 2.505 [1.132, 3.736]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.75e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1053, 0.3269]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 10: difference -5.001 [-6.905, -3.287]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.35e-09; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2759, 0.6309]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 20: difference -3.708 [-4.856, -2.692]; one-sample t vs deterministic: p_holm = 0.715; Wilcoxon (replay level) p_holm = 1.21e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.08699, 0.2538]; one-sample t vs deterministic: p_holm = 0.271; Wilcoxon (replay level) p_holm = 3.35e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 10: difference 1551 [1480, 1620]; one-sample t vs deterministic: p_holm = 0.0153; Wilcoxon (replay level) p_holm = 1.04e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 10: difference -152.7 [-159.6, -145.9]; one-sample t vs deterministic: p_holm = 0.0153; Wilcoxon (replay level) p_holm = 3.48e-96; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 10: difference -6.231 [-7.38, -5.139]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.52e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 20: difference 3171 [3046, 3300]; one-sample t vs deterministic: p_holm = 0.00105; Wilcoxon (replay level) p_holm = 8.3e-98; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 20: difference -317.2 [-329.6, -304.9]; one-sample t vs deterministic: p_holm = 0.000172; Wilcoxon (replay level) p_holm = 1.67e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 20: difference -8.508 [-10.42, -6.77]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 4.5e-20; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 10: difference -1.949 [-3.926, -0.2548]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.73e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2917, 0.6547]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 20: difference 2.503 [1.118, 3.716]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.79e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1037, 0.3267]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 10: difference 12.95 [9.628, 16.56]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.47e-37; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2927, 0.6559]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 10: difference -1.486 [-1.878, -1.129]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 9.25e-19; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 20: difference 10.88 [8.119, 13.98]; one-sample t vs deterministic: p_holm = 0.258; Wilcoxon (replay level) p_holm = 1.32e-37; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1041, 0.3305]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 20: difference -0.8361 [-1.177, -0.5361]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 8.22e-10; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 10: difference -2.83 [-4.672, -1.172]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.57e-21; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.2918, 0.6496]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 20: difference 1.087 [-0.1779, 2.142]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-44; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1035, 0.3243]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 10: difference 2.824 [0.4163, 5.486]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.5e-35; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2946, 0.6583]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 10: difference -0.5697 [-0.8076, -0.3631]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.49e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 20: difference 2.343 [1.036, 3.538]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.5e-50; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1036, 0.3253]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 20: difference -0.1262 [-0.2234, -0.04883]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.00268; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 10: difference -1.948 [-3.86, -0.2352]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2899, 0.6517]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 20: difference 2.503 [1.156, 3.742]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.79e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1034, 0.3245]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 10: difference -1.946 [-3.847, -0.2388]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 10: difference 0.4627 [0.2948, 0.6557]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-12; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 20: difference 2.503 [1.139, 3.728]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.79e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 20: difference 0.2041 [0.1047, 0.327]; one-sample t vs deterministic: p_holm = 0.245; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 10: difference -1.445 [-2.418, -0.5407]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.67e-59; PoI = 0.167 [0, 0.333]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 10: difference 0.04823 [-0.04081, 0.1416]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 20: difference -2.546 [-3.294, -1.886]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.22e-78; PoI = 0 [0, 0]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 20: difference 0.03319 [-0.02708, 0.1046]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.333, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 10: difference 1068 [1036, 1102]; one-sample t vs deterministic: p_holm = 0.0216; Wilcoxon (replay level) p_holm = 8.25e-98; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 10: difference -109 [-112.3, -105.7]; one-sample t vs deterministic: p_holm = 0.0211; Wilcoxon (replay level) p_holm = 8.25e-98; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 10: difference -0.0001669 [-0.0001847, -0.0001498]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 9.53e-46; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 20: difference 2056 [2000, 2112]; one-sample t vs deterministic: p_holm = 0.00161; Wilcoxon (replay level) p_holm = 8.25e-98; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 20: difference -210 [-215.7, -204.2]; one-sample t vs deterministic: p_holm = 0.000257; Wilcoxon (replay level) p_holm = 8.25e-98; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 20: difference -0.0001874 [-0.0002046, -0.00017]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 4.78e-39; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 10: difference -3.823 [-5.402, -2.365]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00195; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 10: difference 0.3825 [0.2432, 0.5458]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.19e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 20: difference -2.057 [-3.278, -0.9863]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.465; PoI = 0.208 [0.0833, 0.375]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 20: difference 0.1928 [0.1003, 0.3072]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.11e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 10: difference -0.4822 [-1.33, 0.3116]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.6e-12; PoI = 0.167 [0, 0.375]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 10: difference 0.03714 [-0.04071, 0.1207]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.126; PoI = 0.333 [0.167, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 20: difference -0.1462 [-0.6735, 0.3912]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.51e-13; PoI = 0.333 [0.125, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 20: difference -0.006929 [-0.05727, 0.04562]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.438 [0.292, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 10: difference 8.336 [3.299, 14.1]; paired t (seed label): p_holm = 0.692; Wilcoxon (replay level) p_holm = 0.000644; PoI = 0.792 [0.583, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 10: difference -0.1555 [-0.7684, 0.319]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 10: difference -0.7237 [-1.316, -0.201]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.35e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 20: difference 8.59 [3.569, 14.45]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.623; PoI = 0.708 [0.5, 0.917]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 20: difference -0.4956 [-1.167, 0.01981]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0244; PoI = 0.604 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 20: difference -0.4356 [-1.089, -0.0139]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.94e-07; PoI = 0.708 [0.667, 0.75]
+## Comparisons T1 (stats/tests_T1.csv; Wilcoxon on replay-level differences, Holm per table)
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 10: difference -0.9145 [-1.254, -0.6009], 600 replays; p_holm = 1.27e-05; per seed: s0=1.25469; s1=1.32498 | s0=2.23717; s1=2.17154
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.5372, 0.07341], 600 replays; p_holm = 1; per seed: s0=0.42808; s1=0.497406 | s0=1.35889; s1=3.42529e-05
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-0.9824, -0.529], 600 replays; p_holm = 1.91e-14; per seed: s0=0; s1=0 | s0=0.145338; s1=1.34108
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 20: difference -0.5955 [-0.797, -0.4116], 600 replays; p_holm = 0.00141; per seed: s0=0.975851; s1=0.971006 | s0=1.82322; s1=1.31458
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.189, -0.4391], 600 replays; p_holm = 2.17e-05; per seed: s0=0.203273; s1=0.204828 | s0=2.00472; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-0.732, -0.2595], 600 replays; p_holm = 1.51e-07; per seed: s0=0; s1=0 | s0=0.0624314; s1=0.890739
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 10: difference -0.5024 [-0.7069, -0.3025], 600 replays; p_holm = 1.32e-27; per seed: s0=1.25469; s1=1.32498 | s0=1.32982; s1=2.25456
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.3024, 0.644], 600 replays; p_holm = 4.24e-12; per seed: s0=0.42808; s1=0.497406 | s0=5.3582e-06; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-0.9223, -0.5263], 600 replays; p_holm = 4.84e-17; per seed: s0=0; s1=0 | s0=0.274148; s1=1.16076
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 20: difference -0.2847 [-0.3613, -0.2133], 600 replays; p_holm = 5.21e-31; per seed: s0=0.975851; s1=0.971006 | s0=1.07582; s1=1.44048
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.1048, 0.3165], 600 replays; p_holm = 3.52e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.00131559; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.5403, -0.2223], 600 replays; p_holm = 4.23e-09; per seed: s0=0; s1=0 | s0=0.0487898; s1=0.689299
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 10: difference 0.5138 [0.3716, 0.6789], 600 replays; p_holm = 2.09e-47; per seed: s0=1.25469; s1=1.32498 | s0=0.819097; s1=0.732953
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.247, 0.5573], 600 replays; p_holm = 0.00677; per seed: s0=0.42808; s1=0.497406 | s0=0.0810189; s1=0.0611317
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 20: difference 0.1978 [0.1453, 0.2586], 600 replays; p_holm = 3.82e-46; per seed: s0=0.975851; s1=0.971006 | s0=0.842691; s1=0.70855
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.0305, 0.2474], 600 replays; p_holm = 0.558; per seed: s0=0.203273; s1=0.204828 | s0=0.136273; s1=0.00629692
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 10: difference 0.306 [0.2177, 0.3972], 600 replays; p_holm = 3.55e-66; per seed: s0=1.25469; s1=1.32498 | s0=1.02758; s1=0.940071
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.05296, 0.2244], 600 replays; p_holm = 0.000799; per seed: s0=0.42808; s1=0.497406 | s0=0.335115; s1=0.319109
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 20: difference 0.2513 [0.2198, 0.2861], 600 replays; p_holm = 3.11e-83; per seed: s0=0.975851; s1=0.971006 | s0=0.757658; s1=0.686659
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.05123, 0.1604], 600 replays; p_holm = 0.0111; per seed: s0=0.203273; s1=0.204828 | s0=0.0706997; s1=0.133681
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, gap_abs, N = 10: difference 0.2649 [0.1763, 0.3655], 600 replays; p_holm = 0.0143; per seed: s0=1.25469; s1=1.32498 | s0=1.01249; s1=1.03734
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.1654, 0.3547], 600 replays; p_holm = 5.06e-08; per seed: s0=0.42808; s1=0.497406 | s0=0.187416; s1=0.225911
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, gap_abs, N = 20: difference 0.07939 [0.02916, 0.1385], 600 replays; p_holm = 1; per seed: s0=0.975851; s1=0.971006 | s0=0.874787; s1=0.913282
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.108, 0.3186], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0.00132577; s1=0
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+penalty, gap_abs, N = 10: difference -4.257 [-5.231, -3.355], 600 replays; p_holm = 5.95e-51; per seed: s0=1.25469; s1=1.32498 | s0=2.52913; s1=8.56407
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-4.195, -2.398], 600 replays; p_holm = 3.46e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.934497; s1=6.53344
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-0.9654, -0.5503], 600 replays; p_holm = 1.57e-17; per seed: s0=0; s1=0 | s0=0.515607; s1=0.981155
+- SA-Attn (ours) vs MLP+penalty, gap_abs, N = 20: difference -0.8213 [-1.008, -0.6433], 600 replays; p_holm = 6.54e-44; per seed: s0=0.975851; s1=0.971006 | s0=1.79456; s1=1.79498
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.104, -0.4518], 600 replays; p_holm = 1.37e-05; per seed: s0=0.203273; s1=0.204828 | s0=1.10256; s1=0.845891
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.6394, -0.277], 600 replays; p_holm = 9.61e-10; per seed: s0=0; s1=0 | s0=0.323525; s1=0.557769
+- SA-Attn (ours) vs LLF+safety layer, gap_abs, N = 10: difference 0.1946 [0.03499, 0.3745], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09524
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3023, 0.6462], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, gap_abs, N = 20: difference -0.1253 [-0.1851, -0.05973], 600 replays; p_holm = 1.47e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09868
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1061, 0.3212], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, gap_abs, N = 10: difference 0.1946 [0.03267, 0.3762], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09524
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.3024, 0.644], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, gap_abs, N = 20: difference -0.1253 [-0.1841, -0.05933], 600 replays; p_holm = 1.47e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09868
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1078, 0.3212], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, gap_abs, N = 10: difference 0.1946 [0.03424, 0.3789], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09522
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3026, 0.6454], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, gap_abs, N = 20: difference -0.1252 [-0.185, -0.05878], 600 replays; p_holm = 1.47e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09867
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1084, 0.3212], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, gap_abs, N = 10: difference 0.1946 [0.03133, 0.3767], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09522
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.304, 0.6408], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, gap_abs, N = 20: difference -0.1252 [-0.1859, -0.05955], 600 replays; p_holm = 1.47e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09867
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1073, 0.3176], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 10: difference 0.5001 [0.341, 0.6797], 600 replays; p_holm = 1.08e-09; per seed: s0=1.25469; s1=1.32498 | s0=0.789705
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2833, 0.6262], 600 replays; p_holm = 9.35e-12; per seed: s0=0.42808; s1=0.497406 | s0=0.0192887
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 20: difference 0.1854 [0.1366, 0.2375], 600 replays; p_holm = 9.78e-12; per seed: s0=0.975851; s1=0.971006 | s0=0.788047
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.09178, 0.2479], 600 replays; p_holm = 2.56e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.0395991
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold, gap_abs, N = 10: difference -155.1 [-162.1, -148.1], 600 replays; p_holm = 9.01e-98; per seed: s0=1.25469; s1=1.32498 | s0=156.37
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 10: difference -152.7 [-159.5, -145.9], 600 replays; p_holm = 3e-96; per seed: s0=0.42808; s1=0.497406 | s0=153.199
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 10: difference -6.231 [-7.395, -5.141], 600 replays; p_holm = 2.09e-25; per seed: s0=0; s1=0 | s0=6.23079
+- SA-Attn (ours) vs Price-threshold, gap_abs, N = 20: difference -158.5 [-164.8, -152.2], 600 replays; p_holm = 7.18e-98; per seed: s0=0.975851; s1=0.971006 | s0=159.518
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 20: difference -317.2 [-329.4, -305], 600 replays; p_holm = 1.45e-97; per seed: s0=0.203273; s1=0.204828 | s0=317.44
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 20: difference -8.508 [-10.41, -6.764], 600 replays; p_holm = 3.72e-20; per seed: s0=0; s1=0 | s0=8.50785
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 10: difference 0.1949 [0.03346, 0.3725], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09495
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2976, 0.6466], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 20: difference -0.1251 [-0.1845, -0.05953], 600 replays; p_holm = 1.5e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09855
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1074, 0.3174], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP, gap_abs, N = 10: difference -1.295 [-1.648, -0.9596], 600 replays; p_holm = 1.24e-37; per seed: s0=1.25469; s1=1.32498 | s0=2.58456
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.3053, 0.646], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 10: difference -1.486 [-1.866, -1.131], 600 replays; p_holm = 7.64e-19; per seed: s0=0; s1=0 | s0=1.48554
+- SA-Attn (ours) vs AFAP, gap_abs, N = 20: difference -0.5442 [-0.6971, -0.4074], 600 replays; p_holm = 1.12e-37; per seed: s0=0.975851; s1=0.971006 | s0=1.5176
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1085, 0.3173], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 20: difference -0.8361 [-1.178, -0.5392], 600 replays; p_holm = 6.67e-10; per seed: s0=0; s1=0 | s0=0.836135
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 10: difference 0.283 [0.1286, 0.4625], 600 replays; p_holm = 3.78e-21; per seed: s0=1.25469; s1=1.32498 | s0=1.00679
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.3003, 0.6383], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0.00304275
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 20: difference -0.05433 [-0.1041, 0.004592], 600 replays; p_holm = 3.33e-44; per seed: s0=0.975851; s1=0.971006 | s0=1.02776
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1073, 0.3208], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=1.75197e-05
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP, gap_abs, N = 10: difference -0.2824 [-0.545, -0.04306], 600 replays; p_holm = 3.8e-35; per seed: s0=1.25469; s1=1.32498 | s0=1.57225
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.3019, 0.6429], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 10: difference -0.5697 [-0.8096, -0.3612], 600 replays; p_holm = 2e-09; per seed: s0=0; s1=0 | s0=0.569683
+- SA-Attn (ours) vs ALAP, gap_abs, N = 20: difference -0.1172 [-0.1767, -0.05583], 600 replays; p_holm = 2.14e-50; per seed: s0=0.975851; s1=0.971006 | s0=1.09059
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1065, 0.3204], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 20: difference -0.1262 [-0.2246, -0.05117], 600 replays; p_holm = 0.00208; per seed: s0=0; s1=0 | s0=0.126186
+- SA-Attn (ours) vs Round Robin+safety layer, gap_abs, N = 10: difference 0.1948 [0.02897, 0.3777], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09508
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.306, 0.6446], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, gap_abs, N = 20: difference -0.1252 [-0.1849, -0.0606], 600 replays; p_holm = 1.5e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.0986
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1077, 0.3192], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, gap_abs, N = 10: difference 0.1946 [0.03281, 0.3773], 600 replays; p_holm = 1.41e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09519
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 10: difference 0.4627 [0.3035, 0.6429], 600 replays; p_holm = 5.64e-12; per seed: s0=0.42808; s1=0.497406 | s0=8.66145e-05
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, gap_abs, N = 20: difference -0.1252 [-0.1846, -0.05866], 600 replays; p_holm = 1.5e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.0986
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 20: difference 0.2041 [0.1062, 0.3212], 600 replays; p_holm = 8.81e-08; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, gap_abs, N = 10: difference 0.1445 [0.07195, 0.2194], 600 replays; p_holm = 5.72e-59; per seed: s0=1.25469; s1=1.32498 | s0=1.14536
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 10: difference 0.04823 [-0.0237, 0.1248], 600 replays; p_holm = 1; per seed: s0=0.42808; s1=0.497406 | s0=0.414508
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, gap_abs, N = 20: difference 0.1273 [0.09803, 0.1608], 600 replays; p_holm = 2.77e-78; per seed: s0=0.975851; s1=0.971006 | s0=0.846115
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 20: difference 0.03319 [-0.01865, 0.09465], 600 replays; p_holm = 1; per seed: s0=0.203273; s1=0.204828 | s0=0.170856
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS, gap_abs, N = 10: difference -106.8 [-110.2, -103.5], 600 replays; p_holm = 7.17e-98; per seed: s0=1.25469; s1=1.32498 | s0=108.138
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 10: difference -109 [-112.4, -105.6], 600 replays; p_holm = 7.17e-98; per seed: s0=0.42808; s1=0.497406 | s0=109.463
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 10: difference -0.0001669 [-0.0001849, -0.0001502], 600 replays; p_holm = 8.12e-46; per seed: s0=0; s1=0 | s0=0.000166909
+- SA-Attn (ours) vs eMPC-HiGHS, gap_abs, N = 20: difference -102.8 [-105.6, -99.95], 600 replays; p_holm = 7.17e-98; per seed: s0=0.975851; s1=0.971006 | s0=103.765
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 20: difference -210 [-215.8, -204.4], 600 replays; p_holm = 7.17e-98; per seed: s0=0.203273; s1=0.204828 | s0=210.206
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 20: difference -0.0001874 [-0.0002047, -0.0001703], 600 replays; p_holm = 4.06e-39; per seed: s0=0; s1=0 | s0=0.000187357
 
-## Comparisons T2 (stats/tests_T2.csv; paired t over seeds, Holm per table)
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 5: difference 11.35 [6.158, 17.79]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.8e-12; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 5: difference -0.1393 [-0.9915, 0.5875]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.25, 0.708]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 5: difference -1.042 [-1.535, -0.5864]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.04e-30; PoI = 0.958 [0.917, 1]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 10: difference 9.145 [3.913, 15.22]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.03e-05; PoI = 0.792 [0.583, 1]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.8485, 0.2938]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-1.354, -0.2235]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.68e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 20: difference 11.91 [4.969, 19.9]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00601; PoI = 0.708 [0.458, 0.917]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.656, -0.09536]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000108; PoI = 0.604 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-1.161, -0.01673]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.54e-07; PoI = 0.75 [0.667, 0.833]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 50: difference 10.1 [2.214, 19.95]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.36e-13; PoI = 0.875 [0.75, 1]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 50: difference -0.6293 [-1.662, 0.165]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.45e-05; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 50: difference -0.3047 [-0.8278, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0061; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 100: difference 5.582 [0.5429, 10.82]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.28e-05; PoI = 0.75 [0.542, 0.958]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 100: difference -0.07357 [-0.5564, 0.3466]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.667 [0.5, 0.833]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 100: difference -0.1155 [-0.3328, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 200: difference 5.453 [-8.583, 16.44]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.3e-05; PoI = 0.667 [0.458, 0.833]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 200: difference 0.6484 [-0.01524, 1.853]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 5: difference 7.251 [2.105, 12.78]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.79e-20; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 5: difference 0.746 [0.4981, 1.034]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 5: difference -1.357 [-1.89, -0.8661]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.37e-29; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 10: difference 5.024 [0.08618, 10.58]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.48e-27; PoI = 0.875 [0.75, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.2933, 0.6515]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.45e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-1.289, -0.2615]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.63e-16; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 20: difference 5.694 [2.014, 9.945]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.8e-30; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.1035, 0.3238]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.81e-06; PoI = 0.312 [0.167, 0.458]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.8197, -0.04744]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.77e-08; PoI = 0.667 [0.583, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 50: difference 13.33 [6.977, 20.53]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.4e-42; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 50: difference 0.2677 [0.06325, 0.5929]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.966; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 50: difference -0.4615 [-1.208, -0.01176]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 100: difference 22.65 [16.38, 29.58]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.35e-23; PoI = 0.958 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 100: difference 0.1052 [-0.09065, 0.4351]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.19e-07; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 100: difference -0.2198 [-0.7395, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.542 [0.5, 0.583]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, penalised_profit_eur, N = 200: difference 43.34 [26.85, 61.68]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.4e-18; PoI = 0.958 [0.833, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 200: difference 0.3015 [-0.4373, 1.541]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.02e-26; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 200: difference -0.7827 [-2.507, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.458; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 5: difference -6.329 [-8.699, -4.401]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.9e-52; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 5: difference 0.583 [0.3889, 0.8229]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.39e-13; PoI = 0.375 [0.208, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 10: difference -5.138 [-7.024, -3.466]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.23e-47; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.2269, 0.5784]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0291; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 20: difference -3.956 [-5.533, -2.492]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.32e-45; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.01594, 0.2649]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 50: difference -7.234 [-10.6, -4.549]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-53; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 50: difference 0.1946 [-0.00462, 0.4946]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.433; PoI = 0.792 [0.75, 0.833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 100: difference -11.73 [-16.77, -7.253]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.96e-30; PoI = 0.0417 [0, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 100: difference 0.1122 [-0.08526, 0.4399]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.792 [0.75, 0.833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, penalised_profit_eur, N = 200: difference -26.47 [-39.85, -16.02]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.74e-37; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 200: difference 0.6255 [-0.01521, 1.784]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.75 [0.667, 0.833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 5: difference -3.145 [-5.197, -1.25]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.8e-58; PoI = 0.0833 [0, 0.25]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 5: difference 0.2367 [0.04959, 0.4383]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.45e-07; PoI = 0.438 [0.25, 0.625]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 10: difference -3.06 [-4.451, -1.748]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.24e-65; PoI = 0.125 [0, 0.25]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.01678, 0.2676]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00335; PoI = 0.417 [0.25, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 20: difference -5.025 [-6.412, -3.747]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.08e-82; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.02091, 0.208]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0484; PoI = 0.25 [0.167, 0.375]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 50: difference -11.17 [-14.33, -8.233]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.18e-89; PoI = 0.0417 [0, 0.167]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 50: difference 0.0884 [-0.1161, 0.346]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0259; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 100: difference -23.14 [-29.09, -17.57]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.24e-45; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 100: difference 0.08899 [-0.09359, 0.3508]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.286; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, penalised_profit_eur, N = 200: difference -45.37 [-57.56, -33.44]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.64e-46; PoI = 0.0417 [0, 0.167]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 200: difference 0.2354 [-0.564, 1.123]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0378; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, penalised_profit_eur, N = 5: difference -1.982 [-3.733, -0.2796]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.14e-06; PoI = 0.167 [0, 0.375]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 5: difference 0.1858 [0.01821, 0.356]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0121; PoI = 0.292 [0.125, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, penalised_profit_eur, N = 10: difference -2.649 [-3.891, -1.527]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.064; PoI = 0.208 [0.0833, 0.333]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.1444, 0.3784]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.12e-07; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, penalised_profit_eur, N = 20: difference -1.588 [-2.845, -0.5175]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.1027, 0.3234]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+penalty, penalised_profit_eur, N = 5: difference 12.19 [8.384, 16.2]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.37e-28; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 5: difference 0.7066 [0.4403, 1.008]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.52e-15; PoI = 0.146 [0.0833, 0.25]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 5: difference -1.804 [-2.169, -1.468]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.18e-31; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, penalised_profit_eur, N = 10: difference 42.57 [20.8, 67.27]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.08e-50; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-5.541, -1.385]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.36e-10; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-1.144, -0.4185]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.4e-17; PoI = 0.833 [0.75, 0.917]
-- SA-Attn (ours) vs MLP+penalty, penalised_profit_eur, N = 20: difference 16.43 [11.47, 22.16]; paired t (seed label): p_holm = 0.605; Wilcoxon (replay level) p_holm = 2.31e-43; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.301, -0.3432]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.63e-05; PoI = 0.875 [0.833, 1]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.7272, -0.2058]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.86e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), penalised_profit_eur, N = 50: difference -1.846 [-5.666, 1.582]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.69e-35; PoI = 0.25 [0.0417, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 50: difference 0.03262 [-0.3111, 0.4322]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), penalised_profit_eur, N = 100: difference -2.347 [-6.768, 2.082]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.66e-15; PoI = 0.333 [0.125, 0.583]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 100: difference -0.09409 [-0.4981, 0.2848]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.378; PoI = 0.542 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), penalised_profit_eur, N = 200: difference -6.528 [-20.01, 5.657]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.3e-17; PoI = 0.292 [0.0833, 0.542]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 200: difference 0.05456 [-1.125, 1.379]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 5: difference -6.265 [-9.319, -3.831]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.49, 1.041]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 10: difference -1.946 [-3.895, -0.2723]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.62e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2918, 0.6514]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 20: difference 2.505 [1.126, 3.717]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.99e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1013, 0.3262]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 50: difference 10.04 [6.41, 12.96]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08237, 0.6066]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 100: difference 22.73 [17.45, 27.82]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03098, 0.5195]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, penalised_profit_eur, N = 200: difference 37.33 [23.55, 48.87]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01123, 1.877]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 5: difference -6.265 [-9.164, -3.792]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 5: difference 0.746 [0.4965, 1.039]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 10: difference -1.946 [-3.821, -0.2524]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.62e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2946, 0.6527]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 20: difference 2.505 [1.124, 3.743]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.99e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1033, 0.3298]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 50: difference 10.04 [6.415, 12.93]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 50: difference 0.285 [0.08121, 0.6026]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 100: difference 22.73 [17.39, 27.89]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.03071, 0.5192]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, penalised_profit_eur, N = 200: difference 37.33 [22.92, 48.96]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.009754, 1.857]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 5: difference -6.265 [-9.17, -3.795]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.4906, 1.044]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 10: difference -1.946 [-3.813, -0.258]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.63e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2913, 0.6544]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 20: difference 2.505 [1.187, 3.746]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1031, 0.3268]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 50: difference 10.04 [6.409, 12.91]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.07926, 0.6142]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 100: difference 22.73 [17.35, 27.94]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03008, 0.505]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, penalised_profit_eur, N = 200: difference 37.33 [22.93, 48.71]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01405, 1.887]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 5: difference -6.265 [-9.229, -3.78]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 5: difference 0.746 [0.4967, 1.045]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 10: difference -1.946 [-3.881, -0.2436]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.63e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2934, 0.6534]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 20: difference 2.505 [1.143, 3.742]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1047, 0.3252]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 50: difference 10.04 [6.522, 12.96]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 50: difference 0.285 [0.07986, 0.6002]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 100: difference 22.73 [17.4, 27.81]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.0316, 0.5123]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, penalised_profit_eur, N = 200: difference 37.33 [23.36, 48.87]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.0117, 1.908]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 5: difference -6.677 [-9.433, -4.355]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.65e-13; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 5: difference 0.6318 [0.3968, 0.906]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.8e-14; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 10: difference -5.001 [-6.935, -3.325]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.41e-09; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2773, 0.6332]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.61e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 20: difference -3.708 [-4.801, -2.68]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.82e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.08922, 0.2522]; one-sample t vs deterministic: p_holm = 0.858; Wilcoxon (replay level) p_holm = 1.29e-06; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 50: difference -6.373 [-9.617, -3.749]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.51e-07; PoI = 0.25 [0.167, 0.333]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 50: difference 0.2627 [0.07357, 0.5633]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 100: difference -10.71 [-16.04, -5.796]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000666; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 100: difference 0.1835 [0.02676, 0.4937]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, penalised_profit_eur, N = 200: difference -22.66 [-36.5, -11.19]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.38e-05; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01018, 1.894]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 5: difference 819.1 [775.5, 863.6]; one-sample t vs deterministic: p_holm = 0.247; Wilcoxon (replay level) p_holm = 9.04e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 5: difference -79.45 [-83.68, -75.33]; one-sample t vs deterministic: p_holm = 0.247; Wilcoxon (replay level) p_holm = 6.41e-93; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 5: difference -4.562 [-5.353, -3.827]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 4.2e-29; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 10: difference 1551 [1480, 1621]; one-sample t vs deterministic: p_holm = 0.0447; Wilcoxon (replay level) p_holm = 3.09e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 10: difference -152.7 [-159.5, -146]; one-sample t vs deterministic: p_holm = 0.0447; Wilcoxon (replay level) p_holm = 1.04e-95; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 10: difference -6.231 [-7.38, -5.129]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 7.49e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 20: difference 3171 [3043, 3298]; one-sample t vs deterministic: p_holm = 0.0031; Wilcoxon (replay level) p_holm = 2.45e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 20: difference -317.2 [-329.7, -305.1]; one-sample t vs deterministic: p_holm = 0.000501; Wilcoxon (replay level) p_holm = 4.99e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 20: difference -8.508 [-10.39, -6.736]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.31e-19; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 50: difference 7655 [7378, 7937]; one-sample t vs deterministic: p_holm = 0.0449; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 50: difference -769 [-796.4, -742.1]; one-sample t vs deterministic: p_holm = 0.0252; Wilcoxon (replay level) p_holm = 4.99e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 50: difference -17.11 [-21.07, -13.52]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 5.4e-17; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 100: difference 1.594e+04 [1.51e+04, 1.677e+04]; one-sample t vs deterministic: p_holm = 0.0401; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 100: difference -1596 [-1680, -1515]; one-sample t vs deterministic: p_holm = 0.0154; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 100: difference -39.95 [-49.59, -31.18]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 8.16e-08; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs Price-threshold, penalised_profit_eur, N = 200: difference 3.121e+04 [2.963e+04, 3.288e+04]; one-sample t vs deterministic: p_holm = 0.0499; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 200: difference -3130 [-3292, -2972]; one-sample t vs deterministic: p_holm = 0.0285; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 200: difference -73.98 [-95.64, -54.59]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.667 [0.667, 0.667]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 5: difference -6.268 [-9.184, -3.837]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.4963, 1.043]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 10: difference -1.949 [-3.796, -0.2643]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.83e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2962, 0.6555]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 20: difference 2.503 [1.123, 3.738]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.28e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1044, 0.3241]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 50: difference 10.04 [6.368, 12.92]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.07851, 0.6061]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 100: difference 22.73 [17.31, 27.99]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.0304, 0.525]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, penalised_profit_eur, N = 200: difference 37.32 [23.18, 48.77]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01227, 1.866]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 5: difference 16.85 [12.76, 21.35]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.14e-32; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 5: difference 0.746 [0.4967, 1.037]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 5: difference -2.307 [-2.759, -1.89]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.5e-31; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 10: difference 12.95 [9.593, 16.6]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.36e-37; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2936, 0.6582]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 10: difference -1.486 [-1.864, -1.138]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.7e-18; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 20: difference 10.88 [8.122, 13.95]; one-sample t vs deterministic: p_holm = 0.811; Wilcoxon (replay level) p_holm = 3.88e-37; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1048, 0.3254]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 20: difference -0.8361 [-1.183, -0.5425]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.64e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 50: difference 18.88 [14.9, 23.25]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.43e-47; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 50: difference 0.285 [0.07999, 0.6007]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 50: difference -0.8823 [-1.409, -0.4339]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 100: difference 27.14 [20.88, 33.84]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.52e-25; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.03009, 0.5029]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 100: difference -0.44 [-0.9216, -0.06106]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs AFAP, penalised_profit_eur, N = 200: difference 52.61 [38.97, 69.25]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.25e-20; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.01094, 1.893]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 200: difference -1.527 [-3.132, -0.3752]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.458; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 5: difference -5.925 [-8.849, -3.616]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00462; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 5: difference 0.6793 [0.4431, 0.962]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 7.47e-16; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 10: difference -2.83 [-4.685, -1.175]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.32e-20; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.2931, 0.6529]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 20: difference 1.087 [-0.1657, 2.139]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.17e-43; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1033, 0.3246]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 50: difference 5.874 [2.588, 8.278]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.46e-59; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08373, 0.6048]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 100: difference 15.21 [11.16, 18.8]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.14e-32; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.02947, 0.5097]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, penalised_profit_eur, N = 200: difference 24.36 [11.51, 32.97]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.71e-29; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01127, 1.881]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 5: difference 4.74 [1.955, 7.502]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.85e-29; PoI = 1 [1, 1]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 5: difference 0.746 [0.4944, 1.036]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 5: difference -1.133 [-1.403, -0.8835]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 5.2e-25; PoI = 1 [1, 1]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 10: difference 2.824 [0.4514, 5.398]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.33e-34; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2942, 0.6547]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 10: difference -0.5697 [-0.8092, -0.3631]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 8.24e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 20: difference 2.343 [1.039, 3.542]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 7.52e-50; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1055, 0.3264]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 20: difference -0.1262 [-0.2232, -0.04924]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.00894; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 50: difference 6.494 [3.607, 8.773]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.3e-59; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 50: difference 0.285 [0.08054, 0.6109]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 50: difference -0.06205 [-0.1407, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.667 [0.667, 0.667]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 100: difference 15.21 [11.1, 18.88]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.14e-32; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.03084, 0.502]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 100: difference -0.0002506 [-0.0007519, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs ALAP, penalised_profit_eur, N = 200: difference 24.36 [11.65, 33.1]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.71e-29; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.01165, 1.885]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 5: difference -6.268 [-9.124, -3.788]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.4941, 1.041]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 10: difference -1.948 [-3.855, -0.2604]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.76e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2929, 0.6568]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.96e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 20: difference 2.503 [1.095, 3.73]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.23e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1039, 0.3255]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 50: difference 10.04 [6.465, 12.98]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08189, 0.5981]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 100: difference 22.73 [17.33, 27.76]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03229, 0.5102]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, penalised_profit_eur, N = 200: difference 37.33 [22.93, 48.78]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01042, 1.915]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 5: difference -6.093 [-9.018, -3.63]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 5: difference 0.7282 [0.4796, 1.031]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.44e-15; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 10: difference -1.946 [-3.84, -0.2661]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.63e-14; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 10: difference 0.4627 [0.2937, 0.6535]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.01e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 20: difference 2.503 [1.137, 3.734]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.23e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 20: difference 0.2041 [0.1024, 0.3257]; one-sample t vs deterministic: p_holm = 0.718; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 50: difference 10.04 [6.381, 12.94]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.59e-38; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 50: difference 0.285 [0.07843, 0.6008]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 100: difference 22.73 [17.35, 28.05]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.79e-23; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 100: difference 0.1888 [0.03068, 0.5206]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, penalised_profit_eur, N = 200: difference 37.33 [23.18, 48.95]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.48e-16; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 200: difference 0.6963 [0.011, 1.876]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 5: difference -0.543 [-1.779, 0.7701]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.7e-35; PoI = 0.25 [0.0833, 0.417]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 5: difference 0.005772 [-0.1266, 0.1334]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 10: difference -1.445 [-2.384, -0.5492]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.01e-58; PoI = 0.167 [0, 0.333]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 10: difference 0.04823 [-0.04227, 0.1442]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 20: difference -2.546 [-3.279, -1.88]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.63e-78; PoI = 0 [0, 0]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 20: difference 0.03319 [-0.02648, 0.1016]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.333, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 50: difference -4.901 [-6.638, -2.958]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.08e-81; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 50: difference -0.04529 [-0.2213, 0.1056]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 100: difference -10.37 [-13.5, -6.935]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.43e-42; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 100: difference -0.0582 [-0.345, 0.1284]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, penalised_profit_eur, N = 200: difference -20.64 [-28.23, -11.58]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.06e-42; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 200: difference -0.0896 [-0.9598, 0.5626]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 5: difference 548.4 [525.2, 571]; one-sample t vs deterministic: p_holm = 0.366; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 5: difference -55.96 [-58.31, -53.62]; one-sample t vs deterministic: p_holm = 0.348; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 5: difference -0.0001973 [-0.0002137, -0.0001811]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.06e-56; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 10: difference 1068 [1037, 1102]; one-sample t vs deterministic: p_holm = 0.0637; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 10: difference -109 [-112.3, -105.7]; one-sample t vs deterministic: p_holm = 0.0617; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 10: difference -0.0001669 [-0.0001846, -0.0001499]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.83e-45; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 20: difference 2056 [2000, 2111]; one-sample t vs deterministic: p_holm = 0.00477; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 20: difference -210 [-215.7, -204.3]; one-sample t vs deterministic: p_holm = 0.000754; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 20: difference -0.0001874 [-0.0002054, -0.00017]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.43e-38; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 50: difference 5111 [5013, 5210]; one-sample t vs deterministic: p_holm = 0.0662; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 50: difference -521.8 [-531.9, -511.7]; one-sample t vs deterministic: p_holm = 0.0369; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 50: difference -0.0002757 [-0.0003055, -0.000247]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.5e-33; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 100: difference 1.036e+04 [1.012e+04, 1.06e+04]; one-sample t vs deterministic: p_holm = 0.0604; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 100: difference -1058 [-1083, -1033]; one-sample t vs deterministic: p_holm = 0.0232; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 100: difference -0.0005176 [-0.0005807, -0.0004581]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.27e-15; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs eMPC-HiGHS, penalised_profit_eur, N = 200: difference 1.995e+04 [1.942e+04, 2.045e+04]; one-sample t vs deterministic: p_holm = 0.0768; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 200: difference -2036 [-2090, -1984]; one-sample t vs deterministic: p_holm = 0.0433; Wilcoxon (replay level) p_holm = 2.28e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 200: difference -0.000846 [-0.0009533, -0.000746]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.22e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 5: difference -6.214 [-8.764, -3.993]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.83e-07; PoI = 0.125 [0, 0.25]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 5: difference 0.6207 [0.3972, 0.8943]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.08e-15; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 10: difference -3.823 [-5.405, -2.39]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00639; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 10: difference 0.3825 [0.2404, 0.5472]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.97e-10; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 20: difference -2.057 [-3.29, -0.9856]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.208 [0.0417, 0.375]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 20: difference 0.1928 [0.09849, 0.3113]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.72e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 50: difference -1.225 [-4.774, 1.468]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00104; PoI = 0.542 [0.292, 0.75]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 50: difference 0.2849 [0.08159, 0.5965]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 100: difference 2.359 [-2.882, 7.443]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000758; PoI = 0.583 [0.375, 0.792]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 100: difference 0.1888 [0.03102, 0.5094]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00308; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, penalised_profit_eur, N = 200: difference 5.697 [-7.677, 16.72]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.11e-05; PoI = 0.667 [0.458, 0.833]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 200: difference 0.6963 [0.01083, 1.936]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 5: difference -0.3549 [-1.978, 1.319]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.12e-05; PoI = 0.25 [0.0417, 0.459]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 5: difference 0.02964 [-0.1347, 0.1905]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.354 [0.167, 0.563]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 10: difference -0.4822 [-1.305, 0.3339]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.38e-12; PoI = 0.167 [0, 0.375]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 10: difference 0.03714 [-0.04064, 0.117]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.436; PoI = 0.333 [0.167, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 20: difference -0.1462 [-0.6608, 0.3939]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.29e-13; PoI = 0.333 [0.125, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 20: difference -0.006929 [-0.05867, 0.04563]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.438 [0.271, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 50: difference -1.224 [-3.692, 0.9485]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.03e-31; PoI = 0.25 [0.0417, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 50: difference 0.0474 [-0.1469, 0.2783]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.532; PoI = 0.458 [0.333, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 100: difference -1.35 [-5.441, 2.825]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.06e-15; PoI = 0.25 [0.0417, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 100: difference 0.008344 [-0.3145, 0.2974]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, penalised_profit_eur, N = 200: difference -3.803 [-14.28, 6.617]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.92e-18; PoI = 0.25 [0.0417, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 200: difference 0.07965 [-0.9394, 1.119]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 5: difference 10.77 [5.452, 17.02]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 6.59e-11; PoI = 0.875 [0.833, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 5: difference -0.08607 [-0.9334, 0.621]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.25, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 5: difference -1.037 [-1.532, -0.5809]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.04e-30; PoI = 0.958 [0.917, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 10: difference 8.336 [3.313, 14.3]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00223; PoI = 0.792 [0.583, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 10: difference -0.1555 [-0.7633, 0.3158]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 10: difference -0.7237 [-1.313, -0.1979]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.08e-13; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 20: difference 8.59 [3.503, 14.24]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.708 [0.458, 0.917]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 20: difference -0.4956 [-1.173, 0.0129]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0843; PoI = 0.604 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 20: difference -0.4356 [-1.09, -0.01406]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.35e-06; PoI = 0.708 [0.667, 0.75]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 50: difference 4.565 [-0.2981, 10.05]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.12e-05; PoI = 0.875 [0.75, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 50: difference -0.1475 [-0.7326, 0.3439]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 50: difference -0.2184 [-0.6076, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0289; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 100: difference 5.01 [-0.08001, 10.27]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000348; PoI = 0.708 [0.499, 0.917]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 100: difference -0.03561 [-0.4818, 0.3713]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.625 [0.5, 0.792]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 100: difference -0.1261 [-0.3776, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, no admission control, penalised_profit_eur, N = 200: difference 4.317 [-9.823, 15.42]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000606; PoI = 0.708 [0.5, 0.917]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 200: difference 0.6535 [-0.01344, 1.87]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.458, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
+## Comparisons T2 (stats/tests_T2.csv; Wilcoxon on replay-level differences, Holm per table)
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 5: difference 0.6291 [0.4127, 0.9078], 600 replays; p_holm = 2.98e-58; per seed: s0=2.07991; s1=2.50331 | s0=1.73905; s1=1.58606
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 5: difference 0.2367 [0.1302, 0.3789], 600 replays; p_holm = 6.82e-08; per seed: s0=0.643627; s1=0.848306 | s0=0.533711; s1=0.484891
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 10: difference 0.306 [0.2209, 0.3969], 600 replays; p_holm = 5.46e-66; per seed: s0=1.25469; s1=1.32498 | s0=1.02758; s1=0.940071
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.05216, 0.2237], 600 replays; p_holm = 0.00158; per seed: s0=0.42808; s1=0.497406 | s0=0.335115; s1=0.319109
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 20: difference 0.2513 [0.2203, 0.2868], 600 replays; p_holm = 4.72e-83; per seed: s0=0.975851; s1=0.971006 | s0=0.757658; s1=0.686659
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.05138, 0.1596], 600 replays; p_holm = 0.0215; per seed: s0=0.203273; s1=0.204828 | s0=0.0706997; s1=0.133681
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 50: difference 0.2233 [0.2037, 0.2441], 600 replays; p_holm = 9.6e-90; per seed: s0=0.955965; s1=0.885828 | s0=0.720406; s1=0.674688
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 50: difference 0.0884 [0.02869, 0.1623], 600 replays; p_holm = 0.0117; per seed: s0=0.381776; s1=0.188272 | s0=0.0970946; s1=0.296152
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 100: difference 0.2314 [0.2056, 0.2584], 300 replays; p_holm = 5.48e-46; per seed: s0=0.913004; s1=0.848707 | s0=0.701719; s1=0.597115
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 100: difference 0.08899 [0.009634, 0.1832], 300 replays; p_holm = 0.126; per seed: s0=0.310606; s1=0.0670501 | s0=0.0962152; s1=0.103464
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, gap_abs, N = 200: difference 0.2268 [0.2039, 0.2518], 300 replays; p_holm = 4.28e-46; per seed: s0=0.941634; s1=0.861938 | s0=0.706977; s1=0.642942
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 200: difference 0.2354 [0.05659, 0.47], 300 replays; p_holm = 0.0169; per seed: s0=1.14179; s1=0.250888 | s0=0.238652; s1=0.683231
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), gap_abs, N = 50: difference 0.03692 [0.02612, 0.05004], 600 replays; p_holm = 4.34e-35; per seed: s0=0.955965; s1=0.885828 | s0=0.935081; s1=0.832874
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 50: difference 0.03262 [-0.01661, 0.09597], 600 replays; p_holm = 1; per seed: s0=0.381776; s1=0.188272 | s0=0.472678; s1=0.0321349
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), gap_abs, N = 100: difference 0.02347 [0.01219, 0.03304], 300 replays; p_holm = 7.79e-16; per seed: s0=0.913004; s1=0.848707 | s0=0.879988; s1=0.834787
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 100: difference -0.09409 [-0.1899, -0.02561], 300 replays; p_holm = 0.165; per seed: s0=0.310606; s1=0.0670501 | s0=0.483366; s1=0.0824686
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), gap_abs, N = 200: difference 0.03264 [0.02173, 0.04605], 300 replays; p_holm = 3.41e-17; per seed: s0=0.941634; s1=0.861938 | s0=0.900562; s1=0.837735
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 200: difference 0.05456 [-0.122, 0.2918], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=1.27593; s1=0.00761873
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 5: difference 1.266 [0.9274, 1.652], 600 replays; p_holm = 3.01e-52; per seed: s0=2.07991; s1=2.50331 | s0=1.10478; s1=0.946828
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 5: difference 0.583 [0.4148, 0.7733], 600 replays; p_holm = 1.61e-13; per seed: s0=0.643627; s1=0.848306 | s0=0.183836; s1=0.14219
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 10: difference 0.5138 [0.3695, 0.6774], 600 replays; p_holm = 3.22e-47; per seed: s0=1.25469; s1=1.32498 | s0=0.819097; s1=0.732953
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.2475, 0.5537], 600 replays; p_holm = 0.0132; per seed: s0=0.42808; s1=0.497406 | s0=0.0810189; s1=0.0611317
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 20: difference 0.1978 [0.1458, 0.2583], 600 replays; p_holm = 5.82e-46; per seed: s0=0.975851; s1=0.971006 | s0=0.842691; s1=0.70855
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.03156, 0.2501], 600 replays; p_holm = 1; per seed: s0=0.203273; s1=0.204828 | s0=0.136273; s1=0.00629692
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 50: difference 0.1447 [0.1089, 0.1891], 600 replays; p_holm = 6.5e-54; per seed: s0=0.955965; s1=0.885828 | s0=0.814559; s1=0.737891
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 50: difference 0.1946 [0.02395, 0.4163], 600 replays; p_holm = 0.187; per seed: s0=0.381776; s1=0.188272 | s0=0.138662; s1=0.0421091
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 100: difference 0.1173 [0.09418, 0.1426], 300 replays; p_holm = 1.33e-30; per seed: s0=0.913004; s1=0.848707 | s0=0.803524; s1=0.723661
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 100: difference 0.1122 [-0.0241, 0.2993], 300 replays; p_holm = 1; per seed: s0=0.310606; s1=0.0670501 | s0=0.145848; s1=0.00744581
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, gap_abs, N = 200: difference 0.1323 [0.1044, 0.1701], 300 replays; p_holm = 4.36e-37; per seed: s0=0.941634; s1=0.861938 | s0=0.81535; s1=0.723566
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 200: difference 0.6255 [0.1234, 1.379], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=0.0782924; s1=0.0633665
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 5: difference 1.243 [0.855, 1.682], 600 replays; p_holm = 1.82e-07; per seed: s0=2.07991; s1=2.50331 | s0=1.12128; s1=0.976355
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 5: difference 0.6207 [0.4242, 0.8424], 600 replays; p_holm = 5.09e-16; per seed: s0=0.643627; s1=0.848306 | s0=0.162381; s1=0.0882087
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 10: difference 0.3823 [0.2537, 0.5247], 600 replays; p_holm = 0.00292; per seed: s0=1.25469; s1=1.32498 | s0=0.930225; s1=0.884822
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 10: difference 0.3825 [0.2516, 0.5285], 600 replays; p_holm = 9.4e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.109584; s1=0.0508855
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 20: difference 0.1028 [0.05713, 0.1589], 600 replays; p_holm = 0.68; per seed: s0=0.975851; s1=0.971006 | s0=0.867202; s1=0.873962
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 20: difference 0.1928 [0.1017, 0.3002], 600 replays; p_holm = 1.73e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.0165831; s1=0.00589811
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 50: difference 0.0245 [-0.01459, 0.07675], 600 replays; p_holm = 0.000482; per seed: s0=0.955965; s1=0.885828 | s0=0.878585; s1=0.914218
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 50: difference 0.2849 [0.09903, 0.5426], 600 replays; p_holm = 2.28e-05; per seed: s0=0.381776; s1=0.188272 | s0=2.48367e-05; s1=0.000198162
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 100: difference -0.02359 [-0.04565, 0.0006744], 300 replays; p_holm = 0.000353; per seed: s0=0.913004; s1=0.848707 | s0=0.865669; s1=0.943216
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 100: difference 0.1888 [0.05543, 0.3752], 300 replays; p_holm = 0.00142; per seed: s0=0.310606; s1=0.0670501 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, gap_abs, N = 200: difference -0.02848 [-0.06124, 0.0141], 300 replays; p_holm = 9.85e-06; per seed: s0=0.941634; s1=0.861938 | s0=0.896606; s1=0.963935
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 200: difference 0.6963 [0.1773, 1.485], 300 replays; p_holm = 0.000318; per seed: s0=1.14179; s1=0.250888 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 5: difference -2.27 [-3.05, -1.553], 600 replays; p_holm = 8.5e-13; per seed: s0=2.07991; s1=2.50331 | s0=5.10853; s1=4.01402
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 5: difference -0.1393 [-0.5447, 0.2488], 600 replays; p_holm = 1; per seed: s0=0.643627; s1=0.848306 | s0=1.77049; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 5: difference -1.042 [-1.264, -0.8408], 600 replays; p_holm = 1.36e-30; per seed: s0=0; s1=0 | s0=0.475353; s1=1.60857
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 10: difference -0.9145 [-1.256, -0.608], 600 replays; p_holm = 2.79e-05; per seed: s0=1.25469; s1=1.32498 | s0=2.23717; s1=2.17154
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.5408, 0.06482], 600 replays; p_holm = 1; per seed: s0=0.42808; s1=0.497406 | s0=1.35889; s1=3.42529e-05
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-0.9788, -0.5328], 600 replays; p_holm = 3.19e-14; per seed: s0=0; s1=0 | s0=0.145338; s1=1.34108
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 20: difference -0.5955 [-0.7922, -0.4156], 600 replays; p_holm = 0.00279; per seed: s0=0.975851; s1=0.971006 | s0=1.82322; s1=1.31458
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.196, -0.4398], 600 replays; p_holm = 4.92e-05; per seed: s0=0.203273; s1=0.204828 | s0=2.00472; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-0.7344, -0.2598], 600 replays; p_holm = 3.56e-07; per seed: s0=0; s1=0 | s0=0.0624314; s1=0.890739
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 50: difference -0.2021 [-0.2974, -0.1228], 600 replays; p_holm = 3.49e-13; per seed: s0=0.955965; s1=0.885828 | s0=1.21416; s1=1.03181
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 50: difference -0.6293 [-1.135, -0.1575], 600 replays; p_holm = 2.04e-05; per seed: s0=0.381776; s1=0.188272 | s0=1.82859; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 50: difference -0.3047 [-0.5029, -0.1441], 600 replays; p_holm = 0.00281; per seed: s0=0; s1=0 | s0=0.0194303; s1=0.589977
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 100: difference -0.05582 [-0.08702, -0.02842], 300 replays; p_holm = 6.01e-06; per seed: s0=0.913004; s1=0.848707 | s0=0.912872; s1=0.96047
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 100: difference -0.07357 [-0.3779, 0.2028], 300 replays; p_holm = 1; per seed: s0=0.310606; s1=0.0670501 | s0=0.524793; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 100: difference -0.1155 [-0.2612, -0.008739], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0.0577941; s1=0.173149
+- SA-Attn (ours) vs Attention+penalty, gap_abs, N = 200: difference -0.02726 [-0.06001, 0.0156], 300 replays; p_holm = 1.98e-05; per seed: s0=0.941634; s1=0.861938 | s0=0.894164; s1=0.963938
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 200: difference 0.6484 [0.1249, 1.478], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=0.095963; s1=0
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 5: difference -1.45 [-2.062, -0.8199], 600 replays; p_holm = 8.21e-21; per seed: s0=2.07991; s1=2.50331 | s0=2.73137; s1=4.75216
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 5: difference 0.746 [0.5164, 1.012], 600 replays; p_holm = 3.84e-18; per seed: s0=0.643627; s1=0.848306 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 5: difference -1.357 [-1.664, -1.078], 600 replays; p_holm = 6.12e-30; per seed: s0=0; s1=0 | s0=0.858679; s1=1.85544
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 10: difference -0.5024 [-0.7094, -0.2959], 600 replays; p_holm = 2e-27; per seed: s0=1.25469; s1=1.32498 | s0=1.32982; s1=2.25456
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.3018, 0.6432], 600 replays; p_holm = 6.87e-12; per seed: s0=0.42808; s1=0.497406 | s0=5.3582e-06; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-0.9208, -0.5271], 600 replays; p_holm = 7.7e-17; per seed: s0=0; s1=0 | s0=0.274148; s1=1.16076
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 20: difference -0.2847 [-0.3594, -0.2154], 600 replays; p_holm = 8.11e-31; per seed: s0=0.975851; s1=0.971006 | s0=1.07582; s1=1.44048
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.1072, 0.3174], 600 replays; p_holm = 8.42e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.00131559; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.5406, -0.2249], 600 replays; p_holm = 8.38e-09; per seed: s0=0; s1=0 | s0=0.0487898; s1=0.689299
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 50: difference -0.2666 [-0.3129, -0.2209], 600 replays; p_holm = 3.24e-42; per seed: s0=0.955965; s1=0.885828 | s0=1.07981; s1=1.29513
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 50: difference 0.2677 [0.0787, 0.5247], 600 replays; p_holm = 0.418; per seed: s0=0.381776; s1=0.188272 | s0=0.034603; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 50: difference -0.4615 [-0.7397, -0.2281], 600 replays; p_holm = 0.00142; per seed: s0=0; s1=0 | s0=0.0407597; s1=0.882284
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 100: difference -0.2265 [-0.2728, -0.1828], 300 replays; p_holm = 4.31e-23; per seed: s0=0.913004; s1=0.848707 | s0=1.06452; s1=1.15029
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 100: difference 0.1052 [-0.03733, 0.3017], 300 replays; p_holm = 5.62e-08; per seed: s0=0.310606; s1=0.0670501 | s0=0.167261; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 100: difference -0.2198 [-0.4674, -0.03054], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0.439568
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, gap_abs, N = 200: difference -0.2167 [-0.2661, -0.1699], 300 replays; p_holm = 6.44e-19; per seed: s0=0.941634; s1=0.861938 | s0=1.07314; s1=1.16388
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 200: difference 0.3015 [-0.2346, 1.077], 300 replays; p_holm = 8.98e-27; per seed: s0=1.14179; s1=0.250888 | s0=0.789749; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 200: difference -0.7827 [-1.641, -0.1949], 300 replays; p_holm = 0.197; per seed: s0=0; s1=0 | s0=0.0390817; s1=1.52635
+- SA-Attn (ours) vs MLP+safety layer, gap_abs, N = 5: difference 0.3964 [0.2208, 0.5895], 600 replays; p_holm = 5.37e-07; per seed: s0=2.07991; s1=2.50331 | s0=1.7411; s1=2.04926
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 5: difference 0.1858 [0.09565, 0.2842], 600 replays; p_holm = 0.00554; per seed: s0=0.643627; s1=0.848306 | s0=0.481472; s1=0.638824
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, gap_abs, N = 10: difference 0.2649 [0.1737, 0.3672], 600 replays; p_holm = 0.0282; per seed: s0=1.25469; s1=1.32498 | s0=1.01249; s1=1.03734
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.1659, 0.3585], 600 replays; p_holm = 9.94e-08; per seed: s0=0.42808; s1=0.497406 | s0=0.187416; s1=0.225911
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, gap_abs, N = 20: difference 0.07939 [0.02882, 0.1387], 600 replays; p_holm = 1; per seed: s0=0.975851; s1=0.971006 | s0=0.874787; s1=0.913282
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.1077, 0.317], 600 replays; p_holm = 1.73e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.00132577; s1=0
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+penalty, gap_abs, N = 5: difference -2.439 [-3.134, -1.726], 600 replays; p_holm = 6.12e-29; per seed: s0=2.07991; s1=2.50331 | s0=4.71462; s1=4.74573
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 5: difference 0.7066 [0.4678, 0.9817], 600 replays; p_holm = 2.13e-15; per seed: s0=0.643627; s1=0.848306 | s0=0; s1=0.0786671
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 5: difference -1.804 [-2.144, -1.485], 600 replays; p_holm = 9.88e-32; per seed: s0=0; s1=0 | s0=1.83449; s1=1.7736
+- SA-Attn (ours) vs MLP+penalty, gap_abs, N = 10: difference -4.257 [-5.215, -3.358], 600 replays; p_holm = 9.04e-51; per seed: s0=1.25469; s1=1.32498 | s0=2.52913; s1=8.56407
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-4.214, -2.424], 600 replays; p_holm = 6.52e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.934497; s1=6.53344
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-0.9607, -0.5526], 600 replays; p_holm = 2.52e-17; per seed: s0=0; s1=0 | s0=0.515607; s1=0.981155
+- SA-Attn (ours) vs MLP+penalty, gap_abs, N = 20: difference -0.8213 [-1.016, -0.6411], 600 replays; p_holm = 1.01e-43; per seed: s0=0.975851; s1=0.971006 | s0=1.79456; s1=1.79498
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.116, -0.4519], 600 replays; p_holm = 3.05e-05; per seed: s0=0.203273; s1=0.204828 | s0=1.10256; s1=0.845891
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.636, -0.272], 600 replays; p_holm = 1.84e-09; per seed: s0=0; s1=0 | s0=0.323525; s1=0.557769
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 5: difference 1.335 [0.9189, 1.84], 600 replays; p_holm = 7.85e-14; per seed: s0=2.07991; s1=2.50331 | s0=0.956225
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 5: difference 0.6318 [0.421, 0.8836], 600 replays; p_holm = 8.44e-15; per seed: s0=0.643627; s1=0.848306 | s0=0.114165
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 10: difference 0.5001 [0.3401, 0.6868], 600 replays; p_holm = 2.09e-09; per seed: s0=1.25469; s1=1.32498 | s0=0.789705
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2852, 0.6262], 600 replays; p_holm = 1.74e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.0192887
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 20: difference 0.1854 [0.1371, 0.238], 600 replays; p_holm = 1.83e-11; per seed: s0=0.975851; s1=0.971006 | s0=0.788047
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.09339, 0.2471], 600 replays; p_holm = 6.03e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.0395991
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 50: difference 0.1275 [0.08123, 0.1796], 600 replays; p_holm = 1.17e-07; per seed: s0=0.955965; s1=0.885828 | s0=0.793444
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 50: difference 0.2627 [0.09584, 0.4913], 600 replays; p_holm = 2.28e-05; per seed: s0=0.381776; s1=0.188272 | s0=0.0222851
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 100: difference 0.1071 [0.06492, 0.1511], 300 replays; p_holm = 0.000306; per seed: s0=0.913004; s1=0.848707 | s0=0.773783
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 100: difference 0.1835 [0.05211, 0.367], 300 replays; p_holm = 0.00142; per seed: s0=0.310606; s1=0.0670501 | s0=0.00534598
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, gap_abs, N = 200: difference 0.1133 [0.06561, 0.1676], 300 replays; p_holm = 1.1e-05; per seed: s0=0.941634; s1=0.861938 | s0=0.788505
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.174, 1.483], 300 replays; p_holm = 0.000318; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 5: difference 1.185 [0.7582, 1.68], 600 replays; p_holm = 0.00216; per seed: s0=2.07991; s1=2.50331 | s0=1.10662
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 5: difference 0.6793 [0.4639, 0.9298], 600 replays; p_holm = 3.52e-16; per seed: s0=0.643627; s1=0.848306 | s0=0.0666577
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 10: difference 0.283 [0.1244, 0.4626], 600 replays; p_holm = 6.09e-21; per seed: s0=1.25469; s1=1.32498 | s0=1.00679
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.3006, 0.6413], 600 replays; p_holm = 9.2e-12; per seed: s0=0.42808; s1=0.497406 | s0=0.00304275
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 20: difference -0.05433 [-0.1051, 0.004799], 600 replays; p_holm = 5.14e-44; per seed: s0=0.975851; s1=0.971006 | s0=1.02776
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1087, 0.3194], 600 replays; p_holm = 1.73e-07; per seed: s0=0.203273; s1=0.204828 | s0=1.75197e-05
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 50: difference -0.1175 [-0.1593, -0.0646], 600 replays; p_holm = 3.71e-59; per seed: s0=0.955965; s1=0.885828 | s0=1.03838
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.1006, 0.5441], 600 replays; p_holm = 2.28e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 100: difference -0.1521 [-0.1774, -0.126], 300 replays; p_holm = 5.15e-33; per seed: s0=0.913004; s1=0.848707 | s0=1.03295
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.0565, 0.3776], 300 replays; p_holm = 0.00142; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, gap_abs, N = 200: difference -0.1218 [-0.1554, -0.07792], 300 replays; p_holm = 7.64e-30; per seed: s0=0.941634; s1=0.861938 | s0=1.02357
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1794, 1.467], 300 replays; p_holm = 0.000318; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 5: difference 1.254 [0.7974, 1.774], 600 replays; p_holm = 1; per seed: s0=2.07991; s1=2.50331 | s0=1.03798
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5162, 1.008], 600 replays; p_holm = 3.84e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 10: difference 0.1949 [0.03401, 0.372], 600 replays; p_holm = 2.32e-14; per seed: s0=1.25469; s1=1.32498 | s0=1.09495
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3055, 0.6469], 600 replays; p_holm = 9.2e-12; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 20: difference -0.1251 [-0.1848, -0.05951], 600 replays; p_holm = 2.39e-25; per seed: s0=0.975851; s1=0.971006 | s0=1.09855
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1062, 0.3217], 600 replays; p_holm = 1.73e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 50: difference -0.2007 [-0.2526, -0.1401], 600 replays; p_holm = 7.08e-39; per seed: s0=0.955965; s1=0.885828 | s0=1.12164
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.1016, 0.5456], 600 replays; p_holm = 2.28e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 100: difference -0.2273 [-0.2709, -0.1833], 300 replays; p_holm = 2.19e-23; per seed: s0=0.913004; s1=0.848707 | s0=1.10813
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05655, 0.3762], 300 replays; p_holm = 0.00142; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, gap_abs, N = 200: difference -0.1866 [-0.2361, -0.1306], 300 replays; p_holm = 6.89e-17; per seed: s0=0.941634; s1=0.861938 | s0=1.08841
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1784, 1.479], 300 replays; p_holm = 0.000318; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
 
-## Comparisons T3 (stats/tests_T3.csv; paired t over seeds, Holm per table)
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 5: difference -0.218 [-0.2725, -0.1642]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.59e-34; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 5: difference -1.042 [-1.54, -0.5977]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.37e-30; PoI = 0.958 [0.917, 1]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 5: difference -0.1393 [-0.9796, 0.5805]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.25, 0.708]
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 10: difference -0.1623 [-0.1961, -0.1282]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.46e-23; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-1.35, -0.2249]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.58e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.8456, 0.2834]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 20: difference -0.1082 [-0.1386, -0.07754]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.25e-15; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-1.174, -0.01737]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 8.35e-07; PoI = 0.75 [0.667, 0.833]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.66, -0.08107]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000116; PoI = 0.604 [0.354, 0.833]
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 50: difference -0.08993 [-0.1146, -0.0649]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-11; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 50: difference -0.3047 [-0.8341, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00626; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 50: difference -0.6293 [-1.64, 0.1762]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.74e-05; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 100: difference -0.08246 [-0.1085, -0.05631]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 100: difference -0.1155 [-0.3362, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 100: difference -0.07357 [-0.5772, 0.3499]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.667 [0.541, 0.833]
-- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09926, -0.04906]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 200: difference 0.6484 [-0.01626, 1.826]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3695, -0.3131]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.09e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 5: difference -1.357 [-1.9, -0.8709]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.52e-29; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 5: difference 0.746 [0.4935, 1.037]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2409, -0.1856]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-1.284, -0.2644]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.83e-16; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.2917, 0.6502]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.6e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1554, -0.1079]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.8052, -0.04845]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.94e-08; PoI = 0.667 [0.583, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.103, 0.3272]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.01e-06; PoI = 0.312 [0.167, 0.458]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1184, -0.06947]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 50: difference -0.4615 [-1.201, -0.01187]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 50: difference 0.2677 [0.05921, 0.5925]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.995; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1093, -0.05745]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 100: difference -0.2198 [-0.7415, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.542 [0.5, 0.583]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 100: difference 0.1052 [-0.09521, 0.4378]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.3e-07; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09924, -0.05018]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 200: difference -0.7827 [-2.515, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.475; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 200: difference 0.3015 [-0.4444, 1.544]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.2e-26; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3698, -0.3131]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.09e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 5: difference 0.583 [0.3897, 0.8308]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-13; PoI = 0.375 [0.208, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2414, -0.1857]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.2324, 0.576]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0301; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1547, -0.1075]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.0189, 0.2663]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1178, -0.0698]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 50: difference 0.1946 [-0.004042, 0.4971]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.449; PoI = 0.792 [0.75, 0.833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1101, -0.05738]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 100: difference 0.1122 [-0.07798, 0.4432]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.792 [0.75, 0.833]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09983, -0.05]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 200: difference 0.6255 [-0.01702, 1.823]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.75 [0.667, 0.833]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 5: difference -0.1064 [-0.1445, -0.0694]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.06e-20; PoI = 0.104 [0, 0.25]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 5: difference 0.2367 [0.04864, 0.4487]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.58e-07; PoI = 0.438 [0.292, 0.625]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 10: difference -0.07937 [-0.1149, -0.04588]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.09e-12; PoI = 0.125 [0, 0.25]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.01693, 0.2632]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00341; PoI = 0.417 [0.25, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 20: difference -0.05019 [-0.07658, -0.02456]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.47e-06; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.01906, 0.2084]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.05; PoI = 0.25 [0.167, 0.375]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 50: difference -0.03887 [-0.06504, -0.01329]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.18e-06; PoI = 0.292 [0.25, 0.417]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 50: difference 0.0884 [-0.1213, 0.3383]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0268; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 100: difference -0.03917 [-0.07446, -0.004754]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00542; PoI = 0.375 [0.333, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 100: difference 0.08899 [-0.09511, 0.3402]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.296; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 200: difference -0.02223 [-0.05124, 0.006063]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 200: difference 0.2354 [-0.5779, 1.105]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0391; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 5: difference -0.06914 [-0.0976, -0.04171]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.98e-12; PoI = 0.0208 [0, 0.0833]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 5: difference 0.1858 [0.01937, 0.3535]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0125; PoI = 0.292 [0.125, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 10: difference -0.0884 [-0.115, -0.06293]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.59e-16; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.1476, 0.3779]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.32e-07; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1166 [-0.1415, -0.0931]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 8.3e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.1029, 0.3261]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 5: difference -0.3406 [-0.3693, -0.3117]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.22e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 5: difference -1.804 [-2.162, -1.467]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.42e-31; PoI = 1 [1, 1]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 5: difference 0.7066 [0.4392, 1.01]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.03e-15; PoI = 0.146 [0.0833, 0.25]
-- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 10: difference -0.2081 [-0.2372, -0.1793]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.07e-26; PoI = 0.125 [0, 0.25]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-1.146, -0.4239]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.92e-17; PoI = 0.833 [0.75, 0.917]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-5.579, -1.337]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.49e-10; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1554, -0.1069]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.7275, -0.2037]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.22e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.297, -0.3464]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.12e-05; PoI = 0.875 [0.833, 1]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 50: difference -0.0178 [-0.0777, 0.04102]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.183; PoI = 0.625 [0.5, 0.75]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 50: difference 0.03262 [-0.3109, 0.4282]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 100: difference -0.006948 [-0.0766, 0.06254]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 100: difference -0.09409 [-0.4981, 0.2851]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.391; PoI = 0.542 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 200: difference -0.01515 [-0.07626, 0.04469]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 200: difference 0.05456 [-1.112, 1.365]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3694, -0.3119]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.93e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.4978, 1.046]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2417, -0.1857]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2923, 0.6519]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1545, -0.1075]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1046, 0.3273]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1183, -0.0699]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08282, 0.6096]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1098, -0.05699]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03045, 0.5126]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09888, -0.0486]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01128, 1.875]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3704, -0.3137]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.09e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 5: difference 0.746 [0.4969, 1.047]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2413, -0.1861]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2938, 0.6524]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1549, -0.1072]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1061, 0.328]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1178, -0.06904]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 50: difference 0.285 [0.08059, 0.6116]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1102, -0.05715]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.03001, 0.5101]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09959, -0.05036]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.01072, 1.905]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.369, -0.312]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.93e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.497, 1.037]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2416, -0.1857]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2967, 0.6548]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1548, -0.1077]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1033, 0.3243]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1181, -0.06927]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08026, 0.6027]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1103, -0.05705]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.0298, 0.5143]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.1003, -0.04973]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01246, 1.883]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3682, -0.3123]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.93e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 5: difference 0.746 [0.4959, 1.044]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2417, -0.1861]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.2949, 0.6547]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1547, -0.1077]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1046, 0.3249]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1178, -0.06956]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 50: difference 0.285 [0.08158, 0.5975]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1107, -0.05765]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.03085, 0.508]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.1, -0.04871]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.01208, 1.884]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 5: difference -0.2103 [-0.2389, -0.183]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.31e-27; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 5: difference 0.6318 [0.3971, 0.8993]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.99e-14; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 10: difference -0.1655 [-0.1932, -0.1377]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.1e-21; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2794, 0.6296]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.92e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 20: difference -0.1058 [-0.1306, -0.08223]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.33e-14; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.08602, 0.2533]; one-sample t vs deterministic: p_holm = 0.897; Wilcoxon (replay level) p_holm = 1.44e-06; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 50: difference -0.07973 [-0.1041, -0.05559]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3e-11; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 50: difference 0.2627 [0.07317, 0.562]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 100: difference -0.06291 [-0.08916, -0.03616]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00018; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 100: difference 0.1835 [0.02527, 0.4989]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 200: difference -0.07117 [-0.09694, -0.04514]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000601; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01245, 1.89]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 5: difference 0.09826 [0.06818, 0.1282]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.23e-07; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 5: difference -4.562 [-5.342, -3.82]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 4.7e-29; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 5: difference -79.45 [-83.61, -75.31]; one-sample t vs deterministic: p_holm = 0.255; Wilcoxon (replay level) p_holm = 6.54e-93; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 10: difference 0.102 [0.07305, 0.1315]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.18e-11; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 10: difference -6.231 [-7.378, -5.149]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 8.35e-25; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 10: difference -152.7 [-159.6, -146.1]; one-sample t vs deterministic: p_holm = 0.0452; Wilcoxon (replay level) p_holm = 1.06e-95; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 20: difference 0.1347 [0.1063, 0.1648]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.51e-17; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 20: difference -8.508 [-10.44, -6.771]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.48e-19; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 20: difference -317.2 [-329.2, -305.1]; one-sample t vs deterministic: p_holm = 0.000501; Wilcoxon (replay level) p_holm = 5.08e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 50: difference 0.0948 [0.06827, 0.1219]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.17e-14; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 50: difference -17.11 [-21.1, -13.51]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 5.92e-17; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 50: difference -769 [-796.4, -741.6]; one-sample t vs deterministic: p_holm = 0.0254; Wilcoxon (replay level) p_holm = 5.08e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 100: difference 0.121 [0.08853, 0.1548]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.56e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 100: difference -39.95 [-49.38, -31.06]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 8.93e-08; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 100: difference -1596 [-1678, -1515]; one-sample t vs deterministic: p_holm = 0.0155; Wilcoxon (replay level) p_holm = 2.41e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 200: difference 0.1157 [0.08264, 0.1491]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.36e-08; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 200: difference -73.98 [-95.64, -54.47]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.667 [0.667, 0.667]
-- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 200: difference -3130 [-3287, -2972]; one-sample t vs deterministic: p_holm = 0.0286; Wilcoxon (replay level) p_holm = 2.41e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 5: difference -0.3389 [-0.3677, -0.3104]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.13e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5029, 1.046]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2416, -0.1856]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2942, 0.6519]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1554, -0.1071]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.104, 0.3258]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1179, -0.06925]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.0804, 0.6045]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1099, -0.05697]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03137, 0.5056]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09921, -0.0489]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.009827, 1.898]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3701, -0.313]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.09e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 5: difference -2.307 [-2.758, -1.888]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.66e-31; PoI = 1 [1, 1]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 5: difference 0.746 [0.5009, 1.039]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2419, -0.1857]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 10: difference -1.486 [-1.862, -1.143]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.05e-18; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2965, 0.6577]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1556, -0.108]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 20: difference -0.8361 [-1.174, -0.5346]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.89e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1036, 0.3267]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1183, -0.06924]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 50: difference -0.8823 [-1.406, -0.442]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 50: difference 0.285 [0.07675, 0.6028]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1107, -0.05686]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 100: difference -0.44 [-0.9229, -0.06018]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.03065, 0.5187]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09924, -0.04826]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 200: difference -1.527 [-3.128, -0.3884]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.475; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.01112, 1.912]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 5: difference -0.1595 [-0.1863, -0.1332]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.62e-22; PoI = 0 [0, 0]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 5: difference 0.6793 [0.4461, 0.9593]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.36e-16; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 10: difference -0.155 [-0.1829, -0.1279]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4.53e-21; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.2898, 0.6479]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1209 [-0.1458, -0.0977]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.66e-16; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1031, 0.3234]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1178, -0.06949]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.08034, 0.6046]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1103, -0.05736]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.0294, 0.5206]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09974, -0.04923]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.0107, 1.879]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 5: difference -0.1675 [-0.1944, -0.1402]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.61e-23; PoI = 0 [0, 0]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 5: difference -1.133 [-1.4, -0.8823]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 5.73e-25; PoI = 1 [1, 1]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 5: difference 0.746 [0.4985, 1.034]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 10: difference -0.1636 [-0.1921, -0.1361]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.14e-22; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 10: difference -0.5697 [-0.8173, -0.3675]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 9.05e-09; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.2987, 0.65]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 20: difference -0.1251 [-0.1493, -0.102]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 8.59e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 20: difference -0.1262 [-0.2253, -0.04973]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 0.00923; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1047, 0.3254]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1179, -0.06895]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 50: difference -0.06205 [-0.1438, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.667 [0.667, 0.667]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 50: difference 0.285 [0.07948, 0.5997]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1096, -0.05763]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 100: difference -0.0002506 [-0.0007519, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.03069, 0.5041]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09947, -0.04979]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.01088, 1.922]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3686, -0.3121]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.93e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.4919, 1.04]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 9.5e-18; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.242, -0.1856]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.2921, 0.6554]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.13e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1545, -0.1074]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1044, 0.3282]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1175, -0.07014]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.07966, 0.6047]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1105, -0.05704]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.03, 0.4997]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09934, -0.04896]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.01067, 1.907]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3705, -0.3128]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.09e-42; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 5: difference 0.7282 [0.4763, 1.02]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.6e-15; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2414, -0.185]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1.16e-26; PoI = 0.0417 [0, 0.0833]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 10: difference 0.4627 [0.2937, 0.6527]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.19e-11; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1551, -0.1075]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.91e-17; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 20: difference 0.2041 [0.1037, 0.326]; one-sample t vs deterministic: p_holm = 0.747; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1184, -0.06926]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.35e-12; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 50: difference 0.285 [0.07987, 0.5946]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1099, -0.05724]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 100: difference 0.1888 [0.02975, 0.5153]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09968, -0.05034]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 200: difference 0.6963 [0.01163, 1.889]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 5: difference 0.002956 [-0.01114, 0.01874]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 5: difference 0.005772 [-0.1266, 0.13]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 10: difference -0.003545 [-0.02504, 0.01873]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.25, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 10: difference 0.04823 [-0.04193, 0.1425]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 20: difference 0.004798 [-0.01524, 0.02521]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.417 [0.25, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 20: difference 0.03319 [-0.02566, 0.1016]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.333, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 50: difference -0.008155 [-0.03026, 0.01464]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.542 [0.375, 0.708]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 50: difference -0.04529 [-0.2253, 0.1059]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.5, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 100: difference -0.01183 [-0.03626, 0.01523]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.333, 0.667]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 100: difference -0.0582 [-0.3342, 0.1267]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 200: difference 0.01359 [-0.006012, 0.03698]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 0.71; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 200: difference -0.0896 [-0.9221, 0.5701]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.417, 0.583]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 5: difference 0.2226 [0.1954, 0.2507]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 3.02e-31; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 5: difference -0.0001973 [-0.0002141, -0.0001812]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.1e-56; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 5: difference -55.96 [-58.28, -53.63]; one-sample t vs deterministic: p_holm = 0.361; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 10: difference 0.2123 [0.1825, 0.2428]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 6.02e-32; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 10: difference -0.0001669 [-0.0001846, -0.0001496]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.06e-45; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 10: difference -109 [-112.5, -105.6]; one-sample t vs deterministic: p_holm = 0.0632; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 20: difference 0.2474 [0.2168, 0.2775]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 4e-36; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 20: difference -0.0001874 [-0.0002052, -0.0001698]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 1.53e-38; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 20: difference -210 [-215.8, -204.3]; one-sample t vs deterministic: p_holm = 0.000754; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 50: difference 0.2287 [0.1982, 0.2591]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.87e-33; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 50: difference -0.0002757 [-0.0003056, -0.000247]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.85e-33; PoI = 0.917 [0.917, 0.917]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 50: difference -521.8 [-531.7, -511.7]; one-sample t vs deterministic: p_holm = 0.0372; Wilcoxon (replay level) p_holm = 2.42e-97; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 100: difference 0.2474 [0.2096, 0.2861]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 2.86e-17; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 100: difference -0.0005176 [-0.0005799, -0.000458]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 2.54e-15; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 100: difference -1058 [-1082, -1034]; one-sample t vs deterministic: p_holm = 0.0233; Wilcoxon (replay level) p_holm = 2.41e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 200: difference 0.2064 [0.1705, 0.2427]; one-sample t vs deterministic: p_holm = 1; Wilcoxon (replay level) p_holm = 5.19e-14; PoI = 0.75 [0.75, 0.75]
-- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 200: difference -0.000846 [-0.0009524, -0.0007455]; one-sample t vs deterministic: p_holm = nan; Wilcoxon (replay level) p_holm = 3.56e-14; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 200: difference -2036 [-2089, -1983]; one-sample t vs deterministic: p_holm = 0.0437; Wilcoxon (replay level) p_holm = 2.41e-48; PoI = 1 [1, 1]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 5: difference -0.1942 [-0.2399, -0.1498]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.11e-31; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 5: difference 0.6207 [0.4014, 0.8912]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.21e-15; PoI = 0.125 [0.0833, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 10: difference -0.1497 [-0.1774, -0.1221]; paired t (seed label): p_holm = 0.651; Wilcoxon (replay level) p_holm = 4.48e-21; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 10: difference 0.3825 [0.2422, 0.5419]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.16e-10; PoI = 0.167 [0.167, 0.167]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 20: difference -0.1044 [-0.1306, -0.07911]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.42e-15; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 20: difference 0.1928 [0.1005, 0.3071]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.09e-07; PoI = 0.208 [0.167, 0.25]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 50: difference -0.08836 [-0.1123, -0.0639]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.72e-11; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 50: difference 0.2849 [0.08087, 0.6034]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.33e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 100: difference -0.08246 [-0.109, -0.05625]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 100: difference 0.1888 [0.03083, 0.5067]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00313; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09851, -0.0491]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, safety layer at deployment, energy_not_served_kwh, N = 200: difference 0.6963 [0.01242, 1.926]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000697; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 5: difference -0.001206 [-0.01634, 0.01422]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.542 [0.375, 0.75]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 5: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 5: difference 0.02964 [-0.1382, 0.1969]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.354 [0.167, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 10: difference -0.004531 [-0.0293, 0.02062]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.417 [0.25, 0.625]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 10: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 10: difference 0.03714 [-0.04216, 0.1188]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.452; PoI = 0.333 [0.167, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 20: difference -0.001714 [-0.02668, 0.02274]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.292, 0.667]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 20: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 20: difference -0.006929 [-0.05835, 0.04652]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.438 [0.271, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 50: difference -0.001403 [-0.03068, 0.02787]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.333, 0.625]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 50: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 50: difference 0.0474 [-0.1506, 0.283]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.552; PoI = 0.458 [0.333, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 100: difference -8.239e-05 [-0.02644, 0.02594]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.375, 0.625]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 100: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 100: difference 0.008344 [-0.2968, 0.2835]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, share_evs_stay_feasible, N = 200: difference 0.003056 [-0.01905, 0.02755]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.542 [0.417, 0.583]
-- SA-Attn (ours) vs SA-Attn, no admission control, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs SA-Attn, no admission control, energy_not_served_kwh, N = 200: difference 0.07965 [-0.9304, 1.069]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.458 [0.417, 0.583]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 5: difference -0.2048 [-0.2577, -0.1513]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.97e-32; PoI = 0 [0, 0]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 5: difference -1.037 [-1.542, -0.5853]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.37e-30; PoI = 0.958 [0.917, 1]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 5: difference -0.08607 [-0.9104, 0.6132]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.479 [0.25, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 10: difference -0.1579 [-0.1915, -0.1229]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.55e-23; PoI = 0.0833 [0, 0.167]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 10: difference -0.7237 [-1.315, -0.2168]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.36e-13; PoI = 0.833 [0.833, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 10: difference -0.1555 [-0.7563, 0.324]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.292, 0.708]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 20: difference -0.1086 [-0.139, -0.07929]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 9.27e-16; PoI = 0.208 [0.167, 0.333]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 20: difference -0.4356 [-1.085, -0.01403]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 2.61e-06; PoI = 0.708 [0.667, 0.75]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 20: difference -0.4956 [-1.155, 0.02725]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0879; PoI = 0.604 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 50: difference -0.08989 [-0.1148, -0.06518]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.77e-11; PoI = 0.25 [0.25, 0.25]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 50: difference -0.2184 [-0.6098, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0299; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 50: difference -0.1475 [-0.7159, 0.3305]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.417, 0.75]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 100: difference -0.08246 [-0.1084, -0.05647]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.87e-05; PoI = 0.333 [0.333, 0.333]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 100: difference -0.1261 [-0.3776, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.583, 0.583]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 100: difference -0.03561 [-0.491, 0.3582]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.625 [0.5, 0.792]
-- SA-Attn (ours) vs Attention+penalty, no admission control, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09949, -0.04899]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00016; PoI = 0.417 [0.417, 0.417]
-- SA-Attn (ours) vs Attention+penalty, no admission control, tr_violation_kwh, N = 200: difference 0 [0, 0]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.5 [0.5, 0.5]
-- SA-Attn (ours) vs Attention+penalty, no admission control, energy_not_served_kwh, N = 200: difference 0.6535 [-0.01393, 1.876]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1; PoI = 0.583 [0.458, 0.708]
+## Comparisons T3 (stats/tests_T3.csv; Wilcoxon on replay-level differences, Holm per table)
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 5: difference -0.218 [-0.2412, -0.1948], 600 replays; p_holm = 2.22e-34; per seed: s0=0.656575; s1=0.660623 | s0=0.820687; s1=0.932417
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 5: difference -1.042 [-1.269, -0.8426], 600 replays; p_holm = 2.9e-30; per seed: s0=0; s1=0 | s0=0.475353; s1=1.60857
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 5: difference -0.1393 [-0.5422, 0.2414], 600 replays; p_holm = 1; per seed: s0=0.643627; s1=0.848306 | s0=1.77049; s1=0
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 10: difference -0.1623 [-0.1838, -0.1413], 600 replays; p_holm = 1.25e-23; per seed: s0=0.781309; s1=0.791522 | s0=0.925458; s1=0.971997
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 10: difference -0.7432 [-0.9712, -0.5314], 600 replays; p_holm = 6.4e-14; per seed: s0=0; s1=0 | s0=0.145338; s1=1.34108
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 10: difference -0.2167 [-0.5271, 0.07398], 600 replays; p_holm = 1; per seed: s0=0.42808; s1=0.497406 | s0=1.35889; s1=3.42529e-05
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 20: difference -0.1082 [-0.1255, -0.09132], 600 replays; p_holm = 1.06e-15; per seed: s0=0.874617; s1=0.864308 | s0=0.956707; s1=0.998542
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 20: difference -0.4766 [-0.7305, -0.2592], 600 replays; p_holm = 6.9e-07; per seed: s0=0; s1=0 | s0=0.0624314; s1=0.890739
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 20: difference -0.7983 [-1.189, -0.4434], 600 replays; p_holm = 9.44e-05; per seed: s0=0.203273; s1=0.204828 | s0=2.00472; s1=0
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 50: difference -0.08993 [-0.1049, -0.07562], 600 replays; p_holm = 1.44e-11; per seed: s0=0.89665; s1=0.916079 | s0=0.992586; s1=1
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 50: difference -0.3047 [-0.4998, -0.146], 600 replays; p_holm = 0.00493; per seed: s0=0; s1=0 | s0=0.0194303; s1=0.589977
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 50: difference -0.6293 [-1.15, -0.1587], 600 replays; p_holm = 3.9e-05; per seed: s0=0.381776; s1=0.188272 | s0=1.82859; s1=0
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 100: difference -0.08246 [-0.1005, -0.06429], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=0.997125; s1=1
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 100: difference -0.1155 [-0.2613, -0.008739], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0.0577941; s1=0.173149
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 100: difference -0.07357 [-0.3794, 0.2005], 300 replays; p_holm = 1; per seed: s0=0.310606; s1=0.0670501 | s0=0.524793; s1=0
+- SA-Attn (ours) vs Attention+penalty, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09196, -0.05608], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+penalty, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+penalty, energy_not_served_kwh, N = 200: difference 0.6484 [0.1193, 1.429], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=0.095963; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3679, -0.3143], 600 replays; p_holm = 1.8e-42; per seed: s0=0.656575; s1=0.660623 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 5: difference -1.357 [-1.664, -1.084], 600 replays; p_holm = 1.31e-29; per seed: s0=0; s1=0 | s0=0.858679; s1=1.85544
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 5: difference 0.746 [0.5143, 1.014], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2358, -0.1916], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 10: difference -0.7175 [-0.9264, -0.5258], 600 replays; p_holm = 1.54e-16; per seed: s0=0; s1=0 | s0=0.274148; s1=1.16076
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 10: difference 0.4627 [0.3035, 0.6433], 600 replays; p_holm = 1.34e-11; per seed: s0=0.42808; s1=0.497406 | s0=5.3582e-06; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1481, -0.1126], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 20: difference -0.369 [-0.5374, -0.2254], 600 replays; p_holm = 1.62e-08; per seed: s0=0; s1=0 | s0=0.0487898; s1=0.689299
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 20: difference 0.2034 [0.1047, 0.3191], 600 replays; p_holm = 1.66e-06; per seed: s0=0.203273; s1=0.204828 | s0=0.00131559; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1083, -0.07897], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 50: difference -0.4615 [-0.7446, -0.228], 600 replays; p_holm = 0.00251; per seed: s0=0; s1=0 | s0=0.0407597; s1=0.882284
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 50: difference 0.2677 [0.08301, 0.5313], 600 replays; p_holm = 0.786; per seed: s0=0.381776; s1=0.188272 | s0=0.034603; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1022, -0.06545], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 100: difference -0.2198 [-0.4608, -0.02959], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0.439568
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 100: difference 0.1052 [-0.03675, 0.2985], 300 replays; p_holm = 1.08e-07; per seed: s0=0.310606; s1=0.0670501 | s0=0.167261; s1=0
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09208, -0.0561], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, tr_violation_kwh, N = 200: difference -0.7827 [-1.638, -0.1862], 300 replays; p_holm = 0.375; per seed: s0=0; s1=0 | s0=0.0390817; s1=1.52635
+- SA-Attn (ours) vs Attention+PPO-Lagrangian, energy_not_served_kwh, N = 200: difference 0.3015 [-0.2398, 1.086], 300 replays; p_holm = 1.88e-26; per seed: s0=1.14179; s1=0.250888 | s0=0.789749; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3689, -0.3153], 600 replays; p_holm = 1.8e-42; per seed: s0=0.656575; s1=0.660623 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 5: difference 0.583 [0.4098, 0.7816], 600 replays; p_holm = 3.28e-13; per seed: s0=0.643627; s1=0.848306 | s0=0.183836; s1=0.14219
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.236, -0.1915], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 10: difference 0.3917 [0.2467, 0.5537], 600 replays; p_holm = 0.0237; per seed: s0=0.42808; s1=0.497406 | s0=0.0810189; s1=0.0611317
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1484, -0.1127], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 20: difference 0.1328 [0.03326, 0.25], 600 replays; p_holm = 1; per seed: s0=0.203273; s1=0.204828 | s0=0.136273; s1=0.00629692
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1084, -0.07894], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 50: difference 0.1946 [0.02381, 0.4131], 600 replays; p_holm = 0.352; per seed: s0=0.381776; s1=0.188272 | s0=0.138662; s1=0.0421091
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1019, -0.06596], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 100: difference 0.1122 [-0.02592, 0.2952], 300 replays; p_holm = 1; per seed: s0=0.310606; s1=0.0670501 | s0=0.145848; s1=0.00744581
+- SA-Attn (ours) vs Attention+safety layer without departure bound, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09193, -0.05686], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1; s1=1
+- SA-Attn (ours) vs Attention+safety layer without departure bound, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Attention+safety layer without departure bound, energy_not_served_kwh, N = 200: difference 0.6255 [0.1285, 1.392], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=0.0782924; s1=0.0633665
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 5: difference -0.1064 [-0.1248, -0.08846], 600 replays; p_holm = 6.05e-20; per seed: s0=0.656575; s1=0.660623 | s0=0.725889; s1=0.804155
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 5: difference 0.2367 [0.1292, 0.3794], 600 replays; p_holm = 1.32e-07; per seed: s0=0.643627; s1=0.848306 | s0=0.533711; s1=0.484891
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 10: difference -0.07937 [-0.09644, -0.06291], 600 replays; p_holm = 9.23e-13; per seed: s0=0.781309; s1=0.791522 | s0=0.853363; s1=0.878213
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 10: difference 0.1356 [0.05004, 0.225], 600 replays; p_holm = 0.0027; per seed: s0=0.42808; s1=0.497406 | s0=0.335115; s1=0.319109
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 20: difference -0.05019 [-0.06539, -0.03532], 600 replays; p_holm = 1.21e-06; per seed: s0=0.874617; s1=0.864308 | s0=0.914367; s1=0.924934
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 20: difference 0.1019 [0.05076, 0.1607], 600 replays; p_holm = 0.0393; per seed: s0=0.203273; s1=0.204828 | s0=0.0706997; s1=0.133681
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 50: difference -0.03887 [-0.05132, -0.02681], 600 replays; p_holm = 5.94e-06; per seed: s0=0.89665; s1=0.916079 | s0=0.946316; s1=0.944153
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 50: difference 0.0884 [0.02822, 0.1616], 600 replays; p_holm = 0.021; per seed: s0=0.381776; s1=0.188272 | s0=0.0970946; s1=0.296152
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 100: difference -0.03917 [-0.05449, -0.02428], 300 replays; p_holm = 0.00428; per seed: s0=0.903968; s1=0.928245 | s0=0.97063; s1=0.939914
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 100: difference 0.08899 [0.008983, 0.1831], 300 replays; p_holm = 0.234; per seed: s0=0.310606; s1=0.0670501 | s0=0.0962152; s1=0.103464
+- SA-Attn (ours) vs Deep Sets+safety layer, share_evs_stay_feasible, N = 200: difference -0.02223 [-0.0355, -0.00899], 300 replays; p_holm = 0.94; per seed: s0=0.91488; s1=0.936745 | s0=0.960338; s1=0.935739
+- SA-Attn (ours) vs Deep Sets+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs Deep Sets+safety layer, energy_not_served_kwh, N = 200: difference 0.2354 [0.05483, 0.4694], 300 replays; p_holm = 0.0307; per seed: s0=1.14179; s1=0.250888 | s0=0.238652; s1=0.683231
+- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 5: difference -0.06914 [-0.08455, -0.05427], 600 replays; p_holm = 1.67e-12; per seed: s0=0.656575; s1=0.660623 | s0=0.759718; s1=0.695754
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 5: difference 0.1858 [0.09549, 0.2849], 600 replays; p_holm = 0.00986; per seed: s0=0.643627; s1=0.848306 | s0=0.481472; s1=0.638824
+- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 10: difference -0.0884 [-0.1054, -0.0718], 600 replays; p_holm = 8.1e-16; per seed: s0=0.781309; s1=0.791522 | s0=0.882402; s1=0.867221
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 10: difference 0.2561 [0.166, 0.3542], 600 replays; p_holm = 1.93e-07; per seed: s0=0.42808; s1=0.497406 | s0=0.187416; s1=0.225911
+- SA-Attn (ours) vs MLP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1166 [-0.1346, -0.0997], 600 replays; p_holm = 7.01e-17; per seed: s0=0.874617; s1=0.864308 | s0=0.980734; s1=0.991399
+- SA-Attn (ours) vs MLP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs MLP+safety layer, energy_not_served_kwh, N = 20: difference 0.2034 [0.1075, 0.3198], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0.00132577; s1=0
+- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 5: difference -0.3406 [-0.3678, -0.3137], 600 replays; p_holm = 1.91e-42; per seed: s0=0.656575; s1=0.660623 | s0=1; s1=0.998333
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 5: difference -1.804 [-2.151, -1.483], 600 replays; p_holm = 2.07e-31; per seed: s0=0; s1=0 | s0=1.83449; s1=1.7736
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 5: difference 0.7066 [0.4662, 0.9735], 600 replays; p_holm = 4.27e-15; per seed: s0=0.643627; s1=0.848306 | s0=0; s1=0.0786671
+- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 10: difference -0.2081 [-0.2303, -0.1858], 600 replays; p_holm = 9.2e-27; per seed: s0=0.781309; s1=0.791522 | s0=1; s1=0.989064
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 10: difference -0.7484 [-0.9614, -0.5496], 600 replays; p_holm = 5.01e-17; per seed: s0=0; s1=0 | s0=0.515607; s1=0.981155
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 10: difference -3.271 [-4.22, -2.396], 600 replays; p_holm = 1.25e-10; per seed: s0=0.42808; s1=0.497406 | s0=0.934497; s1=6.53344
+- SA-Attn (ours) vs MLP+penalty, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1487, -0.1129], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1; s1=1
+- SA-Attn (ours) vs MLP+penalty, tr_violation_kwh, N = 20: difference -0.4406 [-0.642, -0.2697], 600 replays; p_holm = 3.54e-09; per seed: s0=0; s1=0 | s0=0.323525; s1=0.557769
+- SA-Attn (ours) vs MLP+penalty, energy_not_served_kwh, N = 20: difference -0.7702 [-1.106, -0.4499], 600 replays; p_holm = 5.83e-05; per seed: s0=0.203273; s1=0.204828 | s0=1.10256; s1=0.845891
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 50: difference -0.0178 [-0.02799, -0.007184], 600 replays; p_holm = 0.144; per seed: s0=0.89665; s1=0.916079 | s0=0.876135; s1=0.972188
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 50: difference 0.03262 [-0.01631, 0.09438], 600 replays; p_holm = 1; per seed: s0=0.381776; s1=0.188272 | s0=0.472678; s1=0.0321349
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 100: difference -0.006948 [-0.02191, 0.008201], 300 replays; p_holm = 1; per seed: s0=0.903968; s1=0.928245 | s0=0.868862; s1=0.977247
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 100: difference -0.09409 [-0.1878, -0.02586], 300 replays; p_holm = 0.308; per seed: s0=0.310606; s1=0.0670501 | s0=0.483366; s1=0.0824686
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), share_evs_stay_feasible, N = 200: difference -0.01515 [-0.03008, -0.0002161], 300 replays; p_holm = 1; per seed: s0=0.91488; s1=0.936745 | s0=0.896953; s1=0.984962
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0; s1=0
+- SA-Attn (ours) vs SA-Attn trained at N = 50 (reference), energy_not_served_kwh, N = 200: difference 0.05456 [-0.1256, 0.2916], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=1.27593; s1=0.00761873
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3675, -0.313], 600 replays; p_holm = 2.52e-42; per seed: s0=0.656575; s1=0.660623 | s0=0.998889
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5115, 1.006], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2361, -0.1914], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3043, 0.6457], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1485, -0.1128], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1063, 0.3199], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1085, -0.0789], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.09987, 0.5455], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1022, -0.06562], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05798, 0.3811], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09194, -0.05639], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs LLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1747, 1.471], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3682, -0.3145], 600 replays; p_holm = 1.8e-42; per seed: s0=0.656575; s1=0.660623 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 5: difference 0.746 [0.5143, 1.008], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2357, -0.1914], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.3007, 0.6486], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1485, -0.1126], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1081, 0.32], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1083, -0.07887], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 50: difference 0.285 [0.09824, 0.5398], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1021, -0.06582], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.05641, 0.3729], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs LLF, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09215, -0.05596], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs LLF, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs LLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.1711, 1.495], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3671, -0.3132], 600 replays; p_holm = 2.52e-42; per seed: s0=0.656575; s1=0.660623 | s0=0.998889
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5206, 1.01], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2358, -0.1917], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3038, 0.6401], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1486, -0.113], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1065, 0.3192], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1083, -0.07902], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.09744, 0.5368], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1022, -0.06537], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05513, 0.3763], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09217, -0.05646], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs sLLF+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1808, 1.473], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3672, -0.3137], 600 replays; p_holm = 2.52e-42; per seed: s0=0.656575; s1=0.660623 | s0=0.998889
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 5: difference 0.746 [0.5119, 1.015], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2361, -0.191], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 10: difference 0.4627 [0.3043, 0.6429], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1481, -0.1131], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 20: difference 0.2041 [0.1053, 0.3199], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1086, -0.07976], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 50: difference 0.285 [0.1009, 0.5487], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1021, -0.06541], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 100: difference 0.1888 [0.05804, 0.3745], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs sLLF, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09197, -0.05649], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs sLLF, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs sLLF, energy_not_served_kwh, N = 200: difference 0.6963 [0.1751, 1.476], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 5: difference -0.2103 [-0.2369, -0.1847], 600 replays; p_holm = 1.99e-27; per seed: s0=0.656575; s1=0.660623 | s0=0.868893
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 5: difference 0.6318 [0.4191, 0.8847], 600 replays; p_holm = 1.69e-14; per seed: s0=0.643627; s1=0.848306 | s0=0.114165
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 10: difference -0.1655 [-0.1872, -0.1437], 600 replays; p_holm = 9.38e-22; per seed: s0=0.781309; s1=0.791522 | s0=0.951943
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 10: difference 0.4435 [0.2853, 0.6216], 600 replays; p_holm = 3.28e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.0192887
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 20: difference -0.1058 [-0.1239, -0.08727], 600 replays; p_holm = 1.13e-14; per seed: s0=0.874617; s1=0.864308 | s0=0.975236
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 20: difference 0.1645 [0.09294, 0.2465], 600 replays; p_holm = 1.19e-06; per seed: s0=0.203273; s1=0.204828 | s0=0.0395991
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 50: difference -0.07973 [-0.09411, -0.06518], 600 replays; p_holm = 2.51e-11; per seed: s0=0.89665; s1=0.916079 | s0=0.986091
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 50: difference 0.2627 [0.09276, 0.487], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0.0222851
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 100: difference -0.06291 [-0.08146, -0.04457], 300 replays; p_holm = 0.000146; per seed: s0=0.903968; s1=0.928245 | s0=0.979017
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 100: difference 0.1835 [0.05208, 0.366], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0.00534598
+- SA-Attn (ours) vs Price-threshold+safety layer, share_evs_stay_feasible, N = 200: difference -0.07117 [-0.09063, -0.0509], 300 replays; p_holm = 0.000487; per seed: s0=0.91488; s1=0.936745 | s0=0.996986
+- SA-Attn (ours) vs Price-threshold+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Price-threshold+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1776, 1.511], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 5: difference 0.09826 [0.06875, 0.1282], 600 replays; p_holm = 3.5e-07; per seed: s0=0.656575; s1=0.660623 | s0=0.560343
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 5: difference -4.562 [-5.338, -3.817], 600 replays; p_holm = 4.05e-29; per seed: s0=0; s1=0 | s0=4.56166
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 5: difference -79.45 [-83.55, -75.35], 600 replays; p_holm = 5.65e-93; per seed: s0=0.643627; s1=0.848306 | s0=80.1939
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 10: difference 0.102 [0.07798, 0.1263], 600 replays; p_holm = 9.9e-12; per seed: s0=0.781309; s1=0.791522 | s0=0.68443
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 10: difference -6.231 [-7.404, -5.14], 600 replays; p_holm = 7.13e-25; per seed: s0=0; s1=0 | s0=6.23079
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 10: difference -152.7 [-159.6, -146], 600 replays; p_holm = 9.16e-96; per seed: s0=0.42808; s1=0.497406 | s0=153.199
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 20: difference 0.1347 [0.1101, 0.1598], 600 replays; p_holm = 1.29e-17; per seed: s0=0.874617; s1=0.864308 | s0=0.73475
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 20: difference -8.508 [-10.4, -6.755], 600 replays; p_holm = 1.26e-19; per seed: s0=0; s1=0 | s0=8.50785
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 20: difference -317.2 [-329.4, -305.1], 600 replays; p_holm = 4.4e-97; per seed: s0=0.203273; s1=0.204828 | s0=317.44
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 50: difference 0.0948 [0.07551, 0.1138], 600 replays; p_holm = 9.92e-15; per seed: s0=0.89665; s1=0.916079 | s0=0.811568
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 50: difference -17.11 [-21.08, -13.49], 600 replays; p_holm = 5.01e-17; per seed: s0=0; s1=0 | s0=17.1125
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 50: difference -769 [-796.4, -742.1], 600 replays; p_holm = 4.4e-97; per seed: s0=0.381776; s1=0.188272 | s0=769.296
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 100: difference 0.121 [0.09449, 0.1498], 300 replays; p_holm = 1.31e-09; per seed: s0=0.903968; s1=0.928245 | s0=0.795088
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 100: difference -39.95 [-49.62, -31.06], 300 replays; p_holm = 7.46e-08; per seed: s0=0; s1=0 | s0=39.947
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 100: difference -1596 [-1678, -1513], 300 replays; p_holm = 2.08e-48; per seed: s0=0.310606; s1=0.0670501 | s0=1596.05
+- SA-Attn (ours) vs Price-threshold, share_evs_stay_feasible, N = 200: difference 0.1157 [0.08758, 0.1446], 300 replays; p_holm = 5.32e-08; per seed: s0=0.91488; s1=0.936745 | s0=0.810156
+- SA-Attn (ours) vs Price-threshold, tr_violation_kwh, N = 200: difference -73.98 [-95.93, -54.85], 300 replays; p_holm = 3.41e-07; per seed: s0=0; s1=0 | s0=73.979
+- SA-Attn (ours) vs Price-threshold, energy_not_served_kwh, N = 200: difference -3130 [-3289, -2975], 300 replays; p_holm = 2.08e-48; per seed: s0=1.14179; s1=0.250888 | s0=3130.32
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 5: difference -0.3389 [-0.3656, -0.3125], 600 replays; p_holm = 2.69e-42; per seed: s0=0.656575; s1=0.660623 | s0=0.9975
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5136, 1.017], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2359, -0.1915], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3042, 0.6452], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1481, -0.113], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1059, 0.3221], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1086, -0.07892], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.1026, 0.5428], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1022, -0.06559], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05447, 0.3737], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09159, -0.05645], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs AFAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs AFAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.175, 1.491], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3687, -0.3142], 600 replays; p_holm = 1.8e-42; per seed: s0=0.656575; s1=0.660623 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 5: difference -2.307 [-2.765, -1.895], 600 replays; p_holm = 1.43e-31; per seed: s0=0; s1=0 | s0=2.30679
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 5: difference 0.746 [0.5136, 1.021], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2359, -0.1912], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 10: difference -1.486 [-1.875, -1.139], 600 replays; p_holm = 2.61e-18; per seed: s0=0; s1=0 | s0=1.48554
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.3051, 0.651], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.149, -0.1131], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 20: difference -0.8361 [-1.19, -0.5384], 600 replays; p_holm = 2.42e-09; per seed: s0=0; s1=0 | s0=0.836135
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1059, 0.319], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1085, -0.07922], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 50: difference -0.8823 [-1.4, -0.4395], 600 replays; p_holm = 0.00251; per seed: s0=0; s1=0 | s0=0.88231
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 50: difference 0.285 [0.098, 0.5403], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.102, -0.06587], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 100: difference -0.44 [-0.9236, -0.05829], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0.440039
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.05675, 0.3787], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs AFAP, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09209, -0.0562], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs AFAP, tr_violation_kwh, N = 200: difference -1.527 [-3.092, -0.3895], 300 replays; p_holm = 0.375; per seed: s0=0; s1=0 | s0=1.52661
+- SA-Attn (ours) vs AFAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.1735, 1.495], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 5: difference -0.1595 [-0.1844, -0.1349], 600 replays; p_holm = 3.96e-22; per seed: s0=0.656575; s1=0.660623 | s0=0.818103
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 5: difference 0.6793 [0.4623, 0.9385], 600 replays; p_holm = 7.04e-16; per seed: s0=0.643627; s1=0.848306 | s0=0.0666577
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 10: difference -0.155 [-0.178, -0.133], 600 replays; p_holm = 3.89e-21; per seed: s0=0.781309; s1=0.791522 | s0=0.941428
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 10: difference 0.4597 [0.2984, 0.6429], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0.00304275
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 20: difference -0.1209 [-0.1393, -0.1036], 600 replays; p_holm = 2.25e-16; per seed: s0=0.874617; s1=0.864308 | s0=0.990384
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 20: difference 0.204 [0.1064, 0.3188], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=1.75197e-05
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1084, -0.07881], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.09807, 0.5376], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1025, -0.06572], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05849, 0.3714], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09233, -0.05695], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs ALAP+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1808, 1.492], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 5: difference -0.1675 [-0.1932, -0.1425], 600 replays; p_holm = 2.23e-23; per seed: s0=0.656575; s1=0.660623 | s0=0.826131
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 5: difference -1.133 [-1.407, -0.8817], 600 replays; p_holm = 4.9e-25; per seed: s0=0; s1=0 | s0=1.13343
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 5: difference 0.746 [0.5125, 1.009], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 10: difference -0.1636 [-0.1864, -0.1412], 600 replays; p_holm = 7.82e-22; per seed: s0=0.781309; s1=0.791522 | s0=0.949975
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 10: difference -0.5697 [-0.8069, -0.364], 600 replays; p_holm = 7.57e-09; per seed: s0=0; s1=0 | s0=0.569683
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 10: difference 0.4627 [0.3018, 0.6418], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 20: difference -0.1251 [-0.1429, -0.1073], 600 replays; p_holm = 7.25e-17; per seed: s0=0.874617; s1=0.864308 | s0=0.99458
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 20: difference -0.1262 [-0.2214, -0.05029], 600 replays; p_holm = 0.00727; per seed: s0=0; s1=0 | s0=0.126186
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 20: difference 0.2041 [0.1064, 0.32], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1082, -0.07881], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 50: difference -0.06205 [-0.1438, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0.0620464
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 50: difference 0.285 [0.09842, 0.5405], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1021, -0.06544], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 100: difference -0.0002506 [-0.0007519, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0.000250638
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 100: difference 0.1888 [0.05691, 0.3727], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs ALAP, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09221, -0.05662], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs ALAP, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs ALAP, energy_not_served_kwh, N = 200: difference 0.6963 [0.1708, 1.475], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 5: difference -0.3403 [-0.3673, -0.3133], 600 replays; p_holm = 2.52e-42; per seed: s0=0.656575; s1=0.660623 | s0=0.998889
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 5: difference 0.746 [0.5143, 1.008], 600 replays; p_holm = 8.13e-18; per seed: s0=0.643627; s1=0.848306 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.2357, -0.1917], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 10: difference 0.4627 [0.3039, 0.641], 600 replays; p_holm = 1.79e-11; per seed: s0=0.42808; s1=0.497406 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1482, -0.1128], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 20: difference 0.2041 [0.1085, 0.3214], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1083, -0.07919], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 50: difference 0.285 [0.09735, 0.5389], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1022, -0.0658], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 100: difference 0.1888 [0.05654, 0.3764], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09214, -0.05673], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs Round Robin+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin+safety layer, energy_not_served_kwh, N = 200: difference 0.6963 [0.1761, 1.51], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 5: difference -0.3414 [-0.3683, -0.3143], 600 replays; p_holm = 1.8e-42; per seed: s0=0.656575; s1=0.660623 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 5: difference 0.7282 [0.4923, 0.9959], 600 replays; p_holm = 1.35e-15; per seed: s0=0.643627; s1=0.848306 | s0=0.0177228
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 10: difference -0.2136 [-0.236, -0.1913], 600 replays; p_holm = 9.94e-27; per seed: s0=0.781309; s1=0.791522 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 10: difference 0.4627 [0.3025, 0.6454], 600 replays; p_holm = 1.83e-11; per seed: s0=0.42808; s1=0.497406 | s0=8.66145e-05
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 20: difference -0.1305 [-0.1489, -0.1132], 600 replays; p_holm = 3.33e-17; per seed: s0=0.874617; s1=0.864308 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 20: difference 0.2041 [0.1074, 0.323], 600 replays; p_holm = 3.41e-07; per seed: s0=0.203273; s1=0.204828 | s0=0
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 50: difference -0.09364 [-0.1082, -0.07876], 600 replays; p_holm = 2.84e-12; per seed: s0=0.89665; s1=0.916079 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 50: difference 0.285 [0.1015, 0.5362], 600 replays; p_holm = 4.38e-05; per seed: s0=0.381776; s1=0.188272 | s0=0
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 100: difference -0.08389 [-0.1024, -0.06577], 300 replays; p_holm = 3.2e-05; per seed: s0=0.903968; s1=0.928245 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 100: difference 0.1888 [0.0573, 0.3751], 300 replays; p_holm = 0.00251; per seed: s0=0.310606; s1=0.0670501 | s0=0
+- SA-Attn (ours) vs Round Robin, share_evs_stay_feasible, N = 200: difference -0.07419 [-0.09198, -0.05633], 300 replays; p_holm = 0.00013; per seed: s0=0.91488; s1=0.936745 | s0=1
+- SA-Attn (ours) vs Round Robin, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs Round Robin, energy_not_served_kwh, N = 200: difference 0.6963 [0.1733, 1.49], 300 replays; p_holm = 0.000565; per seed: s0=1.14179; s1=0.250888 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 5: difference 0.002956 [-0.008818, 0.0149], 600 replays; p_holm = 1; per seed: s0=0.656575; s1=0.660623 | s0=0.655643
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 5: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 5: difference 0.005772 [-0.05479, 0.06811], 600 replays; p_holm = 1; per seed: s0=0.643627; s1=0.848306 | s0=0.740195
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 10: difference -0.003545 [-0.01743, 0.01032], 600 replays; p_holm = 1; per seed: s0=0.781309; s1=0.791522 | s0=0.78996
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 10: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 10: difference 0.04823 [-0.025, 0.1257], 600 replays; p_holm = 1; per seed: s0=0.42808; s1=0.497406 | s0=0.414508
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 20: difference 0.004798 [-0.00861, 0.01818], 600 replays; p_holm = 1; per seed: s0=0.874617; s1=0.864308 | s0=0.864665
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 20: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 20: difference 0.03319 [-0.02045, 0.09503], 600 replays; p_holm = 1; per seed: s0=0.203273; s1=0.204828 | s0=0.170856
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 50: difference -0.008155 [-0.01912, 0.003213], 600 replays; p_holm = 1; per seed: s0=0.89665; s1=0.916079 | s0=0.91452
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 50: difference 0 [0, 0], 600 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 50: difference -0.04529 [-0.1266, 0.02706], 600 replays; p_holm = 1; per seed: s0=0.381776; s1=0.188272 | s0=0.330319
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 100: difference -0.01183 [-0.02941, 0.004946], 300 replays; p_holm = 1; per seed: s0=0.903968; s1=0.928245 | s0=0.927939
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 100: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 100: difference -0.0582 [-0.1973, 0.04485], 300 replays; p_holm = 1; per seed: s0=0.310606; s1=0.0670501 | s0=0.247024
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, share_evs_stay_feasible, N = 200: difference 0.01359 [0.0002414, 0.0268], 300 replays; p_holm = 0.562; per seed: s0=0.91488; s1=0.936745 | s0=0.912217
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, tr_violation_kwh, N = 200: difference 0 [0, 0], 300 replays; p_holm = 1; per seed: s0=0; s1=0 | s0=0
+- SA-Attn (ours) vs eMPC-HiGHS+safety layer, energy_not_served_kwh, N = 200: difference -0.0896 [-0.3825, 0.1381], 300 replays; p_holm = 1; per seed: s0=1.14179; s1=0.250888 | s0=0.785937
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 5: difference 0.2226 [0.1962, 0.2499], 600 replays; p_holm = 2.58e-31; per seed: s0=0.656575; s1=0.660623 | s0=0.435978
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 5: difference -0.0001973 [-0.000214, -0.0001809], 600 replays; p_holm = 9.55e-57; per seed: s0=0; s1=0 | s0=0.000197301
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 5: difference -55.96 [-58.32, -53.67], 600 replays; p_holm = 2.1e-97; per seed: s0=0.643627; s1=0.848306 | s0=56.7088
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 10: difference 0.2123 [0.1868, 0.2378], 600 replays; p_holm = 5.16e-32; per seed: s0=0.781309; s1=0.791522 | s0=0.574131
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 10: difference -0.0001669 [-0.0001849, -0.00015], 600 replays; p_holm = 2.64e-45; per seed: s0=0; s1=0 | s0=0.000166909
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 10: difference -109 [-112.5, -105.6], 600 replays; p_holm = 2.1e-97; per seed: s0=0.42808; s1=0.497406 | s0=109.463
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 20: difference 0.2474 [0.2212, 0.2735], 600 replays; p_holm = 3.43e-36; per seed: s0=0.874617; s1=0.864308 | s0=0.622106
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 20: difference -0.0001874 [-0.0002048, -0.0001698], 600 replays; p_holm = 1.31e-38; per seed: s0=0; s1=0 | s0=0.000187357
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 20: difference -210 [-215.8, -204.4], 600 replays; p_holm = 2.1e-97; per seed: s0=0.203273; s1=0.204828 | s0=210.206
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 50: difference 0.2287 [0.2044, 0.253], 600 replays; p_holm = 2.46e-33; per seed: s0=0.89665; s1=0.916079 | s0=0.677615
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 50: difference -0.0002757 [-0.0003056, -0.0002468], 600 replays; p_holm = 3.29e-33; per seed: s0=0; s1=0 | s0=0.000275734
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 50: difference -521.8 [-531.8, -511.4], 600 replays; p_holm = 2.1e-97; per seed: s0=0.381776; s1=0.188272 | s0=522.116
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 100: difference 0.2474 [0.2147, 0.2809], 300 replays; p_holm = 2.44e-17; per seed: s0=0.903968; s1=0.928245 | s0=0.668713
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 100: difference -0.0005176 [-0.0005784, -0.0004579], 300 replays; p_holm = 2.15e-15; per seed: s0=0; s1=0 | s0=0.00051755
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 100: difference -1058 [-1082, -1034], 300 replays; p_holm = 2.08e-48; per seed: s0=0.310606; s1=0.0670501 | s0=1058.28
+- SA-Attn (ours) vs eMPC-HiGHS, share_evs_stay_feasible, N = 200: difference 0.2064 [0.175, 0.2381], 300 replays; p_holm = 4.39e-14; per seed: s0=0.91488; s1=0.936745 | s0=0.719423
+- SA-Attn (ours) vs eMPC-HiGHS, tr_violation_kwh, N = 200: difference -0.000846 [-0.0009486, -0.0007489], 300 replays; p_holm = 3.02e-14; per seed: s0=0; s1=0 | s0=0.000846015
+- SA-Attn (ours) vs eMPC-HiGHS, energy_not_served_kwh, N = 200: difference -2036 [-2088, -1983], 300 replays; p_holm = 2.08e-48; per seed: s0=1.14179; s1=0.250888 | s0=2037.06
 
-## Comparisons T5 (stats/tests_T5.csv; paired t over seeds, Holm per table)
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 5: difference 11.35 [6.19, 17.63]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 7.73e-14; PoI = 0.917 [0.833, 1]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 5: difference -0.4641 [-0.9566, -0.08661]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0115; PoI = 0.25 [0.167, 0.417]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 10: difference 9.145 [4.101, 15.21]; paired t (seed label): p_holm = 0.633; Wilcoxon (replay level) p_holm = 2.22e-06; PoI = 0.792 [0.583, 0.959]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 10: difference -0.4541 [-1.018, 0.008213]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.0115; PoI = 0.375 [0.25, 0.542]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 20: difference 11.91 [4.729, 19.86]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000196; PoI = 0.708 [0.458, 0.917]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 20: difference -0.8395 [-1.633, -0.1197]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.00456; PoI = 0.333 [0.167, 0.5]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 50: difference 10.1 [2.141, 20.08]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.43e-14; PoI = 0.875 [0.75, 1]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 50: difference 0.7646 [-1.387, 2.902]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 0.000476; PoI = 0.625 [0.375, 0.833]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 100: difference 5.582 [0.4482, 10.84]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 5.57e-07; PoI = 0.75 [0.542, 0.958]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 100: difference 3.691 [-1.153, 8.504]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.07e-05; PoI = 0.708 [0.5, 0.917]
-- SA-Attn (ours) vs Attention+penalty, penalised_profit_eur, N = 200: difference 5.453 [-8.059, 16.41]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 1.69e-06; PoI = 0.667 [0.458, 0.833]
-- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 200: difference 11.94 [3.607, 20.53]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 4.94e-09; PoI = 0.833 [0.625, 1]
-- MLP+safety layer vs MLP+penalty, penalised_profit_eur, N = 5: difference 14.17 [10.62, 17.99]; paired t (seed label): p_holm = 0.466; Wilcoxon (replay level) p_holm = 3.44e-38; PoI = 1 [1, 1]
-- MLP+safety layer vs MLP+penalty, profit_eur, N = 5: difference 1.343 [1.066, 1.631]; paired t (seed label): p_holm = 0.045; Wilcoxon (replay level) p_holm = 1.01e-23; PoI = 1 [1, 1]
-- MLP+safety layer vs MLP+penalty, penalised_profit_eur, N = 10: difference 45.22 [23.55, 69.54]; paired t (seed label): p_holm = 1; Wilcoxon (replay level) p_holm = 3.19e-60; PoI = 1 [1, 1]
-- MLP+safety layer vs MLP+penalty, profit_eur, N = 10: difference 2.46 [2.038, 2.872]; paired t (seed label): p_holm = 0.329; Wilcoxon (replay level) p_holm = 1.58e-34; PoI = 1 [1, 1]
-- MLP+safety layer vs MLP+penalty, penalised_profit_eur, N = 20: difference 18.01 [13, 23.99]; paired t (seed label): p_holm = 0.229; Wilcoxon (replay level) p_holm = 4.6e-65; PoI = 1 [1, 1]
-- MLP+safety layer vs MLP+penalty, profit_eur, N = 20: difference 3.873 [3.305, 4.477]; paired t (seed label): p_holm = 0.633; Wilcoxon (replay level) p_holm = 5.73e-49; PoI = 1 [1, 1]
+## Comparisons T5 (stats/tests_T5.csv; Wilcoxon on replay-level differences, Holm per table)
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 5: difference 11.35 [7.764, 15.14], 600 replays; p_holm = 7.73e-14; per seed: s0=-16.4021; s1=-18.5191 | s0=-31.5451; s1=-26.0726
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 5: difference -0.4641 [-0.7145, -0.2428], 600 replays; p_holm = 0.0115; per seed: s0=-9.96578; s1=-10.036 | s0=-9.08668; s1=-9.98688
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 10: difference 9.145 [6.11, 12.66], 600 replays; p_holm = 2.22e-06; per seed: s0=-23.6938; s1=-24.3967 | s0=-33.5186; s1=-32.8623
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 10: difference -0.4541 [-0.7033, -0.2318], 600 replays; p_holm = 0.0115; per seed: s0=-19.413; s1=-19.4227 | s0=-18.4763; s1=-19.4511
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 20: difference 11.91 [8.279, 15.94], 600 replays; p_holm = 0.000196; per seed: s0=-45.2983; s1=-45.2014 | s0=-62.2457; s1=-52.0729
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 20: difference -0.8395 [-1.188, -0.5084], 600 replays; p_holm = 0.00456; per seed: s0=-43.2656; s1=-43.1531 | s0=-41.5742; s1=-43.1655
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 50: difference 10.1 [6.179, 14.85], 600 replays; p_holm = 3.43e-14; per seed: s0=-109.491; s1=-105.984 | s0=-122.4; s1=-113.283
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 50: difference 0.7646 [0.1226, 1.376], 600 replays; p_holm = 0.000476; per seed: s0=-105.673; s1=-104.101 | s0=-103.92; s1=-107.383
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 100: difference 5.582 [2.829, 8.602], 300 replays; p_holm = 5.57e-07; per seed: s0=-218.741; s1=-212.311 | s0=-218.728; s1=-223.488
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 100: difference 3.691 [2.087, 5.276], 300 replays; p_holm = 1.07e-05; per seed: s0=-215.635; s1=-211.641 | s0=-212.902; s1=-221.756
+- SA-Attn (ours) vs Attention+penalty, jpen_eur, N = 200: difference 5.453 [-3.371, 12.07], 300 replays; p_holm = 1.69e-06; per seed: s0=-423.275; s1=-407.336 | s0=-413.781; s1=-427.736
+- SA-Attn (ours) vs Attention+penalty, profit_eur, N = 200: difference 11.94 [8.378, 15.59], 300 replays; p_holm = 4.94e-09; per seed: s0=-411.857; s1=-404.827 | s0=-412.821; s1=-427.736
+- MLP+safety layer vs MLP+penalty, jpen_eur, N = 5: difference 14.17 [10.7, 17.77], 600 replays; p_holm = 3.44e-38; per seed: s0=-14.708; s1=-16.2488 | s0=-29.5756; s1=-29.7311
+- MLP+safety layer vs MLP+penalty, profit_eur, N = 5: difference 1.343 [1.07, 1.625], 600 replays; p_holm = 1.01e-23; per seed: s0=-9.8933; s1=-9.86058 | s0=-11.2307; s1=-11.2085
+- MLP+safety layer vs MLP+penalty, jpen_eur, N = 10: difference 45.22 [35.97, 55.23], 600 replays; p_holm = 3.19e-60; per seed: s0=-21.2718; s1=-21.5203 | s0=-36.4382; s1=-96.7876
+- MLP+safety layer vs MLP+penalty, profit_eur, N = 10: difference 2.46 [2.066, 2.858], 600 replays; p_holm = 1.58e-34; per seed: s0=-19.3976; s1=-19.2612 | s0=-21.9372; s1=-21.6416
+- MLP+safety layer vs MLP+penalty, jpen_eur, N = 20: difference 18.01 [14.38, 22.04], 600 replays; p_holm = 4.6e-65; per seed: s0=-43.277; s1=-44.0469 | s0=-61.6725; s1=-61.6808
+- MLP+safety layer vs MLP+penalty, profit_eur, N = 20: difference 3.873 [3.363, 4.391], 600 replays; p_holm = 5.73e-49; per seed: s0=-43.2638; s1=-44.0469 | s0=-47.4117; s1=-47.6442

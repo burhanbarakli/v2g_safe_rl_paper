@@ -1,12 +1,12 @@
 ﻿group,Method,Training time (h),N = 5 (ms/step),N = 10 (ms/step),N = 20 (ms/step),N = 50 (ms/step),N = 100 (ms/step),N = 200 (ms/step)
-,SA-Attn (ours),1.15 ± 0.01,1.45,1.68,2.00,2.94,4.52,7.76
-,Attention+penalty,1.17 ± 4.5e-03,1.20,1.43,1.72,2.72,4.34,7.56
-,Attention+PPO-Lagrangian,1.01 ± 0.01,1.16,1.37,1.70,2.66,4.27,7.56
-,Attention+safety layer without departure bound,1.12 ± 4.3e-03,1.43,1.69,2.01,2.94,4.59,7.91
-,Deep Sets+safety layer,0.90 ± 2.1e-03,0.97,1.17,1.46,2.34,3.61,5.99
-,MLP+safety layer,0.81 ± 2.1e-03,0.74,0.82,0.95,–,–,–
-,MLP+penalty,0.79 ± 2.7e-03,0.50,0.60,0.77,–,–,–
-,SA-Attn trained at N = 50 (reference),1.99 ± 0.01,–,–,–,2.38,3.88,5.92
+,SA-Attn (ours),1.15 (1.14–1.16),1.45,1.68,2.00,2.94,4.52,7.76
+,Attention+penalty,1.17 (1.17–1.18),1.20,1.43,1.72,2.72,4.34,7.56
+,Attention+PPO-Lagrangian,1.01 (1.01–1.02),1.16,1.37,1.70,2.66,4.27,7.56
+,Attention+safety layer without departure bound,1.12 (1.11–1.12),1.43,1.69,2.01,2.94,4.59,7.91
+,Deep Sets+safety layer,0.90 (0.90–0.90),0.97,1.17,1.46,2.34,3.61,5.99
+,MLP+safety layer,0.81 (0.81–0.81),0.74,0.82,0.95,–,–,–
+,MLP+penalty,0.79 (0.79–0.80),0.50,0.60,0.77,–,–,–
+,SA-Attn trained at N = 50 (reference),1.99 (1.98–1.99),–,–,–,2.38,3.88,5.92
 ,LLF+safety layer,–,0.37†,0.43†,0.56†,0.92†,1.49†,2.67†
 ,LLF,–,0.22†,0.28†,0.41†,0.75†,1.31†,2.44†
 ,sLLF+safety layer,–,0.36†,0.43†,0.55†,0.89†,1.49†,2.62†

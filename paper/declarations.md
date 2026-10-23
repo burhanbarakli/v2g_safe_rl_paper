@@ -19,7 +19,7 @@ The authors declare that there is no conflict of interest regarding the publicat
 [TODO: confirm the wording.] This study is a simulation study that involves no human participants, no human data collected by the authors and no animals, so ethics committee approval was not required. The authors declare that they complied with research and publication ethics.
 
 **Availability**
-The code, the scenario configurations, the test replays and the analysis scripts will be released in a public repository. [TODO: repository link, licence and archived version.] The experiments use the public EV2Gym code at commit 55ef368c and, for one baseline, the public EV-GNN code at commit 01aa1b7a. GNN-DT (DT4EVs, commit 8b327d12) is public but was not run (see Section 5.2).
+The code, the scenario configurations, the test replays and the analysis scripts will be released in a public repository. [TODO: repository link, licence and archived version.] The experiments use the public EV2Gym code at commit 55ef368c without changes to its source.
 (Anonymised version: "The link is withheld for double-blind review.")
 
 **Artificial Intelligence Statement**

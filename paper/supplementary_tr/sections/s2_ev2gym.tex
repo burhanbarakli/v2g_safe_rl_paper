@@ -45,9 +45,9 @@ Gücü kWh başına $1/(\eta^{\sm c}\Delta t)$ kW'tan daha hızlı düşen bir �
 Karar değişkeni $p_i$, EV2Gym'in raporladığı, faturalandırdığı ve trafoya gönderdiği güçtür ve adım başına batarya tarafındaki enerji değişimine eşittir.
 Bu kabulle \Eq{M-eq:dynamics} içinde $\eta_i^{\sm c}=\eta_i^{\sm d}=1$ olur; EV2Gym'in şarj ve deşarj verimleri $\zeta_i^{\sm c}$ ve $\zeta_i^{\sm d}$ ise yalnızca güç limitleri üzerinde düşürme (derating) çarpanları olarak etki eder.
 
-Belirtim dosyamız her EV modeli için tek bir verim sabitlemektedir: yedi model için 0.90, bir model için 0.93; bu değerler simülatörün tablosundan modelin nominal akımında alınmıştır.
-EV2Gym, normalize edilmiş eylemi (komutun $\zeta_i^{\sm c}P^{\sm{cs}}$'ye bölümü; burada şarj ünitesi anma değeri $P^{\sm{cs}}=22.17$ kW'tır) beş ondalık basamağa yuvarlar ve 0.01 A'in altındaki deşarj akımlarını yok sayar.
-Ayrıca her etkin adımdan sonra depolanan enerjiyi, eklenen enerjiyi faturalandırmadan 0.01 kWh'e yukarı yuvarlar.
+Belirtim dosyamız her EV modeli için tek bir verim sabitlemektedir: yedi model için 0,90, bir model için 0,93; bu değerler simülatörün tablosundan modelin nominal akımında alınmıştır.
+EV2Gym, normalize edilmiş eylemi (komutun $\zeta_i^{\sm c}P^{\sm{cs}}$'ye bölümü; burada şarj ünitesi anma değeri $P^{\sm{cs}}=22.17$ kW'tır) beş ondalık basamağa yuvarlar ve 0,01 A'in altındaki deşarj akımlarını yok sayar.
+Ayrıca her etkin adımdan sonra depolanan enerjiyi, eklenen enerjiyi faturalandırmadan 0,01 kWh'e yukarı yuvarlar.
 Bu nedenle eyleyici eşlemesi, bir komutu $u_i$'nin $\varepsilon_{\sm{sat}}=10^{-3}$ kW yakınında olduğunda tam akım olarak gönderir; aksi hâlde komutu beş ondalık basamaklı eylem ızgarasında yukarı yuvarlar.
 \Alg{alg:safety}, bu eyleyici davranışıyla güvenlik katmanının tam bir adımını listelemektedir.
 $\sum_il_i$ makine duyarlılığında $\Ctil$ değerine eşit olduğunda yuvarlama toplam limiti bozabilir.
@@ -112,7 +112,7 @@ Aksi hâlde $\tilde p_i\ge p_i\ge\pmn(E)$'dir; dolayısıyla ne deşarj limiti n
 Her durumda $0\le\tilde p_i-p_i\le0.0072<\varepsilon_q$ kW'tır ve boş şarj üniteleri sıfır güç çeker.
 
 Son olarak depolanan enerji $E(t+1)=\lceil E+\Delta t\,\tilde p_i\rceil_{0.01}\ge E+\Delta t\,\tilde p_i\ge E+\Delta t\,p_i$'dir.
-Ayrıca $E+\Delta t\,\tilde p_i\le\varphi(E)\le E^{\sm{cap}}$'dir ve her kapasite, yuvarlamadan sonra tam olarak temsil edilebilen 0.01 kWh'in bir katı olduğundan yukarı yuvarlama $E^{\sm{cap}}$ değerini aşamaz.
+Ayrıca $E+\Delta t\,\tilde p_i\le\varphi(E)\le E^{\sm{cap}}$'dir ve her kapasite, yuvarlamadan sonra tam olarak temsil edilebilen 0,01 kWh'in bir katı olduğundan yukarı yuvarlama $E^{\sm{cap}}$ değerini aşamaz.
 \end{proof}
 
 $m=5$ için kök $z_0(5)=0.99302$ ve eşik $\kappa^{*}(5)=4.965$'tir.
@@ -137,7 +137,7 @@ EV2Gym'in üç varış profili varış zamanları, kalış süreleri ve talep ed
 İşyeri varışları hafta içi sabahlarında yoğunlaşır, kamusal varışlar öğleden sonra ve akşam tepe noktasıyla gün boyuna yayılır, özel varışlar ise geç öğleden sonra ve akşam gerçekleşir ve gece boyu kalışları içerir.
 EV2Gym, ayrılışı epizot sonuna dört adımdan daha yakın düşecek bir EV üretmez; dolayısıyla epizot çok geç başladığında gece boyu süren oturumlar sessizce eksik kalır.
 Bu nedenle kamusal ve özel profiller 05:00 yerine 12:00'de başlar.
-Yalnızca senaryo üreteci üzerinde, düşürülen üretim denemelerinin payı bu durumda \%6.8 ve \%3.7'ye düşer; profil başına üretim çarpanları ortalama şarj ünitesi doluluğunu yaklaşık 0.21 düzeyinde eşitler.
+Yalnızca senaryo üreteci üzerinde, düşürülen üretim denemelerinin payı bu durumda \%6,8 ve \%3,7'ye düşer; profil başına üretim çarpanları ortalama şarj ünitesi doluluğunu yaklaşık 0,21 düzeyinde eşitler.
 Bu çarpanlar şarj ünitesi başına enerji talebini de yaklaşık \%5 içinde eşitler; bu senaryo üreteci istatistikleri sonuç değil tasarım denetimleridir \TODO{yazarlar bunları yeniden ölçüp doğrular}.
 Epizot boş başlar; yükler ve PV her epizot için yeniden çekilir.
 Literatür yapılandırmamız, EV belirtim dosyamızı kullanarak EV2Gym'in 100 kW'lık, işyeri profilli, yük ve PV içermeyen 25 şarj üniteli V2G kâr en büyükleme durumunu yeniden üretir.
@@ -158,16 +158,16 @@ Trafo anma gücü & $P_{\sm{tr}}=\rho_{\sm{tr}}N$; $\rho_{\sm{tr}}\in\{4,7\}$ kW
 Esnek olmayan yük & ortalama tepe $0.4P_{\sm{tr}}$, $P_{\sm{tr}}$'de kırpılır, her epizotta yeniden çekilir & doğrusal \\
 PV üretimi & ortalama tepe yaklaşık $0.38P_{\sm{tr}}$, her epizotta yeniden çekilir & doğrusal \\
 Talep tepkisi & kapalı & -- \\
-Adım, ufuk & $\Delta t=15$ dk, $T=112$ (28 h); duyarlılık 5 dk, $T=336$ & -- \\
-Profiller (başlangıç, üretim çarpanı, günler) & işyeri (05:00, 5, hafta içi); kamusal (12:00, 4, tüm günler); özel (12:00, 2.5, tüm günler) & şarj ünitesi başına \\
-Ortalama doluluk & tüm profiller için yaklaşık 0.21 & -- \\
-EV modelleri & V2G destekli 8 model; verim 0.90 (bir model için 0.93); $E^{\min}=5$ kWh; en kısa kalış 180 dk & -- \\
+Adım, ufuk & $\Delta t=15$ dk, $T=112$ (28 h) & -- \\
+Profiller (başlangıç, üretim çarpanı, günler) & işyeri (05:00, 5, hafta içi); kamusal (12:00, 4, tüm günler); özel (12:00, 2,5, tüm günler) & şarj ünitesi başına \\
+Ortalama doluluk & tüm profiller için yaklaşık 0,21 & -- \\
+EV modelleri & V2G destekli 8 model; verim 0,90 (bir model için 0,93); $E^{\min}=5$ kWh; en kısa kalış 180 dk & -- \\
 Şarj gücü azalması çarpanı & 5 (EV2Gym varsayılanı) & -- \\
-İstenen enerji & tam batarya; duyarlılık \%80 şarj durumu & -- \\
-Fiyatlar & Hollanda gün öncesi fiyatları; deşarj fiyatı $=$ şarj fiyatı; 0.9 çarpanı ve 0.05 \texteuro/kWh enerji akışı maliyetiyle duyarlılıklar & -- \\
+İstenen enerji & tam batarya & -- \\
+Fiyatlar & Hollanda gün öncesi fiyatları; deşarj fiyatı $=$ şarj fiyatı & -- \\
 Tahmin gürültüsü & Gauss, standart sapma değerin \%10'u & -- \\
 Test ızgarası & 36 yapılandırma ($N$, $\rho_{\sm{tr}}$, profil), 6 stres yapılandırması ve literatür yapılandırması & -- \\
-Test epizotları & $N\le50$ ve literatür yapılandırması için yapılandırma başına 100, $N\ge100$ için 50; politika başına 3550 & -- \\
+Test epizotları & $N\le50$ ve literatür yapılandırması için yapılandırma başına 100, $N\ge100$ için 50; politika başına 3.550 & -- \\
 \bottomrule
 \end{tabular}
 \end{table}

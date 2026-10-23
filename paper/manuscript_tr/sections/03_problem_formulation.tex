@@ -68,15 +68,14 @@ J^{\sm{pen}}(\pi)=J^{\pi}-w_E\sum_i\Delta E_i^{\sm{sh}}-w_P\,\Delta t\sum_t\Big[
 olarak tanımlanır; burada $\Delta E_i^{\sm{sh}}=(\Ereq_i-E_i(d_i+1))^{+}$ ayrılıştaki eksik enerjidir.
 
 HiGHS \cite{huangfu2018parallelizing} ile çözülen iki tam bilgili LP, epizodun tamamını bilir ve referans olarak kullanılır.
-Her ikisi de EV2Gym'in şarj gücü azalmasını dış doğrusal kısıt satırlarıyla modeller; bu satırlar tek adımlık bir geçiş bandı ve \%1'lik bir pay dışında kesindir (Lemma~\ref{S-lem:taperrows}); ayrıca her ikisi de EV2Gym'in faturalandırılmayan 0.01 kWh'lik yuvarlama kazancını hesaba katar.
+Her ikisi de EV2Gym'in şarj gücü azalmasını dış doğrusal kısıt satırlarıyla modeller; bu satırlar tek adımlık bir geçiş bandı ve \%1'lik bir pay dışında kesindir (Lemma~\ref{S-lem:taperrows}); ayrıca her ikisi de EV2Gym'in faturalandırılmayan 0,01 kWh'lik yuvarlama kazancını hesaba katar.
 Yumuşak cezalı optimum $J^{\sm{pen,LP}}$, eksik enerji ve aşırı yük için gevşek değişkenlerle \Eq{eq:jpen} ifadesini en büyükler.
 Eksik enerji ortak kabul edilen gereksinime göre ölçüldüğünde, eksik enerji ya da aşırı yük içeren yörüngeler de dâhil olmak üzere simüle edilen her yörünge için $J^{\sm{pen}}(\pi)\le J^{\sm{pen,LP}}$ sağlanır (Önerme~\ref{S-prop:softoracle}).
-Dolayısıyla ana ölçüt, karşılaştırılan her yöntem için iyi tanımlıdır:
+Dolayısıyla ana ölçüt, şarj ünitesi ve epizot başına \texteuro{} cinsinden mutlak açık olarak karşılaştırılan her yöntem için iyi tanımlıdır:
 \begin{equation}\label{eq:gap}
-\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{|J^{\sm{pen,LP}}|}\ \ge0 ;
+\mathrm{gap}^{\sm{pen}}(\pi)=\frac{J^{\sm{pen,LP}}-J^{\sm{pen}}(\pi)}{N}\ \ge0 .
 \end{equation}
-burada mutlak değer gereklidir, çünkü kârlar genellikle negatiftir.
-$|J^{\sm{pen,LP}}|<1$\,\texteuro{} olan ya da çözücü durumu optimal olmayan epizotlar için açık hesaplanmaz ve bunların sayısı raporlanır.
+Epizot başına göreli bir açık kullanılmamaktadır, çünkü $J^{\sm{pen,LP}}$ çoğu zaman sıfıra yakın ya da negatiftir; ek materyal göreli açıkları yalnızca toplamların oranı olarak raporlamaktadır.
 Katı optimum $J^{\sm{LP,ceil}}$, toplam eksik enerjiyi en küçükleyen ilk aşamadan sonra ayrılış gereksinimlerini ve trafo limitini kısıt olarak uygular.
 Bu optimum, trafo limitine uyan ve daha fazla eksik enerji bırakmayan her denetleyicinin kârını üstten sınırlar (Önerme~\ref{S-prop:oracle}) ve garantinin maliyeti analizinde kullanılır.
 

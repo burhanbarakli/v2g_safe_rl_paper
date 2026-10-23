@@ -2,51 +2,62 @@
 \section{Tartışma}\label{sec:discussion}
 % ---------------------------------------------------------------------
 
+\TODO{TASLAK. SAUCIS yapay zekâ politikası gereğince bulguların yorumu yazarlar tarafından yazılmalıdır. Yazarlar bu bölümü kendi sözcükleriyle yeniden yazar ve her ifadeyi bulgulara göre denetler; aşağıdaki taslak yalnızca dikkate alınabilecek noktalar önermektedir}.
+
 \subsection{Yorum}\label{sec:interpretation}
 
-% Bulguların yorumu yazarlar tarafından yazılmalıdır (SAUCIS yapay zekâ
-% politikası). Yönlendirmeler, her paragrafın dayandığı analiz çıktısını
-% belirtir; burada önceden yazılmış hiçbir yorum yoktur.
+Güvenlik katmanı iki katmanlı sonucunu her test yapılandırmasında sağlamıştır.
+Katmandan geçirilerek çalıştırılan tüm epizotlarda trafo limiti istisnasız sağlanmış; buna karşılık cezaya dayalı ve Lagrange tabanlı eğitim ihlalleri ortadan kaldırmamış, 3.730 ve 3.274 aşırı yük adımı görülmüştür.
+Ayrılış sınırına sahip konformal olmayan her yöntemde ayrılışa ilişkin kısım epizot düzeyindeki denetimde sağlanmıştır; dolayısıyla kalan eksik enerji yalnızca olursuz adım içeren epizotlardan kaynaklanmıştır.
+Buna karşılık ayrılış sınırı içermeyen varyant, hiç olursuz adım içermeyen epizotlarda da EV'leri gereksinimi karşılanmadan bırakmıştır.
 
-\TODO{Paragraf 1, yazarlar tarafından: 10 ve 20 şarj ünitesiyle eğitilen ağırlıkların 200 şarj ünitesine ve stres düzeyine aktarılıp aktarılmadığını belirtin. \Fig{fig:zeroshot}, \Tab{S-tab:t2} içindeki aktarım açığı ve yedek kural sütunları, \Tab{S-tab:t3b} içindeki bağlayıcılık oranları ve \Tab{S-tab:ts2} kullanılmalıdır}.
+Koşullu kısım uygulamada önemlidir, çünkü öğrenen politikalar çok sayıda olursuz adıma yol açmıştır.
+Akla yatkın bir yorum, kâr peşindeki bir politikanın birçok EV'yi en geç başlangıç yörüngesinde tuttuğu ve bu nedenle dikkat tabanlı politikanın dolu şarj ünitesi adımlarının \%28 ile \%42'sinde tam olarak alt sınırı komut ettiğidir.
+Ardından trafo bağlayıcı hâle geldiğinde bu sınırların tümü aynı anda karşılanamaz.
+Erken şarj eden kurallar bu tür durumlara nadiren ulaşmış; katmanı yalnızca kullanım aşamasında uygulayan ceza ile eğitilmiş politika ise daha az olursuz adıma sahip olmuştur.
+Yalnızca her EV'nin kendi erişilebilirliğini değil, toplam kapasiteyi de öngören bir alt sınır doğal bir sonraki adımdır.
 
-\TODO{Paragraf 2, yazarlar tarafından: \Fig{fig:cost} ve \Tab{S-tab:t5} içindeki garantinin maliyetini, \Tab{S-tab:t3} içindeki Attention+penalty ihlalleriyle ilişkilendirin. Birincil ölçü olarak $\Delta J^{\sm{pen}}$ ve stats/tests\_T5.csv kullanılmalıdır}.
+Dolayısıyla koşullu garantinin öğrenen dikkat tabanlı politika için bir bedeli olmuştur.
+Bu politika sınırla birlikte, sınır içermeyen varyanta, ceza ile eğitilen ikizine ve Lagrange tabanlı politikaya göre daha fazla EV'yi gereksinimi karşılanmadan bırakmıştır.
+Bu varyant ayrıca her boyutta daha düşük bir açığa sahip olmuştur.
+Bu farkın bir kısmı eğitimden kaynaklanıyor olabilir, çünkü söz konusu varyant kâr ödülünden değil ceza içeren ödülden öğrenmiştir.
+Erken şarj eden kurallar aynı sınırla hiçbir EV'yi gereksinimi karşılanmadan bırakmamıştır.
+Dolayısıyla ayrılışa ilişkin kısım en çok alt sınırları üzerinde ilerlemeyen denetleyicilerle yararlıdır; kâr peşindeki bir öğrenen ise bu kısmı bir olursuz adım kaynağına dönüştürebilir.
 
-\TODO{Paragraf 3, yazarlar tarafından: \Tab{S-tab:t3} ve \Tab{S-tab:t3b} içindeki E4'ü ve açık sınırına göre eksik enerjiyi tartışın. Her ikisini A5'in kapalı döngü niteliğiyle ilişkilendirin}.
+Sıfır-atış aktarım burada test edilen anlamda işe yaramıştır.
+50'den 200 şarj ünitesine kadar dikkat tabanlı politikanın açığı, 50 şarj ünitesinde eğitilmiş bir politikanın şarj ünitesi başına 0,04\,\texteuro{} yakınında kalmış; aralıklar 0,05'e kadar uzanmıştır.
+Yalnızca en küçük istasyon açıkça daha zor olmuştur.
 
-\TODO{Paragraf 4, yazarlar tarafından: yayımlanmış EV2Gym sayılarıyla karşılaştırmayı yalnızca literatür yapılandırması üzerinde (\Tab{S-tab:ts3}) yapın; farklı simülatörler ya da senaryolar arasında asla karşılaştırma yapmayın}.
+Mimari karşılaştırması dikkatin bir üstünlüğünü desteklememektedir.
+Aksine Deep Sets politikası, test ızgarasının her istasyon boyutunda dikkat tabanlı politikadan daha düşük açıklara ve daha az olursuz adıma, daha düşük çıkarım maliyetiyle sahip olmuştur.
+Olası bir neden, şarj üniteleri arasındaki bağlantıyı güvenlik katmanının zaten kurması ve bu nedenle havuzlanmış bir bağlama sahip, belirteç başına ortak bir politikanın yeterli olmasıdır.
+Ancak iki tohum ve sınırlı ayarlama bütçesi, iki mimarinin kesin bir sıralamasına izin vermemektedir.
 
-\subsection{Şarj noktası işletmecileri için pratik çıkarımlar}\label{sec:implications}
+Kurallarla yapılan karşılaştırma, güvenlik katmanının yeniden kullanılabilir bir bileşen olduğunu göstermektedir.
+Katmanlı bir fiyat eşiği kuralı test ızgarasının her istasyon boyutunda dikkat tabanlı politikadan daha düşük ortalama açığa sahip olmuş; Deep Sets politikası bu kuralı yalnızca 20 şarj ünitesi ve üzerinde geçmiştir.
+10 şarj ünitelik eğitim boyutunda katmanlı her kural dikkat tabanlı politikadan daha düşük ortalama açığa sahip olmuştur.
+Dolayısıyla deneyler, yöntem başına 12 yapılandırmalık belirtilen ayarlama bütçesi altında, dikkat tabanlı politikanın aynı katmanla kullanılan basit, fiyatı dikkate alan bir kurala göre bir yararını göstermemektedir.
 
-Bu alt bölüm, deneylerden sonra yazarlar tarafından aşağıdaki noktaları kapsayacak şekilde yazılacaktır.
-\begin{itemize}
-\item \TODO{Trafo limiti her ham eylem için sağlandığında bir CPO'nun ne kazandığı ve koşullu ayrılış sonucunun hizmet taahhüdü açısından ne anlama geldiği.}
-\item \TODO{\Tab{S-tab:t5} üzerinden, belirli bir boyuttaki istasyon için hizmet verilen EV başına avro cinsinden garantinin maliyeti.}
-\item \TODO{\Tab{S-tab:t7} üzerinden, sürücülerin ayrılış zamanlarını bildirmediği durumlarda konformal varyantın kullanımı ve kabul edilebilir kapsama düzeyleri.}
-\item \TODO{\Tab{S-tab:t6} üzerinden, 15 dakikalık kontrol adımına göre kontrol adımı başına çıkarım süresi.}
-\end{itemize}
+Cezalı kâr açısından ceza ile eğitilen ikiz her boyutta daha düşük puan almış; aralık yalnızca 200 şarj ünitesinde sıfırı içermiş, burada da Wilcoxon testi yine katmanlı politika lehine olmuştur.
+Ham kâr cinsinden ikiz, küçük istasyonlarda kabul edilen EV başına en fazla yaklaşık 0,14\,\texteuro{} daha fazla, büyük istasyonlarda ise daha az kazanmıştır.
+Konformal sınır için elde edilen kapsama her hedefin 0,002 yakınında kalmış ve yalnızca 0,80'de hedefin altına düşmüştür; ancak $\alpha=0.01$ kabul edilen talepleri o kadar güçlü biçimde kesmiştir ki hizmet çökmüştür.
+0,05 ve 0,1 düzeyleri açık bakımından bilinen ayrılışlara yakın kalmış, ancak eksik enerjileri altı ila yedi kat büyük olmuştur.
+
+\TODO{Şarj noktası işletmecileri için pratik çıkarımlar, yazarlar tarafından yazılacaktır. Olası noktalar: her ham eylem için bir trafo garantisinin değeri, koşullu ayrılış sonucu, konformal düzey ve çıkarım süresi}.
 
 \subsection{Sınırlılıklar}\label{sec:limitations}
 
-Teorem~\ref{thm:invariance} kapsamındaki ayrılış sonucu, bildirilen ayrılış zamanlarına ve gereksinimlere (A2) dayanmaktadır.
-Konformal genişletmemiz yalnızca ayrılış adımını gevşetmekte, kapsaması marjinal kalmakta ve son tarihlerin stratejik olarak yanlış bildirilmesi \cite{ferragut2022scheduling} modelin dışında kalmaktadır.
-\Sec{sec:invariance} içindeki iki EV'li örneğin gösterdiği gibi toplam olurluluk (A5) kapalı döngüde sağlanamayabilir.
-Bu tür adımlarda ayrılış gereksinimi yalnızca Teorem~\ref{thm:invariance}(b) kapsamındaki EV'ler için garanti edilir; Lemma~\ref{S-lem:deficit} ise kalan eksik enerjiyi ortadan kaldırmadan sınırlar.
-Gelecek boyunca ortak olurluluğu sertifikalayan bir katman, zamana bağlı kısıtlara ihtiyaç duyacak ve tek toplamlı izdüşüm yapısını kaybedecektir.
+Öğrenen her yöntem iki tohumla eğitilmiştir; dolayısıyla tohumlar arası değişkenlik yalnızca bir aralık olarak gösterilmektedir ve ayarlama bütçesi yöntem başına planlanan 12 yapılandırmadır.
+Planlanan ablasyonlar, ceza ağırlığı ve diğer duyarlılık çalışmaları, diğer MPC varyantları, EV-GNN karşılaştırma yöntemi ve örnek gün analizi çalıştırılmamıştır; tek duyarlılık stres anma düzeyidir.
+Ayrılış denetimimiz epizot düzeyindedir, çünkü kayıtlar her EV'nin alt sınırını her zaman alıp almadığını kaydetmemektedir.
 
-Trafoya ilişkin sonuç, A3 tek adım modelini ve A6'daki dışsal kapasite payını gerektirir; denetleyici A6'yı uygulamaz.
-Lemma~\ref{S-lem:a3}, kullandığımız EV2Gym ayarları için A3'ü ispatlamaktadır; buna karşın gerçek bir batarya yönetim sistemi komut edilenden daha az güç çekebilir.
-Eksik teslimat, bir EV'nin enerjisini sınırların varsaydığı değerin altına düşürür; bu nedenle donanım uygulamasında eşikler üzerinde bir pay ya da ölçülen enerjiden geri besleme gerekecektir; bu çözüm burada analiz edilmemiştir.
-A1, EV2Gym'in üstel şarj gücü azalması için geçerlidir; ancak çok daha dik bir azalma bu varsayımı bozacaktır.
-Model, gerilim limitleri ya da hat akışları olmaksızın tek bir trafonun arkasındaki tek bir istasyonu kapsar ve ek bağlantılı toplam kısıtları Önerme~\ref{prop:projection} kapsamının dışında kalacaktır.
+Ayrılış sonucu bildirilen ayrılış zamanlarına ve gereksinimlere (A2) dayanmaktadır; konformal genişletme ise yalnızca marjinal kapsama sağlamaktadır.
+Kuram tarafında trafoya ilişkin sonuç A3 tek adım modelini ve A6'daki kapasite payını gerektirir; gerçek bir batarya yönetim sistemi komut edilenden daha az güç çekebilir.
+EV2Gym bazı eğitim günlerini oluşturamamıştır, çünkü negatif konut yükleri negatif bir gürültü ölçeği üretmiştir.
+Bu nedenle eğitim tohumları ayarlama işi başına bir kez, eğitim işi başına iki kez yeniden çekilmiş; tüm test tekrarları ise değiştirilmeden oluşturulmuştur.
+Katı optimum birkaç tekrarda eksik enerji toleransına duyarlı olmuş; 3.550 tekrardan 3'ü ek çözücü yedeklerine (primal simpleks ya da daha sıkı bir eksik enerji toleransı) ihtiyaç duymuştur.
 
-Deneylerde EV2Gym'in kayıpsız muhasebesi kullanılmakta ve deşarj fiyatı şarj fiyatına eşit alınmaktadır.
-Dolayısıyla V2G arbitrajı ne gidiş-dönüş kaybı ne de yıpranma maliyeti içerir; bu nedenle deşarjdan elde edilen kârlar iyimser olabilir ve duyarlılık çalışmaları bu etkiyi yalnızca tek bir istasyon boyutunda incelemektedir.
-Tüm sonuçlar, EV2Gym istatistiklerinden üretilen sentetik varışlar ve Hollanda gün öncesi fiyatlarıyla yapılan simülasyonlardan elde edilmiştir; bazı geç akşam oturumları epizot ufkuna sığmamakta ve tahmin gürültüsü sentetiktir.
-Şebeke büyüklükleri $N$ ile doğrusal olarak ölçeklendiğinden test istasyonlarının şarj ünitesi başına istatistikleri eğitimdekilerle örtüşmekte; bunları yalnızca stres düzeyi değiştirmektedir.
-
-Bazı karşılaştırmalar tam olarak eşdeğer koşullarda yapılmamıştır.
-EV-GNN, kendi algoritması ve ödülüyle, tek bir boyutta, her profil için ayrı olarak, çalıştırma başına tek bir yük ve PV çekilişiyle ve varsayılanından daha az adımla eğitilmektedir.
-eMPC-HiGHS yeniden gerçeklememiz ufku içindeki kesin fiyatları ve varışları bilmekte, MLP yalnızca $N\le20$ için raporlanmakta ve GNN-DT çalıştırılmamıştır.
-Optimumlar, tek adımlık bir geçiş bandı ve \%1'lik bir pay dışında kesin olan dış şarj gücü azalması satırlarını yuvarlama payıyla birlikte kullanmaktadır.
-Ayrıca optimumlar çevrim içi bir denetleyicinin bilgi kısıtlarını göz ardı etmektedir; dolayısıyla her açığın bir kısmı geleceği bilmemenin bedelidir.
+Deneyler, eşit şarj ve deşarj fiyatlarıyla EV2Gym'in kayıpsız muhasebesini kullanmaktadır; dolayısıyla V2G arbitrajından elde edilen kârlar iyimser olabilir.
+Tüm sonuçlar sentetik varışlar ve Hollanda gün öncesi fiyatlarıyla yapılan simülasyonlardan elde edilmiştir ve şebeke büyüklükleri $N$ ile doğrusal olarak ölçeklenmektedir.
+eMPC-HiGHS gerçeklememiz ufku içindeki kesin fiyatları ve varışları kullanmakta, MLP ise yalnızca 20 şarj ünitesine kadar raporlanmaktadır.
+Optimumlar çevrim içi bir denetleyicinin bilgi kısıtlarını göz ardı etmektedir; dolayısıyla her açığın bir kısmı geleceği bilmemenin bedelidir.

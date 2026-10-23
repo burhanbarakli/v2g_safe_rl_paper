@@ -108,9 +108,10 @@ FIG_INFERENCE = ["attn_safe", "deepsets_safe", "mlp_safe", "evgnn", "llf_safe", 
                  "empc_highs_safe", "empc_highs_24h_safe"]
 ABLATION_2X2 = {("Attention", "safety layer"): "attn_safe", ("Attention", "penalty"): "attn_penalty",
                 ("MLP", "safety layer"): "mlp_safe", ("MLP", "penalty"): "mlp_penalty"}
-EXTRA_ABLATIONS = ["attn_proj_nolb", "deepsets_safe", "attn_lagrangian", "attn_penalty_safedeploy",
-                   "attn_safe_noadm", "attn_penalty_noadm", "attn_safe_beta0", "attn_safe_curriculum",
-                   "attn_safe_small", "attn_penalty_dense"]
+# T4 / Fig. S2 (DD45: only variants that were run; extended-set ablations were not run)
+T4_ROWS = ["attn_safe", "attn_penalty", "attn_lagrangian", "attn_proj_nolb", "attn_penalty_safedeploy",
+           "deepsets_safe", "mlp_safe", "mlp_penalty"]
+EXTRA_ABLATIONS = ["attn_lagrangian", "attn_proj_nolb", "attn_penalty_safedeploy", "deepsets_safe"]
 SENS_WEIGHT_METHODS = ["attn_penalty", "attn_penalty_w1", "attn_penalty_w100"]
 SENS_METHODS = ["attn_safe", "attn_penalty", "mlp_safe", "llf_safe", "price_llf_safe", "empc_highs_safe",
                 "attn_safe_dt5"]

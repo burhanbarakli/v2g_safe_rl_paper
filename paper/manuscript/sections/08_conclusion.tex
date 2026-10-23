@@ -2,19 +2,26 @@
 \section{Conclusion}\label{sec:conclusion}
 % ---------------------------------------------------------------------
 
-This paper combined a size-agnostic attention policy with a feasibility-preserving safety layer for V2G charging control at a CPO station.
+This paper combined size-agnostic set policies with a feasibility-preserving safety layer for V2G charging control at a CPO station.
 The layer projects raw actions onto taper-aware per-EV bounds and the two-sided transformer limit in $O(N\log N)$ time, during training and deployment.
 Theorem~\ref{thm:invariance} gives a two-layer result.
-Under the one-step model and the grid-headroom condition, the transformer limit holds at every step for every sequence of raw actions.
-Every EV whose stay contains no infeasible step meets its admitted departure requirement, and a deficit bound limits the shortfall of the others.
+Under the one-step model and the grid-headroom condition, the transformer limit holds at every step for every sequence of raw actions, and every EV whose stay contains no infeasible step meets its admitted departure requirement.
 
-In the zero-shot evaluation, \RES{one or two sentences on the penalised-profit gap up to $N=200$, \Tab{S-tab:t2}}.
-Regarding constraint satisfaction, \RES{one sentence on overload energy, shortfall and E4, Tables~\ref{S-tab:t3} and~\ref{S-tab:t3b}}.
-The cost of the guarantee was \RES{one sentence on $\Delta J^{\sm{pen}}$ and $\Delta$ profit per EV served, \Tab{S-tab:t5}}.
+In EV2Gym, no transformer overload occurred in any episode run through the safety layer.
+For every non-conformal method with the known-departure bound, no EV was left short in an episode without infeasible steps.
+Attention and Deep Sets policies trained at 10 and 20 chargers transferred to 200 chargers.
+The attention policy stayed within 0.04\,\texteuro{} per charger and episode of a policy trained at 50 chargers in the point estimates.
+As an architecture, attention showed no advantage over Deep Sets.
+A price-threshold rule with the same layer had a lower mean gap than the attention policy at every station size of the test grid and than the Deep Sets policy below 20 chargers.
+
+Learned policies caused infeasible steps, and 7.4\% to 34.1\% of the admitted EVs of the attention policy had one in their stay, depending on station size.
+With the departure bound, the attention policy left more EVs unserved than a variant without the bound and than its penalty-trained twin.
+In penalised profit, it scored higher than this twin, with an inconclusive difference at 200 chargers.
+\TODO{The authors confirm or rewrite these conclusions after rewriting the Discussion}.
 
 For a CPO, three limitations matter most.
 First, the departure result needs declared requirements and departure times, or a calibrated departure bound with marginal coverage only.
 Second, the transformer result assumes that each EV draws the commanded power, and real battery management systems may draw less.
-Third, the economics omit round-trip losses and battery degradation.
-Future work can add measured-energy feedback to the bounds, extend the feasible set to several transformers and linearised voltage limits, and certify joint feasibility over the future.
+Third, the evidence comes from simulation with two training seeds per learned method and lossless economics.
+Future work can add a capacity-aware lower bound that reduces infeasible steps, measured-energy feedback for hardware and several transformers with linearised voltage limits.
 Tests with recorded charging sessions would narrow the remaining gap between the model and practice.

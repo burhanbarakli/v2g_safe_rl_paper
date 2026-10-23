@@ -54,15 +54,15 @@ S.~Orfanoudakis, N.~K. Panda, P.~Palensky, and P.~P. Vergara, ``A graph neural
   smart charging environments,'' {\em Energy and AI}, vol.~23, p.~100679, Jan.
   2026.
 
-\bibitem{wilcoxon1945individual}
-F.~Wilcoxon, ``Individual comparisons by ranking methods,'' {\em Biometrics
-  Bulletin}, vol.~1, p.~80, Dec. 1945.
-
 \bibitem{agarwal2021deep}
 R.~Agarwal, M.~Schwarzer, P.~S. Castro, A.~C. Courville, and M.~G. Bellemare,
   ``Deep reinforcement learning at the edge of the statistical precipice,'' in
   {\em Advances in Neural Information Processing Systems}, vol.~34,
   pp.~29304--29320, Curran Associates, Inc., 2021.
+
+\bibitem{wilcoxon1945individual}
+F.~Wilcoxon, ``Individual comparisons by ranking methods,'' {\em Biometrics
+  Bulletin}, vol.~1, p.~80, Dec. 1945.
 
 \bibitem{henderson2018deep}
 P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup, and D.~Meger, ``Deep

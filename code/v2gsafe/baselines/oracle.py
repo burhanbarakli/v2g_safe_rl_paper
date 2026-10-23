@@ -121,13 +121,15 @@ def _build(sessions, T, dt, C, Crev, cch, cdis, gain: bool, taper: bool = True, 
 
 def _solve(lp, cost, sense, extra_rows=None):
     """HiGHS (dual simplex); on a non-optimal status ('Unknown' happens on the near-degenerate stage-2 LPs with
-    full-battery targets and the taper rows) one retry with the interior-point solver; status gets a '(ipm)' tag."""
+    full-battery targets and the taper rows) one retry with the interior-point solver and then one with the primal
+    simplex (3 of 3,550 test replays needed it); status gets an '(ipm)' / '(primal)' tag."""
     r = lp.solve(cost, sense, extra_rows=extra_rows)
     if not r.optimal:
-        r2 = lp.solve(cost, sense, extra_rows=extra_rows, options={"solver": "ipm"})
-        if r2.optimal:
-            r2.status = f"{r2.status}(ipm)"
-            return r2
+        for tag, opt in (("ipm", {"solver": "ipm"}), ("primal", {"solver": "simplex", "simplex_strategy": 4})):
+            r2 = lp.solve(cost, sense, extra_rows=extra_rows, options=opt)
+            if r2.optimal:
+                r2.status = f"{r2.status}({tag})"
+                return r2
     return r
 
 
@@ -160,6 +162,14 @@ def solve_oracle(env_e, dt_h: float, ceil_variant: bool = True, table: dict | No
         return out
     zstar = max(0.0, r1.obj)
     r2 = _solve(lp, prof, "max", extra_rows=[(zvec, -np.inf, zstar + 1e-6)])
+    if not r2.optimal:
+        # The stage-2 value is very sensitive to this slack when stage 1 ends at zero shortfall with admitted
+        # requests at their reachable maximum; if every algorithm fails, a tighter slack still gives a plan that is
+        # feasible for the 1e-6 definition (so a slightly conservative J_LP; 1 of 3,550 test replays).
+        r2b = _solve(lp, prof, "max", extra_rows=[(zvec, -np.inf, zstar + 1e-8)])
+        if r2b.optimal:
+            r2b.status = f"{r2b.status}(slack1e-8)"
+            r2 = r2b
     out.update(shortfall_stage_kwh=zstar, solver_status=r2.status)
     if r2.optimal:
         x = r2.x

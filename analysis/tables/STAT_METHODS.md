@@ -59,7 +59,7 @@ Random generator: NumPy PCG64 seeded with 20261022 and a CRC32 hash of the group
 - Comparisons, all per station size N (the configurations of that N pooled as strata):
   - T1 (N ∈ {10, 20}) and T2 (all N): SA-Attn vs every other non-conformal method; metrics J^pen (main),
     energy not served, overload energy;
-  - T3: SA-Attn vs every other method; metrics E4 (`share_evs_stay_feasible`), E3 (overload energy),
+  - T3: SA-Attn vs every other non-conformal method; metrics E4 (`share_evs_stay_feasible`), E3 (overload energy),
     energy not served;
   - T5: each safety-layer method vs its penalty-based twin (attention, MLP); metrics J^pen (primary) and raw profit
     (secondary), per episode.

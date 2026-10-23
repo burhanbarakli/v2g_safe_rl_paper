@@ -3,6 +3,11 @@
 Each env has its own seed stream (numpy SeedSequence of (run seed, env index)); per episode it draws the
 profile and rho_tr uniformly (Alg. 7.3) and an episode seed from the training range. Episodes auto-reset.
 Backends: 'sync' (in-process, for tests and smoke runs) and 'subproc' (one process per env, 'spawn' context).
+
+EV2Gym (unmodified) cannot build some (seed, date) episodes: its residential load data contains negative values,
+and when the 10-house sum of a step is negative the load-forecast noise gets a negative scale and reset raises
+'ValueError: scale < 0'. A training episode seed for which this happens is redrawn from the same stream (so runs
+that never meet such a seed are unchanged); test/validation replays are fixed and never redrawn.
 """
 from __future__ import annotations
 
@@ -14,6 +19,9 @@ import numpy as np
 
 from .scenarios import SEED_RANGES, ScenarioConfig, TrainMixture
 from .wrapper import SafeV2GEnv, WrapperOptions
+
+#: redraws of an unbuildable training episode seed before giving up
+MAX_RESET_REDRAWS = 20
 
 
 @dataclass
@@ -33,12 +41,22 @@ class EnvWorker:
         self.env = SafeV2GEnv(mixture.sample(spec.N, np.random.default_rng(spec.index)), options)
         self.scfg: ScenarioConfig | None = None
         self.ep_seed = None
+        self.n_reset_redraws = 0
 
     def reset(self):
         self.scfg = self.mixture.sample(self.spec.N, self.rng)
         lo, hi = SEED_RANGES["train"]
-        self.ep_seed = int(self.rng.integers(lo, hi))
-        return self.env.reset(self.ep_seed, self.scfg)
+        for _ in range(MAX_RESET_REDRAWS):
+            self.ep_seed = int(self.rng.integers(lo, hi))
+            try:
+                return self.env.reset(self.ep_seed, self.scfg)
+            except ValueError as e:
+                if "scale < 0" not in str(e):
+                    raise
+                self.n_reset_redraws += 1
+                print(f"[vec_env] env {self.spec.index}: EV2Gym cannot build episode seed {self.ep_seed} "
+                      f"({self.scfg.cfg_id}): {e}; redrawing", flush=True)
+        raise RuntimeError(f"env {self.spec.index}: {MAX_RESET_REDRAWS} unbuildable episode seeds in a row")
 
     def step(self, x):
         out = self.env.step(x)

@@ -1,0 +1,89 @@
+method,label,rho_tr,metric,mean,std,ci_lo,ci_hi,unit,exp_ids
+attn_safe,SA-Attn (ours),4.0,energy_not_served_kwh,0.8604395700754918,0.24816802763937695,-1.3692616943271,3.090140834478084,seed,attn_safe__train_attn_safe__s0__8798c7d8;attn_safe__train_attn_safe__s1__8798c7d8
+attn_penalty,Attention+penalty,4.0,energy_not_served_kwh,0.7269019777234191,1.0279784884280354,-8.509118299463042,9.962922254909879,seed,attn_penalty__train_attn_penalty__s0__b85f8cf2;attn_penalty__train_attn_penalty__s1__b85f8cf2
+attn_lagrangian,Attention+PPO-Lagrangian,4.0,energy_not_served_kwh,0.07573533077921514,0.10710593193877856,-0.8865732878634054,1.0380439494218356,seed,attn_lagrangian__train_attn_lagrangian__s0__444db89b;attn_lagrangian__train_attn_lagrangian__s1__444db89b
+attn_proj_nolb,Attention+safety layer without departure bound,4.0,energy_not_served_kwh,0.13627146827404632,0.042320396108485106,-0.2439622048977,0.5165051414457926,seed,attn_proj_nolb__train_attn_proj_nolb__s0__46a03c06;attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06
+deepsets_safe,Deep Sets+safety layer,4.0,energy_not_served_kwh,0.5644401193492445,0.1533307190122591,-0.8131817334955338,1.9420619721940229,seed,deepsets_safe__train_deepsets_safe__s0__c31b29f8;deepsets_safe__train_deepsets_safe__s1__c31b29f8
+mlp_safe,MLP+safety layer,4.0,energy_not_served_kwh,0.5104355872004387,0.093310934957014,-0.32792990103471786,1.3488010754355952,seed,mlp_safe__train_mlp_safe__s0__76756fd9;mlp_safe__train_mlp_safe__s1__76756fd9
+mlp_penalty,MLP+penalty,4.0,energy_not_served_kwh,2.0434399700407404,1.8636601035202527,-14.700881725073671,18.787761665155152,seed,mlp_penalty__train_mlp_penalty__s0__2b3dcc22;mlp_penalty__train_mlp_penalty__s1__2b3dcc22
+attn_safe_trainN50,SA-Attn trained at N = 50 (reference),4.0,energy_not_served_kwh,0.784732166677878,0.9945466619623053,-8.15091506708718,9.720379400442937,seed,attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442;attn_safe_trainN50__train_attn_safe_trainN50__s1__01c49442
+llf_safe,LLF+safety layer,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,llf_safe__test_grid__s0__e0eaf527
+llf,LLF,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,llf__test_grid__s0__eff4de3a
+sllf_safe,sLLF+safety layer,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,sllf_safe__test_grid__s0__6e268fdb
+sllf,sLLF,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,sllf__test_grid__s0__ea4f98db
+price_llf_safe,Price-threshold+safety layer,4.0,energy_not_served_kwh,0.06689038228989536,,0.031035412861342898,0.10274535171844781,replay,price_llf_safe__test_grid__s0__da26693c
+price_llf,Price-threshold,4.0,energy_not_served_kwh,1019.0733677120594,,973.6711843468747,1064.475551077244,replay,price_llf__test_grid__s0__dd62ee1a
+afap_safe,AFAP+safety layer,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,afap_safe__test_grid__s0__4b075ccb
+afap,AFAP,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,afap__test_grid__s0__72716047
+alap_safe,ALAP+safety layer,4.0,energy_not_served_kwh,0.023239329187571187,,0.010610717793813614,0.035867940581328764,replay,alap_safe__test_grid__s0__6b636193
+alap,ALAP,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,alap__test_grid__s0__8e5a6c1f
+rr_safe,Round Robin+safety layer,4.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,rr_safe__test_grid__s0__78ca559c
+rr,Round Robin,4.0,energy_not_served_kwh,0.005936487503185835,,-0.002162105371217432,0.0140350803775891,replay,rr__test_grid__s0__b251375c
+empc_highs_safe,eMPC-HiGHS+safety layer,4.0,energy_not_served_kwh,0.8946958803482133,,0.555811163753589,1.2335805969428377,replay,empc_highs_safe__test_grid__s0__b78a51de
+empc_highs,eMPC-HiGHS,4.0,energy_not_served_kwh,681.0304608262112,,667.0865606106455,694.9743610417769,replay,empc_highs__test_grid__s0__3677655b
+attn_safe,SA-Attn (ours),7.0,energy_not_served_kwh,0.0005437137773352692,0.00011472257750020963,-0.00048702768658711345,0.0015744552412576519,seed,attn_safe__train_attn_safe__s0__8798c7d8;attn_safe__train_attn_safe__s1__8798c7d8
+attn_penalty,Attention+penalty,7.0,energy_not_served_kwh,0.5370128709070164,0.7594508852056147,-6.286382612798484,7.360408354612517,seed,attn_penalty__train_attn_penalty__s0__b85f8cf2;attn_penalty__train_attn_penalty__s1__b85f8cf2
+attn_lagrangian,Attention+PPO-Lagrangian,7.0,energy_not_served_kwh,0.08975368420257505,0.12693087747223347,-1.0506750031013121,1.2301823715064621,seed,attn_lagrangian__train_attn_lagrangian__s0__444db89b;attn_lagrangian__train_attn_lagrangian__s1__444db89b
+attn_proj_nolb,Attention+safety layer without departure bound,7.0,energy_not_served_kwh,0.04480687353335098,0.06171610332508836,-0.5096903150324339,0.5993040620991359,seed,attn_proj_nolb__train_attn_proj_nolb__s0__46a03c06;attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06
+deepsets_safe,Deep Sets+safety layer,7.0,energy_not_served_kwh,0.0008959616003849805,0.0003502841403546828,-0.0022512165356477413,0.004043139736417702,seed,deepsets_safe__train_deepsets_safe__s0__c31b29f8;deepsets_safe__train_deepsets_safe__s1__c31b29f8
+mlp_safe,MLP+safety layer,7.0,energy_not_served_kwh,0.0012138348575329477,0.0016123950530676306,-0.013272959927191103,0.015700629642256998,seed,mlp_safe__train_mlp_safe__s0__76756fd9;mlp_safe__train_mlp_safe__s1__76756fd9
+mlp_penalty,MLP+penalty,7.0,energy_not_served_kwh,1.1215775127856642,0.6917981881309897,-5.093982603719608,7.337137629290938,seed,mlp_penalty__train_mlp_penalty__s0__2b3dcc22;mlp_penalty__train_mlp_penalty__s1__2b3dcc22
+attn_safe_trainN50,SA-Attn trained at N = 50 (reference),7.0,energy_not_served_kwh,0.0,0.0,0.0,0.0,seed,attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442;attn_safe_trainN50__train_attn_safe_trainN50__s1__01c49442
+llf_safe,LLF+safety layer,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,llf_safe__test_grid__s0__e0eaf527
+llf,LLF,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,llf__test_grid__s0__eff4de3a
+sllf_safe,sLLF+safety layer,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,sllf_safe__test_grid__s0__6e268fdb
+sllf,sLLF,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,sllf__test_grid__s0__ea4f98db
+price_llf_safe,Price-threshold+safety layer,7.0,energy_not_served_kwh,4.3072877679584995e-06,,-4.141741440828972e-06,1.275631697674597e-05,replay,price_llf_safe__test_grid__s0__da26693c
+price_llf,Price-threshold,7.0,energy_not_served_kwh,996.4249768130729,,955.8834682512525,1036.9664853748934,replay,price_llf__test_grid__s0__dd62ee1a
+afap_safe,AFAP+safety layer,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,afap_safe__test_grid__s0__4b075ccb
+afap,AFAP,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,afap__test_grid__s0__72716047
+alap_safe,ALAP+safety layer,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,alap_safe__test_grid__s0__6b636193
+alap,ALAP,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,alap__test_grid__s0__8e5a6c1f
+rr_safe,Round Robin+safety layer,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,rr_safe__test_grid__s0__78ca559c
+rr,Round Robin,7.0,energy_not_served_kwh,0.0,,0.0,0.0,replay,rr__test_grid__s0__b251375c
+empc_highs_safe,eMPC-HiGHS+safety layer,7.0,energy_not_served_kwh,0.0015835323111218712,,-0.0007760499641668735,0.0039431145864106155,replay,empc_highs_safe__test_grid__s0__b78a51de
+empc_highs,eMPC-HiGHS,7.0,energy_not_served_kwh,650.2483458837742,,635.8092524233613,664.687439344187,replay,empc_highs__test_grid__s0__3677655b
+attn_safe,SA-Attn (ours),4.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_safe__train_attn_safe__s0__8798c7d8;attn_safe__train_attn_safe__s1__8798c7d8
+attn_penalty,Attention+penalty,4.0,tr_violation_kwh,0.8395035456289952,0.857538721828283,-6.8651761849654305,8.544183276223421,seed,attn_penalty__train_attn_penalty__s0__b85f8cf2;attn_penalty__train_attn_penalty__s1__b85f8cf2
+attn_lagrangian,Attention+PPO-Lagrangian,4.0,tr_violation_kwh,1.2837373998224715,1.2228569260556277,-9.703196171539272,12.270670971184217,seed,attn_lagrangian__train_attn_lagrangian__s0__444db89b;attn_lagrangian__train_attn_lagrangian__s1__444db89b
+attn_proj_nolb,Attention+safety layer without departure bound,4.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_proj_nolb__train_attn_proj_nolb__s0__46a03c06;attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06
+deepsets_safe,Deep Sets+safety layer,4.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,deepsets_safe__train_deepsets_safe__s0__c31b29f8;deepsets_safe__train_deepsets_safe__s1__c31b29f8
+mlp_safe,MLP+safety layer,4.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,mlp_safe__train_mlp_safe__s0__76756fd9;mlp_safe__train_mlp_safe__s1__76756fd9
+mlp_penalty,MLP+penalty,4.0,tr_violation_kwh,1.9231145653301154,0.3031349694718773,-0.8004450774868241,4.646674208147054,seed,mlp_penalty__train_mlp_penalty__s0__2b3dcc22;mlp_penalty__train_mlp_penalty__s1__2b3dcc22
+attn_safe_trainN50,SA-Attn trained at N = 50 (reference),4.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442;attn_safe_trainN50__train_attn_safe_trainN50__s1__01c49442
+llf_safe,LLF+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,llf_safe__test_grid__s0__e0eaf527
+llf,LLF,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,llf__test_grid__s0__eff4de3a
+sllf_safe,sLLF+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,sllf_safe__test_grid__s0__6e268fdb
+sllf,sLLF,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,sllf__test_grid__s0__ea4f98db
+price_llf_safe,Price-threshold+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,price_llf_safe__test_grid__s0__da26693c
+price_llf,Price-threshold,4.0,tr_violation_kwh,49.791700511064064,,42.07477330907277,57.50862771305536,replay,price_llf__test_grid__s0__dd62ee1a
+afap_safe,AFAP+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,afap_safe__test_grid__s0__4b075ccb
+afap,AFAP,4.0,tr_violation_kwh,2.4532804302856936,,1.887316415695798,3.0192444448755893,replay,afap__test_grid__s0__72716047
+alap_safe,ALAP+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,alap_safe__test_grid__s0__6b636193
+alap,ALAP,4.0,tr_violation_kwh,0.6133142289049166,,0.49285631821758086,0.7337721395922523,replay,alap__test_grid__s0__8e5a6c1f
+rr_safe,Round Robin+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,rr_safe__test_grid__s0__78ca559c
+rr,Round Robin,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,rr__test_grid__s0__b251375c
+empc_highs_safe,eMPC-HiGHS+safety layer,4.0,tr_violation_kwh,0.0,,0.0,0.0,replay,empc_highs_safe__test_grid__s0__b78a51de
+empc_highs,eMPC-HiGHS,4.0,tr_violation_kwh,0.0006853176586135616,,0.0006445940547727867,0.0007260412624543366,replay,empc_highs__test_grid__s0__3677655b
+attn_safe,SA-Attn (ours),7.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_safe__train_attn_safe__s0__8798c7d8;attn_safe__train_attn_safe__s1__8798c7d8
+attn_penalty,Attention+penalty,7.0,tr_violation_kwh,0.05447392180549329,0.048305480077296334,-0.37953359733567077,0.4884814409466574,seed,attn_penalty__train_attn_penalty__s0__b85f8cf2;attn_penalty__train_attn_penalty__s1__b85f8cf2
+attn_lagrangian,Attention+PPO-Lagrangian,7.0,tr_violation_kwh,0.018788952048567675,0.02453643700119735,-0.20166218795486593,0.23924009205200128,seed,attn_lagrangian__train_attn_lagrangian__s0__444db89b;attn_lagrangian__train_attn_lagrangian__s1__444db89b
+attn_proj_nolb,Attention+safety layer without departure bound,7.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_proj_nolb__train_attn_proj_nolb__s0__46a03c06;attn_proj_nolb__train_attn_proj_nolb__s1__46a03c06
+deepsets_safe,Deep Sets+safety layer,7.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,deepsets_safe__train_deepsets_safe__s0__c31b29f8;deepsets_safe__train_deepsets_safe__s1__c31b29f8
+mlp_safe,MLP+safety layer,7.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,mlp_safe__train_mlp_safe__s0__76756fd9;mlp_safe__train_mlp_safe__s1__76756fd9
+mlp_penalty,MLP+penalty,7.0,tr_violation_kwh,0.0722655764506592,0.001955534721205463,0.05469579406599578,0.08983535883532263,seed,mlp_penalty__train_mlp_penalty__s0__2b3dcc22;mlp_penalty__train_mlp_penalty__s1__2b3dcc22
+attn_safe_trainN50,SA-Attn trained at N = 50 (reference),7.0,tr_violation_kwh,0.0,0.0,0.0,0.0,seed,attn_safe_trainN50__train_attn_safe_trainN50__s0__01c49442;attn_safe_trainN50__train_attn_safe_trainN50__s1__01c49442
+llf_safe,LLF+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,llf_safe__test_grid__s0__e0eaf527
+llf,LLF,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,llf__test_grid__s0__eff4de3a
+sllf_safe,sLLF+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,sllf_safe__test_grid__s0__6e268fdb
+sllf,sLLF,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,sllf__test_grid__s0__ea4f98db
+price_llf_safe,Price-threshold+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,price_llf_safe__test_grid__s0__da26693c
+price_llf,Price-threshold,7.0,tr_violation_kwh,0.3211996693934633,,0.21440663985064462,0.42799269893628195,replay,price_llf__test_grid__s0__dd62ee1a
+afap_safe,AFAP+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,afap_safe__test_grid__s0__4b075ccb
+afap,AFAP,7.0,tr_violation_kwh,0.039191724301303944,,0.010871946400638616,0.06751150220196928,replay,afap__test_grid__s0__72716047
+alap_safe,ALAP+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,alap_safe__test_grid__s0__6b636193
+alap,ALAP,7.0,tr_violation_kwh,0.017216981794776928,,0.003704915677912585,0.030729047911641272,replay,alap__test_grid__s0__8e5a6c1f
+rr_safe,Round Robin+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,rr_safe__test_grid__s0__78ca559c
+rr,Round Robin,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,rr__test_grid__s0__b251375c
+empc_highs_safe,eMPC-HiGHS+safety layer,7.0,tr_violation_kwh,0.0,,0.0,0.0,replay,empc_highs_safe__test_grid__s0__b78a51de
+empc_highs,eMPC-HiGHS,7.0,tr_violation_kwh,4.497080833868558e-05,,3.245247303865761e-05,5.7489143638713545e-05,replay,empc_highs__test_grid__s0__3677655b

@@ -1,0 +1,11 @@
+﻿group,Variant,"Gap (%) N ∈ {10, 20}","Unserved (%) N ∈ {10, 20}","Overload (kWh) N ∈ {10, 20}",Gap (%) N ≥ 50,Unserved (%) N ≥ 50,Overload (kWh) N ≥ 50
+2 × 2 design,Attention + safety layer,145.5 ± 5.7,2.16 ± 0.12,0 ± 0,161.8 ± 9.8,0.53 ± 0.29,0 ± 0
+2 × 2 design,Attention + penalty,180.9 ± 12.8,2.34 ± 3.29,0.61 ± 0.72,181.4 ± 6.8,0.40 ± 0.56,0.14 ± 0.16
+2 × 2 design,MLP + safety layer,129.9 ± 1.4,0.85 ± 0.05,0 ± 0,–,–,–
+2 × 2 design,MLP + penalty,704.9 ± 561.1,1.92 ± 0.93,0.59 ± 0.25,–,–,–
+"further baselines, variants and ablations",Attention+safety layer without departure bound,104.8 ± 12.0,1.14 ± 0.94,0 ± 0,137.2 ± 15.4,0.28 ± 0.17,0 ± 0
+"further baselines, variants and ablations",Deep Sets+safety layer,104.8 ± 4.0,1.31 ± 0.02,0 ± 0,118.8 ± 7.7,0.37 ± 0.16,0 ± 0
+"further baselines, variants and ablations",Attention+PPO-Lagrangian,205.9 ± 29.3,0.02 ± 0.03,0.54 ± 0.54,219.2 ± 9.0,0.38 ± 0.54,0.49 ± 0.65
+"further baselines, variants and ablations","Attention+penalty, safety layer at deployment",123.4 ± 0.4,0.37 ± 0.05,0 ± 0,178.2 ± 7.7,2.1e-03 ± 1.0e-03,0 ± 0
+"further baselines, variants and ablations","SA-Attn, no admission control",144.0 ± 5.7,2.09 ± 0.18,0 ± 0,158.8 ± 9.5,0.42 ± 0.25,0 ± 0
+"further baselines, variants and ablations","Attention+penalty, no admission control",175.6 ± 17.7,1.94 ± 2.74,0.58 ± 0.69,179.5 ± 8.0,0.23 ± 0.32,0.11 ± 0.13

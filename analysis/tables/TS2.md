@@ -1,0 +1,35 @@
+**TS2.** Sensitivity analyses (per episode; profiles pooled): reference configuration, desired SoC 0.8, Δt = 5 min (separately trained policy), battery throughput cost, discharge price factor, penalty weights of the penalty-based policy, and the out-of-training tightness ρ_tr = 3 kW.
+
+|  | Method | J^pen (€/charger) | Optimality gap (%) | Profit (€/charger) | Unserved EVs (%) | Overload (kWh) |
+|---|---|---:|---:|---:|---:|---:|
+| ρ_tr = 3 kW (stress), N = 20 | SA-Attn (ours) | -4.25 ± 0.24 | 328.2 ± 46.0 | -1.99 ± 0.02 | 12.04 ± 0.72 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 20 | Attention+penalty | -4.46 ± 1.26 | 248.9 ± 82.5 | -1.97 ± 0.04 | 2.67 ± 3.78 | 3.94 ± 3.93 |
+| ρ_tr = 3 kW (stress), N = 20 | Attention+PPO-Lagrangian | -3.52 ± 1.44 | 286.8 ± 106.5 | -2.21 ± 0.03 | 0.04 ± 0.05 | 2.62 ± 2.83 |
+| ρ_tr = 3 kW (stress), N = 20 | Attention+safety layer without departure bound | -2.26 ± 0.06 | 125.3 ± 5.5 | -1.91 ± 0.04 | 2.59 ± 0.09 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 20 | Deep Sets+safety layer | -3.67 ± 0.16 | 232.3 ± 34.6 | -1.87 ± 0.04 | 9.57 ± 0.59 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 20 | MLP+safety layer | -2.26 ± 0.11 | 154.1 ± 5.1 | -2.03 ± 0.01 | 1.92 ± 0.62 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 20 | MLP+penalty | -5.36 ± 1.55 | 631.1 ± 329.5 | -2.21 ± 0.01 | 1.62 ± 0.07 | 4.16 ± 2.18 |
+| ρ_tr = 3 kW (stress), N = 20 | LLF+safety layer | -2.23† | 186.8† | -2.23† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | sLLF+safety layer | -2.23† | 186.8† | -2.23† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | Price-threshold+safety layer | -2.35† | 158.6† | -1.95† | 2.49† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | AFAP+safety layer | -2.22† | 186.7† | -2.22† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | ALAP+safety layer | -2.19† | 166.0† | -2.16† | 0.63† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | Round Robin+safety layer | -2.22† | 186.6† | -2.22† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | eMPC-HiGHS+safety layer | -3.65† | 285.1† | -1.91† | 10.14† | 0† |
+| ρ_tr = 3 kW (stress), N = 20 | eMPC-HiGHS | -111.50† | 16706.7† | 0.16† | 99.78† | 5.4e-04† |
+| ρ_tr = 3 kW (stress), N = 200 | SA-Attn (ours) | -2.99 ± 0.38 | 175.6 ± 30.4 | -2.20 ± 0.03 | 7.21 ± 2.61 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 200 | Attention+penalty | -2.42 ± 0.04 | 163.4 ± 23.3 | -2.26 ± 0.06 | 0.08 ± 0.11 | 3.15 ± 0.22 |
+| ρ_tr = 3 kW (stress), N = 200 | Attention+PPO-Lagrangian | -2.84 ± 0.56 | 229.2 ± 41.6 | -2.41 ± 0.04 | 0.71 ± 1.00 | 8.20 ± 10.89 |
+| ρ_tr = 3 kW (stress), N = 200 | Attention+safety layer without departure bound | -2.23 ± 0.10 | 114.1 ± 6.4 | -2.12 ± 0.05 | 1.34 ± 1.37 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 200 | Deep Sets+safety layer | -2.82 ± 0.10 | 132.9 ± 7.4 | -2.05 ± 0.06 | 6.52 ± 0.32 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 200 | SA-Attn trained at N = 50 (reference) | -2.90 ± 0.75 | 161.3 ± 54.4 | -2.17 ± 0.01 | 6.28 ± 6.29 | 0 ± 0 |
+| ρ_tr = 3 kW (stress), N = 200 | LLF+safety layer | -2.44† | 207.5† | -2.44† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | sLLF+safety layer | -2.44† | 207.5† | -2.44† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | Price-threshold+safety layer | -2.18† | 138.4† | -2.12† | 0.64† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | AFAP+safety layer | -2.44† | 207.4† | -2.44† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | ALAP+safety layer | -2.36† | 173.3† | -2.36† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | Round Robin+safety layer | -2.44† | 207.5† | -2.44† | 0† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | eMPC-HiGHS+safety layer | -2.65† | 139.7† | -2.11† | 5.02† | 0† |
+| ρ_tr = 3 kW (stress), N = 200 | eMPC-HiGHS | -111.94† | 18665.9† | 0.11† | 99.86† | 3.3e-03† |
+
+*Values: mean ± standard deviation over training seeds of the seed-level means (configurations pooled as strata; n per cell in the _values.csv files). † deterministic method, single run (no seed variability). 95 % confidence intervals (t-based and bootstrap) are in the _values.csv files; definitions in STAT_METHODS.md.*

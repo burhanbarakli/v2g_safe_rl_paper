@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 25 1000 395" width="1000" height="395" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">
+  <title>Experimental pipeline: training, zero-shot test grid, comparison and metrics</title>
+  <!-- Hand-written. Style follows fig_architecture.svg: dashed = training only, grey fill = safety layer / reference. -->
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #222; stroke-width: 1.2; }
+      .grp { fill: #f3f3f3; stroke: #222; stroke-width: 1.4; }
+      .dash { fill: #ffffff; stroke: #222; stroke-width: 1.4; stroke-dasharray: 5 3; }
+      .ref { fill: #dedede; stroke: #000; stroke-width: 2; }
+      .ln { stroke: #222; stroke-width: 1.3; fill: none; }
+      .lnd { stroke: #222; stroke-width: 1.3; fill: none; stroke-dasharray: 5 3; }
+      .h { font-weight: bold; font-size: 12.5px; }
+      .s { font-size: 10px; }
+      .b { font-weight: bold; }
+      .lab { font-size: 10px; font-style: italic; }
+      .sub { font-size: 8px; }
+      .cell { fill: #ffffff; stroke: #444; stroke-width: 0.8; }
+      .cellT { fill: #bdbdbd; stroke: #444; stroke-width: 0.8; }
+    </style>
+  </defs>
+
+  <!-- 1. Training (training only: dashed) -->
+  <rect class="dash" x="15" y="40" width="215" height="270" rx="6"/>
+  <text class="h" x="122" y="62" text-anchor="middle">1  Training</text>
+  <text class="s" x="122" y="77" text-anchor="middle">(learned methods only)</text>
+  <rect class="box" x="27" y="88" width="191" height="48" rx="3"/>
+  <text x="122" y="106" text-anchor="middle">Station sizes N ∈ {10, 20}</text>
+  <text class="s" x="122" y="121" text-anchor="middle">8 + 8 parallel environments,</text>
+  <text class="s" x="122" y="132" text-anchor="middle">mixed in every PPO batch</text>
+  <rect class="box" x="27" y="144" width="191" height="70" rx="3"/>
+  <text x="122" y="162" text-anchor="middle">Per episode, drawn at random:</text>
+  <text class="s" x="122" y="177" text-anchor="middle">arrival profile (workplace, public,</text>
+  <text class="s" x="122" y="189" text-anchor="middle">private) and tightness level</text>
+  <text class="s" x="122" y="203" text-anchor="middle">ρ<tspan class="sub" baseline-shift="sub">tr</tspan> ∈ {4, 7} kW per charger</text>
+  <rect class="box" x="27" y="222" width="191" height="58" rx="3"/>
+  <text x="122" y="240" text-anchor="middle">PPO, 3 × 10<tspan class="sub" baseline-shift="super">6</tspan> environment steps</text>
+  <text class="s" x="122" y="255" text-anchor="middle">5 independent seeds per method;</text>
+  <text class="s" x="122" y="268" text-anchor="middle">equal tuning budget, selection on J<tspan class="sub" baseline-shift="super">pen</tspan></text>
+  <text class="lab" x="122" y="294" text-anchor="middle">output: frozen policy weights</text>
+
+  <!-- arrow 1 -> 2 -->
+  <line class="ln" x1="230" y1="175" x2="258" y2="175" marker-end="url(#arr)"/>
+
+  <!-- 2. Zero-shot test grid -->
+  <rect class="grp" x="260" y="40" width="240" height="270" rx="6"/>
+  <text class="h" x="380" y="62" text-anchor="middle">2  Zero-shot test grid</text>
+  <text class="s" x="380" y="77" text-anchor="middle">same weights, no retraining</text>
+  <!-- mini grid: columns N, rows profile x tightness -->
+  <text class="s" x="392" y="96" text-anchor="middle">station size N</text>
+  <g>
+    <text class="s" x="359" y="111" text-anchor="middle">5</text>
+    <text class="s" x="383" y="111" text-anchor="middle">10</text>
+    <text class="s" x="407" y="111" text-anchor="middle">20</text>
+    <text class="s" x="431" y="111" text-anchor="middle">50</text>
+    <text class="s" x="455" y="111" text-anchor="middle">100</text>
+    <text class="s" x="479" y="111" text-anchor="middle">200</text>
+  </g>
+  <g>
+    <rect class="cell" x="349" y="116" width="20" height="13"/><rect class="cellT" x="373" y="116" width="20" height="13"/><rect class="cellT" x="397" y="116" width="20" height="13"/><rect class="cell" x="421" y="116" width="20" height="13"/><rect class="cell" x="445" y="116" width="20" height="13"/><rect class="cell" x="469" y="116" width="20" height="13"/>
+    <rect class="cell" x="349" y="131" width="20" height="13"/><rect class="cellT" x="373" y="131" width="20" height="13"/><rect class="cellT" x="397" y="131" width="20" height="13"/><rect class="cell" x="421" y="131" width="20" height="13"/><rect class="cell" x="445" y="131" width="20" height="13"/><rect class="cell" x="469" y="131" width="20" height="13"/>
+    <rect class="cell" x="349" y="146" width="20" height="13"/><rect class="cellT" x="373" y="146" width="20" height="13"/><rect class="cellT" x="397" y="146" width="20" height="13"/><rect class="cell" x="421" y="146" width="20" height="13"/><rect class="cell" x="445" y="146" width="20" height="13"/><rect class="cell" x="469" y="146" width="20" height="13"/>
+    <rect class="cell" x="349" y="161" width="20" height="13"/><rect class="cellT" x="373" y="161" width="20" height="13"/><rect class="cellT" x="397" y="161" width="20" height="13"/><rect class="cell" x="421" y="161" width="20" height="13"/><rect class="cell" x="445" y="161" width="20" height="13"/><rect class="cell" x="469" y="161" width="20" height="13"/>
+    <rect class="cell" x="349" y="176" width="20" height="13"/><rect class="cellT" x="373" y="176" width="20" height="13"/><rect class="cellT" x="397" y="176" width="20" height="13"/><rect class="cell" x="421" y="176" width="20" height="13"/><rect class="cell" x="445" y="176" width="20" height="13"/><rect class="cell" x="469" y="176" width="20" height="13"/>
+    <rect class="cell" x="349" y="191" width="20" height="13"/><rect class="cellT" x="373" y="191" width="20" height="13"/><rect class="cellT" x="397" y="191" width="20" height="13"/><rect class="cell" x="421" y="191" width="20" height="13"/><rect class="cell" x="445" y="191" width="20" height="13"/><rect class="cell" x="469" y="191" width="20" height="13"/>
+  </g>
+  <g class="s">
+    <text x="315" y="133" text-anchor="end">workplace</text>
+    <text x="315" y="163" text-anchor="end">public</text>
+    <text x="315" y="193" text-anchor="end">private</text>
+    <text x="344" y="126" text-anchor="end">4 kW</text>
+    <text x="344" y="141" text-anchor="end">7 kW</text>
+    <text x="344" y="156" text-anchor="end">4 kW</text>
+    <text x="344" y="171" text-anchor="end">7 kW</text>
+    <text x="344" y="186" text-anchor="end">4 kW</text>
+    <text x="344" y="201" text-anchor="end">7 kW</text>
+  </g>
+  <rect class="cellT" x="300" y="213" width="14" height="10"/>
+  <text class="s" x="319" y="222">sizes seen in training</text>
+  <text x="380" y="243" text-anchor="middle">6 × 2 × 3 = 36 configurations</text>
+  <text class="s" x="380" y="258" text-anchor="middle">fixed test replays shared by all methods:</text>
+  <text class="s" x="380" y="271" text-anchor="middle">100 per configuration (N ≤ 50), 50 (N ≥ 100)</text>
+  <text class="s" x="380" y="284" text-anchor="middle">+ stress level ρ<tspan class="sub" baseline-shift="sub">tr</tspan> = 3 kW (N = 20, 200),</text>
+  <text class="s" x="380" y="296" text-anchor="middle">literature configuration (N = 25), sensitivities</text>
+
+  <!-- arrow 2 -> 3 -->
+  <line class="ln" x1="500" y1="175" x2="528" y2="175" marker-end="url(#arr)"/>
+
+  <!-- 3. Methods -->
+  <rect class="grp" x="530" y="40" width="215" height="270" rx="6"/>
+  <text class="h" x="637" y="62" text-anchor="middle">3  Methods compared</text>
+  <text class="s" x="637" y="77" text-anchor="middle">on identical replays (paired)</text>
+  <rect class="box" x="542" y="86" width="191" height="98" rx="3"/>
+  <text x="637" y="102" text-anchor="middle">Learned (5 seeds each)</text>
+  <text class="s b" x="637" y="116" text-anchor="middle">SA-Attn (attention + safety layer)</text>
+  <text class="s" x="637" y="129" text-anchor="middle">Attention+penalty, +PPO-Lagrangian,</text>
+  <text class="s" x="637" y="141" text-anchor="middle">+safety layer w/o departure bound;</text>
+  <text class="s" x="637" y="153" text-anchor="middle">Deep Sets+safety layer; MLP (two, N ≤ 20)</text>
+  <text class="s" x="637" y="165" text-anchor="middle">EV-GNN (per profile), raw and + layer</text>
+  <text class="s" x="637" y="177" text-anchor="middle">SA-Attn trained at N = 50 (reference)</text>
+  <rect class="box" x="542" y="190" width="191" height="56" rx="3"/>
+  <text x="637" y="204" text-anchor="middle">Rule-based baselines</text>
+  <text class="s" x="637" y="217" text-anchor="middle">AFAP, ALAP, Round Robin, LLF,</text>
+  <text class="s" x="637" y="229" text-anchor="middle">sLLF, price-threshold</text>
+  <text class="s" x="637" y="241" text-anchor="middle">each raw and + safety layer</text>
+  <rect class="box" x="542" y="252" width="191" height="38" rx="3"/>
+  <text x="637" y="267" text-anchor="middle">Economic MPC (HiGHS)</text>
+  <text class="s" x="637" y="281" text-anchor="middle">10 steps and 24 h, raw and + layer</text>
+  <text class="lab" x="637" y="303" text-anchor="middle">same requests, actuation, admission</text>
+
+  <!-- arrow 3 -> 4 -->
+  <line class="ln" x1="745" y1="175" x2="773" y2="175" marker-end="url(#arr)"/>
+
+  <!-- 4. Metrics -->
+  <rect class="grp" x="775" y="40" width="210" height="270" rx="6"/>
+  <text class="h" x="880" y="62" text-anchor="middle">4  Metrics per episode</text>
+  <text class="s" x="880" y="77" text-anchor="middle">aggregated per configuration and N</text>
+  <rect class="box" x="787" y="88" width="186" height="210" rx="3"/>
+  <g>
+    <text x="799" y="106">penalised profit J<tspan class="sub" baseline-shift="super">pen</tspan> (€)</text>
+    <text class="s" x="809" y="119">profit − 10 €/kWh × (shortfall</text>
+    <text class="s" x="809" y="130">+ transformer overload)</text>
+    <text x="799" y="150">optimality gap of J<tspan class="sub" baseline-shift="super">pen</tspan> (%)</text>
+    <text class="s" x="809" y="163">w.r.t. the soft-penalty optimum</text>
+    <text x="799" y="184">profit, unserved energy,</text>
+    <text x="799" y="198">transformer overload</text>
+    <text class="s" x="809" y="211">reported separately</text>
+    <text x="799" y="235">EVs without infeasible step</text>
+    <text class="s" x="809" y="248">(E4); fallback cases, binding rates</text>
+    <text x="799" y="268">inference time</text>
+    <text class="s" x="809" y="281">ms per control step versus N</text>
+  </g>
+
+  <!-- Perfect-information optimum (reference, not a controller) -->
+  <rect class="ref" x="530" y="330" width="215" height="66" rx="6"/>
+  <text class="h" x="637" y="349" text-anchor="middle">Perfect-information optimum</text>
+  <text class="s" x="637" y="364" text-anchor="middle">LPs per replay (HiGHS), not controllers:</text>
+  <text class="s" x="637" y="377" text-anchor="middle">soft-penalty LP → bound on J<tspan class="sub" baseline-shift="super">pen</tspan> (main gap)</text>
+  <text class="s" x="637" y="389" text-anchor="middle">hard LP → cost of the guarantee</text>
+  <path class="ln" d="M500,280 L515,280 L515,363 L528,363" marker-end="url(#arr)"/>
+  <path class="ln" d="M745,363 L760,363 L760,145 L785,145" marker-end="url(#arr)"/>
+
+  <!-- statistics note -->
+  <text class="lab" x="880" y="330" text-anchor="middle">statistics: 5 seeds, seed = unit;</text>
+  <text class="lab" x="880" y="343" text-anchor="middle">paired t-test on seed means, bootstrap</text>
+  <text class="lab" x="880" y="356" text-anchor="middle">CIs, Wilcoxon (replays), Holm per table</text>
+
+  <!-- legend -->
+  <line class="lnd" x1="20" y1="372" x2="60" y2="372"/>
+  <text class="s" x="68" y="376">training only</text>
+  <rect class="grp" x="20" y="386" width="22" height="14" rx="2"/>
+  <text class="s" x="50" y="397">evaluation (all methods)</text>
+  <rect class="ref" x="300" y="364" width="22" height="14" rx="2"/>
+  <text class="s" x="330" y="375">reference solution</text>
+</svg>

@@ -1,0 +1,14 @@
+[Unit]
+Description=v2gsafe core experiment run (resumable)
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/bob/v2g_run/run_core.sh
+WorkingDirectory=/home/bob/v2g_safe_rl_paper/code
+Restart=no
+Nice=5
+KillMode=control-group
+TimeoutStopSec=60
+
+[Install]
+WantedBy=default.target

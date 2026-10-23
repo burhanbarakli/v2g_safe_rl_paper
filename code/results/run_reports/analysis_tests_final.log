@@ -1,0 +1,32 @@
+......................F..............                                    [100%]
+=================================== FAILURES ===================================
+____________________ test_smoke_never_written_into_analysis ____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-bob/pytest-6/test_smoke_never_written_into_0')
+
+    def test_smoke_never_written_into_analysis(tmp_path):
+        raw = _smoke_fixture(tmp_path)
+        for bad in (make_all.REPO, make_all.REPO / "figures", tmp_path / "analysis"):
+            with pytest.raises(SystemExit):
+                make_all.run(raw, bad, stats.StatConfig(B=20, B_iqm=5), include_smoke=True)
+>       assert not any((make_all.REPO / "figures").glob("*.pdf"))
+E       AssertionError: assert not True
+E        +  where True = any(<map object at 0x72c0fa8fcb20>)
+E        +    where <map object at 0x72c0fa8fcb20> = glob('*.pdf')
+E        +      where glob = (PosixPath('/home/bob/v2g_safe_rl_paper/analysis') / 'figures').glob
+E        +        where PosixPath('/home/bob/v2g_safe_rl_paper/analysis') = make_all.REPO
+
+tests/test_pipeline.py:342: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[load] SMOKE rows kept on request (440 episodes): outputs are smoke-test only
+[load] EV-GNN: 8 in-distribution rows labelled evgnn_id / evgnn_safe_id
+[load] loaded 440 episodes, 39 methods, 3 configurations, 12 oracle episodes, 11 training logs
+[load] SMOKE rows kept on request (440 episodes): outputs are smoke-test only
+[load] EV-GNN: 8 in-distribution rows labelled evgnn_id / evgnn_safe_id
+[load] loaded 440 episodes, 39 methods, 3 configurations, 12 oracle episodes, 11 training logs
+[load] SMOKE rows kept on request (440 episodes): outputs are smoke-test only
+[load] EV-GNN: 8 in-distribution rows labelled evgnn_id / evgnn_safe_id
+[load] loaded 440 episodes, 39 methods, 3 configurations, 12 oracle episodes, 11 training logs
+=========================== short test summary info ============================
+FAILED tests/test_pipeline.py::test_smoke_never_written_into_analysis - Asser...
+1 failed, 36 passed in 198.53s (0:03:18)

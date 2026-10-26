@@ -81,6 +81,15 @@ Sonuçlar 2 seed ile kalacak; aşağıdakiler çalıştırılmadı ve çalışt�
 
 Makale ve `code/README.md` hâlâ 5 seed ve bu deneyleri anlatıyor; metin buna göre güncellenmeli.
 
+## 5b. Ek tanı çalışması: `attn_safe_penrew` (26 Ekim 2026)
+
+SA-Attn, yalnızca ödül türü değiştirilerek (`reward: {type: penalty}`) 2 seed × 3M adım yeniden eğitildi (iki seed
+paralel, 2,2 sa) ve 43 test yapılandırmasında değerlendirildi (23 dk). Çalıştırma: WSL `run_penrew.sh` (systemd birimi
+`v2g-penrew`), loglar `code/results/run_reports/penrew/`. Değerlendirme aşaması önceki işleri de listeledi ama
+tamamlanmış parçaları atladı; önceki 32 yöntem ve 43 oracle sonuç dosyasının değerleri değişmedi (karşılaştırıldı).
+Sonuçlar ve yorum: `review/performance_diagnosis_TR.md` §10. Bu çalışma `analysis/` çıktılarına ve makaleye dahil
+değil.
+
 ## 6. Paket içeriği
 
 Depoda: `code/results/` (README §9 içeriği) ve `code/results/run_reports/` (test, benchmark ve aşama logları,

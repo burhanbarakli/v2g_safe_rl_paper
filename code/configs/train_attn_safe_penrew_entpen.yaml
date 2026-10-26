@@ -1,0 +1,7 @@
+# attn_safe_penrew with an entropy penalty instead of a bonus (ent_coef < 0): the per-token log-std rose during
+# training in every safety-layer run, so this pushes the policy towards lower action noise. Pass
+# --set ppo.ent_coef=-0.01 after the attn_safe tuning overlay (the overlay sets ent_coef = 0.001). Diagnostic run,
+# review/performance_diagnosis_TR.md.
+inherit: train_attn_safe_penrew.yaml
+method: attn_safe_penrew_entpen
+ppo: {ent_coef: -0.01}

@@ -1,0 +1,11 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N20_rho4 workplace_N20_rho7 public_N20_rho4 public_N20_rho7 private_N20_rho4 private_N20_rho7 workplace_N20_rho3 public_N20_rho3 private_N20_rho3 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/deepsets_safe_penrew__train_deepsets_safe_penrew__s1__8acae2c0/checkpoint_final.pt
+[eval] deepsets_safe_penrew workplace_N20_rho4: 100 episodes, mean profit -39.67 EUR (69s)
+[eval] deepsets_safe_penrew workplace_N20_rho7: 100 episodes, mean profit -34.90 EUR (131s)
+[eval] deepsets_safe_penrew public_N20_rho4: 100 episodes, mean profit -41.65 EUR (201s)
+[eval] deepsets_safe_penrew public_N20_rho7: 100 episodes, mean profit -43.56 EUR (282s)
+[eval] deepsets_safe_penrew private_N20_rho4: 100 episodes, mean profit -36.05 EUR (358s)
+[eval] deepsets_safe_penrew private_N20_rho7: 100 episodes, mean profit -37.85 EUR (415s)
+[eval] deepsets_safe_penrew workplace_N20_rho3: 100 episodes, mean profit -40.73 EUR (455s)
+[eval] deepsets_safe_penrew public_N20_rho3: 100 episodes, mean profit -38.43 EUR (491s)
+[eval] deepsets_safe_penrew private_N20_rho3: 100 episodes, mean profit -32.33 EUR (530s)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/deepsets_safe_penrew__train_deepsets_safe_penrew__s1__8acae2c0/episodes.csv

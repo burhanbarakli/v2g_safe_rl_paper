@@ -90,6 +90,11 @@ tamamlanmış parçaları atladı; önceki 32 yöntem ve 43 oracle sonuç dosyas
 Sonuçlar ve yorum: `review/performance_diagnosis_TR.md` §10. Bu çalışma `analysis/` çıktılarına ve makaleye dahil
 değil.
 
+Aynı gün iki tanı çalışması daha (2 seed × 3M adım, iki eğitim paralel): `deepsets_safe_penrew` (Deep Sets + cezalı
+ödül, 1,8 sa) ve `attn_safe_penrew_entpen` (SA-Attn + cezalı ödül + entropi cezası `ppo.ent_coef=-0.01`, 1,5 sa);
+değerlendirme 32 dk. Çalıştırma: WSL `run_cheap.sh` (systemd birimi `v2g-cheap`), loglar
+`code/results/run_reports/cheap/`. Önceki 34 yöntem sonuç dosyası değişmedi (karşılaştırıldı). Sonuçlar: rapor §11.
+
 ## 6. Paket içeriği
 
 Depoda: `code/results/` (README §9 içeriği) ve `code/results/run_reports/` (test, benchmark ve aşama logları,

@@ -1,0 +1,6 @@
+# Deep Sets + safety layer trained with the penalty reward r_pen (w_E = w_P = 10 EUR/kWh) instead of the profit reward.
+# Everything else as deepsets_safe (deepsets_safe tuning selection reused, not tuned separately). Diagnostic run,
+# review/performance_diagnosis_TR.md.
+inherit: train_deepsets_safe.yaml
+method: deepsets_safe_penrew
+reward: {type: penalty}

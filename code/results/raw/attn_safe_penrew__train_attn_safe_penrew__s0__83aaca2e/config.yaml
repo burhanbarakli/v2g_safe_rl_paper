@@ -1,0 +1,96 @@
+method: attn_safe_penrew
+smoke: false
+model:
+  arch: attention
+  d_model: 128
+  n_layers: 3
+  n_heads: 4
+  head_hidden: 64
+  mlp_hidden: 640
+  n_max: 20
+ppo:
+  total_env_steps: 3000000
+  rollout_len: 128
+  minibatch: 512
+  epochs: 10
+  lr: 0.0003
+  lr_decay: true
+  adam_eps: 1.0e-05
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip: 0.2
+  ent_coef: 0.001
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  target_kl: 0.03
+  beta: 0.01
+  norm_adv: true
+envs:
+  groups:
+  - N: 10
+    count: 8
+  - N: 20
+    count: 8
+  backend: subproc
+  curriculum:
+    enabled: false
+    frac: 0.2
+    groups:
+    - N: 10
+      count: 16
+scenario:
+  profiles:
+  - workplace
+  - public
+  - private
+  rho_tr:
+  - 4.0
+  - 7.0
+  dt_min: 15
+  T: null
+  desired_soc: 1.0
+  loads: true
+  pv: true
+  load_mult: 0.4
+  pv_mult: 0.4
+  min_time_of_stay: 180
+  hour: null
+  spawn_multiplier: null
+  simulation_days: null
+safety:
+  enabled: true
+  lower_bound: true
+  admission: true
+  admission_existing_targets: lp_reachable
+  eps_q: 0.008
+reward:
+  type: penalty
+  w_E: 10.0
+  w_P: 10.0
+  dense: false
+lagrangian:
+  lr_lambda: 2.0
+  lambda_init: 0.0
+  lambda_max: 1000.0
+  cost_limit_short: 0.0
+  cost_limit_over: 0.0
+conformal:
+  enabled: false
+  alpha: 0.1
+  cache_dir: results/conformal
+  n_train: 2000
+  n_cal: 5000
+  predictor: gbr
+  uncalibrated: false
+features:
+  forecast_rel_std: 0.1
+train:
+  save_every: 50
+  torch_threads: 0
+  deterministic: false
+  keep_checkpoints: false
+eval:
+  test_grid: configs/test_grid.yaml
+  test_sets: results/test_sets
+  max_replays: null
+_name: train_attn_safe_penrew

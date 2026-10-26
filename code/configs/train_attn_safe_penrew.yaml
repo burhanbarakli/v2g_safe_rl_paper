@@ -1,0 +1,7 @@
+# SA-Attn trained with the penalty reward r_pen (w_E = w_P = 10 EUR/kWh, as J^pen) instead of the profit reward r.
+# Safety layer, departure lower bound, admission, beta and PPO settings as SA-Attn (attn_safe tuning selection reused,
+# not tuned separately). Diagnostic run for review/performance_diagnosis_TR.md: does the profit-only reward cause the
+# infeasible-step shortfall of SA-Attn?
+inherit: base.yaml
+method: attn_safe_penrew
+reward: {type: penalty}

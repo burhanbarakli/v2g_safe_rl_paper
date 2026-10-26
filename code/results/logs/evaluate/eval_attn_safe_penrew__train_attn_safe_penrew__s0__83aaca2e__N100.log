@@ -1,0 +1,8 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N100_rho4 workplace_N100_rho7 public_N100_rho4 public_N100_rho7 private_N100_rho4 private_N100_rho7 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_penrew__train_attn_safe_penrew__s0__83aaca2e/checkpoint_final.pt
+[eval] attn_safe_penrew workplace_N100_rho4: 50 episodes, mean profit -208.81 EUR (103s)
+[eval] attn_safe_penrew workplace_N100_rho7: 50 episodes, mean profit -214.36 EUR (194s)
+[eval] attn_safe_penrew public_N100_rho4: 50 episodes, mean profit -197.60 EUR (300s)
+[eval] attn_safe_penrew public_N100_rho7: 50 episodes, mean profit -225.35 EUR (385s)
+[eval] attn_safe_penrew private_N100_rho4: 50 episodes, mean profit -203.15 EUR (455s)
+[eval] attn_safe_penrew private_N100_rho7: 50 episodes, mean profit -235.39 EUR (554s)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_penrew__train_attn_safe_penrew__s0__83aaca2e/episodes.csv

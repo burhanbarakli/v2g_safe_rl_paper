@@ -47,7 +47,17 @@ sapmalar `RUN_NOTES_TR.md` içinde.
 | `gonderim_checkpoints_2026-10-23.zip` | 276 MB | 18 `checkpoint_final.pt` (`code/results/raw/<exp_id>/` yapısında) |
 | `results_caches_2026-10-23.zip` | 92 MB | `admission/`, `conformal/`, `test_sets/` önbellekleri (yeniden değerlendirme için) |
 | `gonderim_paketi_2026-10-23.zip` | 36 MB | README §9 gönderim paketi (depodaki sonuçlar, analiz çıktıları, test ve benchmark logları, kod yaması) |
+| `gonderim_checkpoints_penrew_2026-10-26.zip` | 31 MB | Tanı çalışması `attn_safe_penrew` için 2 `checkpoint_final.pt` (aşağıya bakın) |
 | `SHA256SUMS.txt` | | Zip dosyalarının SHA-256 özetleri |
+
+### Tanı çalışması: SA-Attn cezalı ödülle (26 Ekim 2026)
+
+Performans analizi ([`review/performance_diagnosis_TR.md`](review/performance_diagnosis_TR.md)) sonrasında SA-Attn,
+yalnızca ödül türü değiştirilerek (kâr yerine cezalı ödül, w_E = w_P = 10) 2 seed ile yeniden eğitildi ve aynı test
+ızgarasında değerlendirildi: `code/configs/train_attn_safe_penrew.yaml`, sonuçlar
+`code/results/raw/attn_safe_penrew__*`, loglar `code/results/run_reports/penrew/`. Bu çalışma `analysis/` tablo ve
+şekillerine ve makaleye **dahil değil**. `make_all.py` bu klasörler `raw/` içindeyken çalıştırılırsa yöntem genel
+stille tablolara girer; makale tablolarını yeniden üretmek için `attn_safe_penrew__*` klasörlerini dışarıda bırakın.
 
 Zip'leri depo kökünde açın; dosyalar `code/results/` altındaki yerlerine gelir. Ardından örneğin:
 

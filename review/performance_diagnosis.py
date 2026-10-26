@@ -6,7 +6,7 @@ import pandas as pd
 
 R = "/home/bob/v2g_safe_rl_paper/code/results/raw"
 W = 10.0
-M = ["attn_safe", "attn_safe_penrew", "deepsets_safe", "attn_proj_nolb", "attn_penalty_safedeploy", "attn_penalty", "mlp_safe",
+M = ["attn_safe", "attn_safe_penrew", "attn_safe_penrew_entpen", "deepsets_safe", "deepsets_safe_penrew", "attn_proj_nolb", "attn_penalty_safedeploy", "attn_penalty", "mlp_safe",
      "price_llf_safe", "alap_safe", "afap_safe", "llf_safe", "empc_highs_safe"]
 cols = ["method", "seed", "test_cfg_id", "profile", "N", "rho_tr", "replay_id", "profit_eur", "energy_charged_kwh",
         "energy_discharged_kwh", "energy_not_served_shared_kwh", "tr_violation_kwh", "infeasible_steps", "n_evs",
@@ -61,7 +61,7 @@ print(f"share of SA-Attn ENS penalty from infeasible episodes: "
       f"{100 * s[s.infeas_ep].ens_pen.sum() / s.ens_pen.sum():.1f} %")
 
 print("\n=== 4. By profile and rho (gap per charger; infeasible-episode %)")
-p = d[d.method.isin(["attn_safe", "attn_safe_penrew", "deepsets_safe", "attn_proj_nolb", "price_llf_safe"])]
+p = d[d.method.isin(["attn_safe", "attn_safe_penrew", "attn_safe_penrew_entpen", "deepsets_safe", "deepsets_safe_penrew", "price_llf_safe"])]
 print(p.pivot_table(index=["profile", "rho_tr"], columns="method", values="gap_pc", aggfunc="mean").round(3).to_string())
 print(p.pivot_table(index=["profile", "rho_tr"], columns="method", values="infeas_ep", aggfunc="mean").mul(100).round(1).to_string())
 
@@ -69,5 +69,5 @@ print("\n=== 5. By N (gap per charger)")
 print(p.pivot_table(index="N", columns="method", values="gap_pc", aggfunc="mean").round(3).to_string())
 
 print("\n=== 6. Seed spread (gap per charger, per seed)")
-print(d[d.method.isin(["attn_safe", "attn_safe_penrew", "deepsets_safe", "attn_proj_nolb", "mlp_safe"])]
+print(d[d.method.isin(["attn_safe", "attn_safe_penrew", "attn_safe_penrew_entpen", "deepsets_safe", "deepsets_safe_penrew"])]
       .pivot_table(index="method", columns="seed", values="gap_pc", aggfunc="mean").round(3).to_string())

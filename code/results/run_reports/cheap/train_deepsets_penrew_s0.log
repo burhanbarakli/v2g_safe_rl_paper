@@ -1,0 +1,4 @@
+[train] deepsets_safe_penrew__train_deepsets_safe_penrew__s0__8acae2c0: 1464 updates x 2048 transitions -> results/raw/deepsets_safe_penrew__train_deepsets_safe_penrew__s0__8acae2c0
+[vec_env] env 12: EV2Gym cannot build episode seed 780590334 (workplace_N20_rho7): scale < 0; redrawing
+[vec_env] env 10: EV2Gym cannot build episode seed 701906124 (workplace_N20_rho7): scale < 0; redrawing
+[train] done: results/raw/deepsets_safe_penrew__train_deepsets_safe_penrew__s0__8acae2c0/checkpoint_final.pt

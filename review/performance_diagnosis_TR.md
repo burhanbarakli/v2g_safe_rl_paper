@@ -175,3 +175,58 @@ Entropi yine artıyor (0,82 → 1,03 ve 0,72 → 1,32); kâr getirisi yalnızca 
 - Mekanizma 2 (kapasiteyi görmeyen alt sınır) ve 3 (öğrenmenin zayıf ilerlemesi, artan entropi) devam ediyor.
   Kalan açık için kapasiteye duyarlı alt sınır ve Deep Sets'in cezalı ödülle denenmesi sıradaki adaylar.
 - Attention avantajı bu testle de ortaya çıkmadı.
+
+## 11. Ucuz deneyler: Deep Sets + cezalı ödül, SA-Attn + cezalı ödül + entropi cezası (26 Ekim 2026)
+
+- `deepsets_safe_penrew` (`configs/train_deepsets_safe_penrew.yaml`): deepsets_safe ile tek fark ödül türü (cezalı);
+  deepsets_safe tuning seçimi (lr 1e-3, minibatch 512, ent 0).
+- `attn_safe_penrew_entpen` (`configs/train_attn_safe_penrew_entpen.yaml`): attn_safe_penrew + entropi cezası
+  (`--set ppo.ent_coef=-0.01`; log-std üst sınırı kodda sabit olduğu ve yeni bir yapılandırma anahtarı tüm çalışmaların
+  hash'ini değiştireceği için entropi doğrudan cezalandırıldı).
+- 2 seed × 3M adım, iki eğitim paralel (Deep Sets 1,8 sa, SA-Attn 1,5 sa), sonra 43 yapılandırmada değerlendirme.
+  Çalışma: WSL `~/v2g_run/run_cheap.sh`, loglar `~/v2g_logs/cheap/`. Önceki 34 yöntem sonuç dosyası değişmedi
+  (karşılaştırıldı).
+
+| Şarj noktası ve episot başına | SA-Attn | SA-Attn cezalı | SA-Attn cezalı + entropi cezası | Deep Sets | **Deep Sets cezalı** | Fiyat eşiği + katman |
+|---|---:|---:|---:|---:|---:|---:|
+| Açık € | 1,273 | 0,909 | 1,101 | 0,946 | **0,843** | 0,822 |
+| Kâr € | −2,058 | −2,016 | −2,118 | −1,868 | −1,911 | −1,980 |
+| ENS cezası € | 0,428 | 0,106 | 0,195 | 0,291 | 0,145 | 0,054 |
+| Olurlu olmayan episot % | 19,8 | 7,7 | 12,3 | 12,8 | 7,6 | 5,6 |
+| Karşılanmayan araç % | 1,03 | 0,29 | 0,25 | 0,69 | 0,26 | 0,14 |
+| Seed 0 / 1 açık | 1,24 / 1,31 | 0,93 / 0,88 | 1,06 / 1,14 | 0,99 / 0,90 | 0,93 / 0,76 | — |
+
+| N | 5 | 10 | 20 | 50 | 100 | 200 |
+|---|---:|---:|---:|---:|---:|---:|
+| SA-Attn cezalı | 1,176 | 0,854 | 0,826 | 0,850 | 0,826 | 0,854 |
+| SA-Attn cezalı + entropi cezası | 1,678 | 1,007 | 0,930 | 0,948 | 0,941 | 0,941 |
+| Deep Sets | 1,663 | 0,984 | 0,722 | 0,698 | **0,649** | **0,675** |
+| Deep Sets cezalı | 1,259 | 0,818 | **0,716** | 0,715 | 0,701 | 0,715 |
+| Fiyat eşiği + katman | **0,956** | **0,790** | 0,788 | 0,793 | 0,774 | 0,789 |
+
+| Profil, ρ_tr | Deep Sets cezalı | Fiyat eşiği | Olurlu olmayan %: Deep Sets cezalı / fiyat eşiği |
+|---|---:|---:|---:|
+| workplace, 4 | 0,944 | 0,714 | 22,9 / 14,8 |
+| private, 4 | 0,992 | 0,915 | 9,2 / 7,8 |
+| public, 4 | 0,888 | 0,853 | 9,8 / 8,4 |
+| private, 7 | 0,957 | 0,997 | 0,7 / 0,2 |
+| public, 7 | 0,752 | 0,832 | 0,8 / 0,8 |
+| workplace, 7 | 0,526 | 0,619 | 2,4 / 1,4 |
+
+Eğitim: entropi cezası entropiyi 0,6/0,43'ten −1,30/−1,44'e düşürdü (aksiyon std ≈ 0,07); seed 1'de kâr getirisi
+eğitimde kötüleşti (−31,4 → −33,0). Deep Sets cezalıda entropi yine arttı (0,89 → 1,33).
+
+**Sonuçlar.**
+1. Cezalı ödül iki mimaride de işe yarıyor: Deep Sets'te açık 0,946 → 0,843, ENS cezası yarıya indi (0,291 → 0,145),
+   olurlu olmayan episotlar 12,8 → 7,6 %.
+2. **En iyi öğrenen yöntem artık Deep Sets + cezalı ödül.** N ≥ 20'de fiyat eşiği kuralını geçiyor (0,70–0,72'ye karşı
+   0,77–0,79) ve gevşek trafoda (ρ = 7) her profilde önde; ancak N ≤ 10'da ve sıkı trafoda (ρ = 4) geride, bu yüzden
+   ortalamada hâlâ biraz geride (0,843'e karşı 0,822). N ≥ 50'de cezalı ödül Deep Sets'i biraz kötüleştiriyor
+   (0,649–0,698'e karşı 0,701–0,715): kâr-ceza dengesi büyük istasyonda kârdan biraz feda ediyor.
+3. Mimari: her karşılaştırmada Deep Sets attention'dan iyi; attention için avantaj çıkmadı.
+4. **Entropi cezası (−0,01) zararlı:** politika fazla erken deterministik hâle geldi, açık 0,909 → 1,101 kötüleşti.
+   Artan entropi zayıf öğrenmenin nedeni değil, belirtisi; bu yönden vazgeçilmeli (ya da çok daha küçük katsayı).
+5. Kalan açık sıkı trafo + workplace + küçük N'de yoğunlaşıyor ve olurlu olmayan episotlarla birlikte gidiyor: bu,
+   kapasiteyi görmeyen alt sınır (mekanizma 2) ile tutarlı. Sıradaki aday kapasiteye duyarlı alt sınır.
+6. Deep Sets cezalıda seed farkı büyük (0,93 / 0,76); fiyat eşiğiyle ortalama farkı (0,02) 2 seed ile ayırt etmek
+   için yetersiz.

@@ -1,0 +1,8 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N5_rho4 workplace_N5_rho7 public_N5_rho4 public_N5_rho7 private_N5_rho4 private_N5_rho7 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_penrew_entpen__train_attn_safe_penrew_entpen__s0__b58fe567/checkpoint_final.pt
+[eval] attn_safe_penrew_entpen workplace_N5_rho4: 100 episodes, mean profit -9.84 EUR (80s)
+[eval] attn_safe_penrew_entpen workplace_N5_rho7: 100 episodes, mean profit -11.73 EUR (162s)
+[eval] attn_safe_penrew_entpen public_N5_rho4: 100 episodes, mean profit -10.83 EUR (242s)
+[eval] attn_safe_penrew_entpen public_N5_rho7: 100 episodes, mean profit -8.20 EUR (308s)
+[eval] attn_safe_penrew_entpen private_N5_rho4: 100 episodes, mean profit -9.20 EUR (380s)
+[eval] attn_safe_penrew_entpen private_N5_rho7: 100 episodes, mean profit -9.51 EUR (477s)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/attn_safe_penrew_entpen__train_attn_safe_penrew_entpen__s0__b58fe567/episodes.csv

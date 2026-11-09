@@ -1,0 +1,6 @@
+# Diagnostic (review/performance_diagnosis_TR.md Sec. 12): SA-Attn with the penalty reward, global features appended to
+# every charger embedding (arch attention_gin). Otherwise identical to attn_safe_penrew (layer, lower bound, admission,
+# beta, attn_safe tuning selection).
+inherit: train_attn_safe_penrew.yaml
+method: attn_gin_safe_penrew
+model: {arch: attention_gin}

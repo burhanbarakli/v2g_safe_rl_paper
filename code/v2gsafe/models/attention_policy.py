@@ -11,6 +11,14 @@
   included), then d_m -> 64 -> 1.
 
 Parameter counts at the defaults (d_m 128, n_L 3, n_H 4): actor 610,370, critic 676,481 (formulation.md Sec. 5).
+
+Global-context variants (diagnostic runs, review/performance_diagnosis_TR.md Sec. 12): prices, forecasts and the
+transformer capacity enter only through the global token, so a charger sees them only by attending to it.
+* ``global_in``: charger embeddings e_i = W_c [xi_i; xi_0] + b_c + v_c (arch ``attention_gin``, actor and critic).
+* ``global_ctx``: actor head input [h_i; h_0; mean_{j occupied} h_j] instead of h_i (arch ``attention_gctx``, together
+  with ``global_in``), i.e. the DeepSets "own state + shared context" head on top of the attention encoder.
+Both keep permutation equivariance/invariance and independence of N and of padding (Lemma N1): xi_0 is appended to
+every charger identically and the mean runs over occupied chargers only.
 """
 from __future__ import annotations
 
@@ -68,9 +76,11 @@ class PreLNBlock(nn.Module):
 class TokenEncoder(nn.Module):
     """Set encoder over [global; chargers] with type embeddings and key-padding mask (no positions)."""
 
-    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, f_c: int = F_C, f_g: int = F_G):
+    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, f_c: int = F_C, f_g: int = F_G,
+                 global_in: bool = False):
         super().__init__()
-        self.emb_c = nn.Linear(f_c, d_model)
+        self.global_in = global_in
+        self.emb_c = nn.Linear(f_c + f_g if global_in else f_c, d_model)
         self.emb_g = nn.Linear(f_g, d_model)
         self.type_c = nn.Parameter(torch.zeros(d_model))
         self.type_g = nn.Parameter(torch.zeros(d_model))
@@ -81,6 +91,8 @@ class TokenEncoder(nn.Module):
 
     def forward(self, tokens: torch.Tensor, glob: torch.Tensor, occ: torch.Tensor):
         """tokens (B, N, F_c), glob (B, F_g), occ (B, N) bool -> H (B, N+1, d), key_valid (B, N+1)."""
+        if self.global_in:
+            tokens = torch.cat([tokens, glob[:, None, :].expand(*tokens.shape[:2], glob.shape[-1])], -1)
         e_c = self.emb_c(tokens) + self.type_c
         e_g = (self.emb_g(glob) + self.type_g)[:, None, :]
         h = torch.cat([e_g, e_c], 1)
@@ -93,10 +105,13 @@ class TokenEncoder(nn.Module):
 class AttentionActor(nn.Module):
     """Gaussian policy over raw per-charger actions a_i (formulation.md Sec. 5)."""
 
-    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64):
+    def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64,
+                 global_in: bool = False, global_ctx: bool = False):
         super().__init__()
-        self.encoder = TokenEncoder(d_model, n_layers, n_heads)
-        self.head = nn.Sequential(nn.Linear(d_model, head_hidden), nn.GELU(), nn.Linear(head_hidden, 2))
+        self.global_ctx = global_ctx
+        self.encoder = TokenEncoder(d_model, n_layers, n_heads, global_in=global_in)
+        d_head = 3 * d_model if global_ctx else d_model
+        self.head = nn.Sequential(nn.Linear(d_head, head_hidden), nn.GELU(), nn.Linear(head_hidden, 2))
         last = self.head[-1]
         with torch.no_grad():
             last.weight.mul_(0.01)
@@ -106,7 +121,12 @@ class AttentionActor(nn.Module):
     def forward(self, tokens, glob, occ):
         """Returns mu (B, N), log_std (B, N) in normalised action units (x = P_ref a)."""
         h, _ = self.encoder(tokens, glob, occ)
-        out = self.head(h[:, 1:, :])
+        hc = h[:, 1:, :]
+        if self.global_ctx:
+            m = occ.to(hc.dtype)[..., None]
+            mean = (hc * m).sum(1) / m.sum(1).clamp_min(1.0)
+            hc = torch.cat([hc, h[:, :1, :].expand_as(hc), mean[:, None, :].expand_as(hc)], -1)
+        out = self.head(hc)
         mu = out[..., 0]
         log_std = torch.clamp(out[..., 1], LOGSTD_MIN, LOGSTD_MAX)
         return mu, log_std
@@ -116,10 +136,10 @@ class AttentionCritic(nn.Module):
     """Value function with attention pooling (pooling by multi-head attention, one learned query)."""
 
     def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64,
-                 n_out: int = 1):
+                 n_out: int = 1, global_in: bool = False):
         super().__init__()
         self.n_out = n_out                  # 1: value; 3: value + two cost values (PPO-Lagrangian, DD33(3))
-        self.encoder = TokenEncoder(d_model, n_layers, n_heads)
+        self.encoder = TokenEncoder(d_model, n_layers, n_heads, global_in=global_in)
         self.query = nn.Parameter(torch.zeros(1, 1, d_model))
         nn.init.normal_(self.query, std=0.02)
         self.pool = MultiHeadAttention(d_model, n_heads)

@@ -1,0 +1,4 @@
+[train] attn_gctx_safe_penrew__train_attn_gctx_safe_penrew__s1__b85d6c4f: 1464 updates x 2048 transitions -> results/raw/attn_gctx_safe_penrew__train_attn_gctx_safe_penrew__s1__b85d6c4f
+[vec_env] env 11: EV2Gym cannot build episode seed 885571625 (private_N20_rho4): scale < 0; redrawing
+[vec_env] env 6: EV2Gym cannot build episode seed 201877896 (workplace_N10_rho4): scale < 0; redrawing
+[train] done: results/raw/attn_gctx_safe_penrew__train_attn_gctx_safe_penrew__s1__b85d6c4f/checkpoint_final.pt

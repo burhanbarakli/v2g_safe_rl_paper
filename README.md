@@ -49,6 +49,7 @@ sapmalar `RUN_NOTES_TR.md` içinde.
 | `gonderim_paketi_2026-10-23.zip` | 36 MB | README §9 gönderim paketi (depodaki sonuçlar, analiz çıktıları, test ve benchmark logları, kod yaması) |
 | `gonderim_checkpoints_penrew_2026-10-26.zip` | 31 MB | Tanı çalışması `attn_safe_penrew` için 2 `checkpoint_final.pt` (aşağıya bakın) |
 | `gonderim_checkpoints_cheap_2026-10-26.zip` | 62 MB | Tanı çalışmaları `deepsets_safe_penrew` ve `attn_safe_penrew_entpen` için 4 `checkpoint_final.pt` |
+| `gonderim_checkpoints_gattn_2026-11-09.zip` | 58 MB | Tanı çalışmaları `attn_gin_safe_penrew` ve `attn_gctx_safe_penrew` için 4 `checkpoint_final.pt` |
 | `SHA256SUMS.txt` | | Zip dosyalarının SHA-256 özetleri |
 
 ### Tanı çalışması: SA-Attn cezalı ödülle (26 Ekim 2026)
@@ -61,9 +62,16 @@ yapıldı (rapor §11): Deep Sets + cezalı ödül (`deepsets_safe_penrew`) ve S
 (`attn_safe_penrew_entpen`); yapılandırmalar `code/configs/train_deepsets_safe_penrew.yaml`,
 `code/configs/train_attn_safe_penrew_entpen.yaml`, loglar `code/results/run_reports/cheap/`.
 
+9 Kasım 2026'da global bilgiye doğrudan erişimi test eden iki attention varyantı eklendi (rapor §12): global özellikler
+her şarj noktası gömmesinde (`model.arch: attention_gin`, yöntem `attn_gin_safe_penrew`) ve buna ek olarak Deep Sets
+tarzı karar başlığı (`attention_gctx`, `attn_gctx_safe_penrew`). İkisi de cezalı ödülle eğitildi. Yapılandırmalar
+`code/configs/train_attn_gin_safe_penrew.yaml`, `code/configs/train_attn_gctx_safe_penrew.yaml`, loglar
+`code/results/run_reports/gattn/`.
+
 Bu tanı çalışmaları `analysis/` tablo ve şekillerine ve makaleye **dahil değil**. `make_all.py` bu klasörler `raw/`
 içindeyken çalıştırılırsa yöntemler genel stille tablolara girer; makale tablolarını yeniden üretmek için
-`attn_safe_penrew*`, `deepsets_safe_penrew*` klasörlerini dışarıda bırakın.
+`attn_safe_penrew*`, `deepsets_safe_penrew*`, `attn_gin_safe_penrew*`, `attn_gctx_safe_penrew*` klasörlerini dışarıda
+bırakın.
 
 Zip'leri depo kökünde açın; dosyalar `code/results/` altındaki yerlerine gelir. Ardından örneğin:
 

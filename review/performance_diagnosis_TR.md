@@ -230,3 +230,77 @@ eğitimde kötüleşti (−31,4 → −33,0). Deep Sets cezalıda entropi yine a
    kapasiteyi görmeyen alt sınır (mekanizma 2) ile tutarlı. Sıradaki aday kapasiteye duyarlı alt sınır.
 6. Deep Sets cezalıda seed farkı büyük (0,93 / 0,76); fiyat eşiğiyle ortalama farkı (0,02) 2 seed ile ayırt etmek
    için yetersiz.
+
+## 12. Global bilgiye doğrudan erişim: `attn_gin_safe_penrew`, `attn_gctx_safe_penrew` (8–9 Kasım 2026)
+
+**Soru.** Fiyat, fiyat tahmini, saat, trafo kapasitesi ve alt sınırların toplamı gözlemde yalnızca global token'da
+bulunuyor. Deep Sets bu bilgiyi her şarj noktasının girdisine doğrudan ekliyor. SA-Attn'de ise bir şarj noktası bu
+bilgiye ancak dikkat mekanizmasıyla global token'a bakarak ulaşabiliyor. Eğitilmiş checkpoint'ler üzerinde yapılan
+ölçümde (tabloda "probe") kâr ödüllü SA-Attn global token'a Deep Sets'in yaklaşık yarısı kadar duyarlı çıktı ve fiyata
+pratikte tepki vermedi. Bu bölümde, global bilgiyi attention modeline doğrudan vermenin farkı kapatıp kapatmadığı
+test ediliyor.
+
+**Varyantlar** (`code/v2gsafe/models/attention_policy.py`, `model.arch`):
+- `attention_gin`: her şarj noktasının gömmesine global özellikler eklenir, e_i = W_c [ξ_i; ξ_0]
+  (aktör ve kritik). Parametre sayısı 610.370'ten 615.234'e çıkar.
+- `attention_gctx`: buna ek olarak aktör başlığı Deep Sets'teki gibi [h_i; h_0; dolu j'ler üzerinden h_j
+  ortalaması] girdisini alır. Parametre sayısı 631.618 olur.
+
+İki varyantta da Lemma N1 korunuyor (yeni testler `tests/test_models.py` dosyasında; tüm paket 102 geçti, 1 atlandı).
+Ödül cezalı (w = 10); güvenlik katmanı, alt sınır, admission ve hiperparametreler `attn_safe_penrew` ile aynı
+(attn_safe tuning seçimi). Eğitim 2 seed × 3M adım; her turda iki eğitim paralel çalıştı (2 × 1,9 sa). Ardından 43
+yapılandırmada değerlendirme yapıldı (31 dk). Çalıştırma betiği WSL'de `~/v2g_run/run_gattn.sh` (systemd birimi
+`v2g-gattn`). Önceki 81 `episodes.csv` dosyası değişmedi (md5 ile karşılaştırıldı).
+
+| Şarj noktası ve episot başına | SA-Attn cezalı | **gin** | **gctx** | Deep Sets cezalı | Fiyat eşiği + katman |
+|---|---:|---:|---:|---:|---:|
+| Açık € | 0,909 | 0,954 | 0,931 | 0,843 | 0,822 |
+| Kâr € | −2,016 | −1,961 | −1,974 | −1,911 | −1,980 |
+| ENS cezası € | 0,106 | 0,206 | 0,170 | 0,145 | 0,054 |
+| Olurlu olmayan episot % | 7,7 | 11,9 | 9,2 | 7,6 | 5,6 |
+| Deşarj kWh | 7,8 | 9,0 | 8,1 | 8,7 | 6,0 |
+| Seed 0 / 1 açık | 0,93 / 0,88 | 0,85 / 1,06 | 0,89 / 0,98 | 0,93 / 0,76 | — |
+| Probe: global token'a duyarlılık | 0,94 | 0,84 | 0,93 | 1,11 | — |
+| Probe: corr(aksiyon, fiyat) | −0,06 | **−0,16** | **−0,13** | −0,14 | — |
+
+(Probe: 4 yapılandırma × 2 replay. Duyarlılık = global token aynı çalışmanın başka bir adımındakiyle değiştirildiğinde
+|Δμ| / sd(μ). Kâr ödüllü modellerde probe değerleri: SA-Attn 0,57 / −0,03, Deep Sets 1,03 / −0,15.)
+
+| Açık €, N'ye göre | 5 | 10 | 20 | 50 | 100 | 200 |
+|---|---:|---:|---:|---:|---:|---:|
+| SA-Attn cezalı | 1,176 | 0,854 | 0,826 | 0,850 | 0,826 | 0,854 |
+| gin | 1,459 | 0,956 | 0,807 | 0,785 | 0,753 | 0,772 |
+| gctx | 1,323 | 0,942 | 0,814 | 0,789 | 0,787 | 0,788 |
+| Deep Sets cezalı | 1,259 | 0,818 | 0,716 | 0,715 | 0,701 | 0,715 |
+| Fiyat eşiği + katman | 0,956 | 0,790 | 0,788 | 0,793 | 0,774 | 0,789 |
+
+| Seed başına açık € | N ≤ 10 | N = 20 | N ≥ 50 | Olurlu olmayan episot % (ρ = 4) |
+|---|---:|---:|---:|---:|
+| SA-Attn cezalı s0 / s1 | 1,05 / 0,98 | 0,84 / 0,82 | 0,87 / 0,82 | 13,7 / 14,3 |
+| gin s0 / s1 | 1,00 / 1,41 | 0,75 / 0,86 | 0,74 / 0,81 | 15,5 / 27,6 |
+| gctx s0 / s1 | 0,98 / 1,28 | 0,84 / 0,79 | 0,82 / 0,76 | 14,0 / 19,9 |
+| Deep Sets cezalı s0 / s1 | 1,17 / 0,91 | 0,77 / 0,67 | 0,76 / 0,66 | 14,5 / 13,4 |
+| Fiyat eşiği | 0,87 | 0,79 | 0,79 | 10,3 |
+
+Eğitim: son %10'da attention varyantları güncelleme başına 7,6–9,1 epoch çalıştı (KL erken durdurması, KL ≈ 0,010–0,014).
+Deep Sets cezalı 10 epoch'un tamamını çalıştı (KL ≈ 0,004). Attention lr = 3e-4 kullanıyor, Deep Sets lr = 1e-3.
+
+**Sonuçlar.**
+1. **Bilgiye erişim hipotezi kısmen doğrulandı.** Global bilgi doğrudan verilince attention politikası fiyata Deep Sets
+   düzeyinde tepki vermeye başladı (corr −0,06'dan −0,16 ve −0,13'e). Kâr iyileşti (−2,016'dan −1,961 ve −1,974'e).
+   Büyük istasyonda açık 0,83–0,85'ten 0,75–0,79'a indi; bu iyileşme dört seed karşılaştırmasının dördünde de aynı
+   yönde. N ≥ 50'de varyantlar fiyat eşiği kuralıyla aynı düzeyde ya da biraz önünde.
+2. **Ortalama açık yine de iyileşmedi** (0,909'a karşı 0,954 ve 0,931). Neden: daha iyi fiyat kullanımı daha fazla
+   deşarj getirdi (7,8'den 9,0 ve 8,1 kWh'ye). Bu da sıkı trafoda ve küçük N'de daha fazla olurlu olmayan episot
+   üretti; özellikle seed 1'de ρ = 4'te %20–28. ENS cezası neredeyse ikiye katlandı. Bu, mekanizma 2'nin (kapasiteyi
+   görmeyen alt sınır) bağımsız bir teyidi: politika fiyata daha iyi tepki verdikçe kapasite sıkışmasına daha çok
+   giriyor.
+3. **Deep Sets cezalı hâlâ önde** (N ≥ 20'de 0,70–0,72'ye karşı 0,75–0,81). Bilgiye erişim farkın bir kısmını açıklıyor,
+   tamamını açıklamıyor. Kalan aday optimizasyon: attention KL erken durdurmasına daha sık takılıyor ve daha düşük lr
+   ile eğitiliyor. Tuning seçimleri gürültülü olduğundan (§11) bu fark tasarımdan değil seçimden de gelebilir.
+4. gctx, gin'e göre biraz daha az olurlu olmayan episot üretiyor (%9,2'ye karşı %11,9). Ancak seed farkları
+   (0,85 / 1,06) bu farktan büyük; 2 seed ile ayırt edilemiyor.
+5. **Sıradaki adım.** Kalan açık ve yeni varyantlardaki kötüleşme aynı yerde toplanıyor: sıkı trafo, küçük N, olurlu
+   olmayan episotlar. Attention tarafındaki bilgi düzeltmesi tek başına farkı kapatmıyor; kapasiteye duyarlı alt sınır
+   hem bu varyantların kazancını küçük N'de korumak hem de tüm yöntemler için gerekli görünüyor. İkinci aday, gin/gctx
+   için ayrı tuning (özellikle lr ve target_kl).

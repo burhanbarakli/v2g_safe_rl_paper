@@ -1,0 +1,11 @@
+/home/bob/v2g_safe_rl_paper/venv/bin/python evaluate.py --test-set configs/test_grid.yaml --only workplace_N200_rho4 workplace_N200_rho7 public_N200_rho4 public_N200_rho7 private_N200_rho4 private_N200_rho7 workplace_N200_rho3 public_N200_rho3 private_N200_rho3 --device cpu --test-sets-dir /home/bob/v2g_safe_rl_paper/code/results/test_sets --conformal-cache /home/bob/v2g_safe_rl_paper/code/results/conformal --admission-cache /home/bob/v2g_safe_rl_paper/code/results/admission --out-root /home/bob/v2g_safe_rl_paper/code/results/raw --checkpoint /home/bob/v2g_safe_rl_paper/code/results/raw/attn_gin_safe_penrew__train_attn_gin_safe_penrew__s0__cae46a76/checkpoint_final.pt
+[eval] attn_gin_safe_penrew workplace_N200_rho4: 50 episodes, mean profit -436.32 EUR (113s)
+[eval] attn_gin_safe_penrew workplace_N200_rho7: 50 episodes, mean profit -370.57 EUR (266s)
+[eval] attn_gin_safe_penrew public_N200_rho4: 50 episodes, mean profit -401.24 EUR (423s)
+[eval] attn_gin_safe_penrew public_N200_rho7: 50 episodes, mean profit -420.68 EUR (572s)
+[eval] attn_gin_safe_penrew private_N200_rho4: 50 episodes, mean profit -300.82 EUR (704s)
+[eval] attn_gin_safe_penrew private_N200_rho7: 50 episodes, mean profit -372.85 EUR (845s)
+[eval] attn_gin_safe_penrew workplace_N200_rho3: 50 episodes, mean profit -402.01 EUR (958s)
+[eval] attn_gin_safe_penrew public_N200_rho3: 50 episodes, mean profit -462.13 EUR (1030s)
+[eval] attn_gin_safe_penrew private_N200_rho3: 50 episodes, mean profit -396.17 EUR (1096s)
+[evaluate] wrote /home/bob/v2g_safe_rl_paper/code/results/raw/attn_gin_safe_penrew__train_attn_gin_safe_penrew__s0__cae46a76/episodes.csv

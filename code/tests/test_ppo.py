@@ -48,7 +48,7 @@ def _setup(arch="attention", seed=0):
     return cfg, actor, critic, opt, gen
 
 
-@pytest.mark.parametrize("arch", ["attention", "mlp"])
+@pytest.mark.parametrize("arch", ["attention", "attention_gctx", "mlp"])
 def test_update_runs_on_mixed_N_and_is_deterministic(arch):
     outs = []
     for _ in range(2):

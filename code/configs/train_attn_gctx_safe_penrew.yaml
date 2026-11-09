@@ -1,0 +1,5 @@
+# Diagnostic (review/performance_diagnosis_TR.md Sec. 12): as attn_gin_safe_penrew, plus the DeepSets-style actor head
+# [h_i; h_0; mean_j h_j] (arch attention_gctx).
+inherit: train_attn_safe_penrew.yaml
+method: attn_gctx_safe_penrew
+model: {arch: attention_gctx}

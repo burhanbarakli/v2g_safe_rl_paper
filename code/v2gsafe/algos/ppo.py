@@ -64,9 +64,12 @@ def dual_update(lam: np.ndarray, Jc: np.ndarray, limit: np.ndarray, lr: float, l
 def build_networks(cfg) -> tuple[nn.Module, nn.Module]:
     m = cfg["model"]
     n_out = 3 if cfg["reward"]["type"] == "lagrangian" else 1      # value + 2 cost values (DD33(3))
-    if m["arch"] == "attention":
-        return (AttentionActor(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"]),
-                AttentionCritic(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], n_out=n_out))
+    if m["arch"] in ("attention", "attention_gin", "attention_gctx"):
+        gin, gctx = m["arch"] != "attention", m["arch"] == "attention_gctx"
+        return (AttentionActor(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], global_in=gin,
+                               global_ctx=gctx),
+                AttentionCritic(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], n_out=n_out,
+                                global_in=gin))
     if m["arch"] == "mlp":
         return MLPActor(m["n_max"], m["mlp_hidden"]), MLPCritic(m["n_max"], m["mlp_hidden"], n_out=n_out)
     if m["arch"] == "deepsets":

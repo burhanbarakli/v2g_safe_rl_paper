@@ -100,6 +100,49 @@ def test_all_chargers_empty_is_well_defined():
     assert torch.isfinite(mu).all() and torch.isfinite(c(tok, torch.randn(2, F_G), occ)).all()
 
 
+GLOBAL_VARIANTS = [dict(global_in=True), dict(global_in=True, global_ctx=True)]
+
+
+@pytest.mark.parametrize("kw", GLOBAL_VARIANTS)
+def test_global_context_variants_keep_lemma_n1(kw):
+    """attention_gin / attention_gctx: equivariance, invariance and padding independence as in Lemma N1."""
+    torch.manual_seed(2)
+    a = AttentionActor(**kw).double()
+    c = AttentionCritic(global_in=kw["global_in"]).double()
+    tok, glob, occ = _obs(3, 16, dtype=torch.float64)
+    mu, ls = a(tok, glob, occ)
+    v = c(tok, glob, occ)
+    perm = torch.randperm(16)
+    mup, lsp = a(tok[:, perm], glob, occ[:, perm])
+    torch.testing.assert_close(mup, mu[:, perm], atol=1e-10, rtol=0)
+    torch.testing.assert_close(lsp, ls[:, perm], atol=1e-10, rtol=0)
+    torch.testing.assert_close(c(tok[:, perm], glob, occ[:, perm]), v, atol=1e-10, rtol=0)
+    tok2 = torch.cat([tok, 50 * torch.randn(3, 9, F_C, dtype=torch.float64)], 1)   # garbage padded chargers
+    occ2 = torch.cat([occ, torch.zeros(3, 9, dtype=torch.bool)], 1)
+    mu2, _ = a(tok2, glob, occ2)
+    torch.testing.assert_close(mu2[:, :16][occ], mu[occ], atol=1e-10, rtol=0)
+    torch.testing.assert_close(c(tok2, glob, occ2), v, atol=1e-10, rtol=0)
+    for b in range(3):                     # station of size n
+        idx = torch.nonzero(occ[b]).flatten()
+        mu3, _ = a(tok[b:b + 1, idx], glob[b:b + 1], occ[b:b + 1, idx])
+        torch.testing.assert_close(mu3[0], mu[b, idx], atol=1e-10, rtol=0)
+    empty = torch.zeros(2, 5, dtype=torch.bool)
+    z = torch.zeros(2, 5, F_C, dtype=torch.float64)
+    assert torch.isfinite(a(z, torch.randn(2, F_G, dtype=torch.float64), empty)[0]).all()
+
+
+def test_global_context_variants_see_global_directly():
+    """The charger embedding itself depends on the global token (not only through attention)."""
+    torch.manual_seed(3)
+    a = AttentionActor(global_in=True)
+    tok, glob, occ = _obs(1, 4, p_occ=1.0)
+    e1 = a.encoder.emb_c(torch.cat([tok, glob[:, None].expand(1, 4, F_G)], -1))
+    e2 = a.encoder.emb_c(torch.cat([tok, (glob + 1)[:, None].expand(1, 4, F_G)], -1))
+    assert not torch.allclose(e1, e2)
+    assert count_params(AttentionActor(global_in=True)) == 610_370 + F_G * 128
+    assert count_params(AttentionActor(global_in=True, global_ctx=True)) == 610_370 + F_G * 128 + 2 * 128 * 64
+
+
 def test_mlp_zero_padding_and_limit():
     m = MLPActor(n_max=10)
     tok, glob, occ = _obs(2, 6)

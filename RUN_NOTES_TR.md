@@ -95,6 +95,13 @@ Aynı gün iki tanı çalışması daha (2 seed × 3M adım, iki eğitim paralel
 değerlendirme 32 dk. Çalıştırma: WSL `run_cheap.sh` (systemd birimi `v2g-cheap`), loglar
 `code/results/run_reports/cheap/`. Önceki 34 yöntem sonuç dosyası değişmedi (karşılaştırıldı). Sonuçlar: rapor §11.
 
+8–9 Kasım 2026: global bilgiye doğrudan erişimi test eden iki attention varyantı, `attn_gin_safe_penrew` ve
+`attn_gctx_safe_penrew` (cezalı ödül, 2 seed × 3M adım). Her turda iki eğitim paralel çalıştı, toplam 3,8 sa;
+değerlendirme 31 dk sürdü. Kod değişikliği `model.arch` için iki yeni değer (`attention_gin`, `attention_gctx`) ve yeni
+model testleri; mevcut yapılandırmaların hash'leri değişmedi. `make test`: 102 geçti, 1 atlandı. Çalıştırma: WSL
+`run_gattn.sh` (systemd birimi `v2g-gattn`), loglar `code/results/run_reports/gattn/`. Önceki 81 `episodes.csv`
+dosyası değişmedi (md5). Sonuçlar: rapor §12.
+
 ## 6. Paket içeriği
 
 Depoda: `code/results/` (README §9 içeriği) ve `code/results/run_reports/` (test, benchmark ve aşama logları,

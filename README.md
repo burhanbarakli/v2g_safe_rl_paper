@@ -50,7 +50,7 @@ sapmalar `RUN_NOTES_TR.md` içinde.
 | `gonderim_checkpoints_penrew_2026-10-26.zip` | 31 MB | Tanı çalışması `attn_safe_penrew` için 2 `checkpoint_final.pt` (aşağıya bakın) |
 | `gonderim_checkpoints_cheap_2026-10-26.zip` | 62 MB | Tanı çalışmaları `deepsets_safe_penrew` ve `attn_safe_penrew_entpen` için 4 `checkpoint_final.pt` |
 | `gonderim_checkpoints_gattn_2026-11-09.zip` | 58 MB | Tanı çalışmaları `attn_gin_safe_penrew` ve `attn_gctx_safe_penrew` için 4 `checkpoint_final.pt` |
-| `gonderim_checkpoints_joint_2026-11-11.zip` | ~140 MB | Tanı çalışmaları `attn_joint`, `attn_jbox`, `attn_jres2`, `attn_jres3`, `attn_gjoint`, `attn_gres2` (`_safe_penrew`) için 10 `checkpoint_final.pt` |
+| `gonderim_checkpoints_joint_2026-11-11.zip` | 144 MB | Tanı çalışmaları `attn_joint`, `attn_jbox`, `attn_jres2`, `attn_jres3`, `attn_gjoint`, `attn_gres2` (`_safe_penrew`) için 10 `checkpoint_final.pt` |
 | `SHA256SUMS.txt` | | Zip dosyalarının SHA-256 özetleri |
 
 ### Tanı çalışması: SA-Attn cezalı ödülle (26 Ekim 2026)

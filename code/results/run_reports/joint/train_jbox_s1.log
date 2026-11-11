@@ -1,0 +1,289 @@
+[train] attn_jbox_safe_penrew__train_attn_jbox_safe_penrew__s1__01d83ddb: 1464 updates x 2048 transitions -> results/raw/attn_jbox_safe_penrew__train_attn_jbox_safe_penrew__s1__01d83ddb
+Process SpawnProcess-15:
+Process SpawnProcess-16:
+Process SpawnProcess-6:
+Process SpawnProcess-5:
+Process SpawnProcess-14:
+Process SpawnProcess-4:
+Process SpawnProcess-1:
+Process SpawnProcess-2:
+Process SpawnProcess-10:
+Process SpawnProcess-11:
+Process SpawnProcess-12:
+Process SpawnProcess-8:
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+Traceback (most recent call last):
+ConnectionResetError: [Errno 104] Connection reset by peer
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Process SpawnProcess-13:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+Process SpawnProcess-9:
+Process SpawnProcess-7:
+Traceback (most recent call last):
+Process SpawnProcess-3:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 400, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/v2g_safe_rl_paper/code/v2gsafe/envs/vec_env.py", line 88, in _worker_main
+    cmd, data = remote.recv()
+                ~~~~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 435, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 404, in _recv
+    raise EOFError
+EOFError

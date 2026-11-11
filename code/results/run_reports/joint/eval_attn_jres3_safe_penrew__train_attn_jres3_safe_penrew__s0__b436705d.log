@@ -1,0 +1,260 @@
+[eval] attn_jres3_safe_penrew workplace_N5_rho7: 100 episodes (62s)
+[eval] attn_jres3_safe_penrew workplace_N5_rho4: 100 episodes (67s)
+[eval] attn_jres3_safe_penrew workplace_N10_rho7: 100 episodes (68s)
+[eval] attn_jres3_safe_penrew workplace_N10_rho4: 100 episodes (71s)
+[eval] attn_jres3_safe_penrew workplace_N20_rho7: 100 episodes (76s)
+[eval] attn_jres3_safe_penrew workplace_N20_rho4: 100 episodes (78s)
+Process SpawnPoolWorker-2:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-5:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-1:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-4:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-6:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-3:
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 205, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 432, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py", line 389, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+/home/bob/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/multiprocessing/resource_tracker.py:479: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-s5ml_xnc', '/mp-rjva2lrq', '/mp-yb42mztu', '/mp-1czwxxus', '/mp-wjcpv6xv', '/mp-t_b7326v'}
+  warnings.warn(

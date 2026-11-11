@@ -33,6 +33,7 @@ from ..safety.actuation import actuation
 from ..safety.bounds import EVParams, cap_request, ev_params_from_ev2gym, phi_ev2gym, step_bounds, \
     taper_minorant_rho
 from ..safety.fallback import FB_CODES, fallback
+from ..safety.joint import joint_lower_bound
 from ..safety.projection import GuardCounters, is_feasible, project, sanitize
 from .forecasts import NoisyForecaster
 from .scenarios import ScenarioConfig
@@ -66,7 +67,16 @@ def make_ev2gym_env(scfg: ScenarioConfig, seed: int = 0):
 @dataclass
 class WrapperOptions:
     safety: bool = True                 # projection + fallback (True) or physical clip only (False)
-    lower_bound: bool = True            # False: the layer uses l_i = p_i^min (attn_proj_nolb, DD33(1))
+    lower_bound: bool | str = True      # False: the layer uses l_i = p_i^min (attn_proj_nolb, DD33(1));
+                                        # "joint": capacity-aware departure bound (safety/joint.py)
+    joint_features: bool = True         # with "joint": charger feature 10 shows the joint bound used by the layer
+    joint_margin: float = 0.3           # with "joint": forecast load x (1 + m), forecast PV x (1 - m) in C_hat
+    joint_cap_frac: float = 0.0         # with "joint": share of P_tr held back in the future capacity C_hat
+    action: str = "raw"                 # raw: x in kW; box: x / p_ref is mapped to l + sigmoid(.) (u - l) before the layer;
+                                        # resid: box around the price-LLF rule, l + sigmoid(x / p_ref + logit r_rule) (u - l),
+                                        # r_rule = the rule's position in [l, u], also given as charger feature 12
+    resid_rmin: float = 0.02            # with "resid": r_rule clipped to [rmin, 1 - rmin] (larger = softer rule, more
+                                        # sensitivity of the applied power to the residual where the rule saturates)
     admission: bool = True              # admission control (DD9/DD20) as a replay pre-pass, all methods (DD31)
     admission_cache: str | None = None  # directory of cached admission tables (None: in-memory only)
     admission_existing_targets: str = "lp_reachable"   # DD25 (IMPLEMENTATION_NOTES I-3)
@@ -119,6 +129,7 @@ class Observation:
     Crev: float
     feasible: bool          # A5 (Proposition 1(i)) for the layer's bounds
     l_dep: np.ndarray | None = None   # departure-aware lower bound (S11), for features and metrics
+    r_rule: np.ndarray | None = None  # action "resid": price-LLF rule's position in [l, u], clipped to [R_MIN, 1 - R_MIN]
 
 
 @dataclass
@@ -150,6 +161,9 @@ class SafeV2GEnv:
         self.acc = EpisodeAccumulator(self.dt_h, self.N)
         self.step_log: list[dict] = []
         self.charger_log: list[dict] = []
+        self.f_c = F_C + int(self.opt.action == "resid")     # charger feature width
+        self._price_hist: list[float] = []
+        self._price_t = -1
 
     # ---------------------------------------------------------------------------------- scenario
     _IMMUTABLE = ("N", "dt_min", "horizon")
@@ -184,6 +198,7 @@ class SafeV2GEnv:
         self.acc = EpisodeAccumulator(self.dt_h, self.N)
         self.counters = GuardCounters()
         self.step_log, self.charger_log = [], []
+        self._price_hist, self._price_t = [], -1
         self.cp = self.opt.conformal_provider(self.scfg) if self.opt.conformal_provider else None
         # DD31/DD43(1): the shared admission table of the replay (true departures, controller-independent) is computed
         # for every pass; with admission on it gives the requirement, otherwise (noadm) it is the reference of the
@@ -300,6 +315,17 @@ class SafeV2GEnv:
         Ctil = C - n * self.opt.eps_q
         l_dep = l
         l_lay = l if self.opt.lower_bound else pmin.copy()
+        if self.opt.lower_bound == "joint" and idx.size:   # capacity-aware bound (safety/joint.py)
+            K = int(tau.max())
+            ks = np.arange(1, K + 1)
+            P_tr_f = np.asarray(tr.max_power, float)[np.minimum(t + ks, self.T - 1)]
+            j = np.minimum(ks, H_F) - 1                     # beyond the forecast horizon: last forecast held
+            m = self.opt.joint_margin                       # robustness to forecast error (relative)
+            C_hat = (1.0 - self.opt.joint_cap_frac) * P_tr_f - (1.0 + m) * fc_inf[j] + (1.0 - m) * fc_pv[j]                 - n * self.opt.eps_q
+            l_lay = l.copy()
+            l_lay[idx] = joint_lower_bound(Ei, tau, [s.B for s in sl], pn, l[idx], u[idx], C_hat, Ctil, self.dt_h)
+            if self.opt.joint_features:
+                l = l_lay
         feasible = bool(is_feasible(l_lay[None], u[None], Ctil, Crev, mask=occ[None])[0])
         if not feasible:                                   # DD43(2): EVs whose stay contains an infeasible step
             for i in idx:
@@ -311,7 +337,7 @@ class SafeV2GEnv:
 
         # ---- charger tokens (formulation.md Sec. 4.2)
         Nd = self.N_day
-        tok = np.zeros((N, F_C), np.float64)
+        tok = np.zeros((N, self.f_c), np.float64)
         if idx.size:
             tok[idx, 0] = 1.0
             tok[idx, 1] = E[idx] / E_REF
@@ -349,10 +375,39 @@ class SafeV2GEnv:
         g[35] = Ptr_nom / (N * P_REF)
         g[36] = l_dep[occ].sum() / Ptr_nom
         g[37] = u[occ].sum() / Ptr_nom
+        r_rule = None
+        if self.opt.action == "resid":
+            r_rule = self._rule_ratio(t, g, occ, l_lay, u, pmin, chi, Ctil)
+            tok[:, F_C] = np.where(occ, r_rule, 0.0)
         self._obs = Observation(t=t, tokens=tok.astype(np.float32), glob=g.astype(np.float32), occ=occ, infl=infl,
                                 E=E, l=l_lay, u=u, pmin=pmin, chi=chi, lg2v=lg2v, feas_i=feas_i, C=C, Ctil=Ctil,
-                                Crev=Crev, feasible=feasible, l_dep=l_dep)
+                                Crev=Crev, feasible=feasible, l_dep=l_dep, r_rule=r_rule)
         return self._obs
+
+    @property
+    def R_MIN(self) -> float:
+        return float(self.opt.resid_rmin)
+
+    def _rule_ratio(self, t, g, occ, l, u, pmin, chi, Ctil) -> np.ndarray:
+        """Position of the price-LLF rule (baselines/heuristics.py PriceLLF, same decision) in [l, u], per charger:
+        LLF filling of C_tilde when the price is below the median of the prices seen so far and the 8-step forecast,
+        p_min when above, 0 when equal; clipped into [l, u] and expressed as r = (x - l) / (u - l)."""
+        from ..baselines.heuristics import _fill
+        if self._price_t != t:
+            self._price_hist.append(float(g[0]))
+            self._price_t = t
+        c_now = float(g[0])
+        med = float(np.median(self._price_hist + [float(v) for v in g[2:10]]))
+        if c_now < med:
+            oc = np.flatnonzero(occ)
+            x = _fill(oc[np.lexsort((oc, chi[oc]))], u, Ctil)
+        elif c_now > med:
+            x = np.where(occ, pmin, 0.0)
+        else:
+            x = np.zeros(self.N)
+        w = u - l
+        r = np.where(w > EPS_NUM, (np.clip(x, l, u) - l) / np.maximum(w, EPS_NUM), 0.5)
+        return np.clip(r, self.R_MIN, 1.0 - self.R_MIN)
 
     # ------------------------------------------------------------------------------------ command
     def command(self, x) -> tuple[np.ndarray, str | None, float | None]:
@@ -363,6 +418,12 @@ class SafeV2GEnv:
         self.acc.nonfinite += int(bad.sum())
         x, _ = sanitize(x)
         x = np.where(obs.occ, x, 0.0)
+        if self.opt.action in ("box", "resid"):  # bound-relative action: every raw action lies in [l, u]
+            z = x / self.opt.p_ref
+            if self.opt.action == "resid":       # residual around the price-LLF rule (logit offset)
+                z = z + np.log(obs.r_rule / (1.0 - obs.r_rule))
+            z = np.clip(z, -30.0, 30.0)
+            x = np.where(obs.occ, obs.l + (obs.u - obs.l) / (1.0 + np.exp(-z)), 0.0)
         fb_case, dist = None, None
         if self.opt.safety:
             if obs.feasible:

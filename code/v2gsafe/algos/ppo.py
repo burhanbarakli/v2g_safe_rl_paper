@@ -6,6 +6,8 @@
   masked out of the actor loss (kept for the critic); the actor loss uses the FIXED minibatch size as normaliser.
 * beta regulariser L_reg = sum_w mean_{i in occ} ((xbar_i - Pi(xbar)_i)/P_ref)^2 / B_mb with xbar = P_ref mu and
   Pi(xbar) under stop-gradient (Moreau identity: exact gradient of 0.5 dist^2, S 9).
+* ppo.resid_l2 = kappa > 0 (bound-relative actions box / resid): L_prior = sum_w sum_{i in infl} mu_i^2 / B_mb, a
+  Gaussian prior on the residual logit centred on the anchor (the rule for resid), against noisy-gradient drift.
 * Learning reward r / (N r_ref), r_ref = c_ref P_ref dt (DD15); penalty baselines use r_pen / (N r_ref).
 * GAE(gamma, lambda) with true terminals at t = T; clipped surrogate, value loss, entropy bonus, Adam with
   linear LR decay, global grad-norm clipping, target-KL early stop of the epoch loop.
@@ -30,7 +32,7 @@ import torch
 import torch.nn as nn
 
 from ..config import Cfg, config_hash8, exp_id as make_exp_id, save_config
-from ..constants import C_REF, P_REF
+from ..constants import C_REF, F_C, P_REF
 from ..envs.scenarios import TrainMixture
 from ..envs.vec_env import EnvSpec, VecEnv
 from ..envs.wrapper import WrapperOptions
@@ -61,21 +63,29 @@ def dual_update(lam: np.ndarray, Jc: np.ndarray, limit: np.ndarray, lr: float, l
 
 
 # --------------------------------------------------------------------------------------- builders
+def token_dim(cfg) -> int:
+    """Charger feature width: F_C, plus the rule position r_rule for the residual action (safety.action: resid)."""
+    return F_C + int(str(cfg["safety"].get("action", "raw")) == "resid")
+
+
 def build_networks(cfg) -> tuple[nn.Module, nn.Module]:
     m = cfg["model"]
     n_out = 3 if cfg["reward"]["type"] == "lagrangian" else 1      # value + 2 cost values (DD33(3))
+    f_c = token_dim(cfg)
     if m["arch"] in ("attention", "attention_gin", "attention_gctx"):
         gin, gctx = m["arch"] != "attention", m["arch"] == "attention_gctx"
         return (AttentionActor(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], global_in=gin,
-                               global_ctx=gctx),
+                               global_ctx=gctx, f_c=f_c),
                 AttentionCritic(m["d_model"], m["n_layers"], m["n_heads"], m["head_hidden"], n_out=n_out,
-                                global_in=gin))
+                                global_in=gin, f_c=f_c))
     if m["arch"] == "mlp":
+        if f_c != F_C:
+            raise ValueError("safety.action resid is not supported for the MLP architecture")
         return MLPActor(m["n_max"], m["mlp_hidden"]), MLPCritic(m["n_max"], m["mlp_hidden"], n_out=n_out)
     if m["arch"] == "deepsets":
         from ..models.deepsets_policy import DeepSetsActor, DeepSetsCritic
-        return (DeepSetsActor(m["d_model"], m["head_hidden"]),
-                DeepSetsCritic(m["d_model"], m["head_hidden"], n_out=n_out))
+        return (DeepSetsActor(m["d_model"], m["head_hidden"], f_c=f_c),
+                DeepSetsCritic(m["d_model"], m["head_hidden"], n_out=n_out, f_c=f_c))
     raise ValueError(f"unknown architecture {m['arch']}")
 
 
@@ -92,8 +102,10 @@ def conformal_provider(cfg, root: Path | None = None):
 
 def wrapper_options(cfg, root: Path | None = None, admission: bool | None = None) -> WrapperOptions:
     s, r = cfg["safety"], cfg["reward"]
-    return WrapperOptions(safety=bool(s["enabled"]), lower_bound=bool(s.get("lower_bound", True)),
+    lb = s.get("lower_bound", True)
+    return WrapperOptions(safety=bool(s["enabled"]), lower_bound=lb if lb == "joint" else bool(lb),
                           admission=bool(s["admission"] if admission is None else admission),
+                          action=str(s.get("action", "raw")), resid_rmin=float(s.get("resid_rmin", 0.02)),
                           admission_existing_targets=s["admission_existing_targets"], eps_q=float(s["eps_q"]),
                           forecast_rel_std=float(cfg["features"]["forecast_rel_std"]), w_E=float(r["w_E"]),
                           w_P=float(r["w_P"]), penalty_dense=bool(r["dense"]),
@@ -147,6 +159,7 @@ def ppo_update(actor, critic, opt, batch: dict, pc: dict, generator: torch.Gener
     params = list(actor.parameters()) + list(critic.parameters())
     clip = float(pc["clip"])
     beta = float(pc["beta"])
+    kappa = float(pc.get("resid_l2", 0.0))
     stats = {k: [] for k in ("policy_loss", "value_loss", "entropy", "approx_kl", "clip_frac", "beta_reg")}
     epochs_run = 0
     dev = batch["tokens"].device
@@ -195,6 +208,9 @@ def ppo_update(actor, critic, opt, batch: dict, pc: dict, generator: torch.Gener
             else:
                 L_vf = ((v - batch["ret"][idx]) ** 2).mean()
             loss = -L_clip + float(pc["vf_coef"]) * L_vf - float(pc["ent_coef"]) * H + beta * L_reg
+            if kappa > 0:                         # prior on the bound-relative residual: mu = 0 is the anchor (rule)
+                L_prior = (w * ((mu ** 2) * infl).sum(-1)).sum() / Bm             # same normaliser as L_clip
+                loss = loss + kappa * L_prior
             opt.zero_grad(set_to_none=True)
             loss.backward()
             nn.utils.clip_grad_norm_(params, float(pc["max_grad_norm"]))
@@ -292,11 +308,11 @@ class PPOTrainer:
         self.update, self.env_steps, self.wall = ck["update"], ck["env_steps"], ck.get("wall_clock_s", 0.0)
         if "lam" in ck:
             self.lam = np.asarray(ck["lam"], float)
-        torch.set_rng_state(ck["rng"]["torch"])
+        torch.set_rng_state(ck["rng"]["torch"].cpu())       # map_location moves the RNG ByteTensors to the device
         np.random.set_state(ck["rng"]["numpy"])
         random.setstate(ck["rng"]["python"])
-        self.gen.set_state(ck["rng"]["gen"])
-        self.sample_gen.set_state(ck["rng"]["sample_gen"])
+        self.gen.set_state(ck["rng"]["gen"].cpu())
+        self.sample_gen.set_state(ck["rng"]["sample_gen"].cpu())
         self.env_states = ck.get("env_states")
 
     # --------------------------------------------------------------------------------- envs
@@ -350,7 +366,7 @@ class PPOTrainer:
                 lr_now = self.opt.param_groups[0]["lr"]
                 Ns = vec.Ns
                 nc = 2 if self.lag else 0
-                buf = RolloutBuffer(self.S, Ns, nc)
+                buf = RolloutBuffer(self.S, Ns, nc, token_dim(self.cfg))
                 episodes = []
                 tr0 = time.time()
                 for k in range(self.S):

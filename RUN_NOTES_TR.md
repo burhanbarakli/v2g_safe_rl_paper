@@ -102,6 +102,19 @@ model testleri; mevcut yapılandırmaların hash'leri değişmedi. `make test`: 
 `run_gattn.sh` (systemd birimi `v2g-gattn`), loglar `code/results/run_reports/gattn/`. Önceki 81 `episodes.csv`
 dosyası değişmedi (md5). Sonuçlar: rapor §12.
 
+10–11 Kasım 2026: kapasiteye duyarlı ortak alt sınır ve kurala göre rezidüel aksiyon (rapor §13). Yeniden eğitilen
+varyantlar (cezalı ödül, 3M adım): `attn_joint` ve `attn_jres2` 2 seed, `attn_gjoint` ve `attn_gres2` 2 seed,
+`attn_jbox` ve `attn_jres3` yalnız seed 0 (`_safe_penrew` son ekli). Durdurulanlar: `attn_jbox` s1 (öncelik),
+`attn_jres` s0 (r_min 0,02'de kurala takıldı, %25'te), `attn_jres3` s1 (s0 kurala yapıştı). Eğitimler GPU'da ikişer
+paralel, her biri 1,5–3,3 sa. Kural ve önceki 8 checkpoint de joint katmanla değerlendirildi (`*_jlb`). Kod: yeni
+`safety/joint.py`, `safety.lower_bound: joint`, `safety.action: box | resid`, `ppo.resid_l2`, `evaluate.py
+--lower-bound`; yeni anahtarlar hash-nötr, mevcut yapılandırmaların hash'leri değişmedi. Devam ettirmede CUDA RNG
+hatası düzeltildi (`ppo._load`). `make test`: 110 geçti, 1 atlandı. Aksaklıklar: 10 Kasım 23:11'de OOM (aynı makinedeki
+başka bir proje; sonrasında `v2g-memguard` birimi), 10–11 Kasım gecesi elektrik kesintisi (gres2 `checkpoint_last.pt`'den
+devam ettirildi, `train_log.csv` checkpoint güncellemesine kadar onarıldı). Çalıştırma: WSL `run_joint.sh`,
+`run_mech2.sh`, `run_jres3.sh`, `run_gres2c.sh` ve yardımcıları (systemd birimleri `v2g-*`), loglar
+`code/results/run_reports/joint/`. Önceki 85 `episodes.csv` dosyası değişmedi (md5). Sonuçlar: rapor §13.
+
 ## 6. Paket içeriği
 
 Depoda: `code/results/` (README §9 içeriği) ve `code/results/run_reports/` (test, benchmark ve aşama logları,

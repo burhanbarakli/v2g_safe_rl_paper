@@ -17,9 +17,9 @@ from .attention_policy import LOGSTD_MAX, LOGSTD_MIN
 
 
 class _Phi(nn.Module):
-    def __init__(self, d: int):
+    def __init__(self, d: int, f_c: int = F_C):
         super().__init__()
-        self.net = nn.Sequential(nn.Linear(F_C + F_G, d), nn.GELU(), nn.Linear(d, d), nn.GELU(), nn.Linear(d, d))
+        self.net = nn.Sequential(nn.Linear(f_c + F_G, d), nn.GELU(), nn.Linear(d, d), nn.GELU(), nn.Linear(d, d))
 
     def forward(self, tokens, glob, occ):
         B, N, _ = tokens.shape
@@ -31,9 +31,9 @@ class _Phi(nn.Module):
 
 
 class DeepSetsActor(nn.Module):
-    def __init__(self, d_model: int = 128, head_hidden: int = 64):
+    def __init__(self, d_model: int = 128, head_hidden: int = 64, f_c: int = F_C):
         super().__init__()
-        self.phi = _Phi(d_model)
+        self.phi = _Phi(d_model, f_c)
         self.head = nn.Sequential(nn.Linear(2 * d_model, head_hidden), nn.GELU(), nn.Linear(head_hidden, 2))
         last = self.head[-1]
         with torch.no_grad():
@@ -48,10 +48,10 @@ class DeepSetsActor(nn.Module):
 
 
 class DeepSetsCritic(nn.Module):
-    def __init__(self, d_model: int = 128, head_hidden: int = 64, n_out: int = 1):
+    def __init__(self, d_model: int = 128, head_hidden: int = 64, n_out: int = 1, f_c: int = F_C):
         super().__init__()
         self.n_out = n_out
-        self.phi = _Phi(d_model)
+        self.phi = _Phi(d_model, f_c)
         self.g = nn.Sequential(nn.Linear(F_G, d_model), nn.GELU())
         self.head = nn.Sequential(nn.Linear(2 * d_model, head_hidden), nn.GELU(), nn.Linear(head_hidden, n_out))
 

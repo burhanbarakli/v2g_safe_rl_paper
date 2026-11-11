@@ -22,13 +22,15 @@ DEFAULTS: dict[str, Any] = {
               "mlp_hidden": 640, "n_max": 20},
     "ppo": {"total_env_steps": 3_000_000, "rollout_len": 128, "minibatch": 512, "epochs": 10, "lr": 3e-4,
             "lr_decay": True, "adam_eps": 1e-5, "gamma": 0.99, "gae_lambda": 0.95, "clip": 0.2, "ent_coef": 0.0,
-            "vf_coef": 0.5, "max_grad_norm": 0.5, "target_kl": 0.03, "beta": 0.01, "norm_adv": True},
+            "vf_coef": 0.5, "max_grad_norm": 0.5, "target_kl": 0.03, "beta": 0.01, "norm_adv": True,
+            "resid_l2": 0.0},   # resid_l2: L2 prior on the residual logit (safety.action box/resid), per token
     "envs": {"groups": [{"N": 10, "count": 8}, {"N": 20, "count": 8}], "backend": "subproc",
              "curriculum": {"enabled": False, "frac": 0.2, "groups": [{"N": 10, "count": 16}]}},
     "scenario": {"profiles": ["workplace", "public", "private"], "rho_tr": [4.0, 7.0], "dt_min": 15, "T": None,
                  "desired_soc": 1.0, "loads": True, "pv": True, "load_mult": 0.4, "pv_mult": 0.4,
                  "min_time_of_stay": 180, "hour": None, "spawn_multiplier": None, "simulation_days": None},
-    "safety": {"enabled": True, "lower_bound": True, "admission": True, "admission_existing_targets": "lp_reachable", "eps_q": 0.008},
+    "safety": {"enabled": True, "lower_bound": True, "admission": True, "admission_existing_targets": "lp_reachable", "eps_q": 0.008,
+               "action": "raw", "resid_rmin": 0.02},   # lower_bound: true | false | joint; action: raw | box | resid
     "reward": {"type": "profit", "w_E": 10.0, "w_P": 10.0, "dense": False},   # type: profit | penalty | lagrangian
     "lagrangian": {"lr_lambda": 2.0, "lambda_init": 0.0, "lambda_max": 1000.0, "cost_limit_short": 0.0,
                    "cost_limit_over": 0.0},
@@ -41,6 +43,8 @@ DEFAULTS: dict[str, Any] = {
 
 #: Keys excluded from the configuration hash.
 HASH_EXCLUDE = {"smoke"}
+#: Keys added after the core run: left out of the hash while they hold this value, so existing exp_ids are unchanged.
+HASH_NEUTRAL = {("safety", "action"): "raw", ("safety", "resid_rmin"): 0.02, ("ppo", "resid_l2"): 0.0}
 
 
 class Cfg(dict):
@@ -112,6 +116,9 @@ def load_config(path: str | Path | None = None, overrides: list[str] | None = No
 
 def config_hash8(cfg: dict) -> str:
     c = {k: v for k, v in cfg.items() if k not in HASH_EXCLUDE and not k.startswith("_")}
+    for (sec, key), val in HASH_NEUTRAL.items():
+        if isinstance(c.get(sec), dict) and c[sec].get(key, val) == val:
+            c[sec] = {k: v for k, v in c[sec].items() if k != key}
     s = json.dumps(c, sort_keys=True, default=str)
     return hashlib.sha256(s.encode()).hexdigest()[:8]
 

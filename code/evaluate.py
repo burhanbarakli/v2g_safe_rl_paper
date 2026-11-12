@@ -62,6 +62,9 @@ def main(argv=None):
     ap.add_argument("--evgnn-repo", default=None, help="clone of github.com/StavrosOrf/EV-GNN (method evgnn)")
     ap.add_argument("--evgnn-model-dir", default=None, help="EV-GNN saved_models/<run>/ directory")
     ap.add_argument("--seed", type=int, default=0, help="seed column/exp_id for non-checkpoint methods (e.g. EV-GNN)")
+    ap.add_argument("--lower-bound", choices=["joint"], default=None,
+                    help="evaluate with the capacity-aware joint lower bound (method name gets '_jlb'; use --out for "
+                         "checkpoints)")
     args = ap.parse_args(argv)
 
     if args.checkpoint is None and args.method is None:
@@ -79,17 +82,19 @@ def main(argv=None):
                           conformal_uncalibrated=args.conformal_uncalibrated,
                           conformal_cache=conf_cache, admission_existing_targets=args.admission_targets,
                           admission_cache=adm_cache,
-                          torch_threads=args.torch_threads, root=str(ROOT),
+                          torch_threads=args.torch_threads, root=str(ROOT), lower_bound=args.lower_bound,
                           extra={"evgnn_repo": args.evgnn_repo, "evgnn_model_dir": args.evgnn_model_dir,
                                  "seed": args.seed})
         if args.checkpoint:
             out = Path(args.out) if args.out else Path(args.checkpoint).resolve().parent
             eid = out.name
         else:
-            h = hashlib.sha256(json.dumps({"method": args.method, "admission": adm, "grid": Path(args.test_set).read_text(),
-                                           "targets": args.admission_targets, "evgnn": args.evgnn_model_dir},
-                                          sort_keys=True).encode()).hexdigest()[:8]
-            name = args.method + ("_noadm" if adm is False else "")
+            hd = {"method": args.method, "admission": adm, "grid": Path(args.test_set).read_text(),
+                  "targets": args.admission_targets, "evgnn": args.evgnn_model_dir}
+            if args.lower_bound:                          # only when set: existing exp_ids unchanged
+                hd["lower_bound"] = args.lower_bound
+            h = hashlib.sha256(json.dumps(hd, sort_keys=True).encode()).hexdigest()[:8]
+            name = args.method + ("_jlb" if args.lower_bound else "") + ("_noadm" if adm is False else "")
             eid = make_exp_id(name, grid_name, args.seed, h)
             out = Path(args.out) if args.out else Path(args.out_root) / eid
         out.mkdir(parents=True, exist_ok=True)

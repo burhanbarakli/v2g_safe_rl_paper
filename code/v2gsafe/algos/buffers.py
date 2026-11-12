@@ -13,9 +13,9 @@ from ..constants import F_C, F_G
 
 
 class EnvBuffer:
-    def __init__(self, S: int, N: int, n_cost: int = 0):
+    def __init__(self, S: int, N: int, n_cost: int = 0, f_c: int = F_C):
         self.S, self.N, self.n_cost = S, N, n_cost
-        self.tokens = np.zeros((S, N, F_C), np.float32)
+        self.tokens = np.zeros((S, N, f_c), np.float32)
         self.glob = np.zeros((S, F_G), np.float32)
         self.occ = np.zeros((S, N), bool)
         self.infl = np.zeros((S, N), bool)
@@ -78,10 +78,10 @@ class EnvBuffer:
 
 
 class RolloutBuffer:
-    def __init__(self, S: int, Ns: list[int], n_cost: int = 0):
+    def __init__(self, S: int, Ns: list[int], n_cost: int = 0, f_c: int = F_C):
         self.S = S
         self.n_cost = n_cost
-        self.envs = [EnvBuffer(S, N, n_cost) for N in Ns]
+        self.envs = [EnvBuffer(S, N, n_cost, f_c) for N in Ns]
 
     def flatten(self, device="cpu", safety: bool = True) -> dict:
         """Concatenate all envs, padded to N_max. Returns a dict of tensors on ``device``."""

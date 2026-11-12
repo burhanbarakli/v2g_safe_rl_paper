@@ -53,6 +53,7 @@ class MethodSpec:
     admission_cache: str | None = None    # directory of cached admission tables (DD31)
     torch_threads: int = 1
     root: str | None = None
+    lower_bound: str | None = None        # 'joint': capacity-aware lower bound at evaluation ('_jlb')
     extra: dict = field(default_factory=dict)
 
 
@@ -98,6 +99,9 @@ def resolve(spec: MethodSpec):
         if spec.deploy_safety and not opts.safety:
             opts.safety, opts.lower_bound = True, True
             name += "_safedeploy"
+        if spec.lower_bound == "joint" and opts.lower_bound != "joint":
+            opts.lower_bound = "joint"
+            name += "_jlb"
         if spec.admission is False:
             name += "_noadm"
         if spec.conformal_alpha is not None or spec.conformal_uncalibrated:
@@ -147,7 +151,11 @@ def resolve(spec: MethodSpec):
     opts = WrapperOptions(safety=safe, admission=adm)
     if spec.admission_existing_targets:
         opts.admission_existing_targets = spec.admission_existing_targets
-    name = m + ("_noadm" if spec.admission is False else "")
+    name = m
+    if spec.lower_bound == "joint" and safe:
+        opts.lower_bound = "joint"
+        name += "_jlb"
+    name += "_noadm" if spec.admission is False else ""
     return ctrl, name, opts, info
 
 
@@ -332,6 +340,7 @@ def evaluate(spec: MethodSpec, grid: list[tuple[ScenarioConfig, int]], test_sets
 def resolve_name_only(spec: MethodSpec):
     """Method name without building envs (loads the checkpoint config for learned methods)."""
     if spec.checkpoint is None:
-        name = spec.method + ("_noadm" if spec.admission is False else "")
+        jlb = "_jlb" if spec.lower_bound == "joint" and spec.method.endswith("_safe") else ""
+        name = spec.method + jlb + ("_noadm" if spec.admission is False else "")
         return None, name, None, None
     return resolve(spec)

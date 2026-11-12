@@ -1,0 +1,8 @@
+# Mechanism test (review/performance_diagnosis_TR.md Sec. 13): as attn_joint_safe_penrew, plus the bound-relative
+# action x = l + sigmoid(a) (u - l) before the projection (safety.action: box), so that every raw action changes the
+# applied power. beta = 0: raw actions lie in [l, u] by construction, the drift regulariser (written for kW actions)
+# does not apply.
+inherit: train_attn_joint_safe_penrew.yaml
+method: attn_jbox_safe_penrew
+safety: {action: box}
+ppo: {beta: 0.0}

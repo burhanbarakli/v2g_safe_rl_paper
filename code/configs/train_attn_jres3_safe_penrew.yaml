@@ -1,0 +1,8 @@
+# Mechanism test (review/performance_diagnosis_TR.md Sec. 13): attn_jres2_safe_penrew plus a Gaussian prior on the
+# residual logit centred on the rule (ppo.resid_l2 = kappa, loss + kappa * sum_i mu_i^2 per step). jres2 seed 1 drifted
+# away from the rule under noisy gradients (median |mu| 3.0 vs 1.1 for seed 0, training return below the rule's).
+# kappa = 0.01 is not tuned: at |mu| ~ 1 the prior gradient 2 kappa mu is below the minibatch gradient noise per token
+# (~0.03), at |mu| ~ 3 above it. Trained with the attn_safe tuning overlay as jres2.
+inherit: train_attn_jres2_safe_penrew.yaml
+method: attn_jres3_safe_penrew
+ppo: {resid_l2: 0.01}

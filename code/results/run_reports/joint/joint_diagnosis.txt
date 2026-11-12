@@ -1,0 +1,120 @@
+=== 1. Per method (main grid, rho 4/7; EUR per charger per episode)
+                           episodes  seeds  gap/ch  profit/ch  ENSpen/ch  OVpen/ch  dis kWh/ch  ep infeas %  lb_active
+method                                                                                                                
+attn_safe_penrew               6000      2   0.909     -2.016      0.106       0.0       7.808        7.683      0.338
+attn_gin_safe_penrew           6000      2   0.954     -1.961      0.206       0.0       9.008       11.900      0.355
+attn_gctx_safe_penrew          6000      2   0.931     -1.974      0.170       0.0       8.129        9.183      0.329
+deepsets_safe_penrew           6000      2   0.843     -1.911      0.145       0.0       8.657        7.633      0.378
+price_llf_safe                 3000      1   0.822     -1.980      0.054       0.0       6.007        5.567      0.296
+attn_safe_penrew_jlb           6000      2   0.811     -2.016      0.007       0.0       7.536        1.500      0.298
+attn_gin_safe_penrew_jlb       6000      2   0.764     -1.963      0.014       0.0       8.719        2.850      0.309
+attn_gctx_safe_penrew_jlb      6000      2   0.776     -1.978      0.011       0.0       7.920        2.350      0.291
+deepsets_safe_penrew_jlb       6000      2   0.707     -1.912      0.008       0.0       8.362        1.733      0.331
+price_llf_safe_jlb             3000      1   0.773     -1.982      0.004       0.0       5.889        1.300      0.278
+attn_joint_safe_penrew         6000      2   0.822     -2.014      0.021       0.0       9.233        3.867      0.312
+attn_jbox_safe_penrew          3000      1   0.840     -2.033      0.020       0.0       9.713        5.300      0.011
+attn_jres2_safe_penrew         6000      2   0.768     -1.962      0.018       0.0       9.332        4.000      0.012
+attn_gjoint_safe_penrew        6000      2   0.829     -2.019      0.022       0.0       9.678        4.150      0.355
+attn_gres2_safe_penrew         6000      2   0.800     -1.989      0.023       0.0       8.992        4.333      0.012
+attn_jres3_safe_penrew         3000      1   0.801     -2.012      0.001       0.0       4.884        0.833      0.002
+
+=== 2. Per seed (gap per charger)
+seed                           0      1
+method                                 
+attn_safe_penrew           0.934  0.884
+attn_gin_safe_penrew       0.846  1.062
+attn_gctx_safe_penrew      0.888  0.975
+deepsets_safe_penrew       0.926  0.761
+price_llf_safe             0.822    NaN
+attn_safe_penrew_jlb       0.836  0.786
+attn_gin_safe_penrew_jlb   0.750  0.778
+attn_gctx_safe_penrew_jlb  0.806  0.747
+deepsets_safe_penrew_jlb   0.755  0.660
+price_llf_safe_jlb         0.773    NaN
+attn_joint_safe_penrew     0.814  0.831
+attn_jbox_safe_penrew      0.840    NaN
+attn_jres2_safe_penrew     0.720  0.816
+attn_gjoint_safe_penrew    0.837  0.820
+attn_gres2_safe_penrew     0.849  0.751
+attn_jres3_safe_penrew     0.801    NaN
+
+=== 3. Paired gap differences (a - b, EUR/charger/episode; negative = a better), 95 % bootstrap CI
+attn_safe_penrew           - price_llf_safe             +0.088  [+0.036, +0.146]  n=3000
+attn_safe_penrew           - deepsets_safe_penrew       +0.066  [+0.032, +0.096]  n=6000
+attn_safe_penrew_jlb       - attn_safe_penrew           -0.098  [-0.150, -0.058]  n=6000
+price_llf_safe_jlb         - price_llf_safe             -0.049  [-0.089, -0.020]  n=3000
+deepsets_safe_penrew_jlb   - deepsets_safe_penrew       -0.136  [-0.196, -0.083]  n=6000
+attn_safe_penrew_jlb       - price_llf_safe_jlb         +0.038  [+0.023, +0.053]  n=3000
+attn_safe_penrew_jlb       - deepsets_safe_penrew_jlb   +0.104  [+0.096, +0.111]  n=6000
+attn_safe_penrew_jlb       - price_llf_safe             -0.011  [-0.051, +0.023]  n=3000
+attn_safe_penrew_jlb       - deepsets_safe_penrew       -0.032  [-0.094, +0.022]  n=6000
+attn_gin_safe_penrew_jlb   - price_llf_safe_jlb         -0.009  [-0.025, +0.008]  n=3000
+attn_gin_safe_penrew_jlb   - deepsets_safe_penrew_jlb   +0.057  [+0.050, +0.064]  n=6000
+attn_gin_safe_penrew_jlb   - price_llf_safe             -0.058  [-0.097, -0.025]  n=3000
+attn_gin_safe_penrew_jlb   - deepsets_safe_penrew       -0.079  [-0.140, -0.025]  n=6000
+attn_gctx_safe_penrew_jlb  - price_llf_safe_jlb         +0.003  [-0.013, +0.019]  n=3000
+attn_gctx_safe_penrew_jlb  - deepsets_safe_penrew_jlb   +0.069  [+0.062, +0.077]  n=6000
+attn_gctx_safe_penrew_jlb  - price_llf_safe             -0.045  [-0.085, -0.012]  n=3000
+attn_gctx_safe_penrew_jlb  - deepsets_safe_penrew       -0.067  [-0.128, -0.013]  n=6000
+attn_joint_safe_penrew     - price_llf_safe_jlb         +0.049  [+0.032, +0.068]  n=3000
+attn_joint_safe_penrew     - deepsets_safe_penrew_jlb   +0.115  [+0.105, +0.126]  n=6000
+attn_joint_safe_penrew     - price_llf_safe             +0.001  [-0.039, +0.035]  n=3000
+attn_joint_safe_penrew     - deepsets_safe_penrew       -0.021  [-0.080, +0.033]  n=6000
+attn_jbox_safe_penrew      - price_llf_safe_jlb         +0.067  [+0.049, +0.087]  n=3000
+attn_jbox_safe_penrew      - deepsets_safe_penrew_jlb   +0.133  [+0.122, +0.145]  n=3000
+attn_jbox_safe_penrew      - price_llf_safe             +0.019  [-0.021, +0.053]  n=3000
+attn_jbox_safe_penrew      - deepsets_safe_penrew       -0.003  [-0.062, +0.052]  n=3000
+attn_jres2_safe_penrew     - price_llf_safe_jlb         -0.005  [-0.022, +0.013]  n=3000
+attn_jres2_safe_penrew     - deepsets_safe_penrew_jlb   +0.061  [+0.052, +0.071]  n=6000
+attn_jres2_safe_penrew     - price_llf_safe             -0.054  [-0.092, -0.021]  n=3000
+attn_jres2_safe_penrew     - deepsets_safe_penrew       -0.075  [-0.136, -0.022]  n=6000
+attn_gjoint_safe_penrew    - price_llf_safe_jlb         +0.055  [+0.036, +0.076]  n=3000
+attn_gjoint_safe_penrew    - deepsets_safe_penrew_jlb   +0.121  [+0.110, +0.133]  n=6000
+attn_gjoint_safe_penrew    - price_llf_safe             +0.007  [-0.032, +0.041]  n=3000
+attn_gjoint_safe_penrew    - deepsets_safe_penrew       -0.015  [-0.074, +0.039]  n=6000
+attn_gres2_safe_penrew     - price_llf_safe_jlb         +0.027  [+0.010, +0.045]  n=3000
+attn_gres2_safe_penrew     - deepsets_safe_penrew_jlb   +0.092  [+0.083, +0.103]  n=6000
+attn_gres2_safe_penrew     - price_llf_safe             -0.022  [-0.060, +0.011]  n=3000
+attn_gres2_safe_penrew     - deepsets_safe_penrew       -0.043  [-0.102, +0.009]  n=6000
+attn_jres3_safe_penrew     - price_llf_safe_jlb         +0.028  [+0.021, +0.033]  n=3000
+attn_jres3_safe_penrew     - deepsets_safe_penrew_jlb   +0.093  [+0.082, +0.104]  n=3000
+attn_jres3_safe_penrew     - price_llf_safe             -0.021  [-0.060, +0.009]  n=3000
+attn_jres3_safe_penrew     - deepsets_safe_penrew       -0.042  [-0.108, +0.013]  n=3000
+attn_jbox_safe_penrew      - attn_joint_safe_penrew     +0.018  [+0.012, +0.024]  n=3000
+attn_jres2_safe_penrew     - attn_joint_safe_penrew     -0.054  [-0.061, -0.048]  n=6000
+attn_gjoint_safe_penrew    - attn_joint_safe_penrew     +0.006  [+0.001, +0.012]  n=6000
+attn_gjoint_safe_penrew    - attn_gin_safe_penrew_jlb   +0.065  [+0.058, +0.072]  n=6000
+attn_gres2_safe_penrew     - attn_jres2_safe_penrew     +0.032  [+0.026, +0.038]  n=6000
+attn_jres3_safe_penrew     - attn_jres2_safe_penrew     +0.033  [+0.017, +0.047]  n=3000
+attn_gin_safe_penrew_jlb   - attn_gin_safe_penrew       -0.190  [-0.255, -0.134]  n=6000
+attn_gctx_safe_penrew_jlb  - attn_gctx_safe_penrew      -0.155  [-0.211, -0.105]  n=6000
+
+=== 4. By profile and rho (gap per charger)
+method            attn_safe_penrew  attn_gin_safe_penrew  attn_gctx_safe_penrew  deepsets_safe_penrew  price_llf_safe  attn_safe_penrew_jlb  attn_gin_safe_penrew_jlb  attn_gctx_safe_penrew_jlb  deepsets_safe_penrew_jlb  price_llf_safe_jlb  attn_joint_safe_penrew  attn_jbox_safe_penrew  attn_jres2_safe_penrew  attn_gjoint_safe_penrew  attn_gres2_safe_penrew  attn_jres3_safe_penrew
+profile   rho_tr                                                                                                                                                                                                                                                                                                                                                                              
+private   4.0                1.043                 1.143                  1.078                 0.992           0.915                 0.963                     0.926                      0.950                     0.842               0.851                   1.020                  1.053                   0.939                    1.019                   0.974                   0.932
+          7.0                1.126                 1.065                  1.091                 0.957           0.997                 1.125                     1.065                      1.091                     0.957               0.997                   1.150                  1.187                   1.034                    1.143                   1.088                   1.059
+public    4.0                0.927                 0.994                  0.962                 0.888           0.853                 0.859                     0.804                      0.816                     0.740               0.833                   0.861                  0.886                   0.811                    0.874                   0.847                   0.856
+          7.0                0.862                 0.810                  0.823                 0.752           0.832                 0.863                     0.810                      0.824                     0.752               0.832                   0.863                  0.887                   0.808                    0.867                   0.835                   0.864
+workplace 4.0                0.923                 1.193                  1.108                 0.944           0.714                 0.483                     0.465                      0.455                     0.433               0.508                   0.507                  0.494                   0.485                    0.517                   0.513                   0.489
+          7.0                0.574                 0.518                  0.525                 0.526           0.619                 0.572                     0.515                      0.523                     0.520               0.618                   0.533                  0.535                   0.533                    0.551                   0.540                   0.605
+
+=== 5. By N (gap per charger)
+method  attn_safe_penrew  attn_gin_safe_penrew  attn_gctx_safe_penrew  deepsets_safe_penrew  price_llf_safe  attn_safe_penrew_jlb  attn_gin_safe_penrew_jlb  attn_gctx_safe_penrew_jlb  deepsets_safe_penrew_jlb  price_llf_safe_jlb  attn_joint_safe_penrew  attn_jbox_safe_penrew  attn_jres2_safe_penrew  attn_gjoint_safe_penrew  attn_gres2_safe_penrew  attn_jres3_safe_penrew
+N                                                                                                                                                                                                                                                                                                                                                                                   
+5                  1.176                 1.459                  1.323                 1.259           0.956                 0.788                     0.795                      0.771                     0.721               0.753                   0.860                  0.860                   0.811                    0.845                   0.850                   0.770
+10                 0.854                 0.956                  0.942                 0.818           0.790                 0.781                     0.755                      0.760                     0.694               0.773                   0.814                  0.816                   0.753                    0.807                   0.777                   0.796
+20                 0.826                 0.807                  0.814                 0.716           0.788                 0.820                     0.766                      0.786                     0.710               0.770                   0.814                  0.847                   0.757                    0.826                   0.800                   0.806
+50                 0.850                 0.785                  0.789                 0.715           0.793                 0.833                     0.760                      0.781                     0.709               0.789                   0.810                  0.839                   0.759                    0.834                   0.787                   0.821
+100                0.826                 0.753                  0.787                 0.701           0.774                 0.824                     0.737                      0.777                     0.698               0.772                   0.803                  0.832                   0.747                    0.819                   0.777                   0.805
+200                0.854                 0.772                  0.788                 0.715           0.789                 0.839                     0.750                      0.789                     0.707               0.789                   0.824                  0.848                   0.774                    0.842                   0.793                   0.820
+
+=== 6. Infeasible-episode % by profile and rho
+method            attn_safe_penrew  attn_gin_safe_penrew  attn_gctx_safe_penrew  deepsets_safe_penrew  price_llf_safe  attn_safe_penrew_jlb  attn_gin_safe_penrew_jlb  attn_gctx_safe_penrew_jlb  deepsets_safe_penrew_jlb  price_llf_safe_jlb  attn_joint_safe_penrew  attn_jbox_safe_penrew  attn_jres2_safe_penrew  attn_gjoint_safe_penrew  attn_gres2_safe_penrew  attn_jres3_safe_penrew
+profile   rho_tr                                                                                                                                                                                                                                                                                                                                                                              
+private   4.0                 11.2                  17.7                   14.6                   9.2             7.8                   1.6                       4.2                        3.2                       1.9                 1.2                     5.4                    9.8                     4.7                      5.6                     7.9                     0.8
+          7.0                  0.9                   1.0                    0.9                   0.7             0.2                   0.0                       0.0                        0.0                       0.0                 0.0                     0.0                    0.2                     0.0                      0.0                     0.0                     0.0
+public    4.0                  9.4                  13.8                   11.3                   9.8             8.4                   2.9                       3.8                        3.0                       2.9                 3.6                     3.8                    5.4                     4.4                      4.2                     5.4                     2.2
+          7.0                  1.3                   1.7                    1.0                   0.8             0.8                   0.0                       0.1                        0.0                       0.0                 0.0                     0.1                    0.2                     0.0                      0.1                     0.2                     0.0
+workplace 4.0                 21.4                  33.1                   24.9                  22.9            14.8                   3.8                       7.8                        6.8                       4.5                 2.6                    12.7                   14.4                    13.1                     13.3                    11.1                     1.8
+          7.0                  1.9                   4.1                    2.4                   2.4             1.4                   0.7                       1.2                        1.1                       1.1                 0.4                     1.2                    1.8                     1.8                      1.7                     1.4                     0.2

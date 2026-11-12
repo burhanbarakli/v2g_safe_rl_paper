@@ -1,0 +1,57 @@
+{
+ "project_git_hash": "89979c6436b7766fc411406879acd28641a93f07-dirty",
+ "ev2gym_commit": "55ef368c25a58476a9eeaed5111f112a63a38ca8",
+ "ev2gym_commit_pinned": "55ef368c25a58476a9eeaed5111f112a63a38ca8",
+ "ev2gym_commit_matches": true,
+ "packages": {
+  "python": "3.13.15",
+  "numpy": "2.4.6",
+  "torch": "2.14.1+cu130",
+  "pandas": "2.3.3",
+  "scipy": "1.18.1",
+  "sklearn": "1.9.1",
+  "highspy": "1.15.1",
+  "gymnasium": "1.4.0",
+  "yaml": "6.0.3",
+  "ev2gym": "2.0.0"
+ },
+ "hostname": "bobpc",
+ "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+ "device": "cuda",
+ "start_time": "2026-11-11T09:04:28",
+ "end_time": "2026-11-11T11:28:07",
+ "wall_clock_s": 8619.458168506622,
+ "smoke": false,
+ "argv": [
+  "train.py",
+  "--config",
+  "configs/train_attn_gres2_safe_penrew.yaml",
+  "--seed",
+  "1",
+  "--overlay",
+  "results/tuning/attn_safe/selected.yaml",
+  "--device",
+  "cuda"
+ ],
+ "exp_id": "attn_gres2_safe_penrew__train_attn_gres2_safe_penrew__s1__65ed97c5",
+ "method": "attn_gres2_safe_penrew",
+ "seed": 1,
+ "config_hash8": "65ed97c5",
+ "train_N": "10+20",
+ "previous_segments": [
+  {
+   "start_time": "2026-11-10T23:10:05",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  },
+  {
+   "start_time": "2026-11-11T01:13:17",
+   "end_time": null,
+   "wall_clock_s": null,
+   "hostname": "bobpc"
+  }
+ ],
+ "updates": 1464,
+ "env_steps": 2998272
+}

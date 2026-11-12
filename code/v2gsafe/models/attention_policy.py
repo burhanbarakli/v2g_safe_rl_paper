@@ -106,10 +106,10 @@ class AttentionActor(nn.Module):
     """Gaussian policy over raw per-charger actions a_i (formulation.md Sec. 5)."""
 
     def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64,
-                 global_in: bool = False, global_ctx: bool = False):
+                 global_in: bool = False, global_ctx: bool = False, f_c: int = F_C):
         super().__init__()
         self.global_ctx = global_ctx
-        self.encoder = TokenEncoder(d_model, n_layers, n_heads, global_in=global_in)
+        self.encoder = TokenEncoder(d_model, n_layers, n_heads, f_c=f_c, global_in=global_in)
         d_head = 3 * d_model if global_ctx else d_model
         self.head = nn.Sequential(nn.Linear(d_head, head_hidden), nn.GELU(), nn.Linear(head_hidden, 2))
         last = self.head[-1]
@@ -136,10 +136,10 @@ class AttentionCritic(nn.Module):
     """Value function with attention pooling (pooling by multi-head attention, one learned query)."""
 
     def __init__(self, d_model: int = 128, n_layers: int = 3, n_heads: int = 4, head_hidden: int = 64,
-                 n_out: int = 1, global_in: bool = False):
+                 n_out: int = 1, global_in: bool = False, f_c: int = F_C):
         super().__init__()
         self.n_out = n_out                  # 1: value; 3: value + two cost values (PPO-Lagrangian, DD33(3))
-        self.encoder = TokenEncoder(d_model, n_layers, n_heads, global_in=global_in)
+        self.encoder = TokenEncoder(d_model, n_layers, n_heads, f_c=f_c, global_in=global_in)
         self.query = nn.Parameter(torch.zeros(1, 1, d_model))
         nn.init.normal_(self.query, std=0.02)
         self.pool = MultiHeadAttention(d_model, n_heads)

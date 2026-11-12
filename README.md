@@ -50,6 +50,7 @@ sapmalar `RUN_NOTES_TR.md` içinde.
 | `gonderim_checkpoints_penrew_2026-10-26.zip` | 31 MB | Tanı çalışması `attn_safe_penrew` için 2 `checkpoint_final.pt` (aşağıya bakın) |
 | `gonderim_checkpoints_cheap_2026-10-26.zip` | 62 MB | Tanı çalışmaları `deepsets_safe_penrew` ve `attn_safe_penrew_entpen` için 4 `checkpoint_final.pt` |
 | `gonderim_checkpoints_gattn_2026-11-09.zip` | 58 MB | Tanı çalışmaları `attn_gin_safe_penrew` ve `attn_gctx_safe_penrew` için 4 `checkpoint_final.pt` |
+| `gonderim_checkpoints_joint_2026-11-11.zip` | 144 MB | Tanı çalışmaları `attn_joint`, `attn_jbox`, `attn_jres2`, `attn_jres3`, `attn_gjoint`, `attn_gres2` (`_safe_penrew`) için 10 `checkpoint_final.pt` |
 | `SHA256SUMS.txt` | | Zip dosyalarının SHA-256 özetleri |
 
 ### Tanı çalışması: SA-Attn cezalı ödülle (26 Ekim 2026)
@@ -68,10 +69,18 @@ tarzı karar başlığı (`attention_gctx`, `attn_gctx_safe_penrew`). İkisi de 
 `code/configs/train_attn_gin_safe_penrew.yaml`, `code/configs/train_attn_gctx_safe_penrew.yaml`, loglar
 `code/results/run_reports/gattn/`.
 
+10–11 Kasım 2026'da kapasiteye duyarlı ortak alt sınır (`safety.lower_bound: joint`, `code/v2gsafe/safety/joint.py`) ve
+aksiyonun [l, u]'ya ya da fiyat eşiği kuralına göre parametrize edilmesi (`safety.action: box | resid`, isteğe bağlı
+`ppo.resid_l2`) test edildi (rapor §13). Yeniden eğitilen varyantlar `attn_joint`, `attn_jbox`, `attn_jres2`,
+`attn_jres3`, `attn_gjoint`, `attn_gres2` (hepsi `_safe_penrew` son ekli; yapılandırmalar
+`code/configs/train_attn_j*_safe_penrew.yaml`, `train_attn_g{joint,res2}_safe_penrew.yaml`). Kural ve önceki
+checkpoint'ler de yeniden eğitilmeden joint katmanla değerlendirildi (`evaluate.py --lower-bound joint`, sonuç
+klasörleri `*_jlb`). Loglar `code/results/run_reports/joint/`.
+
 Bu tanı çalışmaları `analysis/` tablo ve şekillerine ve makaleye **dahil değil**. `make_all.py` bu klasörler `raw/`
 içindeyken çalıştırılırsa yöntemler genel stille tablolara girer; makale tablolarını yeniden üretmek için
-`attn_safe_penrew*`, `deepsets_safe_penrew*`, `attn_gin_safe_penrew*`, `attn_gctx_safe_penrew*` klasörlerini dışarıda
-bırakın.
+`attn_safe_penrew*`, `deepsets_safe_penrew*`, `attn_gin_safe_penrew*`, `attn_gctx_safe_penrew*`, `attn_j*_safe_penrew*`,
+`attn_gjoint_safe_penrew*`, `attn_gres2_safe_penrew*` ve `*_jlb` klasörlerini dışarıda bırakın.
 
 Zip'leri depo kökünde açın; dosyalar `code/results/` altındaki yerlerine gelir. Ardından örneğin:
 

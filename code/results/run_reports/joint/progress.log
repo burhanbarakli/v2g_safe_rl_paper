@@ -1,0 +1,54 @@
+2026-11-10T12:16:21+03:00 START train seed 0
+2026-11-10T15:33:12+03:00 END   train seed 0 rc=0
+2026-11-10T15:33:12+03:00 START train seed 1
+2026-11-10T15:53:53+03:00 START jres s0
+2026-11-10T16:40:07+03:00 STOP  jres s0 (stuck at the rule, saturated sigmoid; replaced by jres2)
+2026-11-10T16:40:07+03:00 START gjoint s0
+2026-11-10T18:31:16+03:00 END   train seed 1 rc=1
+2026-11-10T18:31:27+03:00 START jres2 s0
+2026-11-10T19:20:27+03:00 END   gjoint s0 rc=0
+2026-11-10T19:20:27+03:00 START gjoint s1
+2026-11-10T20:22:59+03:00 END   jres2 s0 rc=0
+2026-11-10T20:22:59+03:00 START jres2 s1
+2026-11-10T20:24:39+03:00 early eval attn_jres2_safe_penrew__train_attn_jres2_safe_penrew__s0__566b57ca
+2026-11-10T20:39:22+03:00 early eval attn_joint_safe_penrew__train_attn_joint_safe_penrew__s0__ed3bcfaf
+2026-11-10T20:54:34+03:00 early eval attn_joint_safe_penrew__train_attn_joint_safe_penrew__s1__ed3bcfaf
+2026-11-10T21:08:08+03:00 early eval attn_jbox_safe_penrew__train_attn_jbox_safe_penrew__s0__01d83ddb
+2026-11-10T21:18:11+03:00 early eval attn_gjoint_safe_penrew__train_attn_gjoint_safe_penrew__s0__2aa4f953
+2026-11-10T21:28:00+03:00 DONE early eval
+2026-11-10T21:49:16+03:00 END   gjoint s1 rc=0
+2026-11-10T21:50:11+03:00 START gres2 s0
+2026-11-10T23:09:21+03:00 END   jres2 s1 rc=0
+2026-11-10T23:09:21+03:00 eval attn_joint_safe_penrew__train_attn_joint_safe_penrew__s0__ed3bcfaf
+2026-11-10T23:09:25+03:00 eval attn_joint_safe_penrew__train_attn_joint_safe_penrew__s1__ed3bcfaf
+2026-11-10T23:09:28+03:00 eval attn_jbox_safe_penrew__train_attn_jbox_safe_penrew__s0__01d83ddb
+2026-11-10T23:09:30+03:00 eval attn_gjoint_safe_penrew__train_attn_gjoint_safe_penrew__s0__2aa4f953
+2026-11-10T23:09:33+03:00 eval attn_gjoint_safe_penrew__train_attn_gjoint_safe_penrew__s1__2aa4f953
+2026-11-10T23:09:49+03:00 START gres2 s1
+2026-11-10T23:19:10+03:00 eval attn_jres2_safe_penrew__train_attn_jres2_safe_penrew__s0__566b57ca
+2026-11-10T23:19:12+03:00 eval attn_jres2_safe_penrew__train_attn_jres2_safe_penrew__s1__566b57ca
+2026-11-10T23:20:24+03:00 START jres3 s0
+2026-11-10T23:23:09+03:00 STOP  jres3 s0 (memory: other project uses ~17 GB; restart after mech2)
+2026-11-10T23:29:02+03:00 DONE mech2
+2026-11-10T23:29:56+03:00 START jres3 s0
+2026-11-10T23:39:19+03:00 jres3 s1 deferred (MemAvailable 4 GB)
+2026-11-11T01:10:14+03:00 END   jres3 s0 rc=0
+2026-11-11T01:10:14+03:00 START jres3 s1
+2026-11-11T01:13:14+03:00 STOP  jres3 s1 (jres3 s0 pinned at the rule: quick test -2.083, median |mu| 0.14; GPU slot to gres2)
+2026-11-11T01:13:14+03:00 START gres2 s0
+2026-11-11T01:13:14+03:00 START gres2 s1
+2026-11-11T01:13:17+03:00 END   gres2 s0 rc=1
+2026-11-11T01:15:59+03:00 START gres2 s0 (resume)
+2026-11-11T01:23:14+03:00 jres3 eval deferred (MemAvailable 3 GB)
+2026-11-11T09:04:25+03:00 POWER OUTAGE overnight (gres2 s0 at ck 700, s1 at ck 150; train logs repaired, backups *.corrupt_poweroff)
+2026-11-11T09:04:25+03:00 START gres2 s1 (resume after power outage)
+2026-11-11T09:04:25+03:00 START gres2 s0 (resume after power outage)
+2026-11-11T09:06:27+03:00 eval attn_jres3_safe_penrew__train_attn_jres3_safe_penrew__s0__b436705d
+2026-11-11T09:08:46+03:00 FAIL results/raw/attn_jres3_safe_penrew__train_attn_jres3_safe_penrew__s0__b436705d
+2026-11-11T10:27:27+03:00 END   gres2 s0 rc=0
+2026-11-11T10:31:13+03:00 eval (retry, jobs 3) attn_jres3_safe_penrew__train_attn_jres3_safe_penrew__s0__b436705d
+2026-11-11T10:43:35+03:00 OK   jres3 s0 eval
+2026-11-11T11:28:14+03:00 END   gres2 s1 rc=0
+2026-11-11T11:28:14+03:00 eval attn_gres2_safe_penrew__train_attn_gres2_safe_penrew__s0__65ed97c5
+2026-11-11T11:37:20+03:00 eval attn_gres2_safe_penrew__train_attn_gres2_safe_penrew__s1__65ed97c5
+2026-11-11T11:46:17+03:00 DONE gres2c
